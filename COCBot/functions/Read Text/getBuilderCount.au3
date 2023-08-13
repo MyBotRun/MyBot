@@ -6,8 +6,8 @@
 ; Parameters ....: $bBuilderBase        - [optional] Set to True if you want to get Builder Count on Builder Base. Default is False -> Read Normal Village Count
 ; Return values .: None
 ; Author ........: MonkeyHunter (06-2016)
-; Modified ......: Fliegerfaust (06-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Modified ......: Fliegerfaust (06-2017), Moebius14 (07-2023)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -43,9 +43,16 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 				$g_iTotalBuilderCountBB = Int($aGetBuilders[1])
 				If $g_bDebugSetlog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB, $COLOR_DEBUG)
 			EndIf
+			$g_iGfxErrorCount = 0
 			Return True ; Happy Monkey returns!
 		Else
 			SetLog("Bad OCR read Free/Total Builders", $COLOR_ERROR) ; OCR returned unusable value?
+			$g_iGfxErrorCount += 1
+			If $g_iGfxErrorCount > $g_iGfxErrorMax Then 
+				SetLog("gfxError occured, set to Reboot Android Instance", $COLOR_INFO)
+				$g_bGfxError = True
+				CheckAndroidReboot()
+			EndIf
 			; drop down to error handling code
 		EndIf
 	Else

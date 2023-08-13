@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac (2015), HungLe (2015)
 ; Modified ......: Sardo (08-2015), KnowJack (08-2015), MonkeyHunter(06-2016) , trlopes (07-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2021
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkwall.au3
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -124,7 +124,6 @@ Func UpgradeWall()
 
 EndFunc   ;==>UpgradeWall
 
-
 Func UpgradeWallGold($iWallCost = $g_iWallCost)
 
 	If _Sleep($DELAYRESPOND) Then Return
@@ -132,7 +131,7 @@ Func UpgradeWallGold($iWallCost = $g_iWallCost)
 	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton) > 0 Then
 		For $i = 0 To UBound($aUpgradeButton) - 1
-			If QuickMIS("BC1", $g_sImgWallResource, $aUpgradeButton[$i][0] + 40, $aUpgradeButton[$i][1] - 20, $aUpgradeButton[$i][0] + 60, $aUpgradeButton[$i][1] - 5) Then
+			If QuickMIS("BC1", $g_sImgWallResource, $aUpgradeButton[$i][0] + 32, $aUpgradeButton[$i][1] - 30, $aUpgradeButton[$i][0] + 47, $aUpgradeButton[$i][1] - 14) Then
 				If $g_iQuickMISName = "WallGold" Then
 					Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
 					ExitLoop
@@ -185,7 +184,7 @@ Func UpgradeWallElixir($iWallCost)
 	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton) > 0 Then
 		For $i = 0 To UBound($aUpgradeButton) - 1
-			If QuickMIS("BC1", $g_sImgWallResource, $aUpgradeButton[$i][0] + 40, $aUpgradeButton[$i][1] - 20, $aUpgradeButton[$i][0] + 60, $aUpgradeButton[$i][1] - 5) Then
+			If QuickMIS("BC1", $g_sImgWallResource, $aUpgradeButton[$i][0] + 32, $aUpgradeButton[$i][1] - 30, $aUpgradeButton[$i][0] + 47, $aUpgradeButton[$i][1] - 14) Then
 				If $g_iQuickMISName = "WallElix" Then
 					Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
 					ExitLoop
@@ -332,11 +331,11 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 		If Not $bMinWardenElixir Then
 			Switch $g_iUpgradeWallLootType
 				Case 1 ; Elixir
-					SetLog("Grand Warden needs " & ($g_afWardenUpgCost[$g_iWardenLevel] * 1000000) & " Elixir for next Level", $COLOR_WARNING)
+					SetLog("Grand Warden needs " & _NumberFormat(($g_afWardenUpgCost[$g_iWardenLevel] * 1000000), True) & " Elixir for next Level", $COLOR_WARNING)
 					SetLog("Skipping Wall Upgrade", $COLOR_WARNING)
 					Return True
 				Case 2 ; Elixir & Gold
-					SetLog("Grand Warden needs " & ($g_afWardenUpgCost[$g_iWardenLevel] * 1000000) & " Elixir for next Level", $COLOR_SUCCESS1)
+					SetLog("Grand Warden needs " & _NumberFormat(($g_afWardenUpgCost[$g_iWardenLevel] * 1000000), True) & " Elixir for next Level", $COLOR_SUCCESS1)
 					SetLog("Using Gold only for Wall Upgrade", $COLOR_SUCCESS1)
 					$g_iUpgradeWallLootType = 0
 			EndSwitch
@@ -351,11 +350,11 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 			Case 0 ; Using gold
 				; do nothing
 			Case 1 ; Using elixir
-				SetLog("Laboratory needs Elixir to Upgrade :  " & $g_iLaboratoryElixirCost, $COLOR_SUCCESS1)
+				SetLog("Laboratory needs Elixir to Upgrade :  " & _NumberFormat($g_iLaboratoryElixirCost, True), $COLOR_SUCCESS1)
 				SetLog("Skipping Wall Upgrade", $COLOR_SUCCESS1)
 				Return True
 			Case 2 ; Using gold and elixir
-				SetLog("Laboratory needs Elixir to Upgrade :  " & $g_iLaboratoryElixirCost, $COLOR_SUCCESS1)
+				SetLog("Laboratory needs Elixir to Upgrade :  " & _NumberFormat($g_iLaboratoryElixirCost, True), $COLOR_SUCCESS1)
 				SetLog("Using Gold only for Wall Upgrade", $COLOR_SUCCESS1)
 				$g_iUpgradeWallLootType = 0
 		EndSwitch

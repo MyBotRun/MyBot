@@ -7,7 +7,7 @@
 ; Author ........: Zax (2015)
 ; Modified ......: Safar46 (2015), Hervidero (2015-04), HungLe (2015-04), Sardo (2015-08), Promac (2015-12), Hervidero (2016-01), MonkeyHunter (2016-07),
 ;				   CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -142,7 +142,7 @@ Func getArmyRequest($aiDonateCoords, $bNeedCapture = True)
 			$aTempRequestArray = $aCurrentArmyRequest[$i] ; Declare Array to Temp Array
 			$iArmyIndex = TroopIndexLookup($aTempRequestArray[0], "getArmyRequest()") ; Get the Index of the Troop from the ShortName
 			; Troops
-			If $iArmyIndex >= $eBarb And $iArmyIndex <= $eHunt Then
+			If $iArmyIndex >= $eBarb And $iArmyIndex <= $eAppWard Then
 				$sClanText &= ", " & $g_asTroopNames[$iArmyIndex]
 			; Spells
 			ElseIf $iArmyIndex >= $eLSpell And $iArmyIndex <= $eBtSpell Then
@@ -258,7 +258,6 @@ Func DonateCC($bCheckForNewMsg = False)
 	Local $aiDonateButton
 
 	While $bDonate
-		checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
 		$ClanString = ""
 		$sNewClanString = ""
 		If _Sleep($DELAYDONATECC2) Then ExitLoop
@@ -438,9 +437,9 @@ Func DonateCC($bCheckForNewMsg = False)
 				ExitLoop ; Leave donate to prevent a bot hang condition
 			EndIf
 
-			;;; Variables to use in Loops for Custom.A to Custom.D
-			Local $eCustom[4] = [$eCustomA, $eCustomB, $eCustomC, $eCustomD]
-			Local $eDonateCustom[4] = [$g_aiDonateCustomTrpNumA, $g_aiDonateCustomTrpNumB, $g_aiDonateCustomTrpNumC, $g_aiDonateCustomTrpNumD]
+			;;; Variables to use in Loops for Custom.A to Custom.B
+			Local $eCustom[2] = [$eCustomA, $eCustomB]
+			Local $eDonateCustom[2] = [$g_aiDonateCustomTrpNumA, $g_aiDonateCustomTrpNumB]
 
 			;;; Typical Donation
 			If $bDonateTroop Or $bDonateSpell Or $bDonateSiege Then
@@ -470,7 +469,7 @@ Func DonateCC($bCheckForNewMsg = False)
 							For $i = 0 To 2
 								If $CorrectDonateCustom[$i][0] < $eBarb Then
 									$CorrectDonateCustom[$i][0] = $eArch ; Change strange small numbers to archer
-								ElseIf $CorrectDonateCustom[$i][0] > $eHunt Then
+								ElseIf $CorrectDonateCustom[$i][0] > $eAppWard Then
 									ContinueLoop ; If "Nothing" is selected then continue
 								EndIf
 								If $CorrectDonateCustom[$i][1] < 1 Then
@@ -554,15 +553,15 @@ Func DonateCC($bCheckForNewMsg = False)
 					If $g_bDebugSetlog Then SetDebugLog("Troop All checkpoint.", $COLOR_DEBUG)
 
 					;;; DONATE TO ALL for Custom And Typical Donation
-					; 0 to 3 is Custom [A to D] and the 4 is the 'Typical'
-					For $x = 0 To 4
-						If $x <> 4 Then
+					; 0 to 1 is Custom [A to B] and the 2 is the 'Typical'
+					For $x = 0 To 2
+						If $x <> 2 Then
 							If $g_abChkDonateAllTroop[$eCustom[$x]] Then
 								Local $CorrectDonateCustom = $eDonateCustom[$x]
 								For $i = 0 To 2
 									If $CorrectDonateCustom[$i][0] < $eBarb Then
 										$CorrectDonateCustom[$i][0] = $eArch ; Change strange small numbers to archer
-									ElseIf $CorrectDonateCustom[$i][0] > $eHunt Then
+									ElseIf $CorrectDonateCustom[$i][0] > $eAppWard Then
 										DonateWindow($aiDonateButton, $bClose)
 										$bDonate = True
 										$aiSearchArray[1] = $aiDonateButton[1] + 20
@@ -581,7 +580,7 @@ Func DonateCC($bCheckForNewMsg = False)
 									DonateTroopType($CorrectDonateCustom[$i][0], $CorrectDonateCustom[$i][1], $abDonateQueueOnly[0], $bDonateAllTroop) ;;; Donate Custom Troop using DonateTroopType2
 								Next
 							EndIf
-						Else ; this is the $x = 4 [Typical Donation]
+						Else ; this is the $x = 2 [Typical Donation]
 							For $i = 0 To UBound($g_aiDonateTroopPriority) - 1
 								Local $iTroopIndex = $g_aiDonateTroopPriority[$i]
 								If $g_abChkDonateAllTroop[$iTroopIndex] Then
@@ -857,7 +856,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 		EndIf
 
 		; Adjust Values for donated troops to prevent a Double ghost donate to stats and train
-		If $iTroopIndex >= $eTroopBarbarian And $iTroopIndex <= $eTroopHeadhunter Then
+		If $iTroopIndex >= $eTroopBarbarian And $iTroopIndex <= $eTroopAppWard Then
 			;Reduce iTotalDonateCapacity by troops donated
 			$g_iTotalDonateTroopCapacity -= ($Quant * $g_aiTroopSpace[$iTroopIndex])
 			;If donated max allowed troop qty set $g_bSkipDonTroops = True

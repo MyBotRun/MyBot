@@ -4,7 +4,7 @@
 ; Description ...: Verify that bot can authentication with forum
 ; Author ........: cosote (2019)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot Copyright 2015-2019
+; Remarks .......: This file is part of MyBot Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -98,7 +98,7 @@ Func ForumAuthentication()
 			; Bot will not run 100% stable!!!
 			SetLog($sAuthenticationFailed1, $COLOR_ERROR)
 			SetLog($sAuthenticationFailed2, $COLOR_ERROR)
-			_Sleep(5000)
+			If _Sleep(5000) Then Return
 			Return False
 
 		Else

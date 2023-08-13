@@ -7,7 +7,7 @@
 ; Author ........: Code Monkey #6
 ; Modified ......: kaganus (Jun/Aug 2015), Sardo 2015-07, KnowJack(Aug 2015) , The Master (2015), MonkeyHunter (02/08-2016),
 ;				   CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -66,8 +66,6 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	EndIf
 
 	If _Sleep($DELAYVILLAGESEARCH1) Then Return
-	$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
-	checkAttackDisable($g_iTaBChkAttack, $Result) ;last check to see If TakeABreak msg on screen for fast PC from PrepareSearch click
 	If $g_bRestart = True Then Return ; exit func
 	If Not ($g_bIsSearchLimit) Then
 		SetLogCentered("=", "=", $COLOR_INFO)
@@ -380,9 +378,10 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 			If _Sleep($DELAYVILLAGESEARCH2) Then Return
 			$i += 1
 			_CaptureRegions()
-			If ( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1]), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage(False) Then
+			
+			If (_ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1]), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage(False) Then
 				$g_bCloudsActive = True
-				ClickP($NextBtn, 1, 0, "#0155") ;Click Next
+				Click($NextBtn[0] + 55, $NextBtn[1] - 18, 1, 0, "#0155") ;Click Next
 				ExitLoop
 			Else
 				SetDebugLog("Wait to see Next Button... " & $i, $COLOR_DEBUG)
@@ -405,8 +404,6 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		WEnd
 
 		If _Sleep($DELAYRESPOND) Then Return
-		$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
-		checkAttackDisable($g_iTaBChkAttack, $Result) ; check to see If TakeABreak msg on screen after next click
 		If $g_bRestart = True Then Return ; exit func
 
 		If isGemOpen(True) = True Then

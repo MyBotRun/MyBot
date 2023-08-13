@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -162,8 +162,8 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 	Local $sLog = GetTroopName($iTroopIndex)
 	
 	Local $iMaxSiegeLevel = 4
-	
-	If $g_iTownHallLevel < 11 Then $iMaxSiegeLevel = 3
+	If $iTroopIndex = $eWallW Or $iTroopIndex = $eStoneS Then $iMaxSiegeLevel = 5
+	If $g_iTownHallLevel < 10 Then $iMaxSiegeLevel = 3
 
 	Switch $ToUse
 		Case $iTroopIndex ; the same as current castle/siege
@@ -192,13 +192,13 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 
 			; wait to appears the new small window
 			Local $iLastX = $aiSwitchBtn[0] - 30, $iLastY = $aiSwitchBtn[1]
-			If _Sleep(1250) Then Return
+			If _Sleep(2000) Then Return
 
 			; Lets detect the CC & Sieges and click - search window is - X, 530, X + 390, 530 + 30
-			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",539(390,37)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
+			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",539(395,37)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
 
 			SetLog("Switch Search Area : " & $sSearchArea)
-			SaveDebugDiamondImage("SelectCastleOrSiege", $sSearchArea)
+			If $g_bDebugImageSave Then SaveDebugDiamondImage("SelectCastleOrSiege", $sSearchArea)
 
 			Local $aSearchResult = findMultiple($g_sImgSwitchSiegeMachine, $sSearchArea, $sSearchArea, 0, 1000, 5, "objectname,objectpoints", True)
 			If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")

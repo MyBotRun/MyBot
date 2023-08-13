@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,6 +23,7 @@ Func ParseAttackCSV_Read_SIDE_variables()
 	$g_bCSVLocateStorageTownHall = False
 	$g_bCSVLocateEagle = False
 	$g_bCSVLocateScatter = False
+	$g_bCSVLocateMonolith = False
 	$g_bCSVLocateInferno = False
 	$g_bCSVLocateXBow = False
 	$g_bCSVLocateWizTower = False
@@ -90,7 +91,8 @@ Func ParseAttackCSV_Read_SIDE_variables()
 							If Int($value5) > 0 Then $g_bCSVLocateMortar = True
 							If Int($value6) > 0 Then $g_bCSVLocateAirDefense = True
 							If Int($value7) > 0 Then $g_bCSVLocateScatter = True
-							; If Int($value8) > 0 Then $g_bCSVLocateGemBox = True IE unused
+							If Int($value8) > 0 Then $g_bCSVLocateMonolith = True
+							; If Int($value9) > 0 Then $g_bCSVLocateGemBox = True IE unused
 						EndIf
 					Case "MAKE" ; check if targeted building vectors are used im MAKE commands >> starting in V7.2+
 						If StringLen(StringStripWS($value8, $STR_STRIPALL)) > 0 Then ; check for empty string?
@@ -105,6 +107,8 @@ Func ParseAttackCSV_Read_SIDE_variables()
 									$g_bCSVLocateXBow = True
 								Case "SCATTER"
 									$g_bCSVLocateScatter = True
+								Case "MONOLITH"
+									$g_bCSVLocateMonolith = True
 								Case "WIZTOWER"
 									$g_bCSVLocateWizTower = True
 								Case "MORTAR"

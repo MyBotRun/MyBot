@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (01-2016)
 ; Modified ......: GrumpyHog (11/2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -90,33 +90,61 @@ Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
 	Return True
  EndFunc   ;==>OpenTrainTab
 
- Func UpdateNextPageTroop()
+Func UpdateNextPageTroop()
 	Local $aSlot0[4] = [615, 465, 705, 370]
 	Local $aSlot1[4] = [615, 570, 705, 480]
-	Local $aSlot2[4] = [715, 465, 865, 370]
-	Local $sEDragTile = @ScriptDir & "\imgxml\ArmyOverview\Troops\EDrag*"
+	Local $aSlot2[4] = [715, 465, 805, 370]
+	Local $aSlot3[4] = [715, 570, 805, 480]
+	Local $sEDragTile = @ScriptDir & "\imgxml\Train\Train_Train\EDrag*"
+	Local $sMinerTile = @ScriptDir & "\imgxml\Train\Train_Train\Mine*"
+	Local $sSMinerTile = @ScriptDir & "\imgxml\Train\Train_Train\SMine*"
 
-	SetLog("UpdateNextPageTroop...")
+	If _Sleep(500) Then Return
 
-	$g_iNextPageTroop = $eMini
+	Local $aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sEDragTile, GetDiamondFromRect("25,375,840,575"), 1, True))
 
-	DragIfNeeded($eBarb)
+	If IsArray($aiTileCoord) And Ubound($aiTileCoord, 1) = 2 And _ColorCheck(_GetPixelColor(22, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord[0] > 610 Then
+		SetDebugLog("Found EDrag at " & $aiTileCoord[0] & ", " & $aiTileCoord[1])
 
-	Local $aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sEDragTile, GetDiamondFromRect("25,375,840,548"), 1, True))
-
-	If IsArray($aiTileCoord) And Ubound($aiTileCoord, 1) = 2 Then
-		SetLog("Found EDrag at " & $aiTileCoord[0] & ", " & $aiTileCoord[1])
+		$g_iNextPageTroop = $eETitan
 
 		If PointInRect($aSlot1[0], $aSlot1[1], $aSlot1[2], $aSlot1[3], $aiTileCoord[0], $aiTileCoord[1]) Then
-			$g_iNextPageTroop = $eETitan
-			SetLog("Found Edrag moved 1 Slot")
+			$g_iNextPageTroop = $eRDrag
+			SetDebugLog("Found Edrag moved 1 Slot")
 		EndIf
 
 		If PointInRect($aSlot2[0], $aSlot2[1], $aSlot2[2], $aSlot2[3], $aiTileCoord[0], $aiTileCoord[1]) Then
-			$g_iNextPageTroop = $eRDrag
-			SetLog("Found Edrag moved 2 Slot")
+			$g_iNextPageTroop = $eYeti
+			SetDebugLog("Found Edrag moved 2 Slots")
 		EndIf
+
+		If PointInRect($aSlot3[0], $aSlot3[1], $aSlot3[2], $aSlot3[3], $aiTileCoord[0], $aiTileCoord[1]) Then; Support 2 Super Troops + 1 Event Troop Or 1 Super Troop + 2 Event Troops (Moebius14)
+			$g_iNextPageTroop = $eEDrag
+			SetDebugLog("Found Edrag moved 3 Slots")
+		EndIf
+
+	Else; Support 2 Super Troops + 2+ Event Troops (Moebius14)
+
+		$aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sMinerTile, GetDiamondFromRect("25,375,840,575"), 1, True))
+		If IsArray($aiTileCoord) And Ubound($aiTileCoord, 1) = 2 And _ColorCheck(_GetPixelColor(22, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord[0] > 610 Then
+			
+			If PointInRect($aSlot2[0], $aSlot2[1], $aSlot2[2], $aSlot2[3], $aiTileCoord[0], $aiTileCoord[1]) Then
+				Local $aiTileCoord2 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sSMinerTile, GetDiamondFromRect("25,375,840,575"), 1, True))
+				If IsArray($aiTileCoord2) And Ubound($aiTileCoord2, 1) = 2 Then
+					$g_iNextPageTroop = $eSMine
+					SetDebugLog("Found Miner moved 3 Slots and SuperMiner Detected")
+				EndIf
+			EndIf
+
+			If PointInRect($aSlot3[0], $aSlot3[1], $aSlot3[2], $aSlot3[3], $aiTileCoord[0], $aiTileCoord[1]) Then
+				$g_iNextPageTroop = $eMine
+				SetDebugLog("Found Miner moved 4 Slots")
+			EndIf
+		EndIf
+
 	EndIf
+
+	If _Sleep(200) Then Return
 
 EndFunc
 

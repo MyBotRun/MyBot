@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......: MMHK (07/2017)(01/2018), TripleM (03/2019)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -297,7 +297,7 @@ Func ParseAttackCSV($debug = False)
 								; Let's get the troops again and quantities
 								If PrepareAttack($g_iMatchMode, True) > 0 Then
 									; a Loop from all troops
-									For $ii = $eBarb To $eHunt ; launch all remaining troops
+									For $ii = $eBarb To $eAppWard ; launch all remaining troops
 										; Loop on all detected troops
 										For $x = 0 To UBound($g_avAttackTroops) - 1
 											; If the Name exist and haves more than zero is deploy it
@@ -634,7 +634,7 @@ EndFunc   ;==>CheckIfTownHallGotDestroyed
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......: MMHK (07-2017)(01-2018), Demen (2019)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -979,6 +979,17 @@ Func ParseAttackCSV_MainSide($debug = False)
 									EndIf
 								Next
 							EndIf
+							
+							Switch StringLeft(Slice8($g_aiCSVMonolithPos), 1)
+								Case 1, 2
+									$heightBottomRight += Int($value1)
+								Case 3, 4
+									$heightTopRight += Int($value1)
+								Case 5, 6
+									$heightTopLeft += Int($value1)
+								Case 7, 8
+									$heightBottomLeft += Int($value1)
+							EndSwitch
 
 							Local $maxValue = $heightBottomRight
 							Local $sidename = "BOTTOM-RIGHT"

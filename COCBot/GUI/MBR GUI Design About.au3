@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: CodeSlinger69 (2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -48,16 +48,16 @@ Func CreateAboutTab()
 	GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 	GUICtrlSetColor(-1, $COLOR_NAVY)
-	$sText = "Chilly-Chill, Fliegerfaust and TFKNazGul"
+	$sText = "HarchH, MikeD, Moebius14, TFK Nazgul"
 	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 
 	$y += 35
-	$sText = "Special participation at v7.8: "
+	$sText = "Special participation at v8.0: "
 	GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 	GUICtrlSetColor(-1, $COLOR_NAVY)
-	$sText = "HarchH, Nytol and of course Beta Tester Team"
+	$sText = "Anondad, Priapus Cranium and of course Beta Tester Team"
 	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 
@@ -66,7 +66,7 @@ Func CreateAboutTab()
 	GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 	GUICtrlSetColor(-1, $COLOR_NAVY)
-	$sText = "Cosote, Demen, Hervidero, Kaganus, Sardo, Trlopes, TripleM"
+	$sText = "GrumpyHog, Hervidero, Xbebenk"
 	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 
@@ -75,16 +75,16 @@ Func CreateAboutTab()
 	GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 	GUICtrlSetColor(-1, $COLOR_NAVY)
-	$sText = "Antidote, AtoZ, Barracoda, Boju, Codeslinger69, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, KnowJack, LunaEclipse, MonkeyHunter, ProMac, Safar46, Saviart, TheMaster1st, Zengzeng, and others"
-	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+	$sText = "Antidote, AtoZ, Barracoda, Boju, Codeslinger69, Cosote, Demen, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Kaganus, KnowJack, LunaEclipse, MonkeyHunter, ProMac, Safar46, Sardo, Saviart, TheMaster1st, TripleM, Trlopes, Zengzeng, and others"
+	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 60, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 
-	$y += 71
-	$sText = "Special thanks to all contributing forum members helping to make this" & @CRLF & "software better! And a special note to: @KevinM our server admin!"
-	GUICtrlCreateLabel($sText, $x + 14, $y, 390, 30, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER), 0)
-	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
-
-	$y += 40
+	$y += 95
+;	$sText = "Special thanks to all contributing forum members helping to make this" & @CRLF & "software better! And a special note to: @KevinM our server admin!"
+;	GUICtrlCreateLabel($sText, $x + 14, $y, 390, 30, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER), 0)
+;	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
+;
+;	$y += 40
 	$sText = "The latest release of 'My Bot' can be found at:"
 	GUICtrlCreateLabel($sText, $x - 5, $y, 400, 15, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 10, $FW_BOLD, Default, "Arial")
@@ -100,7 +100,7 @@ Func CreateAboutTab()
 			"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even " & @CRLF & _
 			"the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF & _
 			"Public License for more details. The license can be found in the main code folder location." & @CRLF & _
-			"Copyright (C) 2015-2019 MyBot.run"
+			"Copyright (C) 2015-2023 MyBot.run"
 	GUICtrlCreateLabel($sText, $x + 1, $y, 415, 56, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT, $ES_CENTER), 0)
 	GUICtrlSetColor(-1, 0x000053)
 	GUICtrlSetFont(-1, 6.5, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)

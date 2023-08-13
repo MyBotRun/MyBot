@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Boju(2016)
 ; Modified ......: MR.ViPER (11-2016), CodeSlinger69 (2017), MMHK (01-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -51,7 +51,7 @@ Global $g_aGroupListPicABMaxTH = ""
 Global $g_aGroupListPicBullyMaxTH = ""
 
 ;League
-Global $g_aGroupLeague = ""
+Global $g_aGroupLeague = "", $g_aGroupCCLeague = "", $g_aGroupBBLeague = ""
 
 ; Groups of controls
 Global $aTabControlsVillage, $aTabControlsMisc, $aTabControlsDonate, $aTabControlsUpgrade, $aTabControlsNotify
@@ -67,7 +67,8 @@ Func InitializeControlVariables()
 				    $g_ahChkMaxMortar[$DB]&"#"&$g_ahCmbWeakMortar[$DB]&"#"&$g_ahPicWeakMortar[$DB]&"#"&$g_ahChkMaxWizTower[$DB]&"#"&$g_ahCmbWeakWizTower[$DB]&"#"& _
 				    $g_ahPicWeakWizTower[$DB]&"#"& _
 				    $g_ahChkMaxXBow[$DB]&"#"&$g_ahCmbWeakXBow[$DB]&"#"&$g_ahPicWeakXBow[$DB]&"#"&$g_ahChkMaxInferno[$DB]&"#"&$g_ahCmbWeakInferno[$DB]&"#"& _
-				    $g_ahPicWeakInferno[$DB]&"#"&$g_ahChkMaxEagle[$DB]&"#"&$g_ahCmbWeakEagle[$DB]&"#"&$g_ahPicWeakEagle[$DB]&"#"&$g_ahChkMaxScatter[$DB]&"#"&$g_ahCmbWeakScatter[$DB]&"#"&$g_ahPicWeakScatter[$DB]
+				    $g_ahPicWeakInferno[$DB]&"#"&$g_ahChkMaxEagle[$DB]&"#"&$g_ahCmbWeakEagle[$DB]&"#"&$g_ahPicWeakEagle[$DB]&"#"&$g_ahChkMaxScatter[$DB]&"#"&$g_ahCmbWeakScatter[$DB]&"#"&$g_ahPicWeakScatter[$DB]&"#"& _
+					$g_ahChkMaxMonolith[$DB]&"#"&$g_ahCmbWeakMonolith[$DB]&"#"&$g_ahPicWeakMonolith[$DB]
    $groupHerosDB = $g_hPicDBHeroesWait&"#"&$g_hTxtDBHeroesWait&"#"&$g_hChkDBKingWait&"#"&$g_hChkDBQueenWait&"#"&$g_hChkDBWardenWait&"#"&$g_hChkDBChampionWait&"#"&$g_hPicDBKingWait&"#"& _
 				   $g_hPicDBQueenWait&"#"&$g_hPicDBWardenWait&"#"&$g_hPicDBChampionWait&"#"&$g_hChkDBNotWaitHeroes
 
@@ -77,7 +78,8 @@ Func InitializeControlVariables()
 				    $g_ahChkMeetOne[$LB]&"#"& _
 				    $g_ahChkMaxMortar[$LB]&"#"&$g_ahCmbWeakMortar[$LB]&"#"&$g_ahPicWeakMortar[$LB]&"#"&$g_ahChkMaxWizTower[$LB]&"#"&$g_ahCmbWeakWizTower[$LB]&"#"& _
 					$g_ahPicWeakWizTower[$LB]&"#"&$g_ahChkMaxXBow[$LB]&"#"&$g_ahCmbWeakXBow[$LB]&"#"&$g_ahPicWeakXBow[$LB]&"#"&$g_ahChkMaxInferno[$LB]&"#"& _
-					$g_ahCmbWeakInferno[$LB]&"#"&$g_ahPicWeakInferno[$LB]&"#"&$g_ahChkMaxEagle[$LB]&"#"&$g_ahCmbWeakEagle[$LB]&"#"&$g_ahPicWeakEagle[$LB]&"#"&$g_ahChkMaxScatter[$LB]&"#"&$g_ahCmbWeakScatter[$LB]&"#"&$g_ahPicWeakScatter[$LB]
+					$g_ahCmbWeakInferno[$LB]&"#"&$g_ahPicWeakInferno[$LB]&"#"&$g_ahChkMaxEagle[$LB]&"#"&$g_ahCmbWeakEagle[$LB]&"#"&$g_ahPicWeakEagle[$LB]&"#"&$g_ahChkMaxScatter[$LB]&"#"& _
+					$g_ahCmbWeakScatter[$LB]&"#"&$g_ahPicWeakScatter[$LB]&"#"&$g_ahChkMaxMonolith[$LB]&"#"&$g_ahCmbWeakMonolith[$LB]&"#"&$g_ahPicWeakMonolith[$LB]
    $groupHerosAB = $g_hPicABHeroesWait&"#"&$g_hTxtABHeroesWait&"#"&$g_hChkABKingWait&"#"&$g_hChkABQueenWait&"#"&$g_hChkABWardenWait&"#"&$g_hChkABChampionWait&"#"& _
 					$g_hPicABKingWait&"#"&$g_hPicABQueenWait&"#"&$g_hPicABWardenWait&"#"&$g_hPicABChampionWait&"#"&$g_hChkABNotWaitHeroes
 
@@ -204,6 +206,15 @@ Func InitializeControlVariables()
    $g_aGroupLeague = $g_ahPicLeague[$eLeagueUnranked]&"#"&$g_ahPicLeague[$eLeagueBronze]&"#"&$g_ahPicLeague[$eLeagueSilver]&"#"&$g_ahPicLeague[$eLeagueGold] &"#"& _
 				  $g_ahPicLeague[$eLeagueCrystal]&"#"&$g_ahPicLeague[$eLeagueMaster]&"#"&$g_ahPicLeague[$eLeagueChampion]&"#"&$g_ahPicLeague[$eLeagueTitan]&"#"& _
 				  $g_ahPicLeague[$eLeagueLegend]
+				  
+	$g_aGroupCCLeague = $g_ahPicCCLeague[$eLeagueUnranked]&"#"&$g_ahPicCCLeague[$eLeagueBronze]&"#"&$g_ahPicCCLeague[$eLeagueSilver]&"#"&$g_ahPicCCLeague[$eLeagueGold] &"#"& _
+				  $g_ahPicCCLeague[$eLeagueCrystal]&"#"&$g_ahPicCCLeague[$eLeagueMaster]&"#"&$g_ahPicCCLeague[$eLeagueChampion]&"#"&$g_ahPicCCLeague[$eLeagueTitan]&"#"& _
+				  $g_ahPicCCLeague[$eLeagueLegend]
+
+	$g_aGroupBBLeague = $g_ahPicBBLeague[$eBBLeagueUnranked]&"#"&$g_ahPicBBLeague[$eLeagueDiamond]&"#"&$g_ahPicBBLeague[$eLeagueRuby]&"#"&$g_ahPicBBLeague[$eLeagueEmerald] &"#"& _
+				  $g_ahPicBBLeague[$eLeaguePlatinum]&"#"&$g_ahPicBBLeague[$eLeagueTitanium]&"#"&$g_ahPicBBLeague[$eLeagueSteel]&"#"&$g_ahPicBBLeague[$eLeagueIron]&"#"& _
+				  $g_ahPicBBLeague[$eLeagueBrass]&"#"&$g_ahPicBBLeague[$eLeagueCopper]&"#"&$g_ahPicBBLeague[$eLeagueStone]&"#"&$g_ahPicBBLeague[$eLeagueClay]&"#"& _
+				  $g_ahPicBBLeague[$eLeagueWood]
 
    ; Groups of controls
    Dim $aTabControlsVillage = [$g_hGUI_VILLAGE_TAB, $g_hGUI_VILLAGE_TAB_ITEM1, $g_hGUI_VILLAGE_TAB_ITEM2, $g_hGUI_VILLAGE_TAB_ITEM3, $g_hGUI_VILLAGE_TAB_ITEM4, $g_hGUI_VILLAGE_TAB_ITEM5]

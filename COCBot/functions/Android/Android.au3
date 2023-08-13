@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (12-2015)
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -1267,15 +1267,6 @@ Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True
 			EndIf
 			$iRetry += 1
 			SetLog("Unable to load Clash of Clans, " & $iRetry & ". retry...", $COLOR_ERROR)
-			If $iRetry = 2 And $iRecursive = 0 And HaveSharedPrefs() Then
-				; crash might get fixed by clearing cache
-				$cmdOutput = AndroidAdbSendShellCommand("set export=$(pm clear " & $g_sAndroidGamePackage & " >&2)", 15000) ; timeout of 15 Seconds
-				If StringInStr($cmdOutput, "Success") Then
-					SetLog("Clash of Clans cache now cleared", $COLOR_SUCCESS)
-				Else
-					SetLog("Clash of Clans cache not cleared: " & $cmdOutput, $COLOR_ERROR)
-				EndIf
-			EndIf
 			If _SleepStatus(5000) Then Return False
 			Return _RestartAndroidCoC($bInitAndroid, $bRestart, $bStopCoC, $iRetry, $iRecursive)
 		EndIf
@@ -1397,7 +1388,7 @@ Func WaitForRunningVMS($WaitInSec = 120, $hTimer = 0)
 		$running = StringInStr($cmdOutput, """" & $g_sAndroidInstance & """") > 0
 		If $running = True Then ExitLoop
 		If $hTimer <> 0 Then _StatusUpdateTime($hTimer)
-		_Sleep(3000) ; Sleep 3 Seconds
+		If _Sleep(3000) Then Return ; Sleep 3 Seconds
 		If __TimerDiff($hMyTimer) > $WaitInSec * 1000 Then ; if no device available in 4 minutes, Android/PC has major issue so exit
 			SetLog("Serious error has occurred, please restart PC and try again", $COLOR_ERROR)
 			SetLog($g_sAndroidEmulator & " refuses to load, waited " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds for boot completed", $COLOR_ERROR)
@@ -1742,7 +1733,7 @@ Func CheckScreenAndroid($ClientWidth, $ClientHeight, $bSetLog = True)
 		EndIf
 	Else
 		Switch $g_sAndroidEmulator
-			Case "BlueStacks", "BlueStacks2" ; BlueStacks doesn't support it
+			Case "BlueStacks", "BlueStacks2", "BlueStacks5" ; BlueStacks doesn't support it
 			Case Else
 				SetDebugLog($g_sAndroidEmulator & " Display Font Scale cannot be verified", $COLOR_ERROR)
 		EndSwitch
@@ -1823,7 +1814,7 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 		; check shared folder
 		Local $pathFound = False
 		Local $iMount
-		For $iMount = 0 To 29
+		For $iMount = 0 To 4 ;29
 			$s = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " mount", $process_killed)
 			Local $path = $g_sAndroidPicturesPath
 			If StringRight($path, 1) = "/" Then $path = StringLeft($path, StringLen($path) - 1)
@@ -1980,6 +1971,8 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 				SetDebugLog("Android Version 5.1")
 			Case $g_iAndroidNougat
 				SetDebugLog("Android Version 7.0")
+			Case $g_iAndroidpie
+				SetDebugLog("Android Version 9.0")
 			Case Else
 				SetDebugLog("Android Version not detected!")
 		EndSwitch
@@ -2585,6 +2578,9 @@ Func _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder
 	Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/")
 
+	;SetLog("AdbScreencap HostPath: " & $hostPath)
+	;SetLog("AdbScreencap AndroidPath: " & $androidPath)
+
 	If $hostPath = "" Or $androidPath = "" Then
 		If $hostPath = "" Then
 			SetLog($g_sAndroidEmulator & " shared folder not configured for host", $COLOR_ERROR)
@@ -2721,7 +2717,7 @@ Func _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 			EndIf
 			If $iRetryCount < 10 Then
 				SetDebugLog("ADB retry screencap in 1000 ms. (restarting ADB session)", $COLOR_ACTION)
-				_Sleep(1000)
+				If _Sleep(1000) Then Return
 				AndroidAdbTerminateShellInstance()
 				AndroidAdbLaunchShellInstance($wasRunState)
 				Return AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount + 1)
@@ -2796,7 +2792,7 @@ Func _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 			; problem creating Bitmap
 			If $iRetryCount < 10 Then
 				SetDebugLog("ADB retry screencap in 1000 ms. (restarting ADB session)", $COLOR_ACTION)
-				_Sleep(1000)
+				If _Sleep(1000) Then Return
 				AndroidAdbTerminateShellInstance()
 				AndroidAdbLaunchShellInstance($wasRunState)
 				Return AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount + 1)
@@ -2865,6 +2861,8 @@ Func _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 		Local $lastAvg = Round($g_aiAndroidAdbStatsLast[$AdbStatsType][0] / $iLastCount)
 		If $g_bDebugAndroid Or Mod($g_aiAndroidAdbStatsTotal[$AdbStatsType][0], 100) = 0 Then
 			SetDebugLog("AdbScreencap: " & $totalAvg & "/" & $lastAvg & "/" & $duration & " ms (all/" & $iLastCount & "/1)," & $shellLogInfo & "," & $iLoopCountFile & ",l=" & $iLeft & ",t=" & $iTop & ",w=" & $iWidth & ",h=" & $iHeight & ", " & $Filename & ": w=" & $g_iAndroidAdbScreencapWidth & ",h=" & $g_iAndroidAdbScreencapHeight & ",f=" & $iF)
+			SetDeBugLog("AdbScreencap HostPath: " & $hostPath)
+			SetDeBugLog("AdbScreencap AndroidPath: " & $androidPath)
 		EndIf
 	EndIf
 
@@ -3004,7 +3002,7 @@ Func AndroidMinitouchClickDrag($x1, $y1, $x2, $y2, $wasRunState = Default, $bSCI
 	Else
 		AndroidAdbSendMinitouchShellCommand($send)
 	EndIf
-	_Sleep($botSleep)
+	If _Sleep($botSleep) Then Return
 
 	Return SetError(0, 0, 1)
 EndFunc   ;==>AndroidMinitouchClickDrag
@@ -3070,7 +3068,9 @@ Func AndroidSlowClick($x, $y, $times = 1, $speed = 0)
 		Local $timer = __TimerInit()
 		AndroidAdbSendShellCommand($cmd, Default, $wasRunState)
 		Local $wait = $speed - __TimerDiff($timer)
-		If $wait > 0 Then _Sleep($wait, False)
+		If $wait > 0 Then 
+			If _Sleep($wait, False) Then Return
+		EndIf 
 	Else
 		Local $error = @error
 		SetDebugLog("Disabled " & $g_sAndroidEmulator & " ADB mouse click, error " & $error, $COLOR_ERROR)
@@ -3353,7 +3353,9 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 			; speed was overwritten with $g_iAndroidAdbClickGroupDelay
 			;AndroidAdbSendShellCommand($sleep)
 			Local $sleepTime = $speed - __TimerDiff($sleepTimer)
-			If $sleepTime > 0 Then _Sleep($sleepTime, False)
+			If $sleepTime > 0 Then 
+				If _Sleep($sleepTime, False) Then Return
+			EndIf
 		EndIf
 		If $adjustSpeed > 0 Then
 			; wait remaining time
@@ -3364,7 +3366,7 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 					SetDebugLog("AndroidFastClick: Sleep " & $wait & " ms.")
 					$g_bSilentSetLog = $_SilentSetLog
 				EndIf
-				_Sleep($wait, False)
+				If _Sleep($wait, False) Then Return
 			EndIf
 		EndIf
 		$timeSlept += __TimerDiff($sleepTimer)
@@ -3377,7 +3379,7 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 		If $iRetryCount < 10 Then
 			SetError(0, 0, 0)
 			SetDebugLog("ADB retry sending mouse click in 1000 ms. (restarting ADB session)", $COLOR_ACTION)
-			_Sleep(1000)
+			If _Sleep(1000) Then Return
 			AndroidAdbTerminateShellInstance()
 			AndroidAdbLaunchShellInstance($wasRunState)
 			Return AndroidFastClick($x, $y, $times, $speed, $checkProblemAffect, $iRetryCount + 1)
@@ -3700,7 +3702,7 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 				EndIf
 				_SleepMicro($speed * 1000)
 				;Local $sleepTime = $speed - __TimerDiff($sleepTimer)
-				;If $sleepTime > 0 Then _Sleep($sleepTime, False)
+				;If $sleepTime > 0 Then If _Sleep($sleepTime, False) Then Return
 			EndIf
 			If $adjustSpeed > 0 Then
 				; wait remaining time
@@ -3711,7 +3713,7 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 						SetDebugLog("AndroidMinitouchClick: Sleep " & $wait & " ms.")
 						$g_bSilentSetLog = $_SilentSetLog
 					EndIf
-					_Sleep($wait, False)
+					If _Sleep($wait, False) Then Return
 				EndIf
 			EndIf
 		EndIf
@@ -3978,7 +3980,12 @@ Func AndroidCloseSystemBar()
 		SetLog("Cannot close " & $g_sAndroidEmulator & " System Bar", $COLOR_ERROR)
 		Return False
 	EndIf
-	Local $cmdOutput = AndroidAdbSendShellCommand("service call activity 42 s16 com.android.systemui", Default, $wasRunState, False)
+	Local $cmdOutput = ""
+	If $g_iAndroidVersionAPI = $g_iAndroidPie Then 
+		$cmdOutput = AndroidAdbSendShellCommand("settings put global policy_control immersive.status=*", Default, $wasRunState, False)
+	Else
+		$cmdOutput = AndroidAdbSendShellCommand("service call activity 42 s16 com.android.systemui", Default, $wasRunState, False)
+	EndIf
 	Local $Result = StringLeft($cmdOutput, 6) = "Result"
 	SetDebugLog("Closed " & $g_sAndroidEmulator & " System Bar: " & $Result)
 	Return $Result
@@ -4061,6 +4068,8 @@ Func CheckAndroidReboot($bRebootAndroid = True)
 EndFunc   ;==>CheckAndroidReboot
 
 Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount = 0)
+	Local $cmd = "", $sDumpsys = "", $iRetryMax = 5
+
 	If $sPackage = Default Then $sPackage = $g_sAndroidGamePackage
 	; - USER  - PID - PPID  - VSS  - RSS  -   PRIO - NICE - RTPRIO - SCHED - WCHAN  - EIP    - STATE - NAME
 	; u0_a58    4395  580   1135308 187040     14    -6        0      0     ffffffff 00000000    S      com.supercell.clashofclans
@@ -4070,9 +4079,22 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 	;u0_a54    12560 84    1336996 189660 10    -10   0     0     futex_wait b7725424 S com.supercell.clashofclans
 	;u0_a54    13303 84    1338548 188464 16    -4    0     0     sys_epoll_ b7725424 S com.supercell.clashofclans
 	If AndroidInvalidState() Then Return 0
-	Local $cmd = "set result=$(ps -p|grep """ & $g_sAndroidGamePackage & """ >&2)"
+	
+	If $g_iAndroidVersionAPI = $g_iAndroidPie Then
+		$cmd = "set result=$(ps -A -o USER,PID,NAME|grep """ & $g_sAndroidGamePackage & """ >&2)"
+		; ps -A|grep "com.supercell.clashofclans" >&2
+		;USER           PID  PPID     VSZ    RSS WCHAN            ADDR S NAME
+		;u0_a69        8572   104 4358212 265080 __do_sys_+          0 S com.supercell.clashofclans
+	Else
+		$cmd = "set result=$(ps -p|grep """ & $g_sAndroidGamePackage & """ >&2)"
+	EndIf
+
 	Local $output = AndroidAdbSendShellCommand($cmd)
 	Local $error = @error
+	
+	;SetLog("$g_sAndroidGamePackage: " & $g_sAndroidGamePackage)
+	;SetLog("GetAndroidProcessPID StdOut :" & $output)
+
 	SetError(0)
 	If $error = 0 Then
 		SetDebugLog("$g_sAndroidGamePackage: " & $g_sAndroidGamePackage)
@@ -4098,7 +4120,7 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 				; process running
 				If $bForeground = True And $aPkgList[$i - 1][8] <> $CorrectSCHED Then
 					; not foreground
-					If $iRetryCount < 2 Then
+					If $iRetryCount < $iRetryMax Then
 						; retry 2 times
 						Sleep(100)
 						Return GetAndroidProcessPID($sPackage, $bForeground, $iRetryCount + 1)
@@ -4108,15 +4130,76 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 				EndIf
 				Return Int($aPkgList[$i - 1][1])
 			EndIf
+
+			If $iCols = 3 And $aPkgList[$i - 1][$iCols - 1] = $g_sAndroidGamePackage Then ; ps -A
+				;$sDumpsys = AndroidAdbSendShellCommand("dumpsys window windows | grep -E 'mCurrentFocus.*" & $g_sAndroidGamePackage & "'")
+				$sDumpsys = AndroidAdbSendShellCommand("dumpsys window windows | grep -E 'mCurrentFocus'")
+				;SetLog("Dumpsys : " & $sDumpsys)
+
+				If $bForeground = True And StringInStr($sDumpsys, $g_sAndroidGamePackage) = 0 Then
+					; not foreground
+					If $iRetryCount < $iRetryMax Then
+						; retry 2 times
+						Sleep(100)
+						Return GetAndroidProcessPID($sPackage, $bForeground, $iRetryCount + 1)
+					EndIf
+					SetLog("Android process " & $sPackage & " not running in foreground")
+					Return 0
+				EndIf
+				Return Int($aPkgList[$i - 1][1]) ; return PID
+			EndIf
 		Next
 	EndIf
-	If $iRetryCount < 2 Then
+
+	If $iRetryCount < $iRetryMax Then
 		; retry 2 times
 		Sleep(100)
 		Return GetAndroidProcessPID($sPackage, $bForeground, $iRetryCount + 1)
 	EndIf
-	SetDebugLog("Android process " & $sPackage & " not running")
+
+	SetLog("Android process " & $sPackage & " not running")
+	SaveDebugImage("GetAndroidProcessPID")
 	Return SetError($error, 0, 0)
+EndFunc   ;==>GetAndroidProcessPID
+
+Func GetAndroidProcessPID1($sPackage = Default, $bForeground = True, $DEPRECATED = "")
+	Local $iError = 0, $iPid = 0, $sDumpsys = ""
+	For $i = 1 To 3
+		SetDebugLog("[GetAndroidProcessPID][Try: " & $i & "]")
+		If $i <> 1 Then
+			If _Sleep(250) Then
+				Return 0
+			EndIf
+		EndIf
+
+		If AndroidInvalidState() Then
+			$iError = 1
+			ContinueLoop
+		EndIf
+
+		If $sPackage = Default Then $sPackage = $g_sAndroidGamePackage
+
+		$iPid = Number(AndroidAdbSendShellCommand("pidof " & $sPackage))
+		If $iPid > 0 Then
+			SetDebugLog("[GetAndroidProcessPID] $g_sAndroidGamePackage: " & $sPackage)
+			SetDebugLog("[GetAndroidProcessPID] GetAndroidProcessPID StdOut :" & $iPid)
+
+			If $bForeground = False Then
+				$iError = 0
+				ExitLoop
+			EndIf
+
+			$sDumpsys = AndroidAdbSendShellCommand("dumpsys window windows | grep -E 'mCurrentFocus.*" & $sPackage & "'")
+			SetDebugLog("[GetAndroidProcessPID] dumpsys window windows StdOut :" & $sDumpsys)
+
+			If StringInStr($sDumpsys, $sPackage) Then
+				$iError = 0
+				ExitLoop
+			EndIf
+			If $i = 3 Then $iPid = 0
+		EndIf
+	Next
+	Return SetError($iError, 0, $iPid)
 EndFunc   ;==>GetAndroidProcessPID
 
 Func AndroidToFront($hHWndAfter = Default, $sSource = "Unknown")
@@ -4282,7 +4365,9 @@ Func _OpenAdbShell($bRunInitScript = True, $bAdbInstanceShellOptions = True, $bA
 	Local $hWnd = 0
 	Local $hTimer = __TimerInit()
 	Do
-		If $hWnd = 0 Then _Sleep(100, True, False)
+		If $hWnd = 0 Then 
+			If _Sleep(100, True, False) Then Return
+		EndIf
 		Local $winlist = WinList()
 		For $i = 1 To $winlist[0][0]
 			If $winlist[$i][0] <> "" Then
@@ -4456,9 +4541,10 @@ EndFunc   ;==>UpdateAndroidBackgroundMode
 
 Func GetAndroidCodeName($iAPI = $g_iAndroidVersionAPI)
 
+	If $iAPI >= $g_iAndroidpie Then Return "Pie"
 	If $iAPI >= $g_iAndroidNougat Then Return "Nougat"
 	If $iAPI >= $g_iAndroidLollipop Then Return "Lollipop"
-		If $iAPI >= $g_iAndroidKitKat Then Return "KitKat"
+	If $iAPI >= $g_iAndroidKitKat Then Return "KitKat"
 	If $iAPI >= $g_iAndroidJellyBean Then Return "JellyBean"
 
 	SetDebugLog("Unsupported Android API Version: " & $iAPI, $COLOR_ERROR)
@@ -4493,7 +4579,7 @@ Func PullSharedPrefs($sProfile = $g_sProfileCurrentName)
 	Local $iFilesPulled = 0
 
 	If Not $g_sAndroidPicturesPathAvailable Then
-		SetLog("Shard folder in Android not availble, cannot pull shared_prefs", $COLOR_RED)
+		SetLog("Shared folder in Android not available, cannot pull shared_prefs", $COLOR_RED)
 		Return SetError(0, 0, $Result)
 	EndIf
 
@@ -4587,7 +4673,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 	Local $cmdOutput
 
 	If Not $g_sAndroidPicturesPathAvailable Then
-		SetLog("Shard folder in Android not availble, cannot push shared_prefs", $COLOR_RED)
+		SetLog("Shared folder in Android not available, cannot push shared_prefs", $COLOR_RED)
 		Return SetError(0, 0, $Result)
 	EndIf
 
@@ -4629,7 +4715,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 	Local $iFiles = UBound($aNewFiles) - 1
 	Local $iFilesPushed = 0
 
-	_Sleep(1000)
+	If _Sleep(1000) Then Return
 	; use ADB push to transfer files
 	If $g_bPullPushSharedPrefsAbdCommand Then
 		$cmdOutput = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " push """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs"" /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", $process_killed)
@@ -4743,7 +4829,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 		$g_PushedSharedPrefsProfile = $sProfile
 		$g_PushedSharedPrefsProfile_Timer = __TimerInit()
 		If $g_bUpdateSharedPrefs And $g_iAndroidZoomoutMode = 4 Then $g_bAndroidZoomoutModeFallback = True
-		_Sleep(3000)
+		If _Sleep(3000) Then Return
 	Else
 		; something went wrong
 		SetLog("Error pushing shared_prefs of profile " & $sProfile, $COLOR_ERROR)
@@ -4839,7 +4925,7 @@ Func CheckEmuNewVersions()
 		Case "MEmu"
 			$NewVersion = GetVersionNormalized("7.6.6.0")
 		Case "Nox"
-			$NewVersion = GetVersionNormalized("7.0.1.6")
+			$NewVersion = GetVersionNormalized("7.0.5.8")
 		Case Else
 			; diabled of the others
 			$NewVersion = GetVersionNormalized("99.0.0.0")

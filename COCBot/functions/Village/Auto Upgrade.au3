@@ -5,8 +5,8 @@
 ; Parameters ....:
 ; Return values .:
 ; Author ........:
-; Modified ......:
-; Remarks .......: This file is part of MyBotRun. Copyright 2015-2018
+; Modified ......: Moebius14 (08-2023)
+; Remarks .......: This file is part of MyBotRun. Copyright 2015-2023
 ;                  MyBotRun is distributed under the terms of the GNU GPL
 ; Related .......: ---
 ; Link ..........: https://www.mybot.run
@@ -54,12 +54,14 @@ Func _AutoUpgrade()
 
 		; search for ressource images in builders menu, if found, a possible upgrade is available
 		Local $aTmpCoord
-		$aTmpCoord = QuickMIS("CNX", $g_sImgResourceIcon, 310, $g_iNextLineOffset, 450, 390)
+		Local $IsElix = False
+		$aTmpCoord = QuickMIS("CNX", $g_sImgResourceIcon, 310, $g_iNextLineOffset, 450, 360 + $g_iMidOffsetY)
 		_ArraySort($aTmpCoord, 0, 0, 0, 2);sort by Y coord
 		If IsArray($aTmpCoord) And UBound($aTmpCoord) > 0 Then
 			$g_iNextLineOffset = $aTmpCoord[0][2] + 14
 			If QuickMIS("BC1", $g_sImgAUpgradeZero, $aTmpCoord[0][1], $aTmpCoord[0][2] - 8, $aTmpCoord[0][1] + 100, $aTmpCoord[0][2] + 7) Then
 				SetLog("Possible upgrade found !", $COLOR_SUCCESS)
+				If $aTmpCoord[0][0] = "Elix" Then $IsElix = True
 			Else
 				SetLog("Not Enough Ressource, looking next...", $COLOR_INFO)
 				ContinueLoop
@@ -84,7 +86,7 @@ Func _AutoUpgrade()
 		
 		; check if any wrong click by verifying the presence of the Upgrade button (the hammer)
 		$aUpgradeButton = findButton("Upgrade", Default, 1, True)
-		
+
 		If $g_aUpgradeNameLevel[1] = "Town Hall" And $g_aUpgradeNameLevel[2] > 11 Then ;Upgrade THWeapon not Ignored
 			$aTmpUpgradeButton = findButton("THWeapon") ;try to find UpgradeTHWeapon button (swords)
 			If IsArray($aTmpUpgradeButton) And UBound($aTmpUpgradeButton) = 2 Then
@@ -95,10 +97,18 @@ Func _AutoUpgrade()
 				$aUpgradeButton = $aTmpUpgradeButton
 			EndIf
 		Endif
-		
+
 		If Not(IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2) Then
 			SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
 			ContinueLoop
+		EndIf
+
+		;Wall Double Button Case
+		If $g_aUpgradeNameLevel[1] = "Wall" Then
+			If WaitforPixel($aUpgradeButton[0], $aUpgradeButton[1] - 25, $aUpgradeButton[0] + 30, $aUpgradeButton[1] - 16, "FF887F", 20, 2) Or $IsElix Then ; Red On Gold Or Was Elix in Menu
+				If UBound(decodeSingleCoord(FindImageInPlace2("UpgradeButton2", $g_sImgUpgradeBtn2Wall, $aUpgradeButton[0] + 65, $aUpgradeButton[1] - 20, _
+				$aUpgradeButton[0] + 140, $aUpgradeButton[1] + 20, True))) > 1 Then	$aUpgradeButton[0] += 94
+			EndIf
 		EndIf
 
 		; get the name and actual level of upgrade selected, if strings are empty, will exit Auto Upgrade, an error happens
@@ -159,18 +169,37 @@ Func _AutoUpgrade()
 		Switch $g_aUpgradeNameLevel[1]
 			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
 				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 690, 510 + $g_iMidOffsetY, 730, 550 + $g_iMidOffsetY) ; get resource
-				$g_aUpgradeResourceCostDuration[1] = getResourcesBonus(598, 522 + $g_iMidOffsetY) ; get cost
-				$g_aUpgradeResourceCostDuration[2] = getHeroUpgradeTime(578, 465 + $g_iMidOffsetY) ; get duration
+				$g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(598, 522 + $g_iMidOffsetY) ; get cost
+				$g_aUpgradeResourceCostDuration[2] = getHeroUpgradeTime(578, 470 + $g_iMidOffsetY) ; get duration
+				Local $g_Xtype = 598
+				Local $g_Ytype = 522 + $g_iMidOffsetY
 			Case Else
 				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 460, 480 + $g_iMidOffsetY, 500, 520 + $g_iMidOffsetY) ; get resource
-				$g_aUpgradeResourceCostDuration[1] = getResourcesBonus(363, 487 + $g_iMidOffsetY) ; get cost
+				$g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(362, 488 + $g_iMidOffsetY) ; get cost
 				$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(185, 307 + $g_iMidOffsetY) ; get duration
+				Local $g_Xtype = 362
+				Local $g_Ytype = 488 + $g_iMidOffsetY
 		EndSwitch
+		
+		Local $g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[1], 1)
 
 		; if one of the value is empty, there is an error, we must exit Auto Upgrade
 		For $i = 0 To 2
-			If $g_aUpgradeResourceCostDuration[$i] = "" Then
+			If $g_aUpgradeNameLevel[1] = "Wall" And $i = 2 Then ExitLoop ; Wall Case : No Upgrade Time
+			If $g_aUpgradeResourceCostDuration[$i] = "" Or ($i = 1 And ($g_aUpgradeResourceCostDuration[$i] < 1000 Or $g_ReadCorrect <> 0)) Then
+				If $i = 1 Then
+					$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade2($g_Xtype, $g_Ytype)
+					$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
+					If $g_aUpgradeResourceCostDuration[$i] = "" Or $g_aUpgradeResourceCostDuration[$i] < 1000 Or $g_ReadCorrect <> 0 Then
+						$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade1($g_Xtype, $g_Ytype)
+						$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
+						If $g_ReadCorrect <> 0 Then $g_aUpgradeResourceCostDuration[$i] = ""
+					EndIf
+					If $g_aUpgradeResourceCostDuration[$i] <> "" And $g_aUpgradeResourceCostDuration[$i] > 0 Then ContinueLoop
+				EndIf
+				SaveDebugImage("UpgradeReadError_")
 				SetLog("Error when trying to get upgrade details, looking next...", $COLOR_ERROR)
+				ClickAway()
 				ContinueLoop 2
 			EndIf
 		Next
@@ -191,6 +220,7 @@ Func _AutoUpgrade()
 		; check if the resource of the upgrade must be ignored
 		If $bMustIgnoreResource = True Then
 			SetLog("This resource must be ignored, looking next...", $COLOR_WARNING)
+			ClickAway()
 			ContinueLoop
 		EndIf
 
@@ -208,6 +238,7 @@ Func _AutoUpgrade()
 		; if boolean still False, we can't launch upgrade, exiting...
 		If Not $bSufficentResourceToUpgrade Then
 			SetLog("Insufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
+			ClickAway()
 			ContinueLoop
 		EndIf
 		
@@ -262,7 +293,7 @@ Func _AutoUpgrade()
 		Endif
 				
 		SetLog(" - Cost : " & _NumberFormat($g_aUpgradeResourceCostDuration[1]) & " " & $g_aUpgradeResourceCostDuration[0], $COLOR_SUCCESS)
-		SetLog(" - Duration : " & $g_aUpgradeResourceCostDuration[2], $COLOR_SUCCESS)
+		If $g_aUpgradeNameLevel[1] <> "Wall" Then SetLog(" - Duration : " & $g_aUpgradeResourceCostDuration[2], $COLOR_SUCCESS)
 
 		_GUICtrlEdit_AppendText($g_hTxtAutoUpgradeLog, _
 				@CRLF & _NowDate() & " " & _NowTime() & _

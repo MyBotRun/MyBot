@@ -28,11 +28,20 @@ Func CheckAndroidRebootCondition($bRebootAndroid = True, $bLogOnly = False)
 	If $g_hAndroidLaunchTime = 0 Then InitAndroidRebootCondition(True) ; Android was already launched, start time now
 
 	; check for additional reboot conditions
-	If $g_bGfxError Then
-		$g_bGfxError = False
-		SetLog("Reboot " & $g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") due to detected Gfx Errors")
-		Return True
-	EndIF
+	Select
+		Case $g_bGfxError
+			$g_bGfxError = False
+			SetLog("Reboot " & $g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") due to detected Gfx Errors")
+			Return True
+		Case $g_bNetworkError
+			$g_bNetworkError = False
+			SetLog("Reboot " & $g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") due to detected Network Error")
+			Return True
+		Case $g_bErrorWindow
+			$g_bErrorWindow = False
+			SetLog("Reboot " & $g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") due to detected Error Window")
+			Return True
+	EndSelect
 
 	; check only for timeout reboot condition
 	If $g_iAndroidRebootHours <= 0 Then Return False

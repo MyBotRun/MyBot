@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: chalicucu (6/2016), demen (4/2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -401,7 +401,6 @@ Func SwitchCOCAcc($NextAccount)
 	;	EndIf
 	;EndIf
 	CheckObstacles()
-	If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 
 	SetLog("Switch Account Load TownLevel : " & $g_iTownHallLevel)
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
@@ -674,7 +673,7 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
 Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
-	Local $sAccountDiamond = GetDiamondFromRect("520,353,555,732") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sAccountDiamond = GetDiamondFromRect("520,353,555,725") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
     Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
@@ -740,12 +739,14 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 
 				; list all account see-able after drag on debug chat
 				Local $iProfiles = UBound($g_asProfileName)
+				
 				For $j = 0 To UBound($aCoordinates) - 1
 					SetDebugLog("[" & $j + 1 & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
 					If $g_bDebugSetlog Then SetSwitchAccLog("[" & $j + 1 & "] A/C coord: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " Profile: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
 				Next
-
+				
 				SetLog("   " & $iStep & ". Click Account [" & $NextAccount + 1 & "] Supercell ID with Profile: " & $g_asProfileName[$NextAccount])
+								
 				Click($aCoordinates[$iIndexSCID][0], $aCoordinates[$iIndexSCID][1], 1)
 				If _Sleep(750) Then Return "Exit"
 				SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
@@ -852,6 +853,7 @@ Func DisableGUI_AfterLoadNewProfile()
 	$g_bGUIControlDisabled = False
 EndFunc   ;==>DisableGUI_AfterLoadNewProfile
 
+
 Func aquireSwitchAccountMutex($iSwitchAccountGroup = $g_iCmbSwitchAcc, $bReturnOnlyMutex = False, $bShowMsgBox = False)
 	Local $sMsg = GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Msg_SwitchAccounts_InUse", "My Bot with Switch Accounts Group %s is already in use or active.", $iSwitchAccountGroup)
 	If $iSwitchAccountGroup Then
@@ -940,93 +942,69 @@ Func CheckGoogleSelectAccount($bSelectFirst = True)
 	Return $bResult
 EndFunc   ;==>CheckGoogleSelectAccount
 
-; Checks if "Log in with Supercell ID" boot screen shows up and closes CoC and pushes shared_prefs to fix
-Func CheckLoginWithSupercellID()
+; Checks if "Log in with Supercell ID" boot screen shows up and closes CoC and pushes shared_prefs to fix Or Click on Current account if SCID Connect Mode
+Func CheckLoginWithSupercellIDScreen()
 
 	Local $bResult = False
 
 	If Not $g_bRunState Then Return
 
-	; Account List check be there, validate with imgloc
-	If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "355,705,125,30", False))) > 1 Then
-		; Google Account selection found
-		SetLog("Verified Log in with Supercell ID boot screen")
+	; "Log in with Supercell ID" check be there, validate with imgloc
+	Local $aiLogin = decodeSingleCoord(FindImageInPlace2("LoginWithSupercellID", $g_sImgLoginWithSupercellID, 100, 595 + $g_iBottomOffsetY, 425, 655 + $g_iBottomOffsetY, False))
 
-		If HaveSharedPrefs($g_sProfileCurrentName) Then
-			SetLog("Close CoC and push shared_prefs for Supercell ID screen")
-			PushSharedPrefs()
-			Return True
-		Else
-			If $g_bChkSuperCellID And ProfileSwitchAccountEnabled() Then ; select the correct account matching with current profile
-				Local $NextAccount = 0
-				$bResult = True
-				For $i = 0 To $g_iTotalAcc
-					If $g_abAccountNo[$i] = True And SwitchAccountEnabled($i) And $g_asProfileName[$i] = $g_sProfileCurrentName Then $NextAccount = $i
-				Next
+	If IsArray($aiLogin) And Ubound($aiLogin) = 2 Then
+		Local $iAccount = 0 ; default first account on list
 
-				Click($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], 1, 0, "Click Log in with SC_ID")
+		SetLog("Verified Log in with Supercell ID boot screen for login")
+
+		If $g_bChkSharedPrefs Then
+			If HaveSharedPrefs($g_sProfileCurrentName) Then
+				SetLog("Close CoC and push shared_prefs for Supercell ID screen")
+				PushSharedPrefs()
+				Return True
+			Else
+				SetLog("Shared_prefs not pulled.", $COLOR_ERROR)
+				SetLog("Please pull shared_prefs in tab Bot/Profiles.", $COLOR_INFO)
+				Click($aiLogin[0], $aiLogin[1], 1, 0, "Click Log in with SC_ID")
 				If _Sleep(2000) Then Return
-
-				Switch SwitchCOCAcc_ClickAccountSCID($bResult, $NextAccount, 1)
+				$bResult = True
+				If ProfileSwitchAccountEnabled() Then
+					$iAccount = _ArraySearch($g_asProfileName, $g_sProfileCurrentName)
+				Else
+					If $g_bOnlySCIDAccounts Then $iAccount = $g_iWhatSCIDAccount2Use
+				EndIf
+				Switch SwitchCOCAcc_ClickAccountSCID($bResult, $iAccount, 1, False)
 					Case "OK"
 						; all good
+						Return True
 					Case "Error"
 						; some problem
-						Return
 					Case "Exit"
 						; no $g_bRunState
-						Return
 				EndSwitch
-			Else
-				SetLog("Cannot close Supercell ID screen, shared_prefs not pulled.", $COLOR_ERROR)
-				SetLog("Please resolve Supercell ID screen manually, close CoC", $COLOR_INFO)
-				SetLog("and then pull shared_prefs in tab Bot/Profiles.", $COLOR_INFO)
 			EndIf
 		EndIf
 
-	Else
-		SetDebugLog("Log in with Supercell ID boot screen not verified")
+		If $g_bChkSuperCellID Then
+			Click($aiLogin[0], $aiLogin[1], 1, 0, "Click Log in with SC_ID")
+			If _Sleep(2000) Then Return
+			$bResult = True
+			If ProfileSwitchAccountEnabled() Then
+				$iAccount = _ArraySearch($g_asProfileName, $g_sProfileCurrentName)
+			Else
+				If $g_bOnlySCIDAccounts Then $iAccount = $g_iWhatSCIDAccount2Use
+			EndIf
+			Switch SwitchCOCAcc_ClickAccountSCID($bResult, $iAccount, 1, False)
+				Case "OK"
+					; all good
+					Return True
+				Case "Error"
+					; some problem
+				Case "Exit"
+					; no $g_bRunState
+			EndSwitch
+		EndIf
 	EndIf
-
-	Return $bResult
-EndFunc   ;==>CheckLoginWithSupercellID
-
-Func CheckLoginWithSupercellIDScreen()
-
-	Local $bResult = False
-	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
-	Local $iAccount = 0 ; default first account on list
-	
-	If $g_bOnlySCIDAccounts Then $iAccount = $g_iWhatSCIDAccount2Use
-
-	If $g_bChkSuperCellID And ProfileSwitchAccountEnabled() Then
-		$iAccount = $g_iCurAccount
-	EndIf
-
-	; Account List check be there, validate with imgloc
-	;If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "318,678(125,30)", False))) > 1 Then
-	Local $aiLogin = decodeSingleCoord(FindImageInPlace2("LoginWithSupercellID", $g_sImgLoginWithSupercellID, 100, 595 + $g_iBottomOffsetY, 425, 655 + $g_iBottomOffsetY, False))
-		
-	If IsArray($aiLogin) And Ubound($aiLogin) = 2 Then
-		SetLog("Verified Log in with Supercell ID boot screen for login")
-
-		Click($aiLogin[0], $aiLogin[1], 1, 0, "Click Log in with SC_ID")
-		If _Sleep(2000) Then Return
-
-		$bResult = True
-		Switch SwitchCOCAcc_ClickAccountSCID($bResult, $iAccount, 1, False)
-			Case "OK"
-				; all good
-				Return True
-			Case "Error"
-				; some problem
-			Case "Exit"
-				; no $g_bRunState
-		EndSwitch
-	Else
-		SetDebugLog("Log in with Supercell ID boot screen not verified for login")
-	EndIf
-
 	Return False
 EndFunc   ;==>CheckLoginWithSupercellIDScreen
 
@@ -1166,7 +1144,14 @@ Func IsSCIDAccComplete($iAccounts = 3)
 
 				Local $aiVillageNameCoord  = decodeSingleCoord(findImage("IsSCIDAccComplete", $sProfileFolder & $filename, GetDiamondFromArray($aiSearchArea), 1, True))
 
-				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 2 Then
+;Arch debugging work
+;				If Not IsArray($aiVillageNameCoord) Then
+;					SetDebugLog("Arch: Is not an array", $COLOR_ERROR)
+;				EndIf
+;				SetDebugLog("Arch: UBoundRows is " & UBound($aiVillageNameCoord, $UBOUND_ROWS), $COLOR_ERROR)
+
+;Arch was <2.  Array array bound always 1.				
+				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 1 Then
 					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - missing!")
 					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - missing!")
 					$bSaveImage = True

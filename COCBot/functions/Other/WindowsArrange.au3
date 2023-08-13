@@ -7,7 +7,7 @@
 ; Author ........: Sardo (2015-06) (2015-09)
 ; Modified ......:
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -64,7 +64,7 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 						$bAdjusted = $AndroidX <> $x Or $AndroidY <> $y
 						If $bAdjusted Then
 							WinMove($g_hAndroidWindow, "", $x, $y)
-							_Sleep($DELAYWINDOWSARRANGE1, True, False)
+							If _Sleep($DELAYWINDOWSARRANGE1, True, False) Then Return
 						EndIf
 						$bAdjusted = $bAdjusted = True Or $BotX <> $AndroidW + $offsetX * 2 Or $BotY <> $y
 						If $bAdjusted Then WinMove($g_hFrmBot, "", $x + $AndroidW + $offsetX, $y)
@@ -80,7 +80,7 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 						$bAdjusted = $BotX <> $x Or $BotY <> $y
 						If $bAdjusted Then
 							WinMove($g_hFrmBot, "", $x, $y)
-							_Sleep($DELAYWINDOWSARRANGE1, True, False)
+							If _Sleep($DELAYWINDOWSARRANGE1, True, False) Then Return
 						EndIf
 						$bAdjusted = $bAdjusted Or $AndroidX <> $x + $BotW + $offsetX Or $AndroidY <> $y
 						If $bAdjusted Then WinMove($g_hAndroidWindow, "", $x + $BotW + $offsetX, $y)
@@ -108,7 +108,7 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 			EndIf
 			If $bAdjusted = True Then
 				SetDebugLog("WindowsArrange: " & $position & ", offsetX=" & $offsetX & ", offsetY=" & $offsetY & ", X=" & $x & ", Y=" & $y)
-				_Sleep($DELAYWINDOWSARRANGE1, True, False)
+				If _Sleep($DELAYWINDOWSARRANGE1, True, False) Then Return
 			EndIf
 		EndIf
 	EndIf
@@ -339,7 +339,7 @@ EndFunc   ;==>WinIsChildOf
 ; Return values .: True if window was moved, False otherwise
 ; Author ........: CodeSlinger69
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

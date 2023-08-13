@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run Team
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -134,36 +134,6 @@ Func chkDisposeWindows()
 		GUICtrlSetState($g_hTxtAlignOffsetY, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkDisposeWindows
-
-Func chkSinglePBTForced()
-	If GUICtrlRead($g_hChkSinglePBTForced) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hTxtSinglePBTimeForced, $GUI_ENABLE)
-		GUICtrlSetState($g_hTxtPBTimeForcedExit, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($g_hTxtSinglePBTimeForced, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtPBTimeForcedExit, $GUI_DISABLE)
-	EndIf
-	txtSinglePBTimeForced()
-EndFunc   ;==>chkSinglePBTForced
-
-Func txtSinglePBTimeForced()
-	Switch Int(GUICtrlRead($g_hTxtSinglePBTimeForced))
-		Case 0 To 15
-			GUICtrlSetBkColor($g_hTxtSinglePBTimeForced, $COLOR_ERROR)
-		Case 16
-			GUICtrlSetBkColor($g_hTxtSinglePBTimeForced, $COLOR_YELLOW)
-		Case 17 To 999
-			GUICtrlSetBkColor($g_hTxtSinglePBTimeForced, $COLOR_MONEYGREEN)
-	EndSwitch
-	Switch Int(GUICtrlRead($g_hTxtPBTimeForcedExit))
-		Case 0 To 11
-			GUICtrlSetBkColor($g_hTxtPBTimeForcedExit, $COLOR_ERROR)
-		Case 12 To 14
-			GUICtrlSetBkColor($g_hTxtPBTimeForcedExit, $COLOR_YELLOW)
-		Case 15 To 999
-			GUICtrlSetBkColor($g_hTxtPBTimeForcedExit, $COLOR_MONEYGREEN)
-	EndSwitch
-EndFunc   ;==>txtSinglePBTimeForced
 
 Func chkAutoResume()
 	GUICtrlSetState($g_hTxtAutoResumeTime, GUICtrlRead($g_hChkAutoResume) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
@@ -542,13 +512,13 @@ Func btnTestClickDrag()
 	ClickDrag(Int($asCoor[1]), Int($asCoor[2]), Int($asCoor[3]), Int($asCoor[4]))
 
 	SetLog("Sleep 3 seconds...", $COLOR_DEBUG)
-	_Sleep(3000, True, False)
+	If _Sleep(3000, True, False) Then Return
 
 	SetLog("Save the image", $COLOR_DEBUG)
 	SaveDebugImage("TestClickDrag", Default, Default, "_" & $asCoor[1] & "x." & $asCoor[2] & "y." & $asCoor[3] & "x." & $asCoor[4] & "y_")
 
 	SetLog("Sleep 1 seconds", $COLOR_DEBUG)
-	_Sleep(1000, True, False)
+	If _Sleep(1000, True, False) Then Return
 
 	SetLog("Drag back", $COLOR_DEBUG)
 	ClickDrag(Int($asCoor[3]), Int($asCoor[4]), Int($asCoor[1]), Int($asCoor[2]))
@@ -785,7 +755,7 @@ Func btnTestGetLocationBuilding()
 
 	SetLog("Testing GetLocationBuilding() with all buildings", $COLOR_INFO)
 
-	For $b = $eBldgGoldS To $eBldgScatter
+	For $b = $eBldgGoldS To $eBldgMonolith
 		If $b = $eBldgDarkS Then ContinueLoop ; skip dark elixir as images not available
 		$aResult = GetLocationBuilding($b, $g_iSearchTH, False)
 		If $aResult = -1 Then SetLog("Monkey ate bad banana: " & "GetLocationBuilding " & $g_sBldgNames[$b], $COLOR_ERROR)
@@ -903,6 +873,17 @@ Func btnTestGetLocationBuildingImage()
 			Next
 		EndIf
 	EndIf
+	
+	; - DRAW Monolith -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgMonolith & "_LOCATION") Then
+		$g_aiCSVMonolithPos = $g_oBldgAttackInfo.item($eBldgMonolith & "_LOCATION")
+		If IsArray($g_aiCSVMonolithPos) Then
+			For $i = 0 To UBound($g_aiCSVMonolithPos) - 1
+				$pixel = $g_aiCSVMonolithPos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 15, $pixel[1] - 15, 30, 30, $hPenPaleBlue)
+			Next
+		EndIf
+	EndIf	
 
 	; - DRAW Wizard Towers -------------------------------------------------------------------
 	If $g_oBldgAttackInfo.exists($eBldgWizTower & "_LOCATION") Then

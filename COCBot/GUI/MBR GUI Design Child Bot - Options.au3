@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,7 +23,7 @@ Global $g_hTxtGlobalActiveBotsAllowed = 0, $g_hTxtGlobalThreads = 0, $g_hTxtThre
 ;Global $g_hChkUpdatingWhenMinimized = 0
 Global $g_hChkBotCustomTitleBarClick = 0, $g_hChkBotAutoSlideClick = 0, $g_hChkHideWhenMinimized = 0, $g_hChkUseRandomClick = 0, $g_hChkScreenshotType = 0, _
 	   $g_hChkScreenshotHideName = 0, $g_hTxtTimeAnotherDevice = 0
-Global $g_hChkSinglePBTForced = 0, $g_hTxtSinglePBTimeForced = 0, $g_hTxtPBTimeForcedExit = 0, $g_hChkFixClanCastle = 0, $g_hChkAutoResume = 0, $g_hTxtAutoResumeTime = 0, $g_hChkDisableNotifications = 0
+Global $g_hChkFixClanCastle = 0, $g_hChkAutoResume = 0, $g_hTxtAutoResumeTime = 0, $g_hChkDisableNotifications = 0
 Global $g_hChkSqlite = 0
 Global $g_hBtnExportData = 0
 
@@ -223,29 +223,7 @@ Func CreateBotOptions()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$y += 51
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_07", "Other Options"), $x - 20, $y - 20, 225, 122)
-		$g_hChkSinglePBTForced = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkSinglePBTForced", "Force Single PB logoff"), $x, $y, -1, -1)
-			GUICtrlSetOnEvent(-1, "chkSinglePBTForced")
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkSinglePBTForced_Info_01", "This forces bot to exit CoC only one time prior to normal start of PB"))
-		$g_hTxtSinglePBTimeForced = GUICtrlCreateInput("18", $x + 132, $y + 2, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "TxtSinglePBTimeForced_Info_01", "Type in number of minutes to keep CoC closed. Set to 15 minimum to reset PB timer!"))
-			GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
-			GUICtrlSetLimit(-1, 3)
-			GUICtrlSetState(-1, $GUI_DISABLE)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "min.", -1), $x + 167, $y + 4, -1, -1)
-
-	$y += 20
-		GUICtrlCreateLabel( GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblPBTimeForcedExit", "Subtract time for early PB exit"), $x - 10, $y + 3)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblPBTimeForcedExit_Info_01", "Type in number of minutes to quit CoC early! Setting below 10 minutes may not function!")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hTxtPBTimeForcedExit = GUICtrlCreateInput("16", $x + 132, $y, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
-			GUICtrlSetLimit(-1, 3)
-			GUICtrlSetState(-1, $GUI_DISABLE)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "min.", -1), $x + 167, $y + 3, -1, -1)
-
-	$y += 20
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_07", "Other Options"), $x - 20, $y - 20, 225, 100)
 		$g_hChkFixClanCastle = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkFixClanCastle", "Force Clan Castle Detection"), $x, $y + 2, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkFixClanCastle_Info_01", "If clan Castle it is undetected and it is NOT placed in the last slot, force bot to consider the undetected slot as Clan Castle"))
 			GUICtrlSetState(-1, $GUI_UNCHECKED)

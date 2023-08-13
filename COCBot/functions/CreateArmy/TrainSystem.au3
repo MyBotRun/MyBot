@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Mr.Viper(10-2016), ProMac(10-2016), CodeSlinger69 (01-2018)
 ; Modified ......: ProMac (11-2016), Boju (11-2016), MR.ViPER (12-2016), CodeSlinger69 (01-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -46,7 +46,6 @@ Func TrainSystem()
 
 	EndGainCost("Train")
 
-	checkAttackDisable($g_iTaBChkIdle) ; Check for Take-A-Break after opening train page
 EndFunc   ;==>TrainSystem
 
 Func TrainCustomArmy()
@@ -255,7 +254,7 @@ Func TrainUsingWhatToTrain($rWTT, $bQueue = $g_bIsFullArmywithHeroesAndSpells)
 			If IsSpellToBrew($rWTT[$i][0]) Then ContinueLoop
 			Local $iTroopIndex = TroopIndexLookup($rWTT[$i][0], "TrainUsingWhatToTrain()")
 
-			If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
+			If $iTroopIndex >= $eBarb And $iTroopIndex <= $eAppWard Then
 				Local $NeededSpace = $g_aiTroopSpace[$iTroopIndex] * $rWTT[$i][1]
 			EndIf
 
@@ -264,7 +263,7 @@ Func TrainUsingWhatToTrain($rWTT, $bQueue = $g_bIsFullArmywithHeroesAndSpells)
 
 
 			If $NeededSpace > $LeftSpace Then
-				If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
+				If $iTroopIndex >= $eBarb And $iTroopIndex <= $eAppWard Then
 					$rWTT[$i][1] = Int($LeftSpace / $g_aiTroopSpace[$iTroopIndex])
 				EndIf
 			EndIf
@@ -272,11 +271,7 @@ Func TrainUsingWhatToTrain($rWTT, $bQueue = $g_bIsFullArmywithHeroesAndSpells)
 			If $rWTT[$i][1] > 0 Then
 				If Not DragIfNeeded($rWTT[$i][0]) Then Return False
 
-				If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
-					Local $sTroopName = ($rWTT[$i][1] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
-				EndIf
-
-				If $iTroopIndex >= $eBarb and $iTroopIndex <= $eHunt Then
+				If $iTroopIndex >= $eBarb And $iTroopIndex <= $eAppWard Then
 					Local $sTroopName = ($rWTT[$i][1] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
 				EndIf
 
@@ -334,26 +329,30 @@ Func DragIfNeeded($Troop)
 
 	If Not $g_bRunState Then Return
 	Local $bCheckPixel = False
+	Local $iIndex = TroopIndexLookup($Troop, "DragIfNeeded")
+	Local $bDrag = False
 
-	If IsNextPageTroop($Troop) Then
+	If $iIndex > $g_iNextPageTroop Then $bDrag = True ;Drag if Troops is on Right side from $g_iNextPageTroop
+
+	If $bDrag Then
 		If _ColorCheck(_GetPixelColor(834, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
 		If $g_bDebugSetlogTrain Then SetLog("DragIfNeeded Dark Troops: " & $bCheckPixel)
 		For $i = 1 To 4
 			If Not $bCheckPixel Then
-				ClickDrag(715, 445 + $g_iMidOffsetY, 120, 445 + $g_iMidOffsetY, 2000)
-				If _Sleep(1500) Then Return
-				If _ColorCheck(_GetPixelColor(834, 403, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
+				ClickDrag(780, 445 + $g_iMidOffsetY, 90, 445 + $g_iMidOffsetY)
+				If _Sleep(2000) Then Return
+				If _ColorCheck(_GetPixelColor(834, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
 			Else
 				Return True
 			EndIf
 		Next
 	Else
-		If _ColorCheck(_GetPixelColor(22, 373 + + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
+		If _ColorCheck(_GetPixelColor(22, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
 		If $g_bDebugSetlogTrain Then SetLog("DragIfNeeded Normal Troops: " & $bCheckPixel)
 		For $i = 1 To 4
 			If Not $bCheckPixel Then
-				ClickDrag(120, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000)
-				If _Sleep(1500) Then Return
+				ClickDrag(90, 445 + $g_iMidOffsetY, 780, 445 + $g_iMidOffsetY)
+				If _Sleep(2000) Then Return
 				If _ColorCheck(_GetPixelColor(22, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
 			Else
 				Return True
@@ -382,12 +381,6 @@ Func DoWhatToTrainContainSpell($rWTT)
 	Return False
 EndFunc   ;==>DoWhatToTrainContainSpell
 
-Func IsNextPageTroop($Troop)
-	Local $iIndex = TroopIndexLookup($Troop, "IsNextPageTroop")
-	If $iIndex >= $g_iNextPageTroop And $iIndex <= $eHunt Then Return True
-	Return False
-EndFunc
-
 Func IsElixirTroop($Troop)
 	Local $iIndex = TroopIndexLookup($Troop, "IsElixirTroop")
 	If $iIndex >= $eBarb And $iIndex <= $eETitan Then Return True
@@ -396,7 +389,7 @@ EndFunc   ;==>IsElixirTroop
 
 Func IsDarkTroop($Troop)
 	Local $iIndex = TroopIndexLookup($Troop, "IsDarkTroop")
-	If $iIndex >= $eMini And $iIndex <= $eHunt Then Return True
+	If $iIndex >= $eMini And $iIndex <= $eAppWard Then Return True
 	Return False
 EndFunc   ;==>IsDarkTroop
 
@@ -667,7 +660,7 @@ Func GetSlotNumber($bSpells = False)
 		Case $bSpells = False
 			Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eSDrag, _
 					$eYeti, $eRDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eSMine, $eEDrag, $eETitan, _
-					$eMini, $eSMini, $eHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eSBowl, $eIceG, $eHunt] ; Set Order of troop display in Army Tab
+					$eMini, $eSMini, $eHogs, $eSHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eSBowl, $eIceG, $eHunt, $eAppWard] ; Set Order of troop display in Army Tab
 
 			Local $allCurTroops[UBound($Orders)]
 
@@ -1120,20 +1113,18 @@ Func DeleteQueued($sArmyTypeQueued, $iOffsetQueued = 802)
 EndFunc   ;==>DeleteQueued
 
 Func MakingDonatedTroops($sType = "All")
-	Local $avDefaultTroopGroup[$eTroopCount][6]
+	Local $avDefaultTroopGroup[$eTroopCount][5]
 	For $i = 0 To $eTroopCount - 1
 		$avDefaultTroopGroup[$i][0] = $g_asTroopShortNames[$i]
 		$avDefaultTroopGroup[$i][1] = $i
 		$avDefaultTroopGroup[$i][2] = $g_aiTroopSpace[$i]
 		$avDefaultTroopGroup[$i][3] = $g_aiTroopTrainTime[$i]
 		$avDefaultTroopGroup[$i][4] = 0
-		$avDefaultTroopGroup[$i][5] = $i >= $g_iNextPageTroop ? "d" : "e"
 	Next
 
-	; notes $avDefaultTroopGroup[19][5]
-	; notes $avDefaultTroopGroup[19][0] = TroopName | [1] = TroopNamePosition | [2] = TroopHeight | [3] = Times | [4] = qty | [5] = marker for DarkTroop or ElixerTroop]
-	; notes ClickDrag(616, 445 + $g_iMidOffsetY, 400, 445 + $g_iMidOffsetY, 2000) ; Click drag for dark Troops
-	; notes	ClickDrag(400, 445 + $g_iMidOffsetY, 616, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
+	; notes $avDefaultTroopGroup[$i][5]
+	; notes $avDefaultTroopGroup[$i][0] = TroopName | [1] = TroopNamePosition | [2] = TroopHeight | [3] = Times | [4] = qty]
+	; notes We'll use now DragIfNeeded($avDefaultTroopGroup[$i][0]) ; Click drag if needed for Troops Type
 	; notes $RemainTrainSpace[0] = Current Army  | [1] = Total Army Capacity  | [2] = Remain Space for the current Army
 
 	Local $RemainTrainSpace
@@ -1163,7 +1154,7 @@ Func MakingDonatedTroops($sType = "All")
 
 	SetLog("  making donated troops", $COLOR_ACTION1)
 	If $areThereDonTroop > 0 Then
-		; Load $g_aiDonateTroops[$i] Values into $avDefaultTroopGroup[19][5]
+		; Load $g_aiDonateTroops[$i] Values into $avDefaultTroopGroup[$i][4]
 		For $i = 0 To UBound($avDefaultTroopGroup) - 1
 			For $j = 0 To $eTroopCount - 1
 				If $g_asTroopShortNames[$j] = $avDefaultTroopGroup[$i][0] Then
@@ -1186,17 +1177,9 @@ Func MakingDonatedTroops($sType = "All")
 				Local $iTroopIndex = TroopIndexLookup($avDefaultTroopGroup[$i][0], "MakingDonatedTroops")
 
 				If $avDefaultTroopGroup[$i][2] * $avDefaultTroopGroup[$i][4] <= $RemainTrainSpace[2] Then ; Troopheight x donate troop qty <= avaible train space
-					;Local $pos = GetTrainPos(TroopIndexLookup($avDefaultTroopGroup[$i][0]))
 					Local $howMuch = $avDefaultTroopGroup[$i][4]
-					If $avDefaultTroopGroup[$i][5] = "e" Then
-						TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
-						;PureClick($pos[0], $pos[1], $howMuch, 500)
-					Else
-						ClickDrag(715, 445 + $g_iMidOffsetY, 120, 445 + $g_iMidOffsetY, 2000) ; Click drag for dark Troops
-						TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
-						;PureClick($pos[0], $pos[1], $howMuch, 500)
-						ClickDrag(120, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
-					EndIf
+					DragIfNeeded($avDefaultTroopGroup[$i][0])
+					TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
 					If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 					Local $sTroopName = ($avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
 					SetLog(" - Trained " & $avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)
@@ -1213,18 +1196,9 @@ Func MakingDonatedTroops($sType = "All")
 							ExitLoop (2) ;
 						EndIf
 						If $avDefaultTroopGroup[$i][2] <= $RemainTrainSpace[2] And $avDefaultTroopGroup[$i][4] > 0 Then
-							;TrainIt(TroopIndexLookup($g_asTroopShortNames[$i]), 1, $g_iTrainClickDelay)
-							;Local $pos = GetTrainPos(TroopIndexLookup($avDefaultTroopGroup[$i][0]))
 							Local $howMuch = 1
-							If $iTroopIndex >= $eBarb And $iTroopIndex <= $eMine Then ; elixir troop
-								TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
-								;PureClick($pos[0], $pos[1], $howMuch, 500)
-							Else ; dark elixir troop
-								ClickDrag(715, 445 + $g_iMidOffsetY, 220, 445 + $g_iMidOffsetY, 2000) ; Click drag for dark Troops
-								TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
-								;PureClick($pos[0], $pos[1], $howMuch, 500)
-								ClickDrag(220, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
-							EndIf
+							DragIfNeeded($avDefaultTroopGroup[$i][0])
+							TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
 							If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 							Local $sTroopName = ($avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
 							SetLog(" - Trained " & $avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)

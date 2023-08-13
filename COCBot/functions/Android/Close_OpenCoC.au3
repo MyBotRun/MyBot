@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: The Master (06-2015)
 ; Modified ......: cosote (12-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -31,7 +31,7 @@ Func CloseCoC($ReOpenCoC = False, $bCheckRunState = True)
 	;AndroidHomeButton()
 	AndroidAdbSendShellCommand("am force-stop " & $g_sAndroidGamePackage, Default, Default, False)
 	ResetAndroidProcess()
-	_Sleep($DELAYCLOSEOPEN3000)
+	If _Sleep($DELAYCLOSEOPEN3000) Then Return
 	If $bCheckRunState And Not $g_bRunState Then Return FuncReturn()
 	If $ReOpenCoC Then
 		OpenCoC()
@@ -48,7 +48,7 @@ EndFunc   ;==>CloseCoC
 ; Return values .: None
 ; Author ........: The Master (2015)
 ; Modified ......: cosote (Dec 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -80,7 +80,7 @@ EndFunc   ;==>OpenCoC
 ; Return values .: None
 ; Author ........: KnowJack (Aug 2015)
 ; Modified ......: TheMaster (2015), cosote (Dec 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -141,7 +141,7 @@ EndFunc   ;==>_WaitnOpenCoC
 ; Return values .: None
 ; Author ........: MonkeyHunter (05-2016), MMHK (11-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), Boju (11-2016), MR.ViPER (11-2016), CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -171,20 +171,13 @@ EndFunc   ;==>lblTotalCountTroop1
 Func lblTotalCountTroop2()
 	; Calculate time for troops
 	Local $TotalTotalTimeTroop = 0
-    Local $NbrOfBarrack = 4 ; Elixir Barrack
-
-	For $i = $eTroopBarbarian To $eTroopHeadhunter
-		If $i > $eTroopElectroTitan Then $NbrOfBarrack = 2 ; Dark Elixir Barrack
-		Local $NbrOfTroop = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$i])
-		If $NbrOfTroop > 0 Then
-			$TotalTotalTimeTroop += $NbrOfTroop * ($g_aiTroopTrainTime[$i] / $NbrOfBarrack)
-		EndIf
+	
+	For $i = 0 To $eTroopCount - 1
+		$TotalTotalTimeTroop += $g_aiArmyCustomTroops[$i] * $g_aiTroopTrainTime[$i]
 	Next
 
 	$TotalTotalTimeTroop = CalculTimeTo($TotalTotalTimeTroop)
 	GUICtrlSetData($g_hLblTotalTimeCamp, $TotalTotalTimeTroop)
-
-	;CalCostCamp()
 EndFunc   ;==>lblTotalCountTroop2
 
 Func lblTotalCountSpell2()

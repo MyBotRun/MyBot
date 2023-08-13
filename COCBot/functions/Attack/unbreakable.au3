@@ -6,7 +6,7 @@
 ; Return values .: False if regular farming is needed to refill storage
 ; Author ........: KnowJack (07-2015)
 ; Modified ......: Sardo (08-2015), MonkeyHunter (12-2015)(6-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -107,8 +107,7 @@ Func Unbreakable()
 	
 	$iTime = Number($g_iUnbrkWait)
 	If $iTime < 1 Then $iTime = 1 ;error check user time input
-	Local Const $iGracePeriodTime = 5 ; 5 minutes for server to acknowledge log off.
-	$iTime = ($iTime + $iGracePeriodTime) * 60 * 1000 ; add server grace time and convert to milliseconds
+	$iTime = $iTime * 60 * 1000 ; convert to milliseconds
 
 	WaitnOpenCoC($iTime, False) ;Tell ClosenOpenCoC False to not cleanup windows
 

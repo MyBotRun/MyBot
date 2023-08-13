@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run team
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -388,29 +388,39 @@ Func btnResetDistributor()
 	$g_bRunState = True
 	While 1
 		If _Sleep(500) Then Return ; add small delay before display message window
-
-			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
-			Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Reset_Distributor_info", "Click OK to Reset Game Distributor,") & @CRLF & @CRLF & _
-					GetTranslatedFileIni("MBR Popups", "Bot_will_exit", "NOTE =>> Bot will exit and need to be restarted when complete") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", "Or Click Cancel to exit") & @CRLF
-			Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Reset_Game_Distributor_Info", "Delete Game Distributor Infomation ?"), $stext, 120)
+		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
+		Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Reset_Distributor_info", "Click Continue to Reset and Select Game Distributor,") & @CRLF & @CRLF & _
+				GetTranslatedFileIni("MBR Popups", "Bot_will_exit", "NOTE =>> Bot will exit and need to be restarted when complete") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", "Or Click Cancel to exit") & @CRLF
+		Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Continue_Cancel", "Continue|Cancel"), GetTranslatedFileIni("MBR Popups", "Game_Distributor_Info", "Game Distributor Selection"), $stext, 120)
+		If $g_bDebugSetlog Then SetDebugLog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
+		If $MsgBox = 1 Then
+			Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Choice_Game_Distributor_Info", "Choose Game Distributor Now") & @CRLF
+			Local $MsgBox = _ExtMsgBox(0, "Google|Amazon", GetTranslatedFileIni("MBR Popups", "Game_Distributor_Info", -1), $stext, 120)
 			If $g_bDebugSetlog Then SetDebugLog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
 			If $MsgBox = 1 Then
-				Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Sure_Game_Distributor_Info", "Are you 100% sure you want to reset Game Distributor information ?") & @CRLF & @CRLF & _
-						GetTranslatedFileIni("MBR Popups", "Reset_then_restart_bot", "Click OK to Reset and then restart the bot (manually)") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", -1) & @CRLF
-				Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", -1), GetTranslatedFileIni("MBR Popups", "Reset_Game_Distributor_Info", -1), $stext, 120)
-				If $g_bDebugSetlog Then SetDebugLog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
-				If $MsgBox = 1 Then
-					$g_sAndroidGameDistributor = "Amazon" ; Default CoC Game Distributor, loaded from config.ini
-					$g_sAndroidGamePackage = "com.supercell.clashofclans.amazon" ; Default CoC Game Package, loaded from config.ini
-					$g_sAndroidGameClass = "com.supercell.titan.amazon.GameAppAmazon" ; Default CoC Game Class, loaded from config.ini
-					$g_sUserGameDistributor = "Amazon" ; User Added CoC Game Distributor, loaded from config.ini
-					$g_sUserGamePackage = "com.supercell.clashofclans.amazon" ; User Added CoC Game Package, loaded from config.ini
-					$g_sUserGameClass = "com.supercell.titan.amazon.GameAppAmazon" ; User Added CoC Game Class, loaded from config.ini
-
-					SaveConfig()
-					BotClose(False)
-				EndIf
+				$g_sAndroidGameDistributor = "Google"
+				$g_sAndroidGamePackage = "com.supercell.clashofclans"
+				$g_sAndroidGameClass = "com.supercell.titan.GameApp"
+				$g_sUserGameDistributor = "Google"
+				$g_sUserGamePackage = "com.supercell.clashofclans"
+				$g_sUserGameClass = "com.supercell.titan.GameApp"
+			ElseIf $MsgBox = 2 Then
+				$g_sAndroidGameDistributor = "Amazon"
+				$g_sAndroidGamePackage = "com.supercell.clashofclans.amazon"
+				$g_sAndroidGameClass = "com.supercell.titan.amazon.GameAppAmazon"
+				$g_sUserGameDistributor = "Amazon"
+				$g_sUserGamePackage = "com.supercell.clashofclans.amazon"
+				$g_sUserGameClass = "com.supercell.titan.amazon.GameAppAmazon"
 			EndIf
+			Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Sure_Game_Distributor_Info", "Are you 100% sure of Game Distributor ?") & @CRLF & @CRLF & _
+			GetTranslatedFileIni("MBR Popups", "Reset_then_restart_bot", "Click Confirm to Reset and then restart the bot (manually)") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", -1) & @CRLF
+			Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Confirm_Cancel", "Confirm|Cancel"), GetTranslatedFileIni("MBR Popups", "Reset_Game_Distributor_Info", -1), $stext, 120)
+			If $g_bDebugSetlog Then SetDebugLog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
+			If $MsgBox = 1 Then
+				SaveConfig()
+				BotClose(False)
+			EndIf
+		EndIf
 		ExitLoop
 	WEnd
 	$g_bRunState = $wasRunState
@@ -705,7 +715,7 @@ Func chkActivateClangames()
 
 		GUICtrlSetState($g_hChkClanGamesPurgeHome, $GUI_ENABLE)
 		;If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED Then GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
-		;GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
 		;GUICtrlSetState($g_hChkClanGamesDebug, $GUI_ENABLE)
 		;GUICtrlSetState($g_hChkClanGamesDebugImages, $GUI_ENABLE)
 	Else
@@ -725,8 +735,11 @@ Func chkActivateClangames()
 		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_DISABLE)
 		;GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
-		;GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_DISABLE)
-
+		If GUICtrlRead($g_hChkClanGamesNightVillage) = $GUI_CHECKED Then
+			GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_DISABLE)
+		EndIf
 		GUICtrlSetState($g_hChkClanGamesPurgeHome, $GUI_DISABLE)
 		;GUICtrlSetState($g_hChkClanGamesDebug, $GUI_DISABLE)
 		;GUICtrlSetState($g_hChkClanGamesDebugImages, $GUI_DISABLE)
@@ -736,9 +749,14 @@ EndFunc   ;==>chkActivateClangames
 Func chkActivateClangamesNightVillage()
 	If GUICtrlRead($g_hChkClanGamesNightVillage) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hChkClanGamesPurgeNight, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
 	Else
-
 		GUICtrlSetState($g_hChkClanGamesPurgeNight, $GUI_DISABLE)
+		If GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
+			GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_DISABLE)
+		EndIf
 	EndIf
 EndFunc   ;==>chkActivateClangamesNightVillage
 
@@ -904,6 +922,192 @@ Func CloseCustomBBDropOrder()
 	GUICtrlSetState($g_hChkEnableBBAttack, $GUI_ENABLE)
 EndFunc   ;==>CloseCustomBBDropOrder
 
+Func chkUpgradeDoubleCannon()
+
+	If GUICtrlRead($g_hChkDoubleCannonUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_OLIVE)
+		SetLog("Checking for valid Coordinates of Double Cannon ......", $COLOR_OLIVE)
+
+		$g_bDoubleCannonUpgrade = True
+		LocateDoubleCannon()
+	Else
+		$g_bDoubleCannonUpgrade = False
+	EndIf
+
+	Return
+EndFunc   ;==>chkUpgradeDoubleCannon
+
+Func DeleteDoubleCannonCoord()
+	SetLog("Deleting Coordinates of Double Cannon.", $COLOR_OLIVE)
+	$g_aiDoubleCannonPos[0] = -1
+	$g_aiDoubleCannonPos[1] = -1
+	$g_aiDoubleCannonPos[2] = -1
+	IniWrite($g_sProfileBuildingPath, "other", "DoubleCannonPosX", $g_aiDoubleCannonPos[0])
+	IniWrite($g_sProfileBuildingPath, "other", "DoubleCannonPosY", $g_aiDoubleCannonPos[1])
+	IniWrite($g_sProfileBuildingPath, "other", "DoubleCannonPosV", $g_aiDoubleCannonPos[2])
+	$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
+	GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
+EndFunc
+
+Func chkUpgradeArcherTower()
+
+	If GUICtrlRead($g_hChkArcherTowerUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_OLIVE)
+		SetLog("Checking for valid Coordinates of Archer Tower ......", $COLOR_OLIVE)
+
+		$g_bArcherTowerUpgrade = True
+		LocateArcherTower()
+	Else
+		$g_bArcherTowerUpgrade = False
+	EndIf
+
+	Return
+EndFunc   ;==>chkUpgradeArcherTower
+
+Func DeleteArcherTowerCoord()
+	SetLog("Deleting Coordinates of Archer Tower.", $COLOR_OLIVE)
+	$g_aiArcherTowerPos[0] = -1
+	$g_aiArcherTowerPos[1] = -1
+	$g_aiArcherTowerPos[2] = -1
+	IniWrite($g_sProfileBuildingPath, "other", "ArcherTowerPosX", $g_aiArcherTowerPos[0])
+	IniWrite($g_sProfileBuildingPath, "other", "ArcherTowerPosY", $g_aiArcherTowerPos[1])
+	IniWrite($g_sProfileBuildingPath, "other", "ArcherTowerPosV", $g_aiArcherTowerPos[2])
+	$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
+	GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
+EndFunc
+
+Func chkUpgradeMultiMortar()
+
+	If GUICtrlRead($g_hChkMultiMortarUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_OLIVE)
+		SetLog("Checking for valid Coordinates of Multi Mortar ......", $COLOR_OLIVE)
+
+		$g_bMultiMortarUpgrade = True
+		LocateMultiMortar()
+	Else
+		$g_bMultiMortarUpgrade = False
+	EndIf
+
+	Return
+EndFunc   ;==>chkUpgradeMultiMortar
+
+Func DeleteMultiMortarCoord()
+	SetLog("Deleting Coordinates of Multi Mortar.", $COLOR_OLIVE)
+	$g_aiMultiMortarPos[0] = -1
+	$g_aiMultiMortarPos[1] = -1
+	$g_aiMultiMortarPos[2] = -1
+	IniWrite($g_sProfileBuildingPath, "other", "MultiMortarPosX", $g_aiMultiMortarPos[0])
+	IniWrite($g_sProfileBuildingPath, "other", "MultiMortarPosY", $g_aiMultiMortarPos[1])
+	IniWrite($g_sProfileBuildingPath, "other", "MultiMortarPosV", $g_aiMultiMortarPos[2])
+	$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
+	GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
+EndFunc
+
+Func chkUpgradeAnyDef()
+
+	If GUICtrlRead($g_hChkAnyDefUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_OLIVE)
+		SetLog("Checking for valid Coordinates of Defensive Building ......", $COLOR_OLIVE)
+
+		$g_bAnyDefUpgrade = True
+		LocateAnyDef()
+	Else
+		$g_bAnyDefUpgrade = False
+	EndIf
+
+	Return
+EndFunc   ;==>chkUpgradeMultiMortar
+
+Func DeleteCannonCoord()
+	SetLog("Deleting Coordinates of Cannon.", $COLOR_OLIVE)
+	$g_aiAnyDefPos[0] = -1
+	$g_aiAnyDefPos[1] = -1
+	$g_aiAnyDefPos[2] = -1
+	IniWrite($g_sProfileBuildingPath, "other", "AnyDefPosX", $g_aiAnyDefPos[0])
+	IniWrite($g_sProfileBuildingPath, "other", "AnyDefPosY", $g_aiAnyDefPos[1])
+	IniWrite($g_sProfileBuildingPath, "other", "AnyDefPosV", $g_aiAnyDefPos[2])
+	$g_bAnyDefUpgrade = False ; turn Off the Cannon upgrade
+	GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
+EndFunc
+
+Func ChkEnableForgeGold()
+	If GUICtrlRead($g_hChkEnableForgeGold) = $GUI_CHECKED Then
+		$g_bChkEnableForgeGold = True
+		For $i = $g_hLbacmdGoldSaveMin To $g_acmdGoldSaveMin
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else	
+		$g_bChkEnableForgeGold = False
+		For $i = $g_hLbacmdGoldSaveMin To $g_acmdGoldSaveMin
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>ChkEnableForgeGold
+
+Func ChkEnableForgeElix()
+	If GUICtrlRead($g_hChkEnableForgeElix) = $GUI_CHECKED Then
+		$g_bChkEnableForgeElix = True
+		For $i = $g_hLbacmdElixSaveMin To $g_acmdElixSaveMin
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else	
+		$g_bChkEnableForgeElix = False
+		For $i = $g_hLbacmdElixSaveMin To $g_acmdElixSaveMin
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>ChkEnableForgeElix
+
+Func ChkEnableForgeDE()
+	If GUICtrlRead($g_hChkEnableForgeDE) = $GUI_CHECKED Then
+		$g_bChkEnableForgeDE = True
+		For $i = $g_hLbacmdDarkSaveMin To $g_acmdDarkSaveMin
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else	
+		$g_bChkEnableForgeDE = False
+		For $i = $g_hLbacmdDarkSaveMin To $g_acmdDarkSaveMin
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>ChkEnableForgeDE
+
+Func ChkEnableForgeBBGold()
+	If GUICtrlRead($g_hChkEnableForgeBBGold) = $GUI_CHECKED Then
+		$g_bChkEnableForgeBBGold = True
+		For $i = $g_hLbacmdBBGoldSaveMin To $g_acmdBBGoldSaveMin
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else	
+		$g_bChkEnableForgeBBGold = False
+		For $i = $g_hLbacmdBBGoldSaveMin To $g_acmdBBGoldSaveMin
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>ChkEnableForgeBBGold
+
+Func ChkEnableForgeBBElix()
+	If GUICtrlRead($g_hChkEnableForgeBBElix) = $GUI_CHECKED Then
+		$g_bChkEnableForgeBBElix = True
+		For $i = $g_hLbacmdBBElixSaveMin To $g_acmdBBElixSaveMin
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else	
+		$g_bChkEnableForgeBBElix = False
+		For $i = $g_hLbacmdBBElixSaveMin To $g_acmdBBElixSaveMin
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>ChkEnableForgeBBElix
+
 Func EnableAutoUpgradeCC()
 	If GUICtrlRead($g_hChkEnableAutoUpgradeCC) = $GUI_CHECKED Then
 		$g_bChkEnableAutoUpgradeCC = True
@@ -918,72 +1122,8 @@ Func EnableAutoUpgradeCC()
 	EndIf
 EndFunc
 
-
-Func chkUpgradeDoubleCannon()
-
-	If GUICtrlRead($g_hChkDoubleCannonUpgrade) = $GUI_CHECKED Then
-		_GUICtrlTab_ClickTab($g_hTabMain, 0)
-
-		SetLog("Please wait ......", $COLOR_ORANGE)
-		SetLog("Checking for valid Coordinates of Double Cannon ......", $COLOR_ORANGE)
-
-		$g_bDoubleCannonUpgrade = True
-		LocateDoubleCannon()
-	Else
-		$g_bDoubleCannonUpgrade = False
-		GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
-	EndIf
-
-	Return
-EndFunc   ;==>chkUpgradeDoubleCannon
-
-Func chkUpgradeArcherTower()
-
-	If GUICtrlRead($g_hChkArcherTowerUpgrade) = $GUI_CHECKED Then
-		_GUICtrlTab_ClickTab($g_hTabMain, 0)
-
-		SetLog("Please wait ......", $COLOR_ORANGE)
-		SetLog("Checking for valid Coordinates of Archer Tower ......", $COLOR_ORANGE)
-
-		$g_bArcherTowerUpgrade = True
-		LocateArcherTower()
-	Else
-		$g_bArcherTowerUpgrade = False
-	EndIf
-
-	Return
-EndFunc   ;==>chkUpgradeArcherTower
-
-Func chkUpgradeMultiMortar()
-
-	If GUICtrlRead($g_hChkMultiMortarUpgrade) = $GUI_CHECKED Then
-		_GUICtrlTab_ClickTab($g_hTabMain, 0)
-
-		SetLog("Please wait ......", $COLOR_ORANGE)
-		SetLog("Checking for valid Coordinates of Multi Mortar ......", $COLOR_ORANGE)
-
-		$g_bMultiMortarUpgrade = True
-		LocateMultiMortar()
-	Else
-		$g_bMultiMortarUpgrade = False
-	EndIf
-
-	Return
-EndFunc   ;==>chkUpgradeMultiMortar
-
-Func chkUpgradeMegaTesla()
-
-	If GUICtrlRead($g_hChkMegaTeslaUpgrade) = $GUI_CHECKED Then
-		_GUICtrlTab_ClickTab($g_hTabMain, 0)
-
-		SetLog("Please wait ......", $COLOR_ORANGE)
-		SetLog("Checking for valid Coordinates of Mega Tesla ......", $COLOR_ORANGE)
-
-		$g_bMegaTeslaUpgrade = True
-		LocateMegaTesla()
-	Else
-		$g_bMegaTeslaUpgrade = False
-	EndIf
-
-	Return
- EndFunc   ;==>chkUpgradeMegaTesla
+Func CmbForgeBuilder()
+	$g_iCmbForgeBuilder = Int(_GUICtrlComboBox_GetCurSel($g_hCmbForgeBuilder))
+	GUICtrlSetData($g_hLbCmbForgeBuilder, $g_iCmbForgeBuilder > 0 ? GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "LblForgeBuilder", "Builders for Forge") : _
+	GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "LblForgeBuilder", "Builder for Forge"))
+EndFunc   ;==>CmbForgeBuilder

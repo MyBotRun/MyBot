@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -136,7 +136,6 @@
 #include "functions\Main Screen\isGemOpen.au3"
 #include "functions\Main Screen\isNoUpgradeLoot.au3"
 #include "functions\Main Screen\isProblemAffect.au3"
-#include "functions\Main Screen\checkAttackDisable.au3"
 #include "functions\Main Screen\RemoveGhostTrayIcons.au3"
 #include "functions\Main Screen\waitMainScreen.au3"
 #include "functions\Main Screen\isOnBuilderBase.au3"
@@ -148,6 +147,7 @@
 #include "functions\Android\CheckAndroidTimeLag.au3"
 #include "functions\Android\CheckAndroidPageError.au3"
 #include "functions\Android\CheckAndroidRebootCondition.au3"
+#include "functions\Android\AndroidBlueStacks5.au3"
 #include "functions\Android\AndroidBlueStacks.au3"
 #include "functions\Android\AndroidMEmu.au3"
 #include "functions\Android\AndroidNox.au3"
@@ -209,7 +209,6 @@
 #include "functions\Read Text\getBuilderCount.au3"
 #include "functions\Read Text\BuildingInfo.au3"
 #include "functions\Read Text\getOcr.au3"
-#include "functions\Read Text\getPBTime.au3"
 #include "functions\Read Text\getShieldInfo.au3"
 
 #include "functions\Search\multiSearch.au3"
@@ -285,7 +284,8 @@
 #include "functions\Village\BuilderBase\StarLaboratory.au3"
 #include "functions\Village\BuilderBase\UpgradeBattleMachine.au3"
 #include "functions\Village\BuilderBase\LocateBuilderHall.au3"
-#include "functions\Village\BuilderBase\OttoBuildingUpgrades.au3"
+#include "functions\Village\BuilderBase\UpgradeBattleCopter.au3"
+#include "functions\Village\BuilderBase\BOBBuildingUpgrades.au3"
 
 #include "functions\Other\Api.au3"
 #include "functions\Other\ApiClient.au3"

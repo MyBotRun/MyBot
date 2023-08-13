@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: (2014)
 ; Modified ......: HungLe (may-2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkMainscreen, isProblemAffect
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -244,7 +244,9 @@ Func AttackClick($x, $y, $times = 1, $speed = 0, $afterDelay = 0, $debugtxt = ""
 	AttackRemainingTime(False) ; flag attack started
 	Local $result = PureClick($x, $y, $times, $speed, $debugtxt)
 	Local $delay = $times * $speed + $afterDelay - __TimerDiff($timer)
-	If IsKeepClicksActive() = False And $delay > 0 Then _Sleep($delay, False)
+	If IsKeepClicksActive() = False And $delay > 0 Then 
+		If _Sleep($delay, False) Then Return
+	EndIf
 	Return $result
 EndFunc   ;==>AttackClick
 

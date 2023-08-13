@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Fliegerfaust (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,17 +14,23 @@
 ; ===============================================================================================================================
 #include-once
 
-Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
+Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False, $bSetLog = True, $IsOttoVillage = False)
 
 	If Not $g_bChkCollectBuilderBase Then Return
 	If Not $g_bRunState Then Return
 
 	If $bSwitchToBB Then
 		ClickAway()
-		If Not SwitchBetweenBases() Then Return ; Switching to Builders Base
+		If Not SwitchBetweenBases(True, True) Then Return ; Switching to Builders Base
 	EndIf
 
-	SetLog("Collecting Resources on Builders Base", $COLOR_INFO)
+	If $bSetLog Then
+		If $IsOttoVillage Then
+			SetLog("Collecting Resources on Otto Village", $COLOR_INFO)
+		Else
+			SetLog("Collecting Resources on Builders Base", $COLOR_INFO)
+		EndIf
+	EndIf
 	If _Sleep($DELAYCOLLECT2) Then Return
 
 	; Collect function to Parallel Search , will run all pictures inside the directory
@@ -32,7 +38,7 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
 	Local $sFilename = ""
 	Local $aCollectXY, $t
 
-	Local $aResult = multiMatches($g_sImgCollectRessourcesBB, 0, "FV", "FV")
+	Local $aResult = multiMatches($g_sImgCollectRessourcesBB, 0, $CocDiamondDCD, $CocDiamondDCD)
 
 	If UBound($aResult) > 1 Then ; we have an array with data of images found
 		For $i = 1 To UBound($aResult) - 1  ; loop through array rows
@@ -47,6 +53,50 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
 		Next
 	EndIf
 
+	If Not $IsOttoVillage Then CollectElixirCart($bSwitchToBB, $bSwitchToNV)
+
 	If _Sleep($DELAYCOLLECT3) Then Return
 	If $bSwitchToNV Then SwitchBetweenBases() ; Switching back to the normal Village
+EndFunc
+
+Func CollectElixirCart($bSwitchToBB = False, $bSwitchToNV = False)
+
+	If Not $g_bRunState Then Return
+
+	If $bSwitchToBB Then
+		ClickAway()
+		If Not SwitchBetweenBases(True, True) Then Return ; Switching to Builders Base
+	EndIf
+
+	SetDebugLog("Collecting Elixir Cart", $COLOR_INFO)
+	ClickAway("Left")
+	If _Sleep($DELAYCOLLECT2) Then Return
+
+	Local $bRet, $aiElixirCart, $aiCollect
+
+	$aiElixirCart = decodeSingleCoord(FindImageInPlace2("ElixirCart", $g_sImgElixirCart, 470, 90 + $g_iMidOffsetY, 610, 190 + $g_iMidOffsetY))
+	If IsArray($aiElixirCart) And UBound($aiElixirCart, 1) = 2 Then
+		SetLog("Found Filled Elixir Cart", $COLOR_SUCCESS)
+		PureClick($aiElixirCart[0], $aiElixirCart[1] + 16)
+		If _Sleep(1000) Then Return
+		$bRet = False
+		For $i = 0 To 10
+			$aiCollect = decodeSingleCoord(FindImageInPlace2("CollectElixirCart", $g_sImgCollectElixirCart, 620, 515 + $g_iMidOffsetY, 720, 560 + $g_iMidOffsetY))
+			If IsArray($aiCollect) And UBound($aiCollect, 1) = 2 Then
+				$bRet = True
+				If _Sleep(2000) Then Return
+				ExitLoop
+			EndIf
+			If _Sleep(250) Then Return
+		Next
+		If $bRet Then
+			SetLog("Collect Elixir Cart!", $COLOR_SUCCESS1)
+			PureClickP($aiCollect)
+			If _Sleep(3000) Then Return
+		Else
+			SetLog("Collect Button Not Found", $COLOR_ERROR)
+		EndIf	
+		CloseWindow(20)
+	EndIf
+
 EndFunc

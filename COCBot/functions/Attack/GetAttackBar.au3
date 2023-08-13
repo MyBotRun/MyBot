@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: Trlopes (06-2016)
 ; Modified ......: ProMac (12-2016), Fliegerfaust(12-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -164,7 +164,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 						;While $iSpellLevel = ""
 						;	$NewTry += 1
 						;	$iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 18, 642 + $g_iBottomOffsetY));Recheck Loop
-						;	_Sleep(100)
+						;	If _Sleep(100) Then Return
 						;	If $NewTry = 15 Then ExitLoop
 						;WEnd
 						If $iSpellLevel > 0 And $iSpellLevel <= $g_iMaxLSpellLevel Then 
@@ -182,7 +182,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 						;While $iSpellLevel = ""
 						;	$NewTry += 1
 						;	$iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 25, 642 + $g_iBottomOffsetY));Recheck Loop
-						;	_Sleep(100)
+						;	If _Sleep(100) Then Return
 						;	If $NewTry = 15 Then ExitLoop
 						;WEnd
 						If $iSpellLevel > 0 And $iSpellLevel <= $g_iMaxESpellLevel Then 

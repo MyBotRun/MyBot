@@ -6,7 +6,7 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -100,15 +100,22 @@ Func SaveBuildingConfig()
 	
 	_Ini_Add("other", "DoubleCannonPosX", $g_aiDoubleCannonPos[0]) ; ? not sure why this is needed
 	_Ini_Add("other", "DoubleCannonPosY", $g_aiDoubleCannonPos[1])
+	_Ini_Add("other", "DoubleCannonPosV", $g_aiDoubleCannonPos[2])
 	
 	_Ini_Add("other", "ArcherTowerPosX", $g_aiArcherTowerPos[0]) ; ? not sure why this is needed
 	_Ini_Add("other", "ArcherTowerPosY", $g_aiArcherTowerPos[1])
+	_Ini_Add("other", "ArcherTowerPosV", $g_aiArcherTowerPos[2])
 
 	_Ini_Add("other", "MultiMortarPosX", $g_aiMultiMortarPos[0]) ; ? not sure why this is needed
 	_Ini_Add("other", "MultiMortarPosY", $g_aiMultiMortarPos[1])
-	
-	_Ini_Add("other", "MegaTeslaPosX", $g_aiMegaTeslaPos[0]) ; ? not sure why this is needed
-	_Ini_Add("other", "MegaTeslaPosY", $g_aiMegaTeslaPos[1])
+	_Ini_Add("other", "MultiMortarPosV", $g_aiMultiMortarPos[2])
+
+	_Ini_Add("other", "BattleCopterPosX", $g_aiBattleCopterPos[0]) ; ? not sure why this is needed
+	_Ini_Add("other", "BattleCopterPosY", $g_aiBattleCopterPos[1])
+
+	_Ini_Add("other", "AnyDefPosX", $g_aiAnyDefPos[0]) ; ? not sure why this is needed
+	_Ini_Add("other", "AnyDefPosY", $g_aiAnyDefPos[1])
+	_Ini_Add("other", "AnyDefPosV", $g_aiAnyDefPos[2])
 
 	_Ini_Add("other", "xTownHall", $g_aiTownHallPos[0])
 	_Ini_Add("other", "yTownHall", $g_aiTownHallPos[1])
@@ -144,8 +151,8 @@ Func SaveBuildingConfig()
 	ApplyConfig_600_14(GetApplyConfigSaveAction())
 	_Ini_Add("upgrade", "upgradetroops", $g_bAutoLabUpgradeEnable ? 1 : 0)
 	_Ini_Add("upgrade", "upgradetroopname", $g_iCmbLaboratory)
-	_Ini_Add("upgrade", "upgradelabelexircost", $g_iLaboratoryElixirCost)
-	_Ini_Add("upgrade", "upgradelabdelexircost", $g_iLaboratoryDElixirCost)
+	;_Ini_Add("upgrade", "upgradelabelexircost", $g_iLaboratoryElixirCost)
+	;_Ini_Add("upgrade", "upgradelabdelexircost", $g_iLaboratoryDElixirCost)
 	_Ini_Add("upgrade", "upgradestartroops", $g_bAutoStarLabUpgradeEnable ? 1 : 0)
 	_Ini_Add("upgrade", "upgradestartroopname", $g_iCmbStarLaboratory)
 
@@ -398,7 +405,8 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "chkDoubleCannonUpgrade", $g_bDoubleCannonUpgrade)
 	_Ini_Add("other", "chkArcherTowerUpgrade", $g_bArcherTowerUpgrade)
 	_Ini_Add("other", "chkMultiMortarUpgrade", $g_bMultiMortarUpgrade)
-	_Ini_Add("other", "chkMegaTeslaUpgrade", $g_bMegaTeslaUpgrade)
+	_Ini_Add("other", "chkBattlecopterUpgrade", $g_bBattlecopterUpgrade)
+	_Ini_Add("other", "chkAnyDefUpgrade", $g_bAnyDefUpgrade)
 
 	_Ini_Add("other", "ChkClanGamesAir", $g_bChkClanGamesAir ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesGround", $g_bChkClanGamesGround ? 1 : 0)
@@ -462,6 +470,12 @@ Func SaveConfig_600_6()
 	_Ini_Add("ClanCapital", "ChkEnableForgeDE", $g_bChkEnableForgeDE)
 	_Ini_Add("ClanCapital", "ChkEnableForgeBBGold", $g_bChkEnableForgeBBGold)
 	_Ini_Add("ClanCapital", "ChkEnableForgeBBElix", $g_bChkEnableForgeBBElix)
+	_Ini_Add("ClanCapital", "ChkEnableSmartUse", $g_bChkEnableSmartUse)
+	_Ini_Add("ClanCapital", "cmdGoldSaveMin", $g_iacmdGoldSaveMin)
+	_Ini_Add("ClanCapital", "cmdElixSaveMin", $g_iacmdElixSaveMin)
+	_Ini_Add("ClanCapital", "cmdDarkSaveMin", $g_iacmdDarkSaveMin)
+	_Ini_Add("ClanCapital", "cmdBBGoldSaveMin", $g_iacmdBBGoldSaveMin)
+	_Ini_Add("ClanCapital", "cmdBBElixSaveMin", $g_iacmdBBElixSaveMin)
 	_Ini_Add("ClanCapital", "ForgeUseBuilder", $g_iCmbForgeBuilder)
 	_Ini_Add("ClanCapital", "AutoUpgradeCC", $g_bChkEnableAutoUpgradeCC)
 	_Ini_Add("ClanCapital", "ChkAutoUpgradeCCIgnore", $g_bChkAutoUpgradeCCIgnore)
@@ -519,16 +533,12 @@ Func SaveConfig_600_12()
 
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 		Local $sIniName = ""
-		If $i >= $eTroopBarbarian And $i <= $eTroopHeadhunter Then
+		If $i >= $eTroopBarbarian And $i <= $eTroopAppWard Then
 			$sIniName = StringReplace($g_asTroopNamesPlural[$i], " ", "")
 		ElseIf $i = $eCustomA Then
 			$sIniName = "CustomA"
 		ElseIf $i = $eCustomB Then
 			$sIniName = "CustomB"
-		ElseIf $i = $eCustomC Then
-			$sIniName = "CustomC"
-		ElseIf $i = $eCustomD Then
-			$sIniName = "CustomD"
 		EndIf
 
 		_Ini_Add("donate", "chkDonate" & $sIniName, $g_abChkDonateTroop[$i] ? 1 : 0)
@@ -552,17 +562,13 @@ Func SaveConfig_600_12()
 		_Ini_Add("donate", "chkDonateAll" & $sIniName, $g_abChkDonateAllTroop[$index + $i] ? 1 : 0)
 		_Ini_Add("donate", "txtDonate" & $sIniName, StringReplace($g_asTxtDonateTroop[$index + $i], @CRLF, "|"))
 		_Ini_Add("donate", "txtBlacklist" & $sIniName, StringReplace($g_asTxtBlacklistTroop[$index + $i], @CRLF, "|"))
-	NExt
+	Next
 
 	For $i = 0 To 2
 		_Ini_Add("donate", "cmbDonateCustomA" & $i + 1, $g_aiDonateCustomTrpNumA[$i][0])
 		_Ini_Add("donate", "txtDonateCustomA" & $i + 1, $g_aiDonateCustomTrpNumA[$i][1])
 		_Ini_Add("donate", "cmbDonateCustomB" & $i + 1, $g_aiDonateCustomTrpNumB[$i][0])
 		_Ini_Add("donate", "txtDonateCustomB" & $i + 1, $g_aiDonateCustomTrpNumB[$i][1])
-		_Ini_Add("donate", "cmbDonateCustomC" & $i + 1, $g_aiDonateCustomTrpNumC[$i][0])
-		_Ini_Add("donate", "txtDonateCustomC" & $i + 1, $g_aiDonateCustomTrpNumC[$i][1])
-		_Ini_Add("donate", "cmbDonateCustomD" & $i + 1, $g_aiDonateCustomTrpNumD[$i][0])
-		_Ini_Add("donate", "txtDonateCustomD" & $i + 1, $g_aiDonateCustomTrpNumD[$i][1])
 	Next
 
 	_Ini_Add("donate", "chkExtraAlphabets", $g_bChkExtraAlphabets ? 1 : 0)
@@ -616,7 +622,7 @@ Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
 	; Auto Upgrade
 	_Ini_Add("Auto Upgrade", "AutoUpgradeEnabled", $g_bAutoUpgradeEnabled)
-	For $i = 0 To 15
+	For $i = 0 To Ubound($g_iChkUpgradesToIgnore) - 1
 		_Ini_Add("Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i])
 	Next
 	For $i = 0 To 2
@@ -778,6 +784,7 @@ Func SaveConfig_600_28_DB()
 	_Ini_Add("search", "DBCheckInferno", $g_abFilterMaxInfernoEnable[$DB] ? 1 : 0)
 	_Ini_Add("search", "DBCheckEagle", $g_abFilterMaxEagleEnable[$DB] ? 1 : 0)
 	_Ini_Add("search", "DBCheckScatter", $g_abFilterMaxScatterEnable[$DB] ? 1 : 0)
+	_Ini_Add("search", "DBCheckMonolith", $g_abFilterMaxMonolithEnable[$DB] ? 1 : 0)
 	_Ini_Add("search", "DBWeakMortar", $g_aiFilterMaxMortarLevel[$DB])
 	_Ini_Add("search", "DBWeakWizTower", $g_aiFilterMaxWizTowerLevel[$DB])
 	_Ini_Add("search", "DBWeakAirDefense", $g_aiFilterMaxAirDefenseLevel[$DB])
@@ -785,6 +792,7 @@ Func SaveConfig_600_28_DB()
 	_Ini_Add("search", "DBWeakInferno", $g_aiFilterMaxInfernoLevel[$DB])
 	_Ini_Add("search", "DBWeakEagle", $g_aiFilterMaxEagleLevel[$DB])
 	_Ini_Add("search", "DBWeakScatter", $g_aiFilterMaxScatterLevel[$DB])
+	_Ini_Add("search", "DBWeakMonolith", $g_aiFilterMaxMonolithLevel[$DB])
 	_Ini_Add("search", "DBMeetOne", $g_abFilterMeetOneConditionEnable[$DB] ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_28_DB
 
@@ -828,6 +836,7 @@ Func SaveConfig_600_28_LB()
 	_Ini_Add("search", "ABCheckInferno", $g_abFilterMaxInfernoEnable[$LB] ? 1 : 0)
 	_Ini_Add("search", "ABCheckEagle", $g_abFilterMaxEagleEnable[$LB] ? 1 : 0)
 	_Ini_Add("search", "ABCheckScatter", $g_abFilterMaxScatterEnable[$LB] ? 1 : 0)
+	_Ini_Add("search", "ABCheckMonolith", $g_abFilterMaxMonolithEnable[$LB] ? 1 : 0)
 	_Ini_Add("search", "ABWeakMortar", $g_aiFilterMaxMortarLevel[$LB])
 	_Ini_Add("search", "ABWeakWizTower", $g_aiFilterMaxWizTowerLevel[$LB])
 	_Ini_Add("search", "ABWeakAirDefense", $g_aiFilterMaxAirDefenseLevel[$LB])
@@ -835,6 +844,7 @@ Func SaveConfig_600_28_LB()
 	_Ini_Add("search", "ABWeakInferno", $g_aiFilterMaxInfernoLevel[$LB])
 	_Ini_Add("search", "ABWeakEagle", $g_aiFilterMaxEagleLevel[$LB])
 	_Ini_Add("search", "ABWeakScatter", $g_aiFilterMaxScatterLevel[$LB])
+	_Ini_Add("search", "ABWeakMonolith", $g_aiFilterMaxMonolithLevel[$LB])
 	_Ini_Add("search", "ABMeetOne", $g_abFilterMeetOneConditionEnable[$LB] ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_28_LB
 
@@ -1102,9 +1112,6 @@ Func SaveConfig_600_35_1()
 	_Ini_Add("other", "ScreenshotType", $g_bScreenshotPNGFormat ? 1 : 0)
 	_Ini_Add("other", "ScreenshotHideName", $g_bScreenshotHideName ? 1 : 0)
 	_Ini_Add("other", "txtTimeWakeUp", $g_iAnotherDeviceWaitTime)
-	_Ini_Add("other", "chkSinglePBTForced", $g_bForceSinglePBLogoff ? 1 : 0)
-	_Ini_Add("other", "ValueSinglePBTimeForced", $g_iSinglePBForcedLogoffTime)
-	_Ini_Add("other", "ValuePBTimeForcedExit", $g_iSinglePBForcedEarlyExitTime)
 	_Ini_Add("other", "ChkAutoResume", $g_bAutoResumeEnable ? 1 : 0)
 	_Ini_Add("other", "AutoResumeTime", $g_iAutoResumeTime)
 	_Ini_Add("other", "ChkDisableNotifications", $g_bDisableNotifications)

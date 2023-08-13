@@ -13,7 +13,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017), MikeD (04-2021)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -340,7 +340,7 @@ EndFunc   ;==>SetSwitchAccLog
 Func AtkLogHead()
 	SetAtkLog(_PadStringCenter(" " & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_01", "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
 	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                       ------- LOOT --------            -- BONUS --   |'), "")
-	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|AC| TIME|TROPHY|SRC|DS|   GOLD| ELIXER|   DE| TR| *|  %| G & E|  DE|L.|'), "")
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|AC| TIME|TROPHY|SRC|DS|   GOLD| ELIXIR|   DE| TR| *|  %| G & E|  DE|L.|'), "")
 EndFunc   ;==>AtkLogHead                                                                          
 
 Func __FileWriteLog($handle, $text)

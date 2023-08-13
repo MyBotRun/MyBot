@@ -6,7 +6,7 @@
 ; Return values .: False if regular farming is needed to refill storage
 ; Author ........: barracoda/KnowJack (2015)
 ; Modified ......: sardo (05-2015/06-2015) , ProMac (04-2016), MonkeyHuner (06-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -95,10 +95,10 @@ Func CleanYard()
 	Local $sRedLines = $CocDiamondECD
 	Local $iElixir = 50000
 	Local $bNoBuilders = $g_iFreeBuilderCount < 1
-	Local $sImgCleanYard = $g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard
+;	Local $sImgCleanYard = $g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard ; All templates in only one folder
 
 	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then
-		Local $aResult = findMultiple($sImgCleanYard, $sCocDiamond, $sRedLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
+		Local $aResult = findMultiple($g_sImgCleanYard, $sCocDiamond, $sRedLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
 		If IsArray($aResult) Then
 			For $matchedValues In $aResult
 				Local $aPoints = decodeMultipleCoords($matchedValues[2])

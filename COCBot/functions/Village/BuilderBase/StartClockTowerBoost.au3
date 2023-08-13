@@ -5,8 +5,8 @@
 ; Parameters ....: $bSwitchToBB: Switch from Normal Village to Builder Base - $bSwitchToNV: Switch back to normal Village after Function ran
 ; Return values .: None
 ; Author ........: Fliegerfaust (06-2017), MMHK (07-2017)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Modified ......: Moebius14 (07-2023)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -19,10 +19,9 @@ Local $aResult = BuildingInfo(242, 490 + $g_iBottomOffsetY)
 Local $TowerClockLevel = $aResult[2]
 SetLog("Clock Tower Level " & $TowerClockLevel & " Detected")
 Local $ClockTimeGained = 0
-
 	Switch $TowerClockLevel
 		Case 1
-			$ClockTimeGained = 126
+			$ClockTimeGained = 126 ;boost lenght*(10-1) <=> boost lenght*9
 		Case 2
 			$ClockTimeGained = 144
 		Case 3
@@ -39,10 +38,11 @@ Local $ClockTimeGained = 0
 			$ClockTimeGained = 252
 		Case 9
 			$ClockTimeGained = 270
+		Case 10
+			$ClockTimeGained = 288
 		Case Else
-			$ClockTimeGained = 270
+			$ClockTimeGained = 270;30 minutes boost(?)
 	EndSwitch
-
 Return $ClockTimeGained
 EndFunc
 
@@ -55,7 +55,7 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 
 	If $bSwitchToBB Then
 		ClickAway()
-		If Not SwitchBetweenBases() Then Return ; Switching to Builders Base
+		If Not SwitchBetweenBases(True, True) Then Return ; Switching to Builders Base
 	EndIf
 
 	Local $bCTBoost = True

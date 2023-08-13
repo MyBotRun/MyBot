@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (08-2016)
 ; Modified ......: MonkeyHunter (05-2017) MMHK (07-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,31 +17,31 @@ Func WaitForClouds()
 
 	SetDebugLog("Begin WaitForClouds:", $COLOR_DEBUG1)
 	$g_bCloudsActive = True
-	
+
 	Local $iCount = 0
 	Local $bigCount = 0, $iLastTime = 0
 	Local $hMinuteTimer, $iSearchTime
 	Local $bEnabledGUI = False
 
-	Local $maxSearchCount = 720 ; $maxSearchCount * 250ms ($DELAYGETRESOURCES1) = seconds wait time before reset in lower leagues: 720*250ms = 3 minutes
-	Local $maxLongSearchCount = 7 ; $maxLongSearchCount * $maxSearchCount = seconds total wait time in higher leagues: ; 21 minutes, set a value here but is never used unless error
+	Local $maxSearchCount = 360 ; $maxSearchCount * 250ms ($DELAYGETRESOURCES1) = seconds wait time before reset in lower leagues: 360*250ms = 1.5 minutes
+	Local $maxLongSearchCount = 3 ; $maxLongSearchCount * $maxSearchCount = seconds total wait time in higher leagues: ; 4.5 minutes, set a value here but is never used unless error
 
 	Switch Int($g_aiCurrentLoot[$eLootTrophy]) ; add randomization to SearchCounters (long cloud keep alive time) for higher leagues
 		Case 3700 To 4099 ; champion 1 league
-			$maxSearchCount = Random(480, 840, 1) ; random range 2-3.5 minutes
-			$maxLongSearchCount = Random(10, 12, 1) ; random range 20-40 minutes
+			$maxSearchCount = Random(360, 650, 1) ; random range 1.5-2.8 minutes
+			$maxLongSearchCount = Random(1, 2, 1) ; random range 1.5-5.6 minutes
 		Case 4100 To 4399 ; Titan 3 league
-			$maxSearchCount = Random(480, 840, 1) ; random range 2-3.5 minutes
-			$maxLongSearchCount = Random(15, 25, 1) ; random range 30-87 minutes
+			$maxSearchCount = Random(360, 650, 1) ; random range 1.5-2.8 minutes
+			$maxLongSearchCount = Random(1, 2, 1) ; random range 1.5-5.6 minutes
 		Case 4400 To 4699 ; Titan 2 league
-			$maxSearchCount = Random(600, 840, 1) ; random range 2.5-3.5 minutes
-			$maxLongSearchCount = Random(24, 42, 1) ; random range 60-147 minutes
+			$maxSearchCount = Random(360, 650, 1) ; random range 1.5-2.8 minutes
+			$maxLongSearchCount = Random(1, 3, 1) ; random range 1.5-8.4 minutes
 		Case 4700 To 4999 ; Titan 1 league
-			$maxSearchCount = Random(600, 840, 1) ; random range 2.5-3.5 minutes
-			$maxLongSearchCount = Random(36, 50, 1) ; random range 90-175 minutes
+			$maxSearchCount = Random(360, 650, 1) ; random range 1.5-2.8 minutes
+			$maxLongSearchCount = Random(3, 5, 1) ; random range 4.5-14 minutes
 		Case 5000 To 6500 ; Legend league
-			$maxSearchCount = Random(600, 840, 1) ; random range 2.5-3.5 minutes
-			$maxLongSearchCount = Random(80, 85, 1) ; random range 200-300 minutes
+			$maxSearchCount = Random(360, 650, 1) ; random range 2.5-3.5 minutes
+			$maxLongSearchCount = Random(3, 5, 1) ; random range 4.5-14 minutes
 	EndSwitch
 	If $g_bDebugSetlog Then ; display random values if debug log
 		SetLog("RANDOM: $maxSearchCount= " & $maxSearchCount & "= " & Round($maxSearchCount / $DELAYGETRESOURCES1, 2) & " min between cloud chk", $COLOR_DEBUG)
@@ -89,7 +89,7 @@ Func WaitForClouds()
 			SetLog("Cloud wait time " & StringFormat("%.1f", $iSearchTime) & " minute(s)", $COLOR_INFO)
 			$iLastTime += 1
 			; once a minute safety checks for search fail/retry msg and Personal Break events and early detection if CoC app has crashed inside emulator (Bluestacks issue mainly)
-			If chkAttackSearchFail() = 2 Or chkAttackSearchPersonalBreak() = True Or GetAndroidProcessPID() = 0 Then
+			If chkAttackSearchFail() = 2 Or GetAndroidProcessPID() = 0 Then
 				resetAttackSearch()
 				ExitLoop
 			EndIf
@@ -142,7 +142,6 @@ Func EnableLongSearch()
 	$iCount = 0 ; initialize safety loop counter #1
 	While 1
 		If chkSurrenderBtn() = True Then Return True ; check if clouds are gone.
-		If chkAttackSearchPersonalBreak() = True Then Return False ; OCR check for Personal Break while in clouds, return after PB prep
 		If chkAttackSearchFail() = 1 Then Return True ; OCR text for search fail message, and press retry if available, success continue searching
 
 		If chkSearchText() = False Then
@@ -187,27 +186,6 @@ Func chkAttackSearchFail()
 		EndIf
 	EndIf
 EndFunc   ;==>chkAttackSearchFail
-
-Func chkAttackSearchPersonalBreak()
-	; Boolean 100ms OCR check for pink text "You must wait until after your Personal Break to start an attack." error message during search for base to attack
-	Local $result
-	$result = getCloudFailShort(499, 350 + $g_iMidOffsetY, "Cloud Search PB Text: Break=", $COLOR_DEBUG, Default)
-	If $result <> "" And StringInStr($result, "break", $STR_NOCASESENSEBASIC) > 0 Then ; found "break" characters in text
-		SetLog("Prepare base before Personal Break in clouds..", $COLOR_INFO)
-		CheckBaseQuick(True, "cloud") ; check and restock base before exit.
-		Return True
-	EndIf
-	If $g_bForceSinglePBLogoff And _DateIsValid($g_sPBStartTime) Then ; silly feature to use with long clouds, but check if single PB is enabled.
-		Local $iTimeTillPBTstartSec = Int(_DateDiff('s', $g_sPBStartTime, _NowCalc())) ; time in seconds
-		SetDebugLog("PB starts in: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_DEBUG)
-		If $iTimeTillPBTstartSec >= 0 Then ; test if PBT date/time in past (positive value) or future (negative value
-			SetLog("Prepare base before user forced Break..", $COLOR_INFO)
-			CheckBaseQuick(True, "cloud") ; check and restock base before exit.
-			Return True
-		EndIf
-	EndIf
-	Return False
-EndFunc   ;==>chkAttackSearchPersonalBreak
 
 Func btnSearchFailRetry()
 	Local $aRetrySearchButton = decodeSingleCoord(findImage("Retry Search", $g_sImgRetrySearchButton, GetDiamondFromRect("270,400,600,500"), 1, True))

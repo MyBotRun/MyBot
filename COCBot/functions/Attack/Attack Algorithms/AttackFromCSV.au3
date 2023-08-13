@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......: CodeSlinger69 (01-2017) GrumpyHog (05-2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2022
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -599,7 +599,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 				_ObjErrMsg("_ObjGetValue " & $g_sBldgNames[$eBldgScatter] & " _LOCATION", @error) ; Log errors
 				SetLog("> " & $g_sBldgNames[$eBldgScatter] & " location not in dictionary", $COLOR_WARNING)
 			Else
-				If IsArray($aResult[0]) Then $g_aiCSVEagleArtilleryPos = $aResult[0]
+				If IsArray($aResult) Then $g_aiCSVScatterPos = $aResult
 			EndIf
 		Else
 			SetLog("> TH Level to low for Scatter Shot, skip detection", $COLOR_INFO)
@@ -716,11 +716,35 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	Else
 		SetDebugLog("> " & $g_sBldgNames[$eBldgAirDefense] & " detection not needed, skipping", $COLOR_DEBUG)
 	EndIf
+	
+	; 13 - Monolith ------------------------------------------------------------------------
+
+	$g_aiCSVMonolithPos = "" ; reset pixel position to null
+
+	If $g_bCSVLocateMonolith Then
+		If $g_iSearchTH = "-" Or $g_iSearchTH > 10 Then
+			If Not _ObjSearch($g_oBldgAttackInfo, $eBldgMonolith & "_LOCATION") Then ; get data if not already exist?
+				$aResult = GetLocationBuilding($eBldgMonolith, $g_iSearchTH, False)
+				If $aResult = -1 Then SetLog("Monkey ate bad banana: " & "GetLocationBuilding " & $g_sBldgNames[$eBldgMonolith], $COLOR_ERROR)
+			EndIf
+			$aResult = _ObjGetValue($g_oBldgAttackInfo, $eBldgMonolith & "_LOCATION")
+			If @error Then
+				_ObjErrMsg("_ObjGetValue " & $g_sBldgNames[$eBldgMonolith] & " _LOCATION", @error) ; Log errors
+				SetLog("> " & $g_sBldgNames[$eBldgMonolith] & " location not in dictionary", $COLOR_WARNING)
+			Else
+				If IsArray($aResult[0]) Then $g_aiCSVMonolithPos = $aResult[0]
+			EndIf
+		Else
+			SetLog("> TH Level to low for Monolith, skip detection", $COLOR_INFO)
+		EndIf
+	Else
+		SetDebugLog("> Monolith detection not needed, skipping", $COLOR_DEBUG)
+	EndIf
 
 	; Calculate main attack side
 	ParseAttackCSV_MainSide()
 
-	; 13 - Wall
+	; 14 - Wall
 	If $g_bCSVLocateWall Then
 		Local $aCSVExternalWall[1], $aCSVInternalWall[1]
 		If FindWallCSV($aCSVExternalWall, $aCSVInternalWall) Then
@@ -734,11 +758,11 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	; Log total CSV prep time
 	SetLog(">> Total time: " & Round(__timerdiff($hTimerTOTAL) / 1000, 2) & " seconds", $COLOR_INFO)
 
-	; 14 - DEBUGIMAGE ------------------------------------------------------------------------
+	; 15 - DEBUGIMAGE ------------------------------------------------------------------------
 	If $g_bDebugMakeIMGCSV Then AttackCSVDEBUGIMAGE() ;make IMG debug
 	If $g_bDebugAttackCSV Then _LogObjList($g_oBldgAttackInfo) ; display dictionary for raw find image debug
 
-	; 15 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
+	; 16 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
 	SetSlotSpecialTroops()
 	If _Sleep($DELAYRESPOND) Then Return
 

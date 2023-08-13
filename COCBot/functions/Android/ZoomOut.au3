@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015), CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -64,6 +64,11 @@ Func ZoomOutBlueStacks2()
    ;Return DefaultZoomOut("{DOWN}", 0)
    ; ZoomOutCtrlClick doesn't cause moving buildings, but uses global Ctrl-Key and has taking focus problems
    ;Return ZoomOutCtrlClick(False, False, False)
+EndFunc
+
+Func ZoomOutBlueStacks5()
+	; newer BlueStacks versions don't work with Ctrl-Click, so fall back to original arrow key
+	Return DefaultZoomOut("{DOWN}", 0, ($g_iAndroidZoomoutMode <> 3))
 EndFunc
 
 Func ZoomOutMEmu()

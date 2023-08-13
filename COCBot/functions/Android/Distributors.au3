@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MMHK (11-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,14 +14,14 @@
 ; ===============================================================================================================================
 
 Global $g_sNO_COC, $g_sUNKNOWN_COC
-Global $_g_asDISTRIBUTORS[22][4]
+Global $_g_asDISTRIBUTORS[23][4]
 
-;["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
 	$g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
 	$g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
 
-	Dim $_g_asDISTRIBUTORS[22][4] = [ _
+	Dim $_g_asDISTRIBUTORS[23][4] = [ _
+			["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
 			["Amazon", "com.supercell.clashofclans.amazon", "com.supercell.titan.amazon.GameAppAmazon", "Amazon"], _
 			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.titan.kunlun.GameAppKunlun", "Kunlun"], _
 			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.titan.kunlun.GameAppKunlun","Qihoo"], _

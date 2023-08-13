@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Demen
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Local $aiZero83[8][3] = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 	Local $aiZero84[8][4] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 	Local $asEmpty[8] = ["", "", "", "", "", "", "", ""]
-	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 	; FirstRun
@@ -37,6 +37,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	;Clan Capital
 	Static $gSiLootCCGold = $aiZero
 	Static $gSiLootCCMedal = $aiZero
+	Static $gSiCCTrophies = $aiZero
+	
+	;Super Troops Boost
+	Static $gSbFirstStartBarrel = $aiTrue
 	
 	;Builders Base
 	Static $gSaiCurrentLootBB = $aiZero83
@@ -94,6 +98,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$g_asTrainTimeFinish = $asEmpty
 			For $i = 0 To 7
 				GUICtrlSetData($g_ahLblTroopTime[$i], "")
+				GUICtrlSetData($g_ahLblTroopTimeRep[$i], "")
 			Next
 			$g_ahTimerSinceSwitched = $aiZero
 			$g_ahTimerSinceSwitched[$iAccount] = $g_hTimerSinceStarted
@@ -179,6 +184,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			;Clan Capital
 			$gSiLootCCGold = $aiZero
 			$gSiLootCCMedal = $aiZero
+			$gSiCCTrophies = $aiZero
+			
+			;Super Troops Boost
+			$gSbFirstStartBarrel = $aiTrue
 			
 			;Builders Base
 			$gSaiCurrentLootBB = $aiZero83
@@ -204,13 +213,17 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			;Clan Capital
 			$gSiLootCCGold[$iAccount] = $g_iLootCCGold
 			$gSiLootCCMedal[$iAccount] = $g_iLootCCMedal
+			$gSiCCTrophies[$iAccount] = $g_iCCTrophies
+			
+			;Super Troops Boost
+			$gSbFirstStartBarrel[$iAccount] = $g_bFirstStartBarrel
 			
 			;Builders Base
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
 				$gSaiCurrentLootBB[$iAccount][$i] = $g_aiCurrentLootBB[$i]
 			Next
 			$gSiFreeBuilderCountBB[$iAccount] = $g_iFreeBuilderCountBB
-			$gSiTotalBuilderCountBB[$iAccount] = $g_iFreeBuilderCountBB
+			$gSiTotalBuilderCountBB[$iAccount] = $g_iTotalBuilderCountBB
 
 			; Misc Stats
 			$aiNbrOfOoS[$iAccount] = $g_iNbrOfOoS
@@ -318,14 +331,21 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			;Clan Capital
 			$g_iLootCCGold = $gSiLootCCGold[$iAccount]
 			$g_iLootCCMedal = $gSiLootCCMedal[$iAccount]
+			$g_iCCTrophies = $gSiCCTrophies[$iAccount]
 			GUICtrlSetData($g_lblCapitalGold, _NumberFormat($g_iLootCCGold, True))
 			GUICtrlSetData($g_lblCapitalMedal, _NumberFormat($g_iLootCCMedal, True))
+			GUICtrlSetData($g_lblCapitalTrophies, _NumberFormat($g_iCCTrophies, True))
+			PicCCTrophies()
+			
+			;Super Troops Boost
+			$g_bFirstStartBarrel = $gSbFirstStartBarrel[$iAccount]
 			
 			;Builders Base
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
 				$g_aiCurrentLootBB[$i] = $gSaiCurrentLootBB[$iAccount][$i]
 				GUICtrlSetData($g_alblBldBaseStats[$i], _NumberFormat($g_aiCurrentLootBB[$i], True))
 			Next
+			PicBBTrophies()
 			$g_iFreeBuilderCountBB = $gSiFreeBuilderCountBB[$iAccount]
 			$g_iTotalBuilderCountBB = $gSiTotalBuilderCountBB[$iAccount]
 

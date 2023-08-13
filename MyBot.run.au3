@@ -3,7 +3,7 @@
 ; Description ...: This file contains the initialization and main loop sequences f0r the MBR Bot
 ; Author ........:  (2014)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -175,7 +175,7 @@ EndFunc   ;==>InitializeBot
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -270,7 +270,7 @@ EndFunc   ;==>ProcessCommandLine
 ; Return values .: None
 ; Author ........:
 ; Modified ......: cosote (Feb-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -331,7 +331,7 @@ EndFunc   ;==>InitializeAndroid
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -360,7 +360,7 @@ EndFunc   ;==>SetupProfileFolder
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -472,7 +472,7 @@ EndFunc   ;==>InitializeMBR
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -545,7 +545,7 @@ EndFunc   ;==>SetupFilesAndFolders
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -627,7 +627,7 @@ EndFunc   ;==>FinalInitialization
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -657,7 +657,7 @@ Func MainLoop($bCheckPrerequisitesOK = True)
 	$g_iTGLastRemote = $g_sTGLast_UID
 
 	While 1
-		_Sleep($DELAYSLEEP, True, False)
+		If _Sleep($DELAYSLEEP, True, False) Then Return
 
 		Local $diffhStarttime = _Timer_Diff($hStarttime)
 		If Not $g_bRunState And $g_bNotifyTGEnable And $g_bNotifyRemoteEnable And $diffhStarttime > 1000 * 15 Then ; 15seconds
@@ -1097,23 +1097,23 @@ Func __RunFunction($action)
 	Switch $action
 		Case "Collect"
 			Collect()
-			_Sleep($DELAYRUNBOT1)
+			If _Sleep($DELAYRUNBOT1) Then Return
 
 		Case "CheckTombs"
 			CheckTombs()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "CleanYard"
 			CleanYard()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "ReplayShare"
 			ReplayShare($g_bShareAttackEnableNow)
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "NotifyReport"
 			NotifyReport()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "DonateCC"
 			If $g_iActiveDonate And $g_bChkDonate Then
@@ -1137,7 +1137,7 @@ Func __RunFunction($action)
 			If $g_bTrainEnabled Then ; check for training enabled in halt mode
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
 					TrainSystem()
-					_Sleep($DELAYRUNBOT1)
+					If _Sleep($DELAYRUNBOT1) Then Return
 				Else
 					SetLog("Humanize bot, prevent to delete and recreate troops " & $g_iActualTrainSkip + 1 & "/" & $g_iMaxTrainSkip, $color_blue)
 					$g_iActualTrainSkip = $g_iActualTrainSkip + 1
@@ -1156,47 +1156,47 @@ Func __RunFunction($action)
 
 		Case "BoostBarracks"
 			BoostBarracks()
-			_Sleep($DELAYRESPOND)
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostSpellFactory"
 			BoostSpellFactory()
-			_Sleep($DELAYRESPOND)
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostWorkshop"
 			BoostWorkshop()
-			_Sleep($DELAYRESPOND)
+			If 	_Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostKing"
 			BoostKing()
-			_Sleep($DELAYRESPOND)
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostQueen"
 			BoostQueen()
-			_Sleep($DELAYRESPOND)
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostWarden"
 			BoostWarden()
-			_Sleep($DELAYRESPOND)
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostChampion"
 			BoostChampion()
-			_Sleep($DELAYRESPOND)
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostEverything"
 			BoostEverything()
-			_Sleep($DELAYRESPOND)
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "DailyChallenge"
 			DailyChallenges()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "LabCheck"
 			LabGuiDisplay()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "PetCheck"
 			PetGuiDisplay()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "RequestCC"
 			RequestCC()
@@ -1211,32 +1211,32 @@ Func __RunFunction($action)
 
 		Case "UpgradeHeroes"
 			UpgradeHeroes()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "UpgradeBuilding"
 			UpgradeBuilding()
 			If _Sleep($DELAYRUNBOT3) Then Return
 			AutoUpgrade()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "UpgradeWall"
 			$g_iNbrOfWallsUpped = 0
 			UpgradeWall()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "BuilderBase"
 			If $g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack Then
 				BuilderBase()
 			EndIf
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "CollectAchievements"
 			CollectAchievements()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "CollectFreeMagicItems"
 			CollectFreeMagicItems()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "ForgeClanCapitalGold"
 			ForgeClanCapitalGold()
@@ -1245,7 +1245,7 @@ Func __RunFunction($action)
 
 		Case "BBClanGames"
 			BBClanGames()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "CollectCCGold"
 			CollectCCGold()
@@ -1342,23 +1342,11 @@ Func FirstCheck()
 EndFunc   ;==>FirstCheck
 
 Func BuilderBase($bTest = False)
-	;Local Static $asLastTimeChecked[8]
 
-	;If $g_bFirstStart Then $asLastTimeChecked[$g_iCurAccount] = ""
-
-	;If _DateIsValid($asLastTimeChecked[$g_iCurAccount]) Then
-	;	Local $iLastCheck = _DateDiff('n', $asLastTimeChecked[$g_iCurAccount], _NowCalc()) ; elapse time from last check (minutes)
-	;	SetLog("Latest BuilderBase() at: " & $asLastTimeChecked[$g_iCurAccount] & ", Check DateCalc: " & $iLastCheck & " min")
-	;	If $iLastCheck <= 360 And Not $bTest Then Return ; A check each 6 hours [6*60 = 360]
-	;EndIf
-
-	If SwitchBetweenBases() And isOnBuilderBase() Then
+	; switch to builderbase and check it is builderbase
+	If SwitchBetweenBases(True, True) And isOnBuilderBase() Then
 
 		$g_bStayOnBuilderBase = True
-		If _Sleep($DELAYRUNBOT3) Then Return
-		If checkObstacles() Then Return
-
-		BuilderBaseReport()
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 
@@ -1366,20 +1354,32 @@ Func BuilderBase($bTest = False)
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 
-		StarLabGuiDisplay()
-		If _Sleep($DELAYRUNBOT3) Then Return
-		If checkObstacles() Then Return
-
-		AttackBB()
-		If _Sleep($DELAYRUNBOT3) Then Return
-		If checkObstacles() Then Return
-		If $g_bRestart = True Then Return
-
 		BuilderBaseReport()
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 
-		OttoBuildingUpgrades()
+	;	LocateBuilderHall()
+	;	If _Sleep($DELAYRUNBOT3) Then Return
+	;	If checkObstacles() Then Return
+
+		StarLabGuiDisplay()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		DoAttackBB()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+		If $g_bRestart = True Then Return
+
+		CollectBuilderBase(False, False, False)
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		BuilderBaseReport(True, True)
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		BOBBuildingUpgrades()
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 		If $g_bRestart = True Then Return
@@ -1405,10 +1405,8 @@ Func BuilderBase($bTest = False)
 		If checkObstacles() Then Return
 
 		; switch back to normal village
-		If SwitchBetweenBases() Then $g_bStayOnBuilderBase = False
+		SwitchBetweenBases()
 
-
-		;$asLastTimeChecked[$g_iCurAccount] = _NowCalc()
 	EndIf
 
 EndFunc   ;==>BuilderBase

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (02-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -116,6 +116,7 @@ EndFunc   ;==>GetNoxRtPath
 
 Func GetNoxPath()
 	Local $path = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\DuoDianOnline\SetupInfo\", "InstallPath")
+	$__Nox_Version = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\Nox\", "DisplayVersion")
 	If @error = 0 Then
 		If StringRight($path, 1) <> "\" Then $path &= "\"
 		$path &= "bin\"
@@ -203,7 +204,7 @@ Func InitNox($bCheckOnly = False)
 		$g_sAndroidProgramPath = $NoxFile
 		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = GetNoxAdbPath()
-		$g_sAndroidVersion = $Version
+		$g_sAndroidVersion = $__Nox_Version
 		$__Nox_Path = $path
 		$g_sAndroidPath = $__Nox_Path
 		$__VBoxManage_Path = $VBoxFile

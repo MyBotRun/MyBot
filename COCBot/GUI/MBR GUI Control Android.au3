@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MMHK (11-2016)
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -169,6 +169,11 @@ Func getAllEmulators()
 		If GetVersionNormalized($__BlueStacks_Version) > GetVersionNormalized("1.0") Then $sEmulatorString &= "BlueStacks2|"
 	EndIf
 
+	$__BlueStacks5_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "Version")
+    If Not @error Then
+        If GetVersionNormalized($__BlueStacks5_Version) > GetVersionNormalized("5.0") Then $sEmulatorString &= "BlueStacks5|"
+    EndIf
+
 	; Nox :
 	Local $NoxEmulator = GetNoxPath()
 	If FileExists($NoxEmulator) Then $sEmulatorString &= "Nox|"
@@ -183,8 +188,22 @@ Func getAllEmulators()
 
 	Local $sResult = StringRight($sEmulatorString, 1)
 	If $sResult == "|" Then $sEmulatorString = StringTrimRight($sEmulatorString, 1)
+	
+	Local $aEmulator = StringSplit($sEmulatorString, "|", $STR_NOCOUNT)
 	If $sEmulatorString <> "" Then
-		Setlog("All Emulator found in your machine: " & $sEmulatorString)
+		If UBound($aEmulator) = 1 Then
+			Setlog("Emulator Found In Your Machine :")
+		Else	
+			Setlog(UBound($aEmulator) & " Emulators Found In Your Machine :")
+		EndIf
+		For $i = 0 To UBound($aEmulator) - 1
+			Local $emuVer = ""
+			If StringInStr($aEmulator[$i], "BlueStacks") Then $emuVer = $__BlueStacks_Version
+			If StringInStr($aEmulator[$i], "BlueStacks5") Then $emuVer = $__BlueStacks5_Version
+			If StringInStr($aEmulator[$i], "Memu") Then $emuVer = $__MEmu_Version
+			If StringInStr($aEmulator[$i], "nox") Then $emuVer = $__Nox_Version
+			SetLog("  - " & $aEmulator[$i] & " version: " & $emuVer, $COLOR_SUCCESS)
+		Next
 	Else
 		Setlog("No Emulator found in your machine")
 		Return
@@ -208,46 +227,46 @@ Func getAllEmulatorsInstances()
 	Local $Emulator = GUICtrlRead($g_hCmbAndroidEmulator)
 	Local $sEmulatorPath = 0
 
-	Switch $Emulator
+	Switch $emulator
 		Case "BlueStacks"
 			GUICtrlSetData($g_hCmbAndroidInstance, "Android", "Android")
 			Return
 		Case "BlueStacks2"
-			Local $VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "DataDir")
+			GUICtrlSetData($g_hCmbAndroidInstance, "Android", "Android")
+			Local $VMsBlueStacks = ""
+			$VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "DataDir")
 			$sEmulatorPath = $VMsBlueStacks ; C:\ProgramData\BlueStacks\Engine
+	   Case "BlueStacks5"
+            Local $VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "DataDir")
+            $sEmulatorPath = $VMsBlueStacks ; C:\ProgramData\BlueStacks\Engine
 		Case "Nox"
-			$sEmulatorPath = GetNoxPath() & "\BignoxVMS"  ; C:\Program Files\Nox\bin\BignoxVMS
+			$sEmulatorPath = GetNoxPath() & "\BignoxVMS"
 		Case "MEmu"
-			$sEmulatorPath = GetMEmuPath() & "\MemuHyperv VMs"  ; C:\Program Files\Microvirt\MEmu\MemuHyperv VMs
+			$sEmulatorPath = GetMEmuPath() & "\MemuHyperv VMs"
 		Case "iTools"
 			$sEmulatorPath = GetiToolsPath() & "\Repos\VMs"  ; C:\Program Files (x86)\ThinkSky\iToolsAVM\Repos\VMs
+		Case Else
+			GUICtrlSetData($g_hCmbAndroidInstance, "Android", "Android")
+			Return
 	EndSwitch
 
 	; Just in case
 	$sEmulatorPath = StringReplace($sEmulatorPath, "\\", "\")
 
 	; BS Multi Instance
-	Local $sBlueStacksFolder = ""
-	If $Emulator = "BlueStacks2" Then $sBlueStacksFolder = "Android"
+	Local $sBlueStacksFolder = ($Emulator = "BlueStacks2" Or $Emulator = "BlueStacks5") ? ("Pie*;Oreo*;Nougat*;Android*") : ("*")
 
 	; Getting all VM Folders
-	Local $aEmulatorFolders = _FileListToArray($sEmulatorPath, $sBlueStacksFolder & "*", $FLTA_FOLDERS)
-	If @error = 1 Then
-		Setlog($Emulator & " -- Path was invalid. " & $sEmulatorPath)
-		Return
-	EndIf
-	If @error = 4 Then
-		Setlog($Emulator & " -- No file(s) were found. " & $sEmulatorPath)
-		Return
-	EndIf
-
-	; Removing the [0] -> $aArray[0] = Number of Files\Folders returned
-	_ArrayDelete($aEmulatorFolders, 0)
+	Local $eError = 0
 
 	; Populating the Instance ComboBox var
-	GUICtrlSetData($g_hCmbAndroidInstance, _ArrayToString($aEmulatorFolders))
+	Local $aEmulatorFolders = _FileListToArrayRec($sEmulatorPath, $sBlueStacksFolder, $FLTA_FOLDERS)
+	$eError = @error
+	If $eError = 0 Then
+		GUICtrlSetData($g_hCmbAndroidInstance, StringReplace(_ArrayToString($aEmulatorFolders, "|", 1), "\", ""))
+	EndIf
 
-	If $Emulator == $g_sAndroidEmulator Then
+	If $emulator == $g_sAndroidEmulator Then
 		_GUICtrlComboBox_SelectString($g_hCmbAndroidInstance, $g_sAndroidInstance)
 	Else
 		_GUICtrlComboBox_SetCurSel($g_hCmbAndroidInstance, 0)

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Trlopes (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -172,7 +172,7 @@ Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $ma
 	Local $aButtons
 	Local $sButtons = ""
 
-	If $bDebugImageSave Then SaveDebugDiamondImage("findButton", $searchArea)
+	;If $bDebugImageSave Then SaveDebugDiamondImage("findButton", $searchArea)
 
 	; check if file tile is a pattern
 	If IsString($buttonTileArrayOrPatternOrFullPath) Then
@@ -290,7 +290,7 @@ Func GetButtonDiamond($sButtonName)
 		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon" ; Full size of object buttons at the bottom
 			;$btnDiamond = GetDiamondFromRect("140,591,720,671")
 			$btnDiamond = GetDiamondFromRect2(140, 531 + $g_iBottomOffsetY, 720, 611 + $g_iBottomOffsetY)
-			SaveDebugDiamondImage("ObjectButtons", $btnDiamond)
+			If $g_bDebugImageSave Then SaveDebugDiamondImage("ObjectButtons", $btnDiamond)
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			;$btnDiamond = GetDiamondFromRect("359,412(148,66)") X,Y,X+148,Y+66
 			$btnDiamond = GetDiamondFromRect2(359, 382 + $g_iMidOffsetY, 507, 448 + $g_iMidOffsetY)
@@ -693,7 +693,7 @@ Func FindImageInPlace2($sImageName, $sImageTile, $iX1=-1, $iY1=-1, $iX2=-1, $iY2
 	EndIf
 	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
 
-	SetLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
+;	SetLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
 
 	Return $returnvalue
 EndFunc   ;==>FindImageInPlace2

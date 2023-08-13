@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (Jun/Aug-2015),Sardo 2015-08,Monkeyhunter(2106-2)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -129,7 +129,7 @@ Func UpgradeBuilding()
 				EndIf
 				If UpgradeNormal($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
-				SetLog("Gold used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
+				SetLog("Gold used = " & _NumberFormat($g_avBuildingUpgrades[$iz][2], True), $COLOR_INFO)
 				$g_iNbrOfBuildingsUppedGold += 1
 				$g_iCostGoldBuilding += $g_avBuildingUpgrades[$iz][2]
 				UpdateStats()
@@ -142,7 +142,7 @@ Func UpgradeBuilding()
 				EndIf
 				If UpgradeNormal($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
-				SetLog("Elixir used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
+				SetLog("Elixir used = " & _NumberFormat($g_avBuildingUpgrades[$iz][2], True), $COLOR_INFO)
 				$g_iNbrOfBuildingsUppedElixir += 1
 				$g_iCostElixirBuilding += $g_avBuildingUpgrades[$iz][2]
 				UpdateStats()
@@ -161,7 +161,7 @@ Func UpgradeBuilding()
 				EndIf
 				
 				$iUpgradeAction += 2 ^ ($iz + 1)
-				SetLog("Dark Elixir used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
+				SetLog("Dark Elixir used = " & _NumberFormat($g_avBuildingUpgrades[$iz][2], True), $COLOR_INFO)
 				$g_iNbrOfHeroesUpped += 1
 				$g_iCostDElixirHero += $g_avBuildingUpgrades[$iz][2]
 				UpdateStats()
@@ -279,10 +279,9 @@ Func UpgradeNormal($iUpgradeNumber)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
 		If _Sleep($DELAYUPGRADENORMAL2) Then Return
 		ClickP($aUpgradeButton, 1, 0, "#0297") ; Click Upgrade Button
-		If _Sleep($DELAYUPGRADENORMAL3) Then Return ; Wait for window to open
+		If _Sleep(2000) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn1")
-		Local $aBldgUpgradeWinChk[4] = [687, 161 + $g_iMidOffsetY, 0xCD1419, 20] ; Red pixel on botton X to close window
-		If _WaitForCheckPixel($aBldgUpgradeWinChk, $g_bCapturePixel,Default, "BldgUpgradeWinChk", Default, Default, 100) Then ; wait up to 2 seconds for upgrade window to open
+		If _ColorCheck(_GetPixelColor(676, 154 + $g_iMidOffsetY, True), Hex(0xEC1115, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
 			If _ColorCheck(_GetPixelColor(459, 491 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _ColorCheck(_GetPixelColor(459, 496 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _
 					_ColorCheck(_GetPixelColor(459, 500 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) Then ; Check for Red Zero = means not enough loot!
 
@@ -322,7 +321,7 @@ Func UpgradeNormal($iUpgradeNumber)
 				
 				Return True
 			EndIf
-		ElseIf _ColorCheck(_GetPixelColor(719, 118 + $g_iMidOffsetY, True), Hex(0xDF0408, 6), 20) Then ; Check if the building Upgrade window is open, For Warden
+		ElseIf _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xED1115, 6), 20) Then ; Check if the building Upgrade window is open, For Warden
 			If _ColorCheck(_GetPixelColor(690, 527 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _ColorCheck(_GetPixelColor(690, 531 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _
 					_ColorCheck(_GetPixelColor(690, 535 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) Then ; Check for Red Zero = means not enough loot!
 
@@ -382,10 +381,9 @@ Func UpgradeHero($iUpgradeNumber)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		ClickP($aUpgradeButton, 1, 0, "#0305") ; Click Upgrade Button
-		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
+		If _Sleep(2000) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
-		Local $aHeroUpgradeWinChk[4] = [719, 128 + $g_iMidOffsetY, 0xCD161D, 20] ; Red pixel on botton X to close window
-		If _WaitForCheckPixel($aHeroUpgradeWinChk, $g_bCapturePixel,Default, "HeroUpgradeWinChk", Default, Default, 100) Then ; wait up to 2 seconds upgrade window to open
+		If _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xED1115, 6), 20) Then ; wait up to 2 seconds upgrade window to open
 			If _ColorCheck(_GetPixelColor(690, 527 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _ColorCheck(_GetPixelColor(690, 531 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _
 					_ColorCheck(_GetPixelColor(690, 535 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Hero Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No DE!", $COLOR_ERROR)

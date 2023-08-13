@@ -3,7 +3,7 @@
 ; Description ...: This file contains the Sequence that runs all MBR Bot
 ; Author ........: Kychera (05-2017)
 ; Modified ......: NguyenAnhHD (12-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -71,31 +71,35 @@ Func MatchTroopDropName($Num)
 		Case 28
 			Return $eHogs
 		Case 29
+			Return $eSHogs
+ 		Case 30
 			Return $eValk
-		Case 30
+ 		Case 31
 			Return $eSValk
-		Case 31
+ 		Case 32
 			Return $eGole
-		Case 32
+ 		Case 33
 			Return $eWitc
-		Case 33
+ 		Case 34
 			Return $eSWitc
-		Case 34
+ 		Case 35
 			Return $eLava
-		Case 35
+ 		Case 36
 			Return $eIceH
-		Case 36
+ 		Case 37
 			Return $eBowl
-		Case 37
+ 		Case 38
 			Return $eSBowl
-		Case 38
+ 		Case 39
 			Return $eIceG
-		Case 39
+ 		Case 40
 			Return $eHunt
-		Case 40
+ 		Case 41
+			Return $eAppWard
+ 		Case 42
 			Return "CC"
-		Case 41
-			Return "HEROES"
+		Case 43
+ 			Return "HEROES"
 	EndSwitch
 EndFunc   ;==>MatchTroopDropName
 
@@ -208,54 +212,62 @@ Func MatchSlotsPerEdge($Num)
 			Else
 				Return 2
 			EndIf
-		Case 29 ;$eValk
-			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
-				Return 0
-			Else
-				Return 2
-			EndIf
-		Case 30 ;$eSValk
-			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
-				Return 0
-			Else
-				Return 2
-			EndIf
-		Case 31 ;$eGole
-			Return 2
-		Case 32 ;$eWitc
+		Case 29 ;$eSHogs
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 1
 			Else
 				Return 2
 			EndIf
-		Case 33 ;$eSWitc
-			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
-				Return 1
-			Else
-				Return 2
-			EndIf
-		Case 34 ;$eLava
-			Return 2
-		Case 35 ;$eIceH
-			Return 2
-		Case 36 ;$eBowl
+		Case 30 ;$eValk
+ 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
+ 				Return 0
+ 			Else
+ 				Return 2
+ 			EndIf
+		Case 31 ;$eSValk
+ 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
+ 				Return 0
+ 			Else
+ 				Return 2
+ 			EndIf
+		Case 32 ;$eGole
+ 			Return 2
+		Case 33 ;$eWitc
+ 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
+ 				Return 1
+ 			Else
+ 				Return 2
+ 			EndIf
+		Case 34 ;$eSWitc
+ 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
+ 				Return 1
+ 			Else
+ 				Return 2
+ 			EndIf
+		Case 35 ;$eLava
+ 			Return 2
+		Case 36 ;$eIceH
+ 			Return 2
+		Case 37 ;$eBowl
+ 			Return 0
+		Case 38 ;$eSBowl
+ 			Return 0
+		Case 39 ;$eIceG
+ 			Return 2
+		Case 40 ;$eHunt
 			Return 0
-		Case 37 ;$eSBowl
-			Return 0
-		Case 38 ;$eIceG
-			Return 2
-		Case 39 ;$eHunt
-			Return 0
-		Case 40 ;CC
-			Return 1
-		Case 41 ;HEROES
+		Case 41 ;$eAppWard
+ 			Return 0
+		Case 42 ;CC
+ 			Return 1
+		Case 43 ;HEROES
 			Return 1
 	EndSwitch
 EndFunc   ;==>MatchSlotsPerEdge
 
 Func MatchSidesDrop($Num)
 	Switch _GUICtrlComboBox_GetCurSel($g_ahCmbDropOrder[$Num])
-		Case $eBarb To $eHunt
+		Case $eBarb To $eAppWard
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 0 Then Return 1
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 1 Then Return 2
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 2 Then Return 3
@@ -263,9 +275,9 @@ Func MatchSidesDrop($Num)
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 4 Then Return 4
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 5 Then Return 1
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 6 Then Return 1
-		Case 39
+		Case 42
 			Return 1 ;CC
-		Case 40
+		Case 43
 			Return 1 ;HEROES
 	EndSwitch
 EndFunc   ;==>MatchSidesDrop

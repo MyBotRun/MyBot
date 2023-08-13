@@ -46,6 +46,7 @@ Func ReferenceFunctions()
 	_SysTrayIconMove(0, 0)
 	ZoomOutBlueStacks()
 	ZoomOutBlueStacks2()
+	ZoomOutBlueStacks5()
 	ZoomOutMEmu()
 	ZoomOutNox()
 	DefaultZoomOut()
@@ -54,9 +55,12 @@ Func ReferenceFunctions()
 	OpenBS()
 	OpenBlueStacks()
 	OpenBlueStacks2()
+	OpenBlueStacks5()
 	InitBlueStacksX()
+	InitBlueStacks5X()
 	InitBlueStacks()
 	InitBlueStacks2()
+	InitBlueStacks5()
 	RestartBlueStacksXCoC()
 	RestartBlueStacksCoC()
 	RestartBlueStacks2CoC()
@@ -88,6 +92,19 @@ Func ReferenceFunctions()
 	KillBSProcess()
 	ServiceStop(0)
 	CloseUnsupportedBlueStacks2()
+	RestartBlueStacks5CoC()
+	CheckScreenBlueStacks5()
+	SetScreenBlueStacks5()
+	ConfigBlueStacks5WindowManager()
+	RebootBlueStacks5SetScreen()
+	GetBlueStacks5RunningInstance()
+	GetBlueStacks5ProgramParameter()
+	BlueStacks5BotStartEvent()
+	BlueStacks5BotStopEvent()
+	BlueStacks5AdjustClickCoordinates($a1, $a2)
+	GetBlueStacks5AdbPath()
+	GetBlueStacks5SvcPid()
+	CloseBlueStacks5()
 	OpenMEmu()
 	GetMEmuProgramParameter()
 	GetMEmuPath()
@@ -165,7 +182,6 @@ Func ReferenceGlobals()
 
 	$a1 = $g_aaiTroopsToBeUsed
 	$a1 = $aArmyCCRemainTime
-	$a1 = $aIsReloadError
 	$a1 = $g_iAndroidControlClickWindow
 
 	$a1 = $ATTACKVECTOR_A
@@ -351,6 +367,7 @@ Func ReferenceGlobals()
 	$a1 = $eIcnDonCustomB
 	$a1 = $eIcnAirdefense
 	$a1 = $eIcnScattershot
+	$a1 = $eIcnMonolith
 	$a1 = $eIcnDarkBarrackBoost
 	$a1 = $eIcnDarkElixirStorage
 	$a1 = $eIcnSpellsCost
@@ -443,6 +460,7 @@ Func ReferenceGlobals()
 
 	$a1 = $eTroopMinion
 	$a1 = $eTroopHogRider
+	$a1 = $eTroopSuperHogRider
 	$a1 = $eTroopValkyrie
 	$a1 = $eTroopGolem
 	$a1 = $eTroopWitch
@@ -451,6 +469,7 @@ Func ReferenceGlobals()
 	$a1 = $eTroopBowler
 	$a1 = $eTroopIceGolem
 	$a1 = $eTroopHeadhunter
+	$a1 = $eTroopAppWard
 	$a1 = $eTroopCount
 	$a1 = $eSpellLightning
 	$a1 = $eSpellHeal
@@ -486,6 +505,7 @@ Func ReferenceGlobals()
 
 	$a1 = $eMini
 	$a1 = $eHogs
+	$a1 = $eSHogs
 	$a1 = $eValk
 	$a1 = $eGole
 	$a1 = $eWitc
@@ -494,6 +514,7 @@ Func ReferenceGlobals()
 	$a1 = $eSBowl
 	$a1 = $eIceG
 	$a1 = $eHunt
+	$a1 = $eAppWard
 	$a1 = $eKing
 	$a1 = $eQueen
 	$a1 = $eWarden

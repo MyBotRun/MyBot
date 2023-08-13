@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -56,7 +56,7 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 				$g_iTotalSpells = Number($aGetSpellCap[2])
 				$g_iCurrentSpells = Number($aGetSpellCap[1])
 			Else
-				SetLog("Error in getArmySpellCapacity: Couldn't reall all Capacity Values", $COLOR_ERROR) ; log if there is read error
+				SetLog("Error in getArmySpellCapacity: Couldn't read all Capacity Values", $COLOR_ERROR) ; log if there is read error
 				$g_iCurrentSpells = 0
 				$g_iTotalSpells = $g_iTotalSpellValue
 			EndIf

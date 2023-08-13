@@ -4,7 +4,7 @@
 ;                : Search for [X] in TR area and click if found.  Search for building text and clickaway if found
 ; Author ........: Fliegerfaust (06/2019)
 ; Modified ......: GrumpyHog (11/2022)
-; Remarks .......: This file is part of MyBot Copyright 2015-2022
+; Remarks .......: This file is part of MyBot Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

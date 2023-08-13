@@ -1,3 +1,78 @@
+* v8.1 **
+* Added Clan Capital Trophies and League.
+* CC trophies in multistats (page 3).
+* Added Reload Game Click when Amazon OOS message.
+* AutoUpgrade and Lab Cost/Duration OCR improvement.
+* Fixed Forge with BB Loot.
+* Added Safe Loot Level in GUI for ForgeCraft.
+* Rewritten checkObstacles.au3 with new Error Windows.
+* Fixed BB Builders Count in multistats tab.
+* Fixed Some Super Troops Boost.
+* Added Monolith to Weak Base Filter, CSV SIDEB & MAKE (Target).
+* Changed Tolerance of Request Button when available.
+* Added Login Fail Error Window.
+* Cleaned CheckObstacles Code and Images.
+* Improved Super Troops Boost.
+* Improved Monolith Level 1 Detection.
+* Can Now Target Both ScatterShots [CSV].
+* Handle for green button in Daily Rewards Window.
+* Improved Some Detections (Sieges Switch Window & Spell requests).
+* Fixed Wall Upgrade Error in Auto Upgrade.
+* Adjusted Some Coordinates For Clan Capital Upgrades.
+* Fixed Close Start Craft Window When Not Enough Resource.
+* Added BS5 Pie64 Support (Based on Work of Xbebenk).
+* Added Nox Pie64 Support.
+* Revert To Google Distribution.
+* Fixed Lab Check Upgrade in Progress.
+* Improved OCR in Clan Capital.
+* Fixed OCR Costs Values (Update BB2.0).
+* Added Missing Images For Scattershots Level 1.
+* Improved "Log in with Supercell ID" Management.
+* Fixed Builder Base ZoomOut
+* Added Otto Outpost ZoomOut
+* Added ElectroFire Wizard To Star Laboratory.
+* Added Reboot Emulator if "COC isn't Responding" Window is detected.
+* Fixed BS 'hang' during attack search.
+* Added Elixir Cart Collect.
+* Added New BB Leagues and Logos in GUI.
+* Added Smart use of resources for Forge.
+* Trying to fix COC resets to tutorial base
+* Trying to prevent infinite BB / Main base switching loop
+* Added Get out of BB Reinforcement base
+* Fixed OCR White Values for forge.
+* Fixed ScreenCoordinates for Daily Challenge Window.
+* Improved some red costs values.
+* June 2023 Update Fixes
+** Added New Pet Levels.
+** New hero levels and costs.
+** Fixed Heroes and Pets upgrade time.
+** Super Hog Rider support.
+** Apprentice Warden support.
+** Fixed OCR White/Red Labs Costs Values
+* Added BB 2.0 Attack support.
+* Updated BB 2.0 AutoUpgrade.
+* Fixed Forge Gold Collect.
+* Added Minor Update Detection.
+* Added Eagle level 6 and ScatterShots level 4 image match templates.
+* Added Level 5 support for Wall Wrecker and Stone Slammer.
+* Added Auto forge slot Support.
+* Improved SuperTroops Boost start.
+* Fixed Check Discount Perks.
+* Added Some New BB Challenges for Clan Games.
+* Removed Personnal Break and grace time.
+* Fixed Switch Between Bases old issue.
+* Improved BB Blue Village detection.
+* Improved obstacles detection.
+* Added basic BB attack support to Clan Games.
+* Added Support for Second Classic BB Scenery.
+* Enabled Stop before completing your limit and only Purge.
+* Added BOB Control upgrades.
+* Added BB Wall Both Upgrade Button support.
+* Added Dark Ages, Painter, Goblin Caves, Jolly Sceneries support (Attack Only).
+* Added Future, Books of Clash, Spooky Sceneries support (Attack Only).
+* Added BB Crystal Caves Scenery support (Attack Only).
+* Changed Replace ADB : default With dummy.exe to default Don't replace adb.exe.
+
 * v8.0.2 **
 * Respond faster to "Stop" during zoomout.
 * Fixed CheckZoomOut reset.

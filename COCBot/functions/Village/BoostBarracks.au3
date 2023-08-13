@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MR.ViPER (9/9/2016)
 ; Modified ......: MR.ViPER (17/10/2016), Fliegerfaust (21/12/2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -50,17 +50,17 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 		Else
 			SetDebugLog("BoostTrainBuilding(): $sName called with a wrong Value.", $COLOR_ERROR)
 			ClickAway()
-			_Sleep($DELAYBOOSTBARRACKS2)
+			If _Sleep($DELAYBOOSTBARRACKS2) Then Return
 			Return $bBoosted
 		EndIf
 		Local $aBoostBtn = findButton("BoostBarrack")
 		If IsArray($aBoostBtn) Then
 			ClickP($aBoostBtn)
-			_Sleep($DELAYBOOSTBARRACKS1)
+			If _Sleep($DELAYBOOSTBARRACKS1) Then Return
 			Local $aGemWindowBtn = findButton("GEM")
 			If IsArray($aGemWindowBtn) Then
 				ClickP($aGemWindowBtn)
-				_Sleep($DELAYBOOSTBARRACKS2)
+				If _Sleep($DELAYBOOSTBARRACKS2) Then Return
 				If IsArray(findButton("EnterShop")) Then
 					SetLog("Not enough gems to boost " & $sName, $COLOR_ERROR)
 				Else
@@ -90,7 +90,7 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 	EndIf
 
 	ClickAway()
-	_Sleep($DELAYBOOSTBARRACKS2)
+	If _Sleep($DELAYBOOSTBARRACKS2) Then Return
 
 	Return $bBoosted
 EndFunc   ;==>BoostTrainBuilding

@@ -2,27 +2,26 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: chkShieldStatus
 ; Description ...: Reads Shield & Personal Break time to update global values for user management of Personal Break
-; Syntax ........: chkShieldStatus([$bForceChkShield = False[, $bForceChkPBT = False]])
+; Syntax ........: chkShieldStatus([$bForceChkShield = False)
 ; Parameters ....: $bForceChkShield     - [optional] a boolean value. Default is False.
-; ...............; $bForceChkPBT        - [optional] a boolean value. Default is False.
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-02)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Modified ......: Moebius14 (2023-07)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
+Func chkShieldStatus($bChkShield = True)
 
-	; skip shield data collection if force single PB, wait for shield, or close while training not enabled, or window is not on main base
+	; skip shield data collection if wait for shield, or close while training not enabled, or window is not on main base
 	Local $bHaltModeWithShield = $g_bChkBotStop And $g_iCmbBotCond >= 19 And $g_iCmbBotCond <= 21
-	If (Not $g_bForceSinglePBLogoff And Not $bHaltModeWithShield) And Not $g_bCloseWhileTrainingEnable Or Not (IsMainPage()) Then Return
+	If Not $bHaltModeWithShield And Not $g_bCloseWhileTrainingEnable Or Not (IsMainPage()) Then Return
 
-	Local $Result, $iTimeTillPBTstartSec, $ichkTime = 0, $ichkSTime = 0, $ichkPBTime = 0
+	Local $Result
 
-	If $bChkShield Or $g_asShieldStatus[0] = "" Or $g_asShieldStatus[1] = "" Or $g_asShieldStatus[2] = "" Or $g_sPBStartTime = "" Or $g_bGForcePBTUpdate = True Then ; almost always get shield information
+	If $bChkShield Or $g_asShieldStatus[0] = "" Or $g_asShieldStatus[1] = "" Or $g_asShieldStatus[2] = "" Then ; almost always get shield information
 
 		$Result = getShieldInfo() ; get expire time of shield
 
@@ -36,14 +35,6 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 				SetLog("Shield expires in: " & $sFormattedDiff)
 			Else
 				SetLog("Shield has expired")
-			EndIf
-
-			If _DateIsValid($g_asShieldStatus[2]) Then ; if existing global shield time is valid
-				$ichkTime = Abs(Int(_DateDiff('s', $g_asShieldStatus[2], $Result[2]))) ; compare old and new time
-				If $ichkTime > 60 Then ; test if more than 60 seconds different in case of attack while shield has reduced time
-					$bForceChkPBT = True ; update PB time
-					SetDebugLog("Shield time changed: " & $ichkTime & " Sec, Force PBT OCR: " & $bForceChkPBT, $COLOR_WARNING)
-				EndIf
 			EndIf
 
 			$g_asShieldStatus = $Result ; update ShieldStatus global values
@@ -74,50 +65,6 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 				$g_asShieldStatus[$i] = ""
 			Next
 
-		EndIf
-	EndIf
-
-	If $g_bForceSinglePBLogoff = False Then Return ; return if force single PB feature not enabled.
-
-	If _DateIsValid($g_sPBStartTime) Then
-		$ichkPBTime = Int(_DateDiff('s', $g_sPBStartTime, _NowCalc())) ; compare existing shield date/time to now.
-		If $ichkPBTime >= 295 Then
-			$bForceChkPBT = True ; test if PBT date/time in more than 5 minutes past, force update
-			SetDebugLog("Found old PB time= " & $ichkPBTime & " Seconds, Force update:" & $bForceChkPBT, $COLOR_WARNING)
-		EndIf
-	EndIf
-
-	If $bForceChkPBT Or $g_bGForcePBTUpdate Or $g_sPBStartTime = "" Then
-
-		$g_bGForcePBTUpdate = False ; Reset global flag to force PB update
-
-		$Result = getPBTime() ; Get time in future that PBT starts
-
-		If @error Then SetLog("chkShieldStatus getPBTime OCR error= " & @error & ", Extended= " & @extended, $COLOR_ERROR)
-		;SetDebugLog("getPBTime() returned: " & $Result, $COLOR_DEBUG)
-		If _Sleep($DELAYRESPOND) Then Return
-
-		If _DateIsValid($Result) Then
-			Local $iTimeTillPBTstartMin = Int(_DateDiff('n', $Result, _NowCalc())) ; time in minutes
-
-			If Abs($iTimeTillPBTstartMin) > 0 Then
-				Local $sFormattedDiff = _Date_Difference(_DateAdd("n", -1, _NowCalc()), $Result, 4)
-				SetLog("Personal Break starts in: " & $sFormattedDiff)
-				Local $CorrectstringPB_GUI = StringReplace($sFormattedDiff, StringInStr($sFormattedDiff, " hours ") >= 1 ? " hours " : " hour ", "h")
-				$CorrectstringPB_GUI = StringReplace($CorrectstringPB_GUI, StringInStr($CorrectstringPB_GUI, " minutes ") >= 1 ? " minutes " : " minute ", "'")
-			EndIf
-
-			If $iTimeTillPBTstartMin < -(Int($g_iSinglePBForcedEarlyExitTime)) Then
-				$g_sPBStartTime = _DateAdd('n', -(Int($g_iSinglePBForcedEarlyExitTime)), $Result) ; subtract GUI time setting from PB start time to set early forced break time
-			ElseIf $iTimeTillPBTstartMin < 0 Then ; Might have missed it if less 15 min, but try anyway
-				$g_sPBStartTime = $Result
-			Else
-				$g_sPBStartTime = "" ; clear value, can not log off ealy.
-			EndIf
-			SetDebugLog("Early Log Off time=" & $g_sPBStartTime & ", In " & _DateDiff('n', $g_sPBStartTime, _NowCalc()) & " Minutes", $COLOR_DEBUG)
-		Else
-			SetLog("Bad getPBTtime() return value: " & $Result, $COLOR_ERROR)
-			$g_sPBStartTime = "" ; reset to force update next pass
 		EndIf
 	EndIf
 

@@ -2,8 +2,8 @@
 ; Name ..........: OCR
 ; Description ...: Gets complete value of gold/Elixir/DarkElixir/Trophy/Gem xxx,xxx
 ; Author ........: Didipe (2015)
-; Modified ......: ProMac (2015), Hervidero (2015-12), MMHK (2016-12), MR.ViPER (2017-4)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Modified ......: ProMac (2015), Hervidero (2015-12), MMHK (2016-12), MR.ViPER (2017-4), Moebius14 (2023-06)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -75,24 +75,39 @@ Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elix
 EndFunc   ;==>getResourcesBonus
 
 Func getCostsUpgrade($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
-	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 104, 16, True)
+	Return getOcrAndCapture("coc-CostsUpgrades-Big", $x_start, $y_start, 104, 16, True)
 EndFunc   ;==>getCostsUpgrade
+
+Func getCostsUpgrade1($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
+	Return getOcrAndCapture("coc-cc-trophy", $x_start, $y_start, 104, 16, True)
+EndFunc   ;==>getCostsUpgrade1
+
+Func getCostsUpgrade2($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
+	Return getOcrAndCapture("coc-CostsUpgrades-Med", $x_start, $y_start, 104, 16, True)
+EndFunc   ;==>getCostsUpgrade2
 
 Func getCostsUpgradeRed($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
 	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 104, 16, True)
 EndFunc   ;==>getCostsUpgradeRed
+
+Func getCostsUpgradeRed2($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
+	Return getOcrAndCapture("coc-u-r2", $x_start, $y_start, 104, 16, True)
+EndFunc   ;==>getCostsUpgradeRed2
+
+Func getCostsUpgradeRed3($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
+	Return getOcrAndCapture("coc-u-r3", $x_start, $y_start, 104, 16, True)
+EndFunc   ;==>getCostsUpgradeRed3
 
 Func getResourcesBonusPerc($x_start, $y_start) ; -> Gets complete value of Bonus % in "AttackReport.au3"
 	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 48, 16, True)
 EndFunc   ;==>getResourcesBonusPerc
 
 Func getLabUpgrdResourceWht($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons, xxx,xxx for "laboratory.au3" and "starlaboratory.au3" when white text
-	;SetDebugLog("Getting lab upgrade cost from x,y=" & $x_start & "," & $y_start) ;HArchH
 	Return getOcrAndCapture("coc-lab-w", $x_start, $y_start, 70, 14, True)
 EndFunc   ;==>getLabUpgrdResourceWht
 
 Func getLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons,  xxx,xxx for "laboratory.au3" when red text
-	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 70, 14, True)
+	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 70, 12, True)
 EndFunc   ;==>getLabUpgrdResourceRed
 
 Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir on the troop buttons,  xxx,xxx for "starlaboratory.au3" when red text
@@ -100,15 +115,19 @@ Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of 
 EndFunc   ;==>getLabUpgrdResourceRed
 
 Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 72, 18) ; Was 42. 72 tested as enough : "12d 19h" now
+	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 72, 18) ; "12d 19h"
 EndFunc   ;==>getBldgUpgradeTime
 
-Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V2 for Dec2015 update
-	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 68, 22) ; 40 is enougth xxx : 2 numbers and one letter at max
+Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
+	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 80, 22) ; 80 is required to upgrades > 10 days
 EndFunc   ;==>getLabUpgradeTime
 
-Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 464, 527 + $g_iMidOffsetY
-	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 68, 20) ; 68 is required to days & hours for young hero
+Func getPetUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V4 for Jun2023 update
+	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 166, 22) ; 166 is required to upgrades > 10 days
+EndFunc   ;==>getLabUpgradeTime
+
+Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 578, 470 + $g_iMidOffsetY
+	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 72, 20) ; 72 is required to days & hours for hero ; Jun2023
 EndFunc   ;==>getHeroUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
@@ -133,18 +152,15 @@ EndFunc   ;==>getTroopCountBig
 
 Func getTroopsSpellsLevel($x_start, $y_start, $bDebugImageSave = $g_bDebugImageSave) ;  -> Gets spell level on Attack Screen for selected spell kind (could be used for troops too)
 	Local $Result = getOcrAndCapture("coc-spellslevel", $x_start, $y_start, 20, 14, True)
-	$bDebugImageSave = True
 	If $bDebugImageSave Then
 		Local $sArea = $x_start & "," & $y_start & "," & $x_start + 20 & "," & $y_start + 14
 		SaveDebugRectImage("SpellsOCR" & $Result, $sArea)
 	EndIf
 	Return $Result
-	;Return getOcrAndCapture("coc-spellslevel", $x_start, $y_start, 20, 14, True)
 EndFunc   ;==>getTroopsSpellsLevel
 
 Func getSiegeLevel($x_start, $y_start, $bDebugImageSave = $g_bDebugImageSave) ;  -> Gets Siege level on Attack Screen
 	Local $Result = getOcrAndCapture("coc-siegelevel", $x_start, $y_start, 20, 14, True)
-	$bDebugImageSave = True
 	If $bDebugImageSave Then
 		Local $sArea = $x_start & "," & $y_start & "," & $x_start + 20 & "," & $y_start + 14
 		SaveDebugRectImage("SiegeOCR" & $Result, $sArea)
@@ -163,10 +179,6 @@ EndFunc   ;==>getArmyCampCap
 Func getCastleDonateCap($x_start, $y_start) ;  -> Gets clan castle capacity,  --> donatecc.au3
 	Return getOcrAndCapture("coc-army", $x_start, $y_start, 30, 14, True)
 EndFunc   ;==>getCastleDonateCap
-
-Func getAttackDisable($x_start, $y_start) ;  -> 346, 182 - Gets red text disabled for early warning of Personal Break
-	Return getOcrAndCapture("coc-dis", $x_start, $y_start, 118, 24, True)
-EndFunc   ;==>getAttackDisable
 
 Func getOcrLanguage($x_start, $y_start) ;  -> Get english language - main screen - "Attack" text on attack button
 	Return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 93, 16, True)
@@ -292,7 +304,7 @@ EndFunc   ;==>getOcrReloadMessage
 
 Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	;  -> Get the Text with time till maintenance is over from reload msg(171, 375)
-	Local $result = getOcrAndCapture("coc-maintenance", $x_start, $y_start, 430, 625, True)
+	Local $result = getOcrAndCapture("coc-maintenance", $x_start, $y_start, 200, 18, True)
 	Local $String = ""
 	If $sLogText = Default Then
 		$String = "getOcrMaintenanceTime: " & $result
@@ -308,7 +320,7 @@ Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColo
 EndFunc   ;==>getOcrMaintenanceTime
 
 Func getOcrTimeGameTime($x_start, $y_start) ;  -> Get the guard/shield time left, middle top of the screen
-	Return getOcrAndCapture("coc-clangames", $x_start, $y_start, 116, 31, True)
+	Return getOcrAndCapture("coc-clangames", $x_start, $y_start, 120, 31, True)
 EndFunc   ;==>getOcrTimeGameTime
 
 Func getOcrYourScore($x_start, $y_start) ; -> Gets CheckValuesCost on Train Window

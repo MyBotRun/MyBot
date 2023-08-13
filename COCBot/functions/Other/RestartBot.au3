@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run team
 ; Modified ......: Cosote (Feb-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -32,7 +32,7 @@ Func RestartBot($bCloseAndroid = True, $bAutostart = True)
 
 	If $bCloseAndroid = True Then
 		CloseAndroid("RestartBot")
-		_Sleep(1000)
+		If _Sleep(1000) Then Return
 	EndIf
 	; Restart My Bot
 	Local $pid = Run("cmd.exe /c start """" " & $sCmdLine, $g_sWorkingDir, @SW_HIDE) ; cmd.exe only used to support launch like "..\AutoIt3\autoit3.exe" from console

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Didipe (05-2015), ProMac(2016), MonkeyHunter(03-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -121,7 +121,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(40), MatchSidesDrop(40), MatchTroopWaveNb(40), 1, MatchSlotsPerEdge(40)], _
 							[MatchTroopDropName(41), MatchSidesDrop(41), MatchTroopWaveNb(41), 1, MatchSlotsPerEdge(41)]]
 				Else
-					Local $listInfoDeploy[42][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[44][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eIceG, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eYeti, $nbSides, 1, 1, 2] _
@@ -136,11 +136,13 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							, [$eBabyD, $nbSides, 1, 1, 1] _
 							, [$eInfernoD, $nbSides, 1, 1, 1] _
 							, [$eHogs, $nbSides, 1, 1, 1] _
+							, [$eSHogs, $nbSides, 1, 1, 1] _
 							, [$eValk, $nbSides, 1, 1, 0] _
 							, [$eSValk, $nbSides, 1, 1, 0] _
 							, [$eBowl, $nbSides, 1, 1, 0] _
 							, [$eSBowl, $nbSides, 1, 1, 0] _
 							, [$eHunt, $nbSides, 1, 1, 0] _
+							, [$eAppWard, $nbSides, 1, 1, 0] _
 							, [$eMine, $nbSides, 1, 1, 0] _
 							, [$eSMine, $nbSides, 1, 1, 0] _
 							, [$eEDrag, $nbSides, 1, 1, 0] _
@@ -362,7 +364,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			If $g_bDebugSetlog Then SetDebugLog("No Wast time... exit, no troops usable left", $COLOR_DEBUG)
 			ExitLoop ;Check remaining quantities
 		EndIf
-		For $i = $eBarb To $eHunt ; launch all remaining troops
+		For $i = $eBarb To $eAppWard ; launch all remaining troops
 			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
 				CheckHeroesHealth()
 				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return

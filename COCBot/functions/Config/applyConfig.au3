@@ -6,7 +6,7 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2021
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -332,18 +332,18 @@ Func ApplyConfig_600_6($TypeReadSave)
 
 			GUICtrlSetState($g_hChkPlacingNewBuildings, $g_iChkPlacingNewBuildings = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
-			; Otto Target Upgrades
+			; BOB Target Upgrades
 			GUICtrlSetState($g_hChkBattleMachineUpgrade, $g_bBattleMachineUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDoubleCannonUpgrade, $g_bDoubleCannonUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkArcherTowerUpgrade, $g_bArcherTowerUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkMultiMortarUpgrade, $g_bMultiMortarUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkMegaTeslaUpgrade, $g_bMegaTeslaUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkAnyDefUpgrade, $g_bAnyDefUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkBattlecopterUpgrade, $g_bBattlecopterUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			chkActivateBBSuggestedUpgrades()
 			chkActivateBBSuggestedUpgradesGold()
 			chkActivateBBSuggestedUpgradesElixir()
 			chkPlacingNewBuildings()
-			chkUpgradeBattleMachine()
 
 			GUICtrlSetState($g_hChkClanGamesAir, $g_bChkClanGamesAir ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkClanGamesGround, $g_bChkClanGamesGround ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -351,8 +351,6 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkClanGamesEnabled, $g_bChkClanGamesEnabled ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			GUICtrlSetState($g_hChkClanGamesNightVillage, $g_bChkClanGamesNightVillage ? $GUI_CHECKED : $GUI_UNCHECKED)
-
-
 
 			GUICtrlSetState($g_hChkClanGames60, $g_bChkClanGames60 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkClanGamesPurge, $g_bChkClanGamesPurge ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -406,15 +404,36 @@ Func ApplyConfig_600_6($TypeReadSave)
 				GUICtrlSetState($g_hBtnBBDropOrderSet, $GUI_ENABLE)
 				GUICtrlSetState($g_hBtnBBRemoveDropOrder, $GUI_ENABLE)
 				Local $asBBDropOrder = StringSplit($g_sBBDropOrder, "|")
-				If $asBBDropOrder[0] = 11 Then
-				  SetLog("Old List :" & $g_sBBDropOrder)
-				  SetLog("Old Custom Troop List, appending Battle Machine")
-				  ReDim $asBBDropOrder[13]
-				  $asBBDropOrder[12] = "BattleMachine"
-				  $g_sBBDropOrder &= "|BattleMachine"
+				If $asBBDropOrder[0] = 12 Then
+				  SetLog("Old Custom Troop List, appending Electro Wizard")
+				  ReDim $asBBDropOrder[14]
+				  $asBBDropOrder[13] = "ElectroWizard"
+				  $g_sBBDropOrder &= "|ElectroWizard"
 				  SetLog("New List :" & $g_sBBDropOrder)
 			    EndIf
-			    For $i=0 To $g_iBBTroopCount - 1
+				Local $OldBBWB = False
+				For $i = 0 To $g_iBBTroopCount
+					If $asBBDropOrder[$i] = "WallBreaker" Then
+						$OldBBWB = True
+						ExitLoop
+					EndIf
+				Next
+				If $OldBBWB Then
+					Local $g_sBBDropOrderNew
+					For $i = 0 To $g_iBBTroopCount
+						If $asBBDropOrder[$i] = $g_iBBTroopCount Then ContinueLoop
+						If $asBBDropOrder[$i] = "WallBreaker" Then
+							StringReplace($g_sBBDropOrder, "WallBreaker", "Bomber", 1, 1)
+							$asBBDropOrder[$i] = "Bomber"
+						EndIf
+						$g_sBBDropOrderNew &= $asBBDropOrder[$i] & "|"
+					Next
+					$g_sBBDropOrderNew = StringTrimRight($g_sBBDropOrderNew, 1) ; Remove last '|'
+					$asBBDropOrder = StringSplit($g_sBBDropOrderNew, "|")
+					$g_sBBDropOrder = $g_sBBDropOrderNew
+					SetLog("New List :" & $g_sBBDropOrder)
+				EndIf
+			    For $i = 0 To $g_iBBTroopCount - 1
 					_GUICtrlComboBox_SetCurSel($g_ahCmbBBDropOrder[$i], _GUICtrlComboBox_SelectString($g_ahCmbBBDropOrder[$i], $asBBDropOrder[$i+1]))
 				Next
 				GUICtrlSetBkColor($g_hBtnBBDropOrder, $COLOR_GREEN)
@@ -427,11 +446,23 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkEnableForgeDE, $g_bChkEnableForgeDE ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkEnableForgeBBGold, $g_bChkEnableForgeBBGold ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkEnableForgeBBElix, $g_bChkEnableForgeBBElix ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkEnableSmartUse, $g_bChkEnableSmartUse ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetData($g_acmdGoldSaveMin, $g_iacmdGoldSaveMin)
+			GUICtrlSetData($g_acmdElixSaveMin, $g_iacmdElixSaveMin)
+			GUICtrlSetData($g_acmdDarkSaveMin, $g_iacmdDarkSaveMin)
+			GUICtrlSetData($g_acmdBBGoldSaveMin, $g_iacmdBBGoldSaveMin)
+			GUICtrlSetData($g_acmdBBElixSaveMin, $g_iacmdBBElixSaveMin)
 			_GUICtrlComboBox_SetCurSel($g_hCmbForgeBuilder, $g_iCmbForgeBuilder)
 			GUICtrlSetState($g_hChkEnableAutoUpgradeCC, $g_bChkEnableAutoUpgradeCC ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAutoUpgradeCCIgnore, $g_bChkAutoUpgradeCCIgnore ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAutoUpgradeCCWallIgnore, $g_bChkAutoUpgradeCCWallIgnore ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAutoUpgradeCCPriorArmy, $g_bChkAutoUpgradeCCPriorArmy ? $GUI_CHECKED : $GUI_UNCHECKED)
+			ChkEnableForgeGold()
+			ChkEnableForgeElix()
+			ChkEnableForgeDE()
+			ChkEnableForgeBBGold()
+			ChkEnableForgeBBElix()
+			CmbForgeBuilder()
 			EnableAutoUpgradeCC()
 
 		Case "Save"
@@ -483,7 +514,8 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_bDoubleCannonUpgrade = (GUICtrlRead($g_hChkDoubleCannonUpgrade) = $GUI_CHECKED) ? 1 : 0
 			$g_bArcherTowerUpgrade = (GUICtrlRead($g_hChkArcherTowerUpgrade) = $GUI_CHECKED) ? 1 : 0
 			$g_bMultiMortarUpgrade = (GUICtrlRead($g_hChkMultiMortarUpgrade) = $GUI_CHECKED) ? 1 : 0
-			$g_bMegaTeslaUpgrade = (GUICtrlRead($g_hChkMegaTeslaUpgrade) = $GUI_CHECKED) ? 1 : 0
+			$g_bBattlecopterUpgrade = (GUICtrlRead($g_hChkBattlecopterUpgrade) = $GUI_CHECKED) ? 1 : 0
+			$g_bAnyDefUpgrade = (GUICtrlRead($g_hChkAnyDefUpgrade) = $GUI_CHECKED) ? 1 : 0
 
 			$g_bChkClanGamesAir = (GUICtrlRead($g_hChkClanGamesAir) = $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesGround = (GUICtrlRead($g_hChkClanGamesGround) = $GUI_CHECKED) ? 1 : 0
@@ -542,13 +574,18 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_bChkEnableForgeDE = (GUICtrlRead($g_hChkEnableForgeDE) = $GUI_CHECKED)
 			$g_bChkEnableForgeBBGold = (GUICtrlRead($g_hChkEnableForgeBBGold) = $GUI_CHECKED)
 			$g_bChkEnableForgeBBElix = (GUICtrlRead($g_hChkEnableForgeBBElix) = $GUI_CHECKED)
+			$g_bChkEnableSmartUse = (GUICtrlRead($g_hChkEnableSmartUse) = $GUI_CHECKED)
+			$g_iacmdGoldSaveMin = GUICtrlRead($g_acmdGoldSaveMin)
+			$g_iacmdElixSaveMin = GUICtrlRead($g_acmdElixSaveMin)
+			$g_iacmdDarkSaveMin = GUICtrlRead($g_acmdDarkSaveMin)
+			$g_iacmdBBGoldSaveMin = GUICtrlRead($g_acmdBBGoldSaveMin)
+			$g_iacmdBBElixSaveMin = GUICtrlRead($g_acmdBBElixSaveMin)
 			$g_iCmbForgeBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbForgeBuilder)
 			$g_bChkEnableAutoUpgradeCC = (GUICtrlRead($g_hChkEnableAutoUpgradeCC) = $GUI_CHECKED)
 			$g_bChkAutoUpgradeCCIgnore = (GUICtrlRead($g_hChkAutoUpgradeCCIgnore) = $GUI_CHECKED)
 			$g_bChkAutoUpgradeCCWallIgnore = (GUICtrlRead($g_hChkAutoUpgradeCCWallIgnore) = $GUI_CHECKED)
 			$g_bChkAutoUpgradeCCPriorArmy = (GUICtrlRead($g_hChkAutoUpgradeCCPriorArmy) = $GUI_CHECKED)
 
-			$g_bChkBBWaitForMachine = (GUICtrlRead($g_hChkBBWaitForMachine) = $GUI_CHECKED)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_6
 
@@ -705,18 +742,6 @@ Func ApplyConfig_600_12($TypeReadSave)
 			Next
 			cmbDonateCustomB()
 
-			For $i = 0 To 2
-				_GUICtrlComboBox_SetCurSel($g_ahCmbDonateCustomC[$i], $g_aiDonateCustomTrpNumC[$i][0])
-				GUICtrlSetData($g_ahTxtDonateCustomC[$i], $g_aiDonateCustomTrpNumC[$i][1])
-			Next
-			cmbDonateCustomC()
-
-			For $i = 0 To 2
-				_GUICtrlComboBox_SetCurSel($g_ahCmbDonateCustomD[$i], $g_aiDonateCustomTrpNumD[$i][0])
-				GUICtrlSetData($g_ahTxtDonateCustomD[$i], $g_aiDonateCustomTrpNumD[$i][1])
-			Next
-			cmbDonateCustomD()
-
 			GUICtrlSetState($g_hChkExtraAlphabets, $g_bChkExtraAlphabets ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkExtraChinese, $g_bChkExtraChinese ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkExtraKorean, $g_bChkExtraKorean ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -755,10 +780,6 @@ Func ApplyConfig_600_12($TypeReadSave)
 				$g_aiDonateCustomTrpNumA[$i][1] = GUICtrlRead($g_ahTxtDonateCustomA[$i])
 				$g_aiDonateCustomTrpNumB[$i][0] = _GUICtrlComboBox_GetCurSel($g_ahCmbDonateCustomB[$i])
 				$g_aiDonateCustomTrpNumB[$i][1] = GUICtrlRead($g_ahTxtDonateCustomB[$i])
-				$g_aiDonateCustomTrpNumC[$i][0] = _GUICtrlComboBox_GetCurSel($g_ahCmbDonateCustomC[$i])
-				$g_aiDonateCustomTrpNumC[$i][1] = GUICtrlRead($g_ahTxtDonateCustomC[$i])
-				$g_aiDonateCustomTrpNumD[$i][0] = _GUICtrlComboBox_GetCurSel($g_ahCmbDonateCustomD[$i])
-				$g_aiDonateCustomTrpNumD[$i][1] = GUICtrlRead($g_ahTxtDonateCustomD[$i])
 			Next
 
 			$g_bChkExtraAlphabets = (GUICtrlRead($g_hChkExtraAlphabets) = $GUI_CHECKED)
@@ -924,7 +945,7 @@ Func ApplyConfig_auto($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			GUICtrlSetState($g_hChkAutoUpgrade, $g_bAutoUpgradeEnabled ? $GUI_CHECKED : $GUI_UNCHECKED)
-			For $i = 0 To 15
+			For $i = 0 To Ubound($g_iChkUpgradesToIgnore) - 1
 				GUICtrlSetState($g_hChkUpgradesToIgnore[$i], $g_iChkUpgradesToIgnore[$i] = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
 			For $i = 0 To 2
@@ -936,7 +957,7 @@ Func ApplyConfig_auto($TypeReadSave)
 			chkAutoUpgrade()
 		Case "Save"
 			$g_bAutoUpgradeEnabled = (GUICtrlRead($g_hChkAutoUpgrade) = $GUI_CHECKED)
-			For $i = 0 To 15
+			For $i = 0 To Ubound($g_iChkUpgradesToIgnore) - 1
 				$g_iChkUpgradesToIgnore[$i] = GUICtrlRead($g_hChkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 			Next
 			For $i = 0 To 2
@@ -1239,6 +1260,7 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			GUICtrlSetState($g_ahChkMaxInferno[$DB], $g_abFilterMaxInfernoEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxEagle[$DB], $g_abFilterMaxEagleEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxScatter[$DB], $g_abFilterMaxScatterEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_ahChkMaxMonolith[$DB], $g_abFilterMaxMonolithEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakMortar[$DB], $g_aiFilterMaxMortarLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakWizTower[$DB], $g_aiFilterMaxWizTowerLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakAirDefense[$DB], $g_aiFilterMaxAirDefenseLevel[$DB])
@@ -1246,6 +1268,7 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakInferno[$DB], $g_aiFilterMaxInfernoLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakEagle[$DB], $g_aiFilterMaxEagleLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakScatter[$DB], $g_aiFilterMaxScatterLevel[$DB])
+			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakMonolith[$DB], $g_aiFilterMaxMonolithLevel[$DB])
 			chkDBWeakBase()
 			GUICtrlSetState($g_ahChkMeetOne[$DB], $g_abFilterMeetOneConditionEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 		Case "Save"
@@ -1290,6 +1313,7 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			$g_abFilterMaxInfernoEnable[$DB] = (GUICtrlRead($g_ahChkMaxInferno[$DB]) = $GUI_CHECKED)
 			$g_abFilterMaxEagleEnable[$DB] = (GUICtrlRead($g_ahChkMaxEagle[$DB]) = $GUI_CHECKED)
 			$g_abFilterMaxScatterEnable[$DB] = (GUICtrlRead($g_ahChkMaxScatter[$DB]) = $GUI_CHECKED)
+			$g_abFilterMaxMonolithEnable[$DB] = (GUICtrlRead($g_ahChkMaxMonolith[$DB]) = $GUI_CHECKED)
 			$g_aiFilterMaxMortarLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakMortar[$DB])
 			$g_aiFilterMaxWizTowerLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakWizTower[$DB])
 			$g_aiFilterMaxAirDefenseLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakAirDefense[$DB])
@@ -1297,6 +1321,7 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			$g_aiFilterMaxInfernoLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakInferno[$DB])
 			$g_aiFilterMaxEagleLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakEagle[$DB])
 			$g_aiFilterMaxScatterLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakScatter[$DB])
+			$g_aiFilterMaxMonolithLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakMonolith[$DB])
 			$g_abFilterMeetOneConditionEnable[$DB] = (GUICtrlRead($g_ahChkMeetOne[$DB]) = $GUI_CHECKED)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_28_DB
@@ -1358,6 +1383,7 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			GUICtrlSetState($g_ahChkMaxInferno[$LB], $g_abFilterMaxInfernoEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxEagle[$LB], $g_abFilterMaxEagleEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxScatter[$LB], $g_abFilterMaxScatterEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_ahChkMaxMonolith[$LB], $g_abFilterMaxMonolithEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakMortar[$LB], $g_aiFilterMaxMortarLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakWizTower[$LB], $g_aiFilterMaxWizTowerLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakAirDefense[$LB], $g_aiFilterMaxAirDefenseLevel[$LB])
@@ -1365,6 +1391,7 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakInferno[$LB], $g_aiFilterMaxInfernoLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakEagle[$LB], $g_aiFilterMaxEagleLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakScatter[$LB], $g_aiFilterMaxScatterLevel[$LB])
+			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakMonolith[$LB], $g_aiFilterMaxMonolithLevel[$LB])
 			chkABWeakBase()
 			GUICtrlSetState($g_ahChkMeetOne[$LB], $g_abFilterMeetOneConditionEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 		Case "Save"
@@ -1407,6 +1434,7 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			$g_abFilterMaxInfernoEnable[$LB] = (GUICtrlRead($g_ahChkMaxInferno[$LB]) = $GUI_CHECKED)
 			$g_abFilterMaxEagleEnable[$LB] = (GUICtrlRead($g_ahChkMaxEagle[$LB]) = $GUI_CHECKED)
 			$g_abFilterMaxScatterEnable[$LB] = (GUICtrlRead($g_ahChkMaxScatter[$LB]) = $GUI_CHECKED)
+			$g_abFilterMaxMonolithEnable[$LB] = (GUICtrlRead($g_ahChkMaxMonolith[$LB]) = $GUI_CHECKED)
 			$g_aiFilterMaxMortarLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakMortar[$LB])
 			$g_aiFilterMaxWizTowerLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakWizTower[$LB])
 			$g_aiFilterMaxAirDefenseLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakAirDefense[$LB])
@@ -1414,6 +1442,7 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			$g_aiFilterMaxInfernoLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakInferno[$LB])
 			$g_aiFilterMaxEagleLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakEagle[$LB])
 			$g_aiFilterMaxScatterLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakScatter[$LB])
+			$g_aiFilterMaxMonolithLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakMonolith[$LB])
 			$g_abFilterMeetOneConditionEnable[$LB] = (GUICtrlRead($g_ahChkMeetOne[$LB]) = $GUI_CHECKED)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_28_LB
@@ -1988,10 +2017,6 @@ Func ApplyConfig_600_35_1($TypeReadSave)
 			GUICtrlSetState($g_hChkScreenshotType, $g_bScreenshotPNGFormat ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkScreenshotHideName, $g_bScreenshotHideName ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetData($g_hTxtTimeAnotherDevice, Int(Int($g_iAnotherDeviceWaitTime) / 60))
-			GUICtrlSetState($g_hChkSinglePBTForced, $g_bForceSinglePBLogoff ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtSinglePBTimeForced, $g_iSinglePBForcedLogoffTime)
-			GUICtrlSetData($g_hTxtPBTimeForcedExit, $g_iSinglePBForcedEarlyExitTime)
-			chkSinglePBTForced()
 			GUICtrlSetState($g_hChkAutoResume, $g_bAutoResumeEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetData($g_hTxtAutoResumeTime, $g_iAutoResumeTime)
 			chkAutoResume()
@@ -2027,9 +2052,6 @@ Func ApplyConfig_600_35_1($TypeReadSave)
 			$g_bScreenshotPNGFormat = (GUICtrlRead($g_hChkScreenshotType) = $GUI_CHECKED)
 			$g_bScreenshotHideName = (GUICtrlRead($g_hChkScreenshotHideName) = $GUI_CHECKED)
 			$g_iAnotherDeviceWaitTime = Int(GUICtrlRead($g_hTxtTimeAnotherDevice)) * 60 ; Minutes are entered
-			$g_bForceSinglePBLogoff = (GUICtrlRead($g_hChkSinglePBTForced) = $GUI_CHECKED)
-			$g_iSinglePBForcedLogoffTime = GUICtrlRead($g_hTxtSinglePBTimeForced)
-			$g_iSinglePBForcedEarlyExitTime = GUICtrlRead($g_hTxtPBTimeForcedExit)
 			$g_bAutoResumeEnable = (GUICtrlRead($g_hChkAutoResume) = $GUI_CHECKED)
 			$g_iAutoResumeTime = GUICtrlRead($g_hTxtAutoResumeTime)
 			$g_bDisableNotifications = (GUICtrlRead($g_hChkDisableNotifications) = $GUI_CHECKED)

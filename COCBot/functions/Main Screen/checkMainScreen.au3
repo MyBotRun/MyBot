@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015) , TheMaster1st(2015), Fliegerfaust (06-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkObstacles(), waitMainScreen()
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -44,7 +44,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 
 	$i = 0
 	$iErrorCount = 0
-	$iCheckBeforeRestartAndroidCount = 5
+	$iCheckBeforeRestartAndroidCount = 20
 
 	If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderBase
 	Local $bLocated
@@ -57,8 +57,15 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 		WinGetAndroidHandle()
 
 		$bObstacleResult = checkObstacles($bBuilderBase)
-		SetDebugLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
-
+		;SetDebugLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
+		SetLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
+		;Arch: Arbitrary looping limit...
+		If $i > 24 Then
+			SetLog("Giving up and restarting everything.", $COLOR_ERROR)
+			SaveConfig()
+			RestartBot()
+		Endif
+		
 		$bContinue = False
 		If Not $bObstacleResult Then
 			If $g_bMinorObstacle Then
@@ -92,7 +99,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 	
 	If $bLocated Then
 		; check that shared_prefs are pulled
-		If $g_bUpdateSharedPrefs And Not HaveSharedPrefs() Then PullSharedPrefs()
+		;If $g_bUpdateSharedPrefs And Not HaveSharedPrefs() Then PullSharedPrefs()
 		ZoomOut()
 	EndIf
 	If Not $g_bRunState Then Return False
@@ -132,9 +139,3 @@ Func checkChatTabPixel()
 	EndIf
 	Return False
 EndFunc   ;==>checkChatTabPixel
-
-Func isOnMainVillage1($bNeedCaptureRegion = $g_bNoCapturePixel)
-	Local $aPixelToCheck = $aIsMain
-	Local $bLocated = False
-	Return _checkMainScreenImage($bLocated, $aPixelToCheck)
-EndFunc

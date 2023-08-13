@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), kaganus (08-2015), CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -1504,7 +1504,7 @@ EndFunc   ;==>tiExit
 ; Return values .: Boolean of former redraw state
 ; Author ........: Cosote (2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -1658,7 +1658,7 @@ Func SetTime($bForceUpdate = False)
 		Local $iPetTime = _DateDiff("s", _NowCalc(), $g_sPetUpgradeTime) * 1000
 		If $iPetTime > 0 Then
 			_TicksToDay($iPetTime, $day, $hour, $min, $sec)
-			GUICtrlSetData($g_hLbLPetTime, $day > 0 ? StringFormat("%2ud %02i:%02i", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+			GUICtrlSetData($g_hLbLPetTime, $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 			GUICtrlSetColor($g_hLbLPetTime, $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
 		Else
 			GUICtrlSetData($g_hLbLPetTime, "")
@@ -1675,13 +1675,18 @@ Func SetTime($bForceUpdate = False)
 					Local $iTime = _DateDiff("s", _NowCalc(), $g_asTrainTimeFinish[$i]) * 1000
 					_TicksToTime(Abs($iTime), $hour, $min, $sec)
 					GUICtrlSetData($g_ahLblTroopTime[$i], ($iTime < 0 ? "-" : "") & StringFormat("%02i:%02i", $min, $sec))
+					GUICtrlSetData($g_ahLblTroopTimeRep[$i], ($iTime < 0 ? "-" : "") & StringFormat("%02i:%02i", $min, $sec))
 					If $i = $g_iCurAccount Then
 						GUICtrlSetColor($g_ahLblTroopTime[$i], $COLOR_GREEN)
+						GUICtrlSetColor($g_ahLblTroopTimeRep[$i], $COLOR_GREEN)
 					ElseIf $iTime < 0 Then
 						GUICtrlSetColor($g_ahLblTroopTime[$i], $COLOR_RED)
+						GUICtrlSetColor($g_ahLblTroopTimeRep[$i], $COLOR_RED)
 					Else
 						GUICtrlSetColor($g_ahLblTroopTime[$i], $COLOR_BLACK)
+						GUICtrlSetColor($g_ahLblTroopTimeRep[$i], $COLOR_BLACK)
 					EndIf
+					
 				EndIf
 			Next
 			SwitchAccountVariablesReload("SetTime")

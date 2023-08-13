@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -31,6 +31,7 @@ Func CreateBotAndroid()
 
 	$x = 188
 		GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnResetDistributor", "Reset"), $x, $y - 2, 50, 25)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Distributors", "CmbCOCDistributors_Info_02", "Click to Reset Game Distributor"))
 			GUICtrlSetOnEvent(-1, "btnResetDistributor")
 
 	GUICtrlCreateGroup("", -99, -99, 1, 1)

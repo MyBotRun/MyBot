@@ -5,15 +5,15 @@
 ; Parameters ....:
 ; Return values .: True: Successfully switched Bases  -  False: Failed to switch Bases
 ; Author ........: Fliegerfaust (05-2017)
-; Modified ......: GrumpyHog (08-2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Modified ......: GrumpyHog (08-2022), Moebius14 (07-2023)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func SwitchBetweenBases($bCheckMainScreen = True)
+Func SwitchBetweenBases($bCheckMainScreen = True, $GoToBB = False)
 	Local $sSwitchFrom, $sSwitchTo, $bIsOnBuilderBase = False, $aButtonCoords, $avBoat, $avTempArray
 	Local $sTile, $sTileDir, $sRegionToSearch
 	Local $bSwitched = False
@@ -27,30 +27,50 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 			$bIsOnBuilderBase = True
 			$sTile = "BoatBuilderBase"
 			$sTileDir = $g_sImgBoatBB
-			$sRegionToSearch = GetDiamondFromRect("487,44,708,242")
+			$sRegionToSearch = GetDiamondFromRect("480,40,710,250")
 		Else
 			$sSwitchFrom = "Normal Village"
 			$sSwitchTo = "Builder Base"
 			$bIsOnBuilderBase = False
 			$sTile = "BoatNormalVillage"
 			$sTileDir = $g_sImgBoat
-			$sRegionToSearch = GetDiamondFromRect("66,432,388,627")
+			$sRegionToSearch = GetDiamondFromRect("60,430,390,630")
 		EndIf
 
-		If _sleep(250) Then Return
+		If _Sleep(250) Then Return
 		If Not $g_bRunState Then Return
 
 		ZoomOut() ; ensure boat is visible
+
+		SwitchToBuilderBase()
+
 		If Not $g_bRunState Then Return
 
-		$avBoat = findMultiple($sTileDir, $sRegionToSearch, $sRegionToSearch, 0, 1000, 1, "objectname,objectpoints", True)
+		If $bIsOnBuilderBase And $g_iTree = $eTreeOO Then $sRegionToSearch = GetDiamondFromRect("650,180,820,330")
+		
+		For $b = 0 To 9
+			$avBoat = findMultiple($sTileDir, $sRegionToSearch, $sRegionToSearch, 0, 1000, 1, "objectname,objectpoints", True)
+			If IsArray($avBoat) And UBound($avBoat, $UBOUND_ROWS) > 0 Then ExitLoop
+			If _Sleep(250) Then Return
+		Next
+
+		If $GoToBB Then
+			$g_bStayOnBuilderBase = True
+		Else
+			$g_bStayOnBuilderBase = False
+		EndIf
 
 		If Not IsArray($avBoat) Or UBound($avBoat, $UBOUND_ROWS) <= 0 Then
 			SetLog("Couldn't find Boat on " & $sSwitchFrom, $COLOR_ERROR)
 			If $g_bDebugImageSave Then SaveDebugImage("SwitchBetweenBases", False)
+			If $i = 2 And $g_bStayOnBuilderBase And $sSwitchFrom = "Normal Village" Then $g_bStayOnBuilderBase = False
+			If $i = 2 And $sSwitchFrom = "Builder Base" Then
+				CloseCoC(True)
+				checkMainScreen(False, True)
+			EndIf
 			Return False
 		Else
-			; loop thro the detected images
+			; loop through the detected images
 			For $j = 0 To UBound($avBoat, $UBOUND_ROWS) - 1
 				$avTempArray = $avBoat[$j]
 				SetLog("Boat Search find : " & $avTempArray[0])
@@ -76,6 +96,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 						Return True
 					Else
 						SetLog("Failed to go to the " & $sSwitchTo, $COLOR_ERROR)
+						If $i = 2 And $g_bStayOnBuilderBase And $sSwitchTo = "Builder Base" Then $g_bStayOnBuilderBase = False
 					EndIf
 				Else
 					Setlog("[" & $i & "] SwitchBetweenBases Tile: " & $sTile, $COLOR_ERROR)
@@ -84,6 +105,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 						SetLog("Cannot find the Boat on the Coast", $COLOR_ERROR)
 					Else
 						SetLog("Cannot find the Boat on the Coast. Maybe it is still broken or not visible", $COLOR_ERROR)
+						If $i = 2 Then $g_bStayOnBuilderBase = False
 					EndIf
 
 					If $i >= 1 Then RestartAndroidCoC() ; Need to try to restart CoC
@@ -97,3 +119,25 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 
 	Return False
 EndFunc   ;==>SwitchBetweenBases
+
+Func SwitchToBuilderBase()
+
+	If QuickMIS("BC1", $sImgTunnel, 0, 190 + $g_iMidOffsetY, $g_iGAME_WIDTH, $g_iGAME_HEIGHT) Then
+		SetLog("Back To Main Builder Base", $COLOR_INFO)
+		If $g_iQuickMISName = "OOTunnel" Then
+			SetDebugLog("Found OOTunnel", $COLOR_INFO)
+			Click($g_iQuickMISX - Random(25, 70, 1), $g_iQuickMISY + Random(0, 30, 1))
+		Else
+			SetDebugLog("Found BBTunnel", $COLOR_INFO)
+			Click($g_iQuickMISX - Random(30, 50, 1), $g_iQuickMISY + Random(10, 40, 1))
+		EndIf
+		If _Sleep(2000) Then Return
+		ZoomOut()
+		Return True
+	Else
+		SetDebugLog("Failed to locate the tunnel", $COLOR_INFO)
+		If $g_bDebugImageSave Then SaveDebugImage("OO2BBTunnel");
+		Return False
+	EndIf	
+
+EndFunc

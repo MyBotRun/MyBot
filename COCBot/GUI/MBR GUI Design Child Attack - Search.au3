@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GKevinOD (2014)
 ; Modified ......: DkEd, Hervidero (2015), CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,12 +20,15 @@ Global $g_hGUI_SEARCH = 0
 ;   MBR GUI Design Child Attack - Deadbase-Search.au3
 ;   MBR GUI Design Child Attack - Activebase-Search.au3
 Global $g_ahChkMaxMortar[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxWizTower[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxAirDefense[$g_iModeCount] = [0, 0, 0], _
-	   $g_ahChkMaxXBow[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxInferno[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxEagle[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxScatter[$g_iModeCount] = [0, 0, 0]
+	   $g_ahChkMaxXBow[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxInferno[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxEagle[$g_iModeCount] = [0, 0, 0], $g_ahChkMaxScatter[$g_iModeCount] = [0, 0, 0], _
+	   $g_ahChkMaxMonolith[$g_iModeCount] = [0, 0, 0]
 Global $g_ahCmbWeakMortar[$g_iModeCount] = [0, 0, 0], $g_ahCmbWeakWizTower[$g_iModeCount] = [0, 0, 0],  $g_ahCmbWeakAirDefense[$g_iModeCount] = [0, 0, 0], _
-	   $g_ahCmbWeakXBow[$g_iModeCount] = [0, 0, 0], $g_ahCmbWeakInferno[$g_iModeCount] = [0, 0, 0], $g_ahCmbWeakEagle[$g_iModeCount] = [0, 0, 0], $g_ahCmbWeakScatter[$g_iModeCount] = [0, 0, 0]
+	   $g_ahCmbWeakXBow[$g_iModeCount] = [0, 0, 0], $g_ahCmbWeakInferno[$g_iModeCount] = [0, 0, 0], $g_ahCmbWeakEagle[$g_iModeCount] = [0, 0, 0], $g_ahCmbWeakScatter[$g_iModeCount] = [0, 0, 0], _
+	   $g_ahCmbWeakMonolith[$g_iModeCount] = [0, 0, 0]
 
 Global $g_ahPicWeakMortar[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakWizTower[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakAirDefense[$g_iModeCount] = [0, 0, 0], _
-	   $g_ahPicWeakXBow[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakInferno[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakEagle[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakScatter[$g_iModeCount] = [0, 0, 0]
+	   $g_ahPicWeakXBow[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakInferno[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakEagle[$g_iModeCount] = [0, 0, 0], $g_ahPicWeakScatter[$g_iModeCount] = [0, 0, 0], _
+	   $g_ahPicWeakMonolith[$g_iModeCount] = [0, 0, 0]
 Global $g_ahChkMeetOne[$g_iModeCount] = [0, 0, 0]
 
 #include "MBR GUI Design Child Attack - Deadbase.au3"

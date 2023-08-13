@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: kaganus (06-2015)
 ; Modified ......: CodeSlinger69 (01-2017), Fliegerfaust (02-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2021
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -643,12 +643,14 @@ Func UpdateStats($bForceUpdate = False)
 		GUICtrlSetData($g_ahLblResultSkipped[$g_iCurAccount], $g_iSkippedVillageCount)
 		
 		;Clan Capital
-		If ($g_iLootCCGold And $g_iLootCCMedal) = 0 Then
+		If ($g_iLootCCGold And $g_iLootCCMedal And $g_iCCTrophies) = 0 Then
 			GUICtrlSetData($g_ahLbLLootCCGold[$g_iCurAccount], "")
 			GUICtrlSetData($g_ahLbLLootCCMedal[$g_iCurAccount], "")
+			GUICtrlSetData($g_ahLblTrophiesCC[$g_iCurAccount], "")
 		Else
 			GUICtrlSetData($g_ahLbLLootCCGold[$g_iCurAccount], _NumberFormat($g_iLootCCGold, True))
 			GUICtrlSetData($g_ahLbLLootCCMedal[$g_iCurAccount], _NumberFormat($g_iLootCCMedal, True))
+			GUICtrlSetData($g_ahLblTrophiesCC[$g_iCurAccount], _NumberFormat($g_iCCTrophies, True))
 		EndIf
 		
 		;Builders Base

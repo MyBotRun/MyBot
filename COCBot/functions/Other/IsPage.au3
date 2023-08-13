@@ -4,7 +4,7 @@
 ; Description ...: Verify if you are in the correct window...
 ; Author ........: Sardo (2015)
 ; Modified ......: ProMac (2015), MonkeyHunter (12-2015)
-; Remarks .......: This file is part of MyBot Copyright 2015-2019
+; Remarks .......: This file is part of MyBot Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -219,6 +219,23 @@ Func IsReturnHomeBattlePage($useReturnValue = False, $makeDebugImageScreenshot =
 	EndIf
 
 EndFunc   ;==>IsReturnHomeBattlePage
+
+Func IsOKCancelPage($bWriteLog = True)
+
+	If IsPageLoop($aConfirmSurrender, 1) Then
+		If ($g_bDebugSetlog Or $g_bDebugClick) And $bWriteLog Then SetLog("**OKCancel Window OK**", $COLOR_ACTION)
+		Return True
+	Else
+		If ($g_bDebugSetlog Or $g_bDebugClick) And $bWriteLog Then
+			Local $colorRead = _GetPixelColor($aConfirmSurrender[0], $aConfirmSurrender[1], True)
+			SetLog("**OKCancel Window FAIL**", $COLOR_ACTION)
+			SetLog("expected in (" & $aConfirmSurrender[0] & "," & $aConfirmSurrender[1] & ")  = " & Hex($aConfirmSurrender[2], 6) & " - Found " & $colorRead, $COLOR_ACTION)
+		EndIf
+		If $g_bDebugImageSave And $bWriteLog Then SaveDebugImage("OKCancel")
+		Return False
+	EndIf
+
+EndFunc   ;==>IsOKCancelPage
 
 Func IsPostDefenseSummaryPage($bCapture = True)
 	;check for loot lost summary screen after base defense when log on and base is being attacked.

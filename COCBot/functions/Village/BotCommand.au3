@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #17
 ; Modified ......: MonkeyHunter (2016-2), CodeSlinger69 (2017), MonkeyHunter (2017-3)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -53,7 +53,7 @@ Func BotCommand()
 			Case 4
 				If isGoldFull() And isElixirFull() Then $g_bMeetCondStop = True
 			Case 5
-				If isGoldFull() Or isElixirFull() Then $g_bMeetCondStop = True
+				If isGoldFull() Or isElixirFull() Or isDarkElixirFull() Then $g_bMeetCondStop = True
 			Case 6
 				If isGoldFull() And isTrophyMax() Then $g_bMeetCondStop = True
 			Case 7
@@ -176,7 +176,7 @@ EndFunc   ;==>BotCommand
 ; Return values .: None
 ; Author ........: MonkeyHunter (2017-3)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

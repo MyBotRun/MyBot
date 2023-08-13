@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........: Knowskones (2015)
 ; Modified ......: Hervidero (2015), CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -96,7 +96,7 @@ EndFunc   ;==>BuildingXY
 Func DELow()
 	Local $DarkE = ""
 	Local $Dchk = 0
-	While $DarkE = "" ;~~~~~~~~Loop 10x or until Dark Elixer is Readable.
+	While $DarkE = "" ;~~~~~~~~Loop 10x or until Dark Elixir is Readable.
 		$DarkE = getDarkElixirVillageSearch(48, 126)
 		$Dchk += 1
 		If _Sleep(50) Then Return
@@ -105,11 +105,11 @@ Func DELow()
 			Return False
 		EndIf
 	WEnd
-	If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; First check if Dark Elixer is below set minimum
+	If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; First check if Dark Elixir is below set minimum
 		If _Sleep(50) Then Return
 		$DarkE = getDarkElixirVillageSearch(48, 126)
 		If _Sleep(50) Then Return
-		If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; Second check if Dark Elixer is below set minimum
+		If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; Second check if Dark Elixir is below set minimum
 			If $g_bDESideEndAQWeak And $g_bDropQueen And Not $g_bCheckQueenPower Then
 				If $g_iActivateQueen = 0 Then
 					$g_iDarkLow = 1
