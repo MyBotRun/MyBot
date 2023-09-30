@@ -1,3 +1,42 @@
+* v8.1.1 **
+* Added Special Enemy Resources Offset Support.
+* Added Wall Count update for Auto-upgrade.
+* Added Stats from Auto-upgrade in Stats Misc.
+* Added COC v15.352.22 support (Requires game app update to v15.352.22+)
+* Removed Code for iTools emulator (support discontinued)
+* Update ADB selection options in GUI (remove DUMMY.EXE option)
+* Added support for AutoIt v3.3.16 by fixing log color conflicts (orange, grey, green)
+* Incredible amount of work by @moebius and @MonkeyHunter to fix many update induced bugs:
+** Adjusted StartSlot and SlotOffset values for BB Attack Bar detection.
+** Adjusted IsSettingPage color for check.
+** Improved all super troops detection.
+** Updated TH Weapon level OCR.
+** Increased Tolerance for Stone Pixel ccenery detection.
+** Improved red costs OCR.
+** Improved Sneaky Goblin Detection.
+** Improved Bonus OCR.
+** Improved Wizard detection in army overview.
+** Improved troops detection in army overview.
+** Improved Camp Size detection (Double Train).
+** Improved Super Wizard detection in queue and army overview.
+** Improved OCR for buildings/heroes costs.
+** Fixed BB Army Check.
+** Fixed Chess Scenery Detection.
+** Added Magical theater Scenery (Attack Only).
+** Improved pixel color detection for some buttons.
+** Fixed Dragon Rider detection in queue list.
+** Fix and clean up Nox/BS emulator version detection code
+** Correct emulator check version number for BS
+** Improved White Upgrade Cost Detection.
+** Improved OCR for red costs in laboratory.
+** Improved OCR for upgrades costs (Red).
+** Updated Train and Laboratory templates.
+** Clean up Android Nox code, remove unused code for no longer supported Nox versions.
+* Return of clangames.ini file; requires updating your GC settings.
+* Lots of improvements to Clan Games
+* Addressed issues with Giant vs SuperGiant detection in training queue.
+* Updated Clan Games Rewards Collect.
+
 * v8.1 **
 * Added Clan Capital Trophies and League.
 * CC trophies in multistats (page 3).

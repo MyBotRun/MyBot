@@ -262,18 +262,18 @@ Func AttackCSVDEBUGIMAGE()
 
 	; - DRAW GOLD STORAGE -------------------------------------------------------
 	If $g_bCSVLocateStorageGold = True And IsArray($g_aiCSVGoldStoragePos) Then
-			For $i = 0 To UBound($g_aiCSVGoldStoragePos) - 1
-				$pixel = $g_aiCSVGoldStoragePos[$i]
-				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenWhite)
-			Next
+		For $i = 0 To UBound($g_aiCSVGoldStoragePos) - 1
+			$pixel = $g_aiCSVGoldStoragePos[$i]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenWhite)
+		Next
 	EndIf
 
 	; - DRAW ELIXIR STORAGE ---------------------------------------------------------
 	If $g_bCSVLocateStorageElixir = True And IsArray($g_aiCSVElixirStoragePos) Then
-			For $i = 0 To UBound($g_aiCSVElixirStoragePos) - 1
-				$pixel = $g_aiCSVElixirStoragePos[$i]
-				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenMagenta)
-			Next
+		For $i = 0 To UBound($g_aiCSVElixirStoragePos) - 1
+			$pixel = $g_aiCSVElixirStoragePos[$i]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenMagenta)
+		Next
 	EndIf
 
 	; - DRAW TOWNHALL -------------------------------------------------------------------
@@ -331,7 +331,7 @@ Func AttackCSVDEBUGIMAGE()
 			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 12, $pixel[1] - 10, 25, 25, $hPenPaleBlue)
 		Next
 	EndIf
-	
+
 	; - DRAW Monolith -------------------------------------------------------------------
 	If $g_bCSVLocateMonolith = True And IsArray($g_aiCSVMonolithPos) Then
 		_GDIPlus_GraphicsDrawRect($hGraphic, $g_aiCSVMonolithPos[0] - 15, $g_aiCSVMonolithPos[1] - 15, 30, 30, $hPenWhite)
@@ -353,7 +353,7 @@ Func AttackCSVDEBUGIMAGE()
 	_GDIPlus_GraphicsDrawString($hGraphic, "ZF: " & $g_aVillageSize[1], 5, 530, "Arial", 12)
 	_GDIPlus_GraphicsDrawString($hGraphic, "Offset: " & $g_aVillageSize[2] & ", " & $g_aVillageSize[3], 5, 550, "Arial", 12)
 
-	_GDIPlus_GraphicsDrawLine($hGraphic, int($g_aVillageSize[4]), int($g_aVillageSize[5]), int($g_aVillageSize[7]), int($g_aVillageSize[8]), $hPenMagenta)
+	_GDIPlus_GraphicsDrawLine($hGraphic, Int($g_aVillageSize[4]), Int($g_aVillageSize[5]), Int($g_aVillageSize[7]), Int($g_aVillageSize[8]), $hPenMagenta)
 
 	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 	Local $Time = @HOUR & "." & @MIN & "." & @SEC

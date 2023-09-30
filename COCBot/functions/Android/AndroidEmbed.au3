@@ -338,7 +338,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 			$hCtrlTarget = $hCtrl
 		EndIf
 	EndIf
-	#ce
+	#ce not tested nor required, yet
 	;_WinAPI_SetWindowLong($hCtrl, $GWL_STYLE, BitAND(_WinAPI_GetWindowLong($hCtrl, $GWL_STYLE), BitNOT($WS_EX_NOPARENTNOTIFY)))
 	$lCurStyleTarget = _WinAPI_GetWindowLong($hCtrlTarget, $GWL_STYLE)
 	$hCtrlTargetParent = __WinAPI_GetParent($hCtrlTarget)
@@ -357,14 +357,14 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 		EndIf
 		;Switch $g_sAndroidEmulator
 		;	Case "BlueStacks", "BlueStacks2"
-				If $aPosCtl[2] <> $g_iAndroidClientWidth Then
-					If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[2] = " & $aPosCtl[2] & " changed to " & $g_iAndroidClientWidth, Default, True)
-					$aPosCtl[2] = $g_iAndroidClientWidth
-				EndIf
-				If $aPosCtl[3] <> $g_iAndroidClientHeight Then
-					If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[3] = " & $aPosCtl[3] & " changed to " & $g_iAndroidClientHeight, Default, True)
-					$aPosCtl[3] = $g_iAndroidClientHeight
-				EndIf
+		If $aPosCtl[2] <> $g_iAndroidClientWidth Then
+			If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[2] = " & $aPosCtl[2] & " changed to " & $g_iAndroidClientWidth, Default, True)
+			$aPosCtl[2] = $g_iAndroidClientWidth
+		EndIf
+		If $aPosCtl[3] <> $g_iAndroidClientHeight Then
+			If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[3] = " & $aPosCtl[3] & " changed to " & $g_iAndroidClientHeight, Default, True)
+			$aPosCtl[3] = $g_iAndroidClientHeight
+		EndIf
 		;EndSwitch
 		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[] = " & $aPosCtl[0] & ", " & $aPosCtl[1] & ", " & $aPosCtl[2] & ", " & $aPosCtl[3], Default, True)
 
@@ -1164,10 +1164,10 @@ Func AndroidDpiAwareness($bCheckAwareness = Default)
 	If $g_hAndroidWindowDpiAware = $g_hAndroidWindow Or GetProcessDpiAwareness(GetAndroidPid()) Then
 		; already aware
 		$g_hAndroidWindowDpiAware = $g_hAndroidWindow
-		If $bCheckAwareness = True Then	Return True
+		If $bCheckAwareness = True Then Return True
 		Return False
 	EndIf
-	If CheckDpiAwareness(True) = True Then	; super work-a-round to turn Android into DPI aware app
+	If CheckDpiAwareness(True) = True Then    ; super work-a-round to turn Android into DPI aware app
 		If $g_hAndroidWindowDpiAware <> $g_hAndroidWindow Then
 			; bot is DPI Aware, now make Android also DPI aware
 			Local $bWasEmbedded = AndroidEmbedded()

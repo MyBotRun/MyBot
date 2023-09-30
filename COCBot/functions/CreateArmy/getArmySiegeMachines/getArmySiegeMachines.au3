@@ -36,12 +36,11 @@ Func getArmySiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		If $bSetLog Then SetLog("Detected Clan Castle Message Blocking Troop Images. Waiting until it's gone", $COLOR_INFO)
 		_CaptureRegion2()
 		While _CheckPixel($aRecievedTroops, False)
-			IF _Sleep($DELAYTRAIN1) Then Return
+			If _Sleep($DELAYTRAIN1) Then Return
 		WEnd
 	EndIf
 
-	;Local $sSiegeDiamond = GetDiamondFromRect("605,215,840,255") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
-	Local $sSiegeDiamond = GetDiamondFromRect2(605, 185 + $g_iMidOffsetY, 840, 225 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sSiegeDiamond = GetDiamondFromRect2(605, 183 + $g_iMidOffsetY, 840, 250 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 
 	If $g_bDebugFuncTime Then StopWatchStart("findMultiple, \imgxml\ArmyOverview\SiegeMachines")
 	Local $aCurrentSiegeMachines = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\SiegeMachines", $sSiegeDiamond, $sSiegeDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentSiegeMachines[index] = $aArray[2] = ["Siege M Shortname", CordX,CordY]
@@ -56,10 +55,10 @@ Func getArmySiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 	Local $sSiegeInfo = getSiegeCampCap(756, 134 + $g_iMidOffsetY, $bNeedCapture) ; OCR read Siege built and total
 	If $g_bDebugSetlogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
 	Local $aGetSiegeCap = StringSplit($sSiegeInfo, "#", $STR_NOCOUNT) ; split the built Siege number from the total Siege number
-	If Ubound($aGetSiegeCap) = 2 Then
+	If UBound($aGetSiegeCap) = 2 Then
 		If $bSetLog Then SetLog("Total Siege Workshop Capacity: " & $aGetSiegeCap[0] & "/" & $aGetSiegeCap[1])
 		$g_aiCurrentSiegeMachines = $aCurrentTroopsEmpty ; Reset Current Siege Machine Array
-		If Number($aGetSiegeCap[0]) = 0 then Return
+		If Number($aGetSiegeCap[0]) = 0 Then Return
 	Else
 		Return
 	EndIf

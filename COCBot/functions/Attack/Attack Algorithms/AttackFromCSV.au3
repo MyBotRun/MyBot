@@ -46,35 +46,35 @@ Func ConvertInternalExternArea()
 	Local $InnerDiamondTop = $g_afRefVillage[$g_iTree][3]
 	Local $InnerDiamondBottom = $g_afRefVillage[$g_iTree][4]
 
-	Local $OuterDiamondLeft =  $InnerDiamondLeft - $g_afRefVillage[$g_iTree][6] 
-	Local $OuterDiamondRight = $InnerDiamondRight + $g_afRefVillage[$g_iTree][7] 
-	Local $OuterDiamondTop =  $InnerDiamondTop - $g_afRefVillage[$g_iTree][8]
+	Local $OuterDiamondLeft = $InnerDiamondLeft - $g_afRefVillage[$g_iTree][6]
+	Local $OuterDiamondRight = $InnerDiamondRight + $g_afRefVillage[$g_iTree][7]
+	Local $OuterDiamondTop = $InnerDiamondTop - $g_afRefVillage[$g_iTree][8]
 	Local $OuterDiamondBottom = $InnerDiamondBottom + $g_afRefVillage[$g_iTree][9]
 
 	Local $DiamondMiddleX = ($OuterDiamondLeft + $OuterDiamondRight) / 2
 	Local $DiamondMiddleY = ($OuterDiamondTop + $OuterDiamondBottom) / 2
 
 	Local $ExternalAreaRef[8][3] = [ _
-		[$OuterDiamondLeft, $DiamondMiddleY, "LEFT"], _
-		[$OuterDiamondRight, $DiamondMiddleY, "RIGHT"], _
-		[$DiamondMiddleX, $OuterDiamondTop, "TOP"], _
-		[$DiamondMiddleX, $OuterDiamondBottom, "BOTTOM"], _
-		[$OuterDiamondLeft + ($DiamondMiddleX - $OuterDiamondLeft) / 2, $OuterDiamondTop + ($DiamondMiddleY - $OuterDiamondTop) / 2, "TOP-LEFT"], _
-		[$DiamondMiddleX + ($OuterDiamondRight - $DiamondMiddleX) / 2, $OuterDiamondTop + ($DiamondMiddleY - $OuterDiamondTop) / 2, "TOP-RIGHT"], _
-		[$OuterDiamondLeft + ($DiamondMiddleX - $OuterDiamondLeft) / 2, $DiamondMiddleY + ($OuterDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-LEFT"], _
-		[$DiamondMiddleX + ($OuterDiamondRight - $DiamondMiddleX) / 2, $DiamondMiddleY + ($OuterDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-RIGHT"] _
-		]
+			[$OuterDiamondLeft, $DiamondMiddleY, "LEFT"], _
+			[$OuterDiamondRight, $DiamondMiddleY, "RIGHT"], _
+			[$DiamondMiddleX, $OuterDiamondTop, "TOP"], _
+			[$DiamondMiddleX, $OuterDiamondBottom, "BOTTOM"], _
+			[$OuterDiamondLeft + ($DiamondMiddleX - $OuterDiamondLeft) / 2, $OuterDiamondTop + ($DiamondMiddleY - $OuterDiamondTop) / 2, "TOP-LEFT"], _
+			[$DiamondMiddleX + ($OuterDiamondRight - $DiamondMiddleX) / 2, $OuterDiamondTop + ($DiamondMiddleY - $OuterDiamondTop) / 2, "TOP-RIGHT"], _
+			[$OuterDiamondLeft + ($DiamondMiddleX - $OuterDiamondLeft) / 2, $DiamondMiddleY + ($OuterDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-LEFT"], _
+			[$DiamondMiddleX + ($OuterDiamondRight - $DiamondMiddleX) / 2, $DiamondMiddleY + ($OuterDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-RIGHT"] _
+			]
 
 	Local $InternalAreaRef[8][3] = [ _
-		[$InnerDiamondLeft, $DiamondMiddleY, "LEFT"], _
-		[$InnerDiamondRight, $DiamondMiddleY, "RIGHT"], _
-		[$DiamondMiddleX, $InnerDiamondTop, "TOP"], _
-		[$DiamondMiddleX, $InnerDiamondBottom, "BOTTOM"], _
-		[$InnerDiamondLeft + ($DiamondMiddleX - $InnerDiamondLeft) / 2, $InnerDiamondTop + ($DiamondMiddleY - $InnerDiamondTop) / 2, "TOP-LEFT"], _
-		[$DiamondMiddleX + ($InnerDiamondRight - $DiamondMiddleX) / 2, $InnerDiamondTop + ($DiamondMiddleY - $InnerDiamondTop) / 2, "TOP-RIGHT"], _
-		[$InnerDiamondLeft + ($DiamondMiddleX - $InnerDiamondLeft) / 2, $DiamondMiddleY + ($InnerDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-LEFT"], _
-		[$DiamondMiddleX + ($InnerDiamondRight - $DiamondMiddleX) / 2, $DiamondMiddleY + ($InnerDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-RIGHT"] _
-		]
+			[$InnerDiamondLeft, $DiamondMiddleY, "LEFT"], _
+			[$InnerDiamondRight, $DiamondMiddleY, "RIGHT"], _
+			[$DiamondMiddleX, $InnerDiamondTop, "TOP"], _
+			[$DiamondMiddleX, $InnerDiamondBottom, "BOTTOM"], _
+			[$InnerDiamondLeft + ($DiamondMiddleX - $InnerDiamondLeft) / 2, $InnerDiamondTop + ($DiamondMiddleY - $InnerDiamondTop) / 2, "TOP-LEFT"], _
+			[$DiamondMiddleX + ($InnerDiamondRight - $DiamondMiddleX) / 2, $InnerDiamondTop + ($DiamondMiddleY - $InnerDiamondTop) / 2, "TOP-RIGHT"], _
+			[$InnerDiamondLeft + ($DiamondMiddleX - $InnerDiamondLeft) / 2, $DiamondMiddleY + ($InnerDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-LEFT"], _
+			[$DiamondMiddleX + ($InnerDiamondRight - $DiamondMiddleX) / 2, $DiamondMiddleY + ($InnerDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-RIGHT"] _
+			]
 
 	Local $x, $y
 
@@ -716,7 +716,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	Else
 		SetDebugLog("> " & $g_sBldgNames[$eBldgAirDefense] & " detection not needed, skipping", $COLOR_DEBUG)
 	EndIf
-	
+
 	; 13 - Monolith ------------------------------------------------------------------------
 
 	$g_aiCSVMonolithPos = "" ; reset pixel position to null
@@ -809,7 +809,7 @@ Func FindWallCSV(ByRef $aCSVExternalWall, ByRef $aCSVInternalWall)
 		_CaptureRegion2(_Min($X1, $X2), _Min($Y1, $Y2), _Max($X1, $X2), _Max($Y1, $Y2))
 		Local $FoundWalls = imglocFindWalls("AnyWallLevel", "FV", "FV", 10)
 
-		If $g_bDebugImageSave Then _GDIPlus_GraphicsDrawRect($hGraphic, _Min($X1, $X2), _Min($Y1, $Y2), Abs($X1 - $X2), Abs ($Y1 - $Y2), $hPenBLUE)
+		If $g_bDebugImageSave Then _GDIPlus_GraphicsDrawRect($hGraphic, _Min($X1, $X2), _Min($Y1, $Y2), Abs($X1 - $X2), Abs($Y1 - $Y2), $hPenBLUE)
 
 		If $FoundWalls[0] = "" Then ; nothing found
 			SetDebugLog("No wall(s) found in section " & $i + 1)
@@ -869,4 +869,4 @@ Func FindWallCSV(ByRef $aCSVExternalWall, ByRef $aCSVInternalWall)
 	EndIf
 
 	Return $bResult
-EndFunc
+EndFunc   ;==>FindWallCSV

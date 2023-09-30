@@ -29,12 +29,12 @@ Func BattleCopterUpgrade($test = False)
 	If Not LocateBattleCopter() Then Return False
 
 	;Get Battle Copter info and Level
-	Local $sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -105,12 +105,12 @@ Func BattleCopterUpgrade($test = False)
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 
-		Local $sImgBattleCopterUpgradeWindow =  @ScriptDir & "\imgxml\Windows\BattleCopterUpgradeWindow*"
-		Local $sSearchArea = "120,175,405,485"
+		Local $sImgBattleCopterUpgradeWindow = @ScriptDir & "\imgxml\Windows\BattleCopterUpgradeWindow*"
+		Local $sSearchArea = "200,300,265,375"
 
 		; check for storage full window
 		If IsWindowOpen($sImgBattleCopterUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("625,560,790,625"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -163,7 +163,7 @@ Func LocateBattleCopter()
 		BuildingClickP($g_aiBattleCopterPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; Get building name and level with OCR
 
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Copter") = True Then ; we found the Battle Copter
@@ -176,7 +176,7 @@ Func LocateBattleCopter()
 				SetDebugLog("Stored Battle Copter Position is not valid.", $COLOR_ERROR)
 				SetDebugLog("Found instead: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG)
 				SetDebugLog("Village position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
-				ConvertToVillagePos($g_aiBattleCopterPos[0],$g_aiBattleCopterPos[1])
+				ConvertToVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 				SetDebugLog("Real position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
 				$g_aiBattleCopterPos[0] = -1
 				$g_aiBattleCopterPos[1] = -1
@@ -185,7 +185,7 @@ Func LocateBattleCopter()
 			ClickAway()
 			SetDebugLog("Stored Battle Copter Position is not valid.", $COLOR_ERROR)
 			SetDebugLog("Village position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
-			ConvertToVillagePos($g_aiBattleCopterPos[0],$g_aiBattleCopterPos[1])
+			ConvertToVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 			SetDebugLog("Real position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
 			$g_aiBattleCopterPos[0] = -1
 			$g_aiBattleCopterPos[1] = -1
@@ -225,7 +225,7 @@ Func LocateBattleCopter()
 					If UBound($tempObbj) = 2 Then
 						$g_aiBattleCopterPos[0] = Number($tempObbj[0]) ;+ 9
 						$g_aiBattleCopterPos[1] = Number($tempObbj[1]) ;+ 15
-						ConvertFromVillagePos($g_aiBattleCopterPos[0],$g_aiBattleCopterPos[1])
+						ConvertFromVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 						ExitLoop 2
 					EndIf
 				Next
@@ -235,7 +235,7 @@ Func LocateBattleCopter()
 				If UBound($tempObbj) = 2 Then
 					$g_aiBattleCopterPos[0] = Number($tempObbj[0]) ;+ 9
 					$g_aiBattleCopterPos[1] = Number($tempObbj[1]) ;+ 15
-					ConvertFromVillagePos($g_aiBattleCopterPos[0],$g_aiBattleCopterPos[1])
+					ConvertFromVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 					ExitLoop
 				EndIf
 			EndIf
@@ -246,7 +246,7 @@ Func LocateBattleCopter()
 		BuildingClickP($g_aiBattleCopterPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; Get building name and level with OCR
 
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Copter") = True Then ; we found the Battle Copter
@@ -259,7 +259,7 @@ Func LocateBattleCopter()
 				SetDebugLog("Found Battle Copter Position is not valid.", $COLOR_ERROR)
 				SetDebugLog("Found instead: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG)
 				SetDebugLog("Village position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
-				ConvertToVillagePos($g_aiBattleCopterPos[0],$g_aiBattleCopterPos[1])
+				ConvertToVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 				SetDebugLog("Real position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
 				$g_aiBattleCopterPos[0] = -1
 				$g_aiBattleCopterPos[1] = -1
@@ -268,7 +268,7 @@ Func LocateBattleCopter()
 			ClickAway()
 			SetDebugLog("Found Battle Copter Position is not valid.", $COLOR_ERROR)
 			SetDebugLog("Village position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
-			ConvertToVillagePos($g_aiBattleCopterPos[0],$g_aiBattleCopterPos[1])
+			ConvertToVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 			SetDebugLog("Real position: " & $g_aiBattleCopterPos[0] & ", " & $g_aiBattleCopterPos[1], $COLOR_DEBUG, True)
 			$g_aiBattleCopterPos[0] = -1
 			$g_aiBattleCopterPos[1] = -1
@@ -280,7 +280,7 @@ Func LocateBattleCopter()
 	If _Sleep(500) Then Return
 	SwitchToBuilderbase()
 	Return False
-EndFunc   ;==>LocateBattleCopter()
+EndFunc   ;==>LocateBattleCopter
 
 Func DeleteBattleCopterCoord()
 	SetLog("Deleting Coordinates of Battle Copter.", $COLOR_OLIVE)
@@ -290,7 +290,7 @@ Func DeleteBattleCopterCoord()
 	IniWrite($g_sProfileBuildingPath, "other", "BattleCopterPosY", $g_aiBattleCopterPos[1])
 	$g_bBattleCopterUpgrade = False ; turn Off the Battle Machine upgrade
 	GUICtrlSetState($g_hChkBattleCopterUpgrade, $GUI_UNCHECKED)
-EndFunc
+EndFunc   ;==>DeleteBattleCopterCoord
 
 Func SwitchToOttoVillage()
 	Local $bRet = False
@@ -300,4 +300,4 @@ Func SwitchToOttoVillage()
 	ZoomOut()
 	If QuickMIS("BC1", $sImgTunnel, 0, 190 + $g_iMidOffsetY, $g_iGAME_WIDTH, $g_iGAME_HEIGHT) Then $bRet = True
 	Return $bRet
-EndFunc
+EndFunc   ;==>SwitchToOttoVillage

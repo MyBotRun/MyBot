@@ -555,7 +555,7 @@ Func RemoveExtraTroopsQueue() ; Will remove All Extra troops in queue If there's
 	;Local Const $DecreaseBy = 70
 	;Local $x = 834
 
-	Local Const $y = 156 + $g_iMidOffsetY, $yRemoveBtn = 170 + $g_iMidOffsetY, $xDecreaseRemoveBtn = 10
+	Local Const $y = 158 + $g_iMidOffsetY, $yRemoveBtn = 170 + $g_iMidOffsetY, $xDecreaseRemoveBtn = 10
 	Local $bColorCheck = False, $bGotRemoved = False
 	For $x = 834 To 58 Step -70
 		If Not $g_bRunState Then Return
@@ -815,7 +815,7 @@ Func CheckQueueTroops($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 
 	Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\TroopsQueued"
 
-	Local $aSearchResult = SearchArmy($Dir, 18, 152 + $g_iMidOffsetY , $x, 231 + $g_iMidOffsetY, $bGetQuantity ? "Queue" : "")
+	Local $aSearchResult = SearchArmy($Dir, 18, 152 + $g_iMidOffsetY, $x, 231 + $g_iMidOffsetY, $bGetQuantity ? "Queue" : "")
 
 	ReDim $aResult[UBound($aSearchResult)]
 
@@ -1263,7 +1263,7 @@ Func MakingDonatedTroops($sType = "All")
 
 			If $HowMany > 0 Then
 				DragSiegeIfNeeded($iSiegeIndex, $iPage)
-				
+
 				Local $sFilename = $sImgSieges & $g_asSiegeMachineShortNames[$iSiegeIndex] & "*"
 				Local $aiSiegeCoord = decodeSingleCoord(findImage("TrainSiege", $sFilename, $sSearchArea, 1, True))
 
@@ -1310,7 +1310,7 @@ Func MakingDonatedTroops($sType = "All")
 			EndIf
 		Next
 		#ce
-		
+
 		; Get Siege Capacities
 		Local $sSiegeInfo = getArmyCapacityOnTrainTroops(57, 130 + $g_iMidOffsetY) ; OCR read Siege built and total
 		If $g_bDebugSetlogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)

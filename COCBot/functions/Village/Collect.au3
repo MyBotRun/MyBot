@@ -83,7 +83,17 @@ Func CollectLootCart()
 	If UBound($aLootCart) > 1 Then
 		$aLootCart[1] += 15
 		If IsMainPage() Then ClickP($aLootCart, 1, 0, "#0330")
-		If _Sleep(400) Then Return
+		If _Sleep(1000) Then Return
+
+		If _ColorCheck(_GetPixelColor(330, 338  + $g_iMidOffsetY, True), Hex(0xC55115, 6), 20) Then ; close chat
+			If Not ClickB("ClanChat") Then
+				SetLog("Error finding the Clan Tab Button", $COLOR_ERROR)
+				Click(332, 312 + $g_iMidOffsetY)
+				Return
+			EndIf
+			If _Sleep(500) Then Return
+			Return False
+		EndIf
 
 		Local $aiCollectButton = findButton("CollectLootCart", Default, 1, True)
 		If IsArray($aiCollectButton) And UBound($aiCollectButton) = 2 Then

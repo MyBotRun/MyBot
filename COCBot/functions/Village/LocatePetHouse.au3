@@ -15,7 +15,7 @@
 Func LocatePetHouse($bCollect = True)
 	; reset position
 	$g_aiPetHousePos[0] = -1
-	$g_aiPetHousePos[0] = -1
+	$g_aiPetHousePos[1] = -1
 
 	If $g_iTownHallLevel < 14 Then
 		SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Pet House, so skip locating.", $COLOR_DEBUG)

@@ -102,7 +102,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 		If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
 	ElseIf $troopSlotConst > 10 Then ; can only be selected when in 2nd page of troopbar
 		If $g_bDraggedAttackBar = False Then DragAttackBar($g_iTotalAttackSlot, False) ; drag forward
-		EndIf
+	EndIf
 
 	If $g_bDraggedAttackBar And $troopPosition > -1 Then
 		$troopPosition = $troopSlotConst - ($g_iTotalAttackSlot - 10)

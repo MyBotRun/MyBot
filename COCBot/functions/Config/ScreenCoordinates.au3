@@ -3,7 +3,7 @@
 ; Description ...: Global variables for commonly used X|Y positions, screen check color, and tolerance
 ; Syntax ........: $aXXXXX[Y]  : XXXX is name of point or item being checked, Y = 2 for position only, or 4 when color/tolerance value included
 ; Author ........:
-; Modified ......: Moebius (07/2023)
+; Modified ......: Moebius (09/2023)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -22,7 +22,7 @@ Global $aiClickAwayRegionRight2 = [760, 176, 835, 185]
 
 Global $aCenterEnemyVillageClickDrag = [65, 545] ; Scroll village using this location in the water
 Global $aCenterHomeVillageClickDrag = [430, 650] ; Scroll village using this location in the water
-Global $aIsMain[4] = [280, 9, 0x7ABDE0, 10] ; Main Screen, Builder Info Icon / July 2023 : changed Variation Tolerance to avoid loading screen detected as Main screen.
+Global $aIsMain[4] = [280, 9, 0x7ABDE0, 15] ; Main Screen, Builder Info Icon / July 2023 : changed Variation Tolerance to avoid loading screen detected as Main screen.
 Global $aIsMainGrayed[4] = [278, 9, 0x3C5F70, 15] ; Main Screen, Builder Info Icon grayed
 Global $aIsBuilderBaseGrayed[4] = [369, 9, 0x3F5F6F, 15] ; Builder Base, Builder Info Icon grayed
 Global $aIsOnBuilderBase[4] = [838, 18, 0xffff45, 10] ; Check the Gold Coin from resources , is a square not round
@@ -36,23 +36,23 @@ Global $aHaveShield[4] = [455, 19, 0xF0F8FB, 15] ; Main Screen, Silver pixel top
 Global $aHavePerGuard[4] = [455, 19, 0x5C38A2, 15] ; Main Screen, purple pixel in sword outline top center of shield ;$aHavePerGuard[4] = [455, 19, 0x10100D, 15] ; Main Screen, black pixel in sword outline top center of shield
 Global $aShieldInfoButton[4] = [431, 10, 0x75BDE4, 15] ; Main Screen, Blue pixel upper part of "i"
 Global $aIsShieldInfo[4] = [645, 195, 0xED1115, 20] ; Main Screen, Shield Info window, red pixel right of X
-Global $aSurrenderButton[4] = [70, 545 + $g_iBottomOffsetY, 0xC00000, 40] ; Surrender Button, Attack Screen
-Global $aConfirmSurrender[4] = [515, 415 + $g_iMidOffsetY, 0x6DBC1F, 30] ; Confirm Surrender Button, Attack Screen, green color on button?
+Global $aSurrenderButton[4] = [70, 545 + $g_iBottomOffsetY, 0xCE0D0E, 40] ; Surrender Button, Attack Screen (End Battle August 2023)
+Global $aConfirmSurrender[4] = [535, 435 + $g_iMidOffsetY, 0x6DBC1F, 30] ; Confirm Surrender Button, Attack Screen, green color on button?
 Global $aCancelFight[4] = [822, 48, 0xD80408, 20] ; Cancel Fight Scene
 Global $aCancelFight2[4] = [830, 59, 0xD80408, 20] ; Cancel Fight Scene 2nd pixel
-Global $aEndFightSceneBtn[4] = [429, 519 + $g_iMidOffsetY, 0xB8E35F, 20] ; Victory or defeat scene buton = green edge
-Global $aEndFightSceneAvl[4] = [241, 196 + $g_iMidOffsetY, 0xFFF090, 20] ; Victory or defeat scene left side ribbon = light gold
+Global $aEndFightSceneBtn[4] = [429, 529 + $g_iMidOffsetY, 0xE1F989, 20] ; Victory or defeat scene button = green top of button
+Global $aEndFightSceneAvl[4] = [241, 196 + $g_iMidOffsetY, 0xFFF098, 20] ; Victory or defeat scene left side ribbon = light gold
 Global $aEndFightSceneReportGold = $aEndFightSceneAvl ; Missing... TripleM ???
-Global $aReturnHomeButton[4] = [376, 567 + $g_iMidOffsetY, 0x60AC10, 20] ; Return Home Button, End Battle Screen
-Global $aChatTab[4] = [331, 325 + $g_iMidOffsetY, 0xF0951D, 20] ; Chat Window Open, Main Screen
-Global $aChatTab2[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20] ; Chat Window Open, Main Screen
-Global $aChatTab3[4] = [331, 335 + $g_iMidOffsetY, 0xF0951D, 20] ; Chat Window Open, Main Screen
-Global $aOpenChat[2] = [19, 349 + $g_iMidOffsetY] ; Open Chat Windows, Main Screen
+Global $aReturnHomeButton[4] = [430, 566 + $g_iMidOffsetY, 0x6CBB1F, 15] ; Return Home Button, End Battle Screen
+Global $aChatTab[4] = [331, 280 + $g_iMidOffsetY, 0xFFA91E, 20] ; Chat Window Open, Main Screen
+Global $aChatTab2[4] = [331, 285 + $g_iMidOffsetY, 0xFDA723, 20] ; Chat Window Open, Main Screen
+Global $aChatTab3[4] = [331, 290 + $g_iMidOffsetY, 0xFCA12D, 20] ; Chat Window Open, Main Screen
+Global $aOpenChat[2] = [19, 309 + $g_iMidOffsetY] ; Open Chat Windows, Main Screen
 Global $aClanTab[2] = [189, 24] ; Clan Tab, Chat Window, Main Screen
 Global $aClanInfo[2] = [282, 55] ; Clan Info Icon
-Global $aArmyCampSize[2] = [110, 136 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
-Global $aSiegeMachineSize[2] = [755, 136 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Number/Total Number
-Global $aArmySpellSize[2] = [99, 284 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
+Global $aArmyCampSize[2] = [115, 137 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
+Global $aSiegeMachineSize[2] = [757, 137 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Number/Total Number
+Global $aArmySpellSize[2] = [104, 284 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
 Global $g_aArmyCCSpellSize[2] = [473, 438 + $g_iMidOffsetY] ; Training Window, Overview Screen, Current CC Spell number/total cc spell capacity
 Global $aArmyCCRemainTime[2] = [782, 552 + $g_iMidOffsetY] ; Training Window Overviewscreen, Minutes & Seconds remaining till can request again
 Global $aIsCampFull[4] = [128, 151 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
@@ -68,13 +68,12 @@ Global $aIsAtkDarkElixirFull[4] = [743, 62 + $g_iMidOffsetY, 0x270D33, 10] ; Att
 Global $aIsDarkElixirFull[4] = [709, 102 + $g_iMidOffsetY, 0x270D33, 10] ; Main Screen DE Resource bar is full
 Global $aIsGoldFull[4] = [660, 2 + $g_iMidOffsetY, 0xE7C00D, 10] ; Main Screen Gold Resource bar is Full
 Global $aIsElixirFull[4] = [660, 52 + $g_iMidOffsetY, 0xC027C0, 10] ; Main Screen Elixir Resource bar is Full
-Global $aPerkBtn[4] = [95, 243 + $g_iMidOffsetY, 0x7cd8e8, 10] ; Clan Info Page, Perk Button (blue); 800x780
-Global $aIsGemWindow1[4] = [573, 256 + $g_iMidOffsetY, 0xEB1316, 20] ; Main Screen, pixel left of Red X to close gem window
-Global $aIsGemWindow2[4] = [577, 266 + $g_iMidOffsetY, 0xCC2025, 20] ; Main Screen, pixel below Red X to close gem window
-Global $aIsGemWindow3[4] = [586, 266 + $g_iMidOffsetY, 0xCC2025, 20] ; Main Screen, pixel below Red X to close gem window
-Global $aIsGemWindow4[4] = [595, 266 + $g_iMidOffsetY, 0xCC2025, 20] ; Main Screen, pixel below Red X to close gem window
-Global $aIsTrainPgChk1[4] = [815, 80 + $g_iMidOffsetY, 0xFF8D95, 10] ; Main Screen, Train page open - left upper corner of x button
-Global $aIsTrainPgChk2[4] = [762, 328 + $g_iMidOffsetY, 0xF18439, 10] ; Main Screen, Train page open - Dark Orange in left arrow
+Global $aPerkBtn[4] = [95, 243 + $g_iMidOffsetY, 0x7CD8E8, 10] ; Clan Info Page, Perk Button (blue); 800x780
+Global $aIsGemWindow1[4] = [608, 240 + $g_iMidOffsetY, 0xEB1617, 20] ; Main Screen, pixel left of Red X to close gem window
+Global $aIsGemWindow2[4] = [610, 246 + $g_iMidOffsetY, 0xCD161A, 20] ; Main Screen, pixel below Red X to close gem window
+Global $aIsGemWindow3[4] = [625, 246 + $g_iMidOffsetY, 0xCE1519, 20] ; Main Screen, pixel below Red X to close gem window
+Global $aIsGemWindow4[4] = [640, 246 + $g_iMidOffsetY, 0xCD151C, 20] ; Main Screen, pixel below Red X to close gem window
+Global $aIsTrainPgChk1[4] = [811, 85 + $g_iMidOffsetY, 0xFF8D95, 10] ; Main Screen, Train page open - left upper corner of x button. Updated 15.352.22
 Global $aRtnHomeCloud1[4] = [56, 592 + $g_iBottomOffsetY, 0x0A223F, 15] ; Cloud Screen, during search, blue pixel in left eye
 Global $aRtnHomeCloud2[4] = [72, 592 + $g_iBottomOffsetY, 0x103F7E, 15] ; Cloud Screen, during search, blue pixel in right eye
 Global $aDetectLang[2] = [16, 634 + $g_iBottomOffsetY] ; Detect Language, bottom left Attack button must read "Attack"
@@ -84,15 +83,15 @@ Global $aGreenArrowTrainSiegeMachines[2] = [623, 97 + $g_iMidOffsetY]
 Global $g_aShopWindowOpen[4] = [804, 54, 0xC00508, 15] ; Red pixel in lower right corner of RED X to close shop window
 Global $aTreasuryWindow[4] = [689, 138 + $g_iMidOffsetY, 0xFF8D95, 20] ; Redish pixel above X to close treasury window
 Global $aAttackForTreasury[4] = [88, 619 + $g_iMidOffsetY, 0xF0EBE8, 5] ; Red pixel below X to close treasury window
-Global $aAtkHasDarkElixir[4]  = [ 31, 144, 0x282020, 10] ; Attack Page, Check for DE icon
+Global $aAtkHasDarkElixir[4] = [31, 121 + $g_iMidOffsetY, 0x282020, 10]  ; Attack Page, Check for DE icon ; New 23 August offset
 Global $aVillageHasDarkElixir[4] = [837, 134, 0x3D2D3D, 10] ; Main Page, Base has dark elixir storage
 
 Global $aCheckTopProfile[4] = [200, 166, 0x868CAC, 5]
 Global $aCheckTopProfile2[4] = [220, 355, 0x4E4D79, 5]
 
-Global $aIsTabOpen[4] = [0, 145, 0xEAEAE3, 25];Check if specific Tab is opened, X Coordinate is a dummy
+Global $aIsTabOpen[4] = [0, 147, 0xEAEAE3, 25] ;Check if specific Tab is opened, X Coordinate is a dummy
 
-Global $aRecievedTroops[4] = [200 ,215 ,0xFFFFFF, 20] ; Y of You have recieved blabla from xx!
+Global $aRecievedTroops[4] = [200, 215, 0xFFFFFF, 20] ; Y of You have recieved blabla from xx!
 
 ; King Health Bar, check at the middle of the bar, index 4 is x-offset added to middle of health bar
 Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 13]
@@ -119,14 +118,10 @@ Global Const $aIsAttackPage[4] = [50, 548 + $g_iBottomOffsetY, 0xD10D0E, 20] ; r
 ; 1 - Dark Gray : Castle filled/No Castle | 2 - Light Green : Available or Already made | 3 - White : Available or Castle filled/No Castle
 Global $aRequestTroopsAO[6] = [761, 562 + $g_iMidOffsetY, 0x565656, 0x71BA2F, 0xFFFFFE, 25] ; Button Request Troops in Army Overview  (x,y, Gray - Full/No Castle, Green - Available or Already, White - Available or Full)
 
-Global Const $aOpenChatTab[4] = [19, 335 + $g_iMidOffsetY, 0xE88D27, 20]
-Global Const $aCloseChat[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20] ; duplicate with $aChatTab above, need to rename and fix all code to use one?
-Global Const $aChatDonateBtnColors[4][4] = [[0x0d0d0d, 0, -4, 20], [0xdaf582, 10, 0, 20], [0xcdef75, 10, 5, 20], [0xFFFFFF, 24, 9, 10]]
-
 ;attackreport
-Global Const $aAtkRprtDECheck[4] = [459, 372 + $g_iMidOffsetY, 0x433350, 20]
-Global Const $aAtkRprtTrophyCheck[4] = [327, 189 + $g_iMidOffsetY, 0x3B321C, 30]
-Global Const $aAtkRprtDECheck2[4] = [678, 418 + $g_iMidOffsetY, 0x030000, 30]
+Global Const $aAtkRprtDECheck[4] = [459, 372 + $g_iMidOffsetY, 0x2F1F37, 20] ; August 23 update
+Global Const $aAtkRprtTrophyCheck[4] = [327, 189 + $g_iMidOffsetY, 0x514224, 30] ; August 23 update
+Global Const $aAtkRprtDECheck2[4] = [686, 415 + $g_iMidOffsetY, 0x302440, 30] ; August 23 update
 
 ;returnhome
 Global Const $aRtnHomeCheck1[4] = [363, 548 + $g_iMidOffsetY, 0x78C11C, 20]
@@ -141,9 +136,9 @@ Global $NextBtnRND[4] = [710, 530 + $g_iMidOffsetY, 830, 570 + $g_iMidOffsetY] ;
 
 ;Switch Account
 Global $aLoginWithSupercellID[4] = [280, 640 + $g_iMidOffsetY, 0xDCF684, 20] ; Upper green button section "Log in with Supercell ID" 0xB1E25A
-Global $aLoginWithSupercellID2[4] = [266, 653 + $g_iMidOffsetY, 0xFFFFFF , 10] ; White Font "Log in with Supercell ID"
+Global $aLoginWithSupercellID2[4] = [266, 653 + $g_iMidOffsetY, 0xFFFFFF, 10]  ; White Font "Log in with Supercell ID"
 Global $aButtonSetting[4] = [820, 550 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Setting button, Main Screen
-Global $aIsSettingPage[4] = [753, 81 + $g_iMidOffsetY, 0xFF8F95, 10] ; Main Screen, Setting page open - left upper corner of x button
+Global $aIsSettingPage[4] = [810, 38 + $g_iMidOffsetY, 0xFF9095, 10] ; Main Screen, Setting page open - left upper corner of x button
 
 ;Google Play
 Global $aListAccount[4] = [635, 230 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Accounts list google, White
@@ -156,9 +151,9 @@ Global $aButtonConnectedSCID[4] = [640, 160 + $g_iMidOffsetY, 0x2D89FD, 20] ; Se
 Global $aCloseTabSCID[4] = [831, 57] ; Button Close Supercell ID tab
 
 ;Train
-Global $aButtonEditArmy[4] = [800, 512 + $g_iMidOffsetY, 0xDDF685, 25]
-Global $aButtonRemoveTroopsOK1[4] = [747, 552 + $g_iMidOffsetY, 0x76BF2F, 20]
-Global $aButtonRemoveTroopsOK2[4] = [500, 417 + $g_iMidOffsetY, 0x6DBC1F, 20]
+Global $aButtonEditArmy[4] = [800, 512 + $g_iMidOffsetY, 0xDCF684, 25]
+Global $aButtonRemoveTroopsOK1[4] = [747, 552 + $g_iMidOffsetY, 0x77C02E, 20]
+Global $aButtonRemoveTroopsOK2[4] = [540, 435 + $g_iMidOffsetY, 0x6DBC1F, 20]
 
 ;Change Language To English
 Global $aButtonLanguage[4] = [620, 275 + $g_iMidOffsetY, 0xDDF685, 20]
@@ -175,10 +170,10 @@ Global Const $aPersonalChallengeRewardsAvail[4] = [445, 20 + $g_iMidOffsetY, 0xF
 Global Const $aPersonalChallengeRewardsTab[4] = [385, 55 + $g_iMidOffsetY, 0x688090, 20] ; Personal Challenge - Rewards tab unchecked with Gold Pass - Jun23 Update
 Global Const $aPersonalChallengePerksTab[4] = [545, 55 + $g_iMidOffsetY, 0xEFC20B, 20] ; Personal Challenge - Perks tab Checked - Jun23 Update
 Global Const $aPersonalChallengeLeftEdge[4] = [30, 385 + $g_iMidOffsetY, 0x28221E, 20] ; Personal Challenge Window - Rewards tab - Black left edge
-Global Const $aPersonalChallengeCancelBtn[4] = [350, 380 + $g_iMidOffsetY, 0xFDC875, 20] ; Personal Challenge Window - Cancel button at Storage Full msg
-Global Const $aPersonalChallengeOkBtn[4] = [515, 380 + $g_iMidOffsetY, 0xDFF887, 20] ; Personal Challenge Window - Okay button at Storage Full msg
+Global Const $aPersonalChallengeCancelBtn[4] = [288, 391 + $g_iMidOffsetY, 0xFDC875, 20] ; Personal Challenge Window - Cancel button at Storage Full msg
+Global Const $aPersonalChallengeOkBtn[4] = [500, 391 + $g_iMidOffsetY, 0xDFF887, 20] ; Personal Challenge Window - Okay button at Storage Full msg
 
 ;BB Attack 2.0
-Global $aBBGoldEnd[4] = [629, 435, 0xFFE848, 20] ; Gold At the end Of BB attack
-Global $aOkayButton[2] = [430, 570]	; Okay button after BB attack
-Global $aOkayButtonRND[4] = [372, 560, 484, 595]	; Okay button after BB attack, RND
+Global $aBBGoldEnd[4] = [629, 435, 0xFFE64B, 20] ; Gold At the end Of BB attack
+Global $aOkayButton[2] = [430, 570]    ; Okay button after BB attack
+Global $aOkayButtonRND[4] = [372, 560, 484, 595]    ; Okay button after BB attack, RND

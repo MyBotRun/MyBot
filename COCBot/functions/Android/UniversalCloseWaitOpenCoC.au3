@@ -170,4 +170,4 @@ Func SuspendComputer($iMilliseconds)
 	SetLog("Cannot set computer wakeup time, error: " & @error & ", extended: " & @extended, $COLOR_ERROR)
 	Return False
 
-EndFunc
+EndFunc   ;==>SuspendComputer

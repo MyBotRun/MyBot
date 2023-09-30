@@ -78,9 +78,9 @@ Func Unbreakable()
 	While Number($iTrophyCurrent) > Number($g_iDropTrophyMax) ; verify that trophy dropped and didn't fail due misc errors searching
 		If $g_bDebugSetlog Then SetDebugLog("Drop Trophy Loop #" & $iCount + 1, $COLOR_DEBUG)
 		DropTrophy()
-		If _Sleep($DELAYUNBREAKABLE2) Then Return True; wait for home screen
+		If _Sleep($DELAYUNBREAKABLE2) Then Return True ; wait for home screen
 		ClickAway()
-		If _Sleep($DELAYUNBREAKABLE1) Then Return True; wait for home screen
+		If _Sleep($DELAYUNBREAKABLE1) Then Return True ; wait for home screen
 		$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 		If ($iCount > 2) And (Number($iTrophyCurrent) > Number($g_iDropTrophyMax)) Then ; If unable to drop trophy after a couple of tries, restart at main loop.
 			SetLog("Unable to drop trophy, trying again", $COLOR_ERROR)
@@ -104,7 +104,7 @@ Func Unbreakable()
 	If CheckObstacles() = True Then SetLog("Window clean required, but no problem for MyBot!", $COLOR_INFO)
 
 	CloseCoC()
-	
+
 	$iTime = Number($g_iUnbrkWait)
 	If $iTime < 1 Then $iTime = 1 ;error check user time input
 	$iTime = $iTime * 60 * 1000 ; convert to milliseconds

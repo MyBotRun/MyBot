@@ -184,7 +184,7 @@ Func _DonateControls($iTroopIndex)
 
 	For $i = $iFirstTroop To $iLastTroop
 		If $i = $iTroopIndex Then
-			GUICtrlSetBkColor($g_ahLblDonateTroop[$i], $COLOR_ORANGE)
+			GUICtrlSetBkColor($g_ahLblDonateTroop[$i], $COLOR_OLIVE)
 		Else
 			If GUICtrlGetBkColor($g_ahLblDonateTroop[$i]) = $COLOR_NAVY Then GUICtrlSetBkColor($g_ahLblDonateTroop[$i], $GUI_BKCOLOR_TRANSPARENT)
 		EndIf
@@ -236,7 +236,7 @@ EndFunc   ;==>_DonateAllControls
 Func _DonateControlsSpell($iSpellIndex)
 	For $i = 0 To $eSpellCount - 1
 		If $i = $iSpellIndex Then
-			GUICtrlSetBkColor($g_ahLblDonateSpell[$i], $COLOR_ORANGE)
+			GUICtrlSetBkColor($g_ahLblDonateSpell[$i], $COLOR_OLIVE)
 		Else
 			If GUICtrlGetBkColor($g_ahLblDonateSpell[$i]) = $COLOR_NAVY Then GUICtrlSetBkColor($g_ahLblDonateSpell[$i], $GUI_BKCOLOR_TRANSPARENT)
 	    EndIf

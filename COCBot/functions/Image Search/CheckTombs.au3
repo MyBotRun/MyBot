@@ -95,7 +95,7 @@ Func CleanYard()
 	Local $sRedLines = $CocDiamondECD
 	Local $iElixir = 50000
 	Local $bNoBuilders = $g_iFreeBuilderCount < 1
-;	Local $sImgCleanYard = $g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard ; All templates in only one folder
+	;	Local $sImgCleanYard = $g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard ; All templates in only one folder
 
 	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then
 		Local $aResult = findMultiple($g_sImgCleanYard, $sCocDiamond, $sRedLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
@@ -193,6 +193,15 @@ Func CleanYard()
 EndFunc   ;==>CleanYard
 
 Func ClickRemoveObstacle()
+	If _ColorCheck(_GetPixelColor(330, 338 + $g_iMidOffsetY, True), Hex(0xC55115, 6), 20) Then  ; close chat
+		If Not ClickB("ClanChat") Then
+			SetLog("Error finding the Clan Tab Button", $COLOR_ERROR)
+			Click(332, 312 + $g_iMidOffsetY)
+			Return
+		EndIf
+		If _Sleep(500) Then Return
+		Return False
+	EndIf
 	Local $aiButton = findButton("RemoveObstacle", Default, 1, True)
 	If IsArray($aiButton) And UBound($aiButton) >= 2 Then
 		SetDebugLog("Remove Button found! Clicking it at X: " & $aiButton[0] & ", Y: " & $aiButton[1], $COLOR_DEBUG1)
@@ -203,4 +212,4 @@ Func ClickRemoveObstacle()
 		SetLog("Cannot find Remove Button", $COLOR_ERROR)
 		Return False
 	EndIf
-EndFunc
+EndFunc   ;==>ClickRemoveObstacle

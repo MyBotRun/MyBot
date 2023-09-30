@@ -64,8 +64,8 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 			SetLog("Giving up and restarting everything.", $COLOR_ERROR)
 			SaveConfig()
 			RestartBot()
-		Endif
-		
+		EndIf
+
 		$bContinue = False
 		If Not $bObstacleResult Then
 			If $g_bMinorObstacle Then
@@ -96,7 +96,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 			If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 		EndIf
 	WEnd
-	
+
 	If $bLocated Then
 		; check that shared_prefs are pulled
 		;If $g_bUpdateSharedPrefs And Not HaveSharedPrefs() Then PullSharedPrefs()
@@ -124,14 +124,14 @@ EndFunc   ;==>_checkMainScreen
 Func _checkMainScreenImage(ByRef $bLocated, $aPixelToCheck, $bNeedCaptureRegion = $g_bNoCapturePixel)
 	$bLocated = _CheckPixel($aPixelToCheck, $bNeedCaptureRegion) And Not checkObstacles_Network(False, False) And checkChatTabPixel()
 	Return $bLocated
-EndFunc
+EndFunc   ;==>_checkMainScreenImage
 
 Func checkChatTabPixel()
 	SetDebugLog("Checking chat tab pixel exists to ensure images have loaded correctly")
 	ZoomOut()
 	If _Sleep(500) Then Return
-	Local $aChatTabPixel = decodeSingleCoord(findImage("ChatTabPixel", $g_sImgChatTabPixel, GetDiamondFromRect("0,450,50,300"), 1, True))
-	If UBound($aChatTabPixel) > 0 Then 
+	Local $aChatTabPixel = decodeSingleCoord(findImage("ChatTabPixel", $g_sImgChatTabPixel, GetDiamondFromRect("0,290,30,350"), 1, True))
+	If UBound($aChatTabPixel) > 0 Then
 		SetDebugLog("ChatTabPixel found", $COLOR_SUCCESS)
 		Return True
 	Else

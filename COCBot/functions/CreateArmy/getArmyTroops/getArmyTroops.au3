@@ -41,14 +41,13 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 		WEnd
 	EndIf
 
-	;Local $sTroopDiamond = GetDiamondFromRect("23,215,585,260") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
-	Local $sTroopDiamond = GetDiamondFromRect2(23, 185 + $g_iMidOffsetY, 585, 230 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sTroopDiamond = GetDiamondFromRect2(23, 183 + $g_iMidOffsetY, 585, 250 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 
 	If $g_bDebugFuncTime Then StopWatchStart("findMultiple, \imgxml\ArmyOverview\Troops")
 	Local $aCurrentTroops = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Troops", $sTroopDiamond, $sTroopDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 
-   ;_ArrayDisplay($aCurrentTroops, "$aCurrentTroops")
+	;_ArrayDisplay($aCurrentTroops, "$aCurrentTroops")
 
 	Local $aTempTroopArray, $aTroopCoords
 	Local $sTroopName = ""

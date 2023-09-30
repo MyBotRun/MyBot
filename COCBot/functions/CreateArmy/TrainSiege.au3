@@ -15,10 +15,10 @@
 #include-once
 
 Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
-	Local $iPage = 0;
+	Local $iPage = 0 ;
 	Local $sImgSieges = @ScriptDir & "\imgxml\Train\Siege_Train\" ; "25,410,840,515"
 	Local $sSearchArea = GetDiamondFromRect2(25, 380 + $g_iMidOffsetY, 840, 485 + $g_iMidOffsetY)
-	
+
 	; Check if is necessary run the routine
 	If Not $g_bRunState Then Return
 
@@ -28,7 +28,7 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	If _Sleep(500) Then Return
 
 	Local $aCheckIsOccupied[4] = [822, 176 + $g_iMidOffsetY, 0xE00D0D, 15]
-	Local $aCheckIsFilled[4] = [802, 156 + $g_iMidOffsetY, 0xD7AFA9, 15]
+	Local $aCheckIsFilled[4] = [802, 158 + $g_iMidOffsetY, 0xD7AFA9, 15]
 	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiTotalSiegeMachine = $g_aiCurrentSiegeMachines
 
@@ -61,7 +61,7 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 
 		If $HowMany > 0 Then
 			DragSiegeIfNeeded($iSiegeIndex, $iPage)
-			
+
 			Local $sFilename = $sImgSieges & $g_asSiegeMachineShortNames[$iSiegeIndex] & "*"
 			Local $aiSiegeCoord = decodeSingleCoord(findImage("TrainSiege", $sFilename, $sSearchArea, 1, True))
 
@@ -106,7 +106,7 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	If _Sleep(500) Then Return
 
 	; OCR to get remain time - coc-siegeremain
-	Local $sSiegeTime = getRemainTrainTimer(742, 129 + $g_iMidOffsetY) ; Get time via OCR.
+	Local $sSiegeTime = getRemainTrainTimer(760, 133 + $g_iMidOffsetY) ; Get time via OCR.
 	If $sSiegeTime <> "" Then
 		$g_aiTimeTrain[3] = ConvertOCRTime("Siege", $sSiegeTime, False) ; Update global array
 		SetLog("Remaining Siege build time: " & StringFormat("%.2f", $g_aiTimeTrain[3]), $COLOR_INFO)
@@ -137,7 +137,7 @@ Func CheckQueueSieges($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 		Local $aQueueTroop[$eSiegeMachineCount]
 		For $i = 0 To (UBound($aQuantities) - 1)
 			$aQuantities[$i][0] = $aSearchResult[$i][0]
-			$aQuantities[$i][1]	= $aSearchResult[$i][3]
+			$aQuantities[$i][1] = $aSearchResult[$i][3]
 			Local $iSiegeIndex = Int(TroopIndexLookup($aQuantities[$i][0]) - $eWallW)
 			If $iSiegeIndex >= 0 And $iSiegeIndex < $eSiegeMachineCount Then
 				If $bSetLog Then SetLog("  - " & $g_asSiegeMachineNames[TroopIndexLookup($aQuantities[$i][0], "CheckQueueSieges")] & ": " & $aQuantities[$i][1] & "x", $COLOR_SUCCESS)
@@ -153,28 +153,28 @@ Func CheckQueueSieges($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 
 	_ArrayReverse($aResult)
 	Return $aResult
-EndFunc   ;==>CheckQueueTroops
+EndFunc   ;==>CheckQueueSieges
 
 Func DragSiegeIfNeeded($iSiegeIndex, ByRef $iPage)
 
-	SetLog("---- DragSiegeIfNeeded ----")
-	SetLog("Current Page : " & $iPage)
+	SetDebugLog("---- DragSiegeIfNeeded ----")
+	SetDebugLog("Current Page : " & $iPage)
 	SetLog("Siege Needed: " & $g_asSiegeMachineNames[$iSiegeIndex])
 
 	Local $iY1 = Random(400 + $g_iMidOffsetY, 440 + $g_iMidOffsetY, 1)
 	Local $iY2 = Random(400 + $g_iMidOffsetY, 440 + $g_iMidOffsetY, 1)
 
 	If $iPage = 0 Then
-		If $iSiegeIndex >= $eSiegeWallWrecker And $iSiegeIndex <= $eSiegeLogLauncher Then 
+		If $iSiegeIndex >= $eSiegeWallWrecker And $iSiegeIndex <= $eSiegeLogLauncher Then
 			Return True
 		Else
 			; Drag right to left
-			ClickDrag(725, $iY1, 490 - 175, $iY2, 250) ; to expose Flame Flinger 
+			ClickDrag(725, $iY1, 490 - 175, $iY2, 250) ; to expose Flame Flinger
 			$iPage += 1
 			Return True
 		EndIf
 	EndIf
-	
+
 	If $iPage = 1 Then
 		If $iSiegeIndex >= $eSiegeBattleBlimp And $iSiegeIndex <= $eSiegeBattleDrill Then
 			Return True
@@ -187,4 +187,4 @@ Func DragSiegeIfNeeded($iSiegeIndex, ByRef $iPage)
 	EndIf
 
 	Return False
-EndFunc
+EndFunc   ;==>DragSiegeIfNeeded

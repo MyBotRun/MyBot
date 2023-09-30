@@ -78,10 +78,10 @@ Func CreateBotAndroid()
 			_GUICtrlComboBox_SetCurSel(-1, AndroidSuspendFlagsToIndex($g_iAndroidSuspendModeFlags))
 			GUICtrlSetOnEvent(-1, "cmbSuspendAndroid")
 	$y += 25
-		GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblReplaceAdb", "Replace ADB"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
+		GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblReplaceAdb", "ADB Path From"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
 		$g_hCmbAndroidReplaceAdb = GUICtrlCreateCombo("", $x - 8 + 180 + 5, $y, 200, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			GUICtrlSetData(-1, GetTranslatedFileIni("Android", "CmbReplaceAdb", "Don't replace adb.exe|With My Bot adb.exe|With dummy exe"))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "CmbReplaceAdb_Info", 'Configure if Android Emulator adb.exe should be replaced with My Bot adb.exe or a dummy.exe to solve adb issues.'))
+			GUICtrlSetData(-1, GetTranslatedFileIni("Android", "CmbReplaceAdb", "Emulator|MyBotRun"))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "CmbReplaceAdb_Info", 'Configure if Android Emulator adb.exe should be replaced with MyBotRun adb.exe to solve adb issues.'))
 			_GUICtrlComboBox_SetCurSel(-1, $g_iAndroidAdbReplace)
 	$y += 25
 		$g_hChkAndroidAdbClick = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAdbClick", "Use minitouch for Click"), $x, $y, -1, -1)

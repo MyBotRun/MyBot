@@ -57,7 +57,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 
 				Case "BC1" ; coordinates of first/one image found + boolean value
 
-					Local $Result = "" , $Name = ""
+					Local $Result = "", $Name = ""
 					Local $KeyValue = StringSplit($Res[0], "|", $STR_NOCOUNT)
 					For $i = 0 To UBound($KeyValue) - 1
 						Local $DLLRes = DllCallMyBot("GetProperty", "str", $KeyValue[$i], "str", "objectpoints")
@@ -90,7 +90,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
 					Local $CoordsInArray = StringSplit($Result, "|", $STR_NOCOUNT)
 					Return $CoordsInArray
-					
+
 				Case "CXR" ; coordinates of each image found - eg: $Array[0] = [X1, Y1] ; $Array[1] = [X2, Y2]
 
 					Local $Result[0][2]
@@ -98,8 +98,8 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 					For $i = 0 To UBound($KeyValue) - 1
 						Local $DLLRes = DllCallMyBot("GetProperty", "str", $KeyValue[$i], "str", "objectpoints")
 						Local $xy = StringSplit($DLLRes[0], "|", $STR_NOCOUNT)
-						For $j = 0 To Ubound($xy) - 1
-							If UBound(decodeSingleCoord($xy[$j])) > 1 Then 
+						For $j = 0 To UBound($xy) - 1
+							If UBound(decodeSingleCoord($xy[$j])) > 1 Then
 								Local $Tmpxy = StringSplit($xy[$j], ",", $STR_NOCOUNT)
 								_ArrayAdd($Result, $Tmpxy[0] + $Left & "|" & $Tmpxy[1] + $Top)
 							EndIf
@@ -107,8 +107,8 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 					Next
 					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & _ArrayToString($Result), $COLOR_PURPLE)
 					Return $Result
-					
-				Case "CNX" 
+
+				Case "CNX"
 					Local $Result[0][4]
 					Local $KeyValue = StringSplit($Res[0], "|", $STR_NOCOUNT)
 					For $i = 0 To UBound($KeyValue) - 1
@@ -116,8 +116,8 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						Local $objName = StringSplit($KeyValue[$i], "_", $STR_NOCOUNT)
 						Local $xy = StringSplit($DLLRes[0], "|", $STR_NOCOUNT)
 						;SetDebugLog(_ArrayToString($xy))
-						For $j = 0 To Ubound($xy) - 1
-							If UBound(decodeSingleCoord($xy[$j])) > 1 Then 
+						For $j = 0 To UBound($xy) - 1
+							If UBound(decodeSingleCoord($xy[$j])) > 1 Then
 								Local $Tmpxy = StringSplit($xy[$j], ",", $STR_NOCOUNT)
 								_ArrayAdd($Result, $objName[0] & "|" & $Tmpxy[0] + $Left & "|" & $Tmpxy[1] + $Top & "|" & $objName[1])
 							EndIf

@@ -137,8 +137,8 @@ Func GetLogLevel($Color)
 			$sLevel = "ACTION   "
 		Case $COLOR_ACTION1
 			$sLevel = "ACTION1  "
-		Case $COLOR_ORANGE
-			$sLevel = "ORANGE   "
+		Case $COLOR_OLIVE
+			$sLevel = "OLIVE   "
 		Case $COLOR_BLACK
 			$sLevel = "NORMAL   "
 		Case Else
@@ -341,7 +341,7 @@ Func AtkLogHead()
 	SetAtkLog(_PadStringCenter(" " & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_01", "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
 	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                       ------- LOOT --------            -- BONUS --   |'), "")
 	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|AC| TIME|TROPHY|SRC|DS|   GOLD| ELIXIR|   DE| TR| *|  %| G & E|  DE|L.|'), "")
-EndFunc   ;==>AtkLogHead                                                                          
+EndFunc   ;==>AtkLogHead
 
 Func __FileWriteLog($handle, $text)
 	Return FileWriteLine($handle, BitAND(WinGetState($g_hFrmBot), 2) & ": " & $text)

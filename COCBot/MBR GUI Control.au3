@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 #include-once
 
-#include "functions\Other\GUICtrlGetBkColor.au3" ; Included here to use on GUI Control
+#include "functions\Other\GUICtrlGetBkColor.au3" ; Included here To use on GUI Control
 
 Global $g_bRedrawBotWindow[3] = [True, False, False] ; [0] = window redraw enabled, [1] = window redraw required, [2] = window redraw requird by some controls, see CheckRedrawControls()
 Global $g_hFrmBot_WNDPROC = 0
@@ -72,7 +72,7 @@ Func InitializeMainGUI($bGuiModeUpdate = False)
 	selectProfile() ; Choose the profile
 
 	; Read saved settings
-	If FileExists($g_sProfileConfigPath) Or FileExists($g_sProfileBuildingPath) Then
+	If FileExists($g_sProfileConfigPath) Or FileExists($g_sProfileBuildingPath) Or FileExists($g_sProfileClanGamesPath) Then
 		readConfig()
 		applyConfig()
 	EndIf
@@ -92,6 +92,8 @@ Func InitializeMainGUI($bGuiModeUpdate = False)
 		GUICtrlSetState($g_hChkdebugAttackCSV, $GUI_SHOW + $GUI_ENABLE)
 		GUICtrlSetState($g_hChkDebugSmartZap, $GUI_SHOW + $GUI_ENABLE)
 		GUICtrlSetState($g_hbtnAttNow, $GUI_SHOW + $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_SHOW + $GUI_ENABLE)
+		GUICtrlSetState($g_hChkCGDebugEvents, $GUI_SHOW + $GUI_ENABLE)
 	EndIf
 
 	; GUI events and messages
@@ -202,7 +204,7 @@ Func GUIControl_WM_SHELLHOOK($hWin, $iMsg, $wParam, $lParam)
 					; show Android without activating
 					HideAndroidWindow(False, False)
 					;AndroidToFront()
-				#ce
+				#ce moved to GUIControl_WM_ACTIVATEAPP as it enters here without activating the bot
 		EndSelect
 	EndIf
 EndFunc   ;==>GUIControl_WM_SHELLHOOK
@@ -575,7 +577,7 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			Local $RuntimeA = $g_bRunState
 			$g_bRunState = True
 			Setlog("Army Window Test")
-			_checkArmyCamp(False,False,False, True)
+			_checkArmyCamp(False, False, False, True)
 			$g_bRunState = $RuntimeA
 		Case $g_hBtnTestBuildingLocation
 			btnTestGetLocationBuilding()
@@ -830,7 +832,7 @@ Func CheckBotZOrder($bCheckOnly = False, $bForceZOrder = False)
 		Local $hCtrlTarget = $g_aiAndroidEmbeddedCtrlTarget[0]
 		Local $targetIsHWnD = $hCtrlTarget = $g_hAndroidWindow
 		If Not $targetIsHWnD Then
-			Local $bCheck = ($bForceZOrder Or _WinAPI_GetWindow($hCtrlTarget, $GW_HWNDNEXT) <>  $g_hAndroidWindow)
+			Local $bCheck = ($bForceZOrder Or _WinAPI_GetWindow($hCtrlTarget, $GW_HWNDNEXT) <> $g_hAndroidWindow)
 			If $bCheckOnly Then Return $bCheck
 			If $bCheck Then
 				SetDebugLog("CheckBotZOrder: Ajust docked Android Window")
@@ -1647,7 +1649,7 @@ Func SetTime($bForceUpdate = False)
 		If $iLabTime > 0 Then
 			_TicksToDay($iLabTime, $day, $hour, $min, $sec)
 			GUICtrlSetData($g_hLbLLabTime, $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-			GUICtrlSetColor($g_hLbLLabTime, $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+			GUICtrlSetColor($g_hLbLLabTime, $day > 0 ? $COLOR_GREEN : $COLOR_OLIVE)
 		Else
 			GUICtrlSetData($g_hLbLLabTime, "")
 			$g_sLabUpgradeTime = ""
@@ -1658,8 +1660,8 @@ Func SetTime($bForceUpdate = False)
 		Local $iPetTime = _DateDiff("s", _NowCalc(), $g_sPetUpgradeTime) * 1000
 		If $iPetTime > 0 Then
 			_TicksToDay($iPetTime, $day, $hour, $min, $sec)
-			GUICtrlSetData($g_hLbLPetTime, $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-			GUICtrlSetColor($g_hLbLPetTime, $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+			GUICtrlSetData($g_hLbLPetTime, $day > 0 ? StringFormat("%2ud %02i:%02i", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+			GUICtrlSetColor($g_hLbLPetTime, $day > 0 ? $COLOR_GREEN : $COLOR_OLIVE)
 		Else
 			GUICtrlSetData($g_hLbLPetTime, "")
 			$g_sPetUpgradeTime = ""
@@ -1686,7 +1688,7 @@ Func SetTime($bForceUpdate = False)
 						GUICtrlSetColor($g_ahLblTroopTime[$i], $COLOR_BLACK)
 						GUICtrlSetColor($g_ahLblTroopTimeRep[$i], $COLOR_BLACK)
 					EndIf
-					
+
 				EndIf
 			Next
 			SwitchAccountVariablesReload("SetTime")
@@ -2261,4 +2263,4 @@ Func ConsoleWindow($bShow = Default)
 		_WinAPI_FreeConsole()
 		$bConsoleAllocated = False
 	EndIf
-EndFunc
+EndFunc   ;==>ConsoleWindow

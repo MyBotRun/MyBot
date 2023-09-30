@@ -29,7 +29,7 @@ Func QuickTrain()
 
 	Local $iStep = 1
 	While 1
-		Local $avTroopCamp = GetCurrentArmy(48, 160)
+		Local $avTroopCamp = GetCurrentArmy(50, 133 + $g_iMidOffsetY)
 		SetLog("Checking Troop tab: " & $avTroopCamp[0] & "/" & $avTroopCamp[1] * 2)
 		If $avTroopCamp[1] = 0 Then ExitLoop
 
@@ -81,7 +81,7 @@ Func QuickTrain()
 
 		Local $Step = 1, $iUnbalancedSpell = 0
 		While 1
-			Local $aiSpellCamp = GetCurrentArmy(43, 160)
+			Local $aiSpellCamp = GetCurrentArmy(48, 133 + $g_iMidOffsetY)
 			SetLog("Checking Spell tab: " & $aiSpellCamp[0] & "/" & $aiSpellCamp[1] * 2)
 			If $aiSpellCamp[1] > $g_iTotalQuickSpells Then
 				SetLog("Unbalance total quick spell vs actual spell capacity: " & $g_iTotalQuickSpells & "/" & $aiSpellCamp[1])
@@ -146,7 +146,7 @@ Func QuickTrain()
 
 		Local $iStep = 0
 		While 1
-			Local $aiSiegeMachineCamp = GetCurrentArmy(56, 160)
+			Local $aiSiegeMachineCamp = GetCurrentArmy(56, 133 + $g_iMidOffsetY)
 			SetLog("Checking siege machine tab: " & $aiSiegeMachineCamp[0] & "/" & $aiSiegeMachineCamp[1] * 2)
 
 			If $aiSiegeMachineCamp[0] <= 0 Then ;0/6
@@ -211,7 +211,7 @@ Func QuickTrain()
 	If _Sleep(250) Then Return
 
 	SetDebugLog("$iTroopStatus = " & $iTroopStatus & ", $iSpellStatus = " & $iSpellStatus & ", $iSiegeStatus = " & $iSiegeStatus)
-	If $iTroopStatus = -1 And $iSpellStatus = -1  And $iSiegeStatus = -1 Then
+	If $iTroopStatus = -1 And $iSpellStatus = -1 And $iSiegeStatus = -1 Then
 		SetLog("Quick Train failed. Unable to detect training status.", $COLOR_ERROR)
 		Return
 	EndIf
@@ -245,14 +245,12 @@ Func CheckQuickTrainTroop()
 	If _DateIsValid($asLastTimeChecked[$g_iCurAccount]) Then
 		Local $iLastCheck = _DateDiff('n', $asLastTimeChecked[$g_iCurAccount], _NowCalc()) ; elapse time from last check (minutes)
 		SetDebugLog("Latest CheckQuickTrainTroop() at: " & $asLastTimeChecked[$g_iCurAccount] & ", Check DateCalc: " & $iLastCheck & " min" & @CRLF & _
-		"_ArrayMax($g_aiArmyQuickTroops) = " & _ArrayMax($g_aiArmyQuickTroops))
+				"_ArrayMax($g_aiArmyQuickTroops) = " & _ArrayMax($g_aiArmyQuickTroops))
 		If $iLastCheck <= 360 And _ArrayMax($g_aiArmyQuickTroops) > 0 Then Return ; A check each 6 hours [6*60 = 360]
 	EndIf
 
 	If Not OpenArmyOverview(False, "CheckQuickTrainTroop()") Then Return
 	If _Sleep(250) Then Return
-
-
 
 	If Not OpenQuickTrainTab(False, "CheckQuickTrainTroop()") Then Return
 	If _Sleep(500) Then Return
@@ -273,18 +271,18 @@ Func CheckQuickTrainTroop()
 
 	Local $iTroopCamp = 0, $iSpellCamp = 0, $iSiegeMachineCamp = 0, $sLog = ""
 
-	Local $aSaveButton[4] = [808, 300, 0xdcf684, 20] ; green
-	Local $aCancelButton[4] = [650, 300, 0xff8c91, 20] ; red
-	Local $aRemoveButton[4] = [535, 300, 0xff8f94, 20] ; red
+	Local $aSaveButton[4] = [780, 305, 0xD8F480, 20] ; green
+	Local $aCancelButton[4] = [645, 305, 0xFF858A, 20] ; red
+	Local $aRemoveButton[4] = [535, 305, 0xFF888D, 20] ; red
 
-	local $iDistanceBetweenArmies = 108 ; pixels
-	local $aArmy1Location = [758, 272] ; first area of quick train army buttons
+	Local $iDistanceBetweenArmies = 108 ; pixels
+	Local $aArmy1Location = [758, 272] ; first area of quick train army buttons
 
 	; findImage needs filename and path
 	Local $avEditQuickTrainIcon = _FileListToArrayRec($g_sImgEditQuickTrain, "*", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_NOSORT, $FLTAR_FULLPATH)
 
 	If Not IsArray($avEditQuickTrainIcon) Or UBound($avEditQuickTrainIcon, $UBOUND_ROWS) <= 0 Then
-		SetLog("Can't find EditQuickTrainIcon");
+		SetLog("Can't find EditQuickTrainIcon") ;
 		Return False
 	EndIf
 
@@ -401,7 +399,7 @@ Func CheckQuickTrainTroop()
 
 					If $j > $eSiegeMachineCount - 1 Then ContinueLoop
 					$g_aiArmyQuickSiegeMachines[$j] += $aiInGameSiegeMachine[$j]
-					$TempSiegeTotal += $aiInGameSiegeMachine[$j] * $g_aiSiegeMachineSpace[$j] 		 ; tally sieges
+					$TempSiegeTotal += $aiInGameSiegeMachine[$j] * $g_aiSiegeMachineSpace[$j]          ; tally sieges
 				Next
 
 				ExitLoop
@@ -413,7 +411,7 @@ Func CheckQuickTrainTroop()
 
 			; cross check with army camp
 			If _ArrayMax($g_aiArmyQuickTroops) > 0 Then
-				Local $TroopCamp = GetCurrentArmy(48, 160)
+				Local $TroopCamp = GetCurrentArmy(50, 133 + $g_iMidOffsetY)
 				$iTroopCamp = $TroopCamp[1] * 2
 				If $TempTroopTotal <> $TroopCamp[0] Then
 					SetLog("Error reading troops in army setting (" & $TempTroopTotal & " vs " & $TroopCamp[0] & ")", $COLOR_ERROR)
@@ -424,7 +422,7 @@ Func CheckQuickTrainTroop()
 				EndIf
 			EndIf
 			If _ArrayMax($g_aiArmyQuickSpells) > 0 Then
-				Local $aiSpellCamp = GetCurrentArmy(146, 160)
+				Local $aiSpellCamp = GetCurrentArmy(150, 133 + $g_iMidOffsetY)
 				$iSpellCamp = $aiSpellCamp[1] * 2
 				If $TempSpellTotal <> $aiSpellCamp[0] Then
 					SetLog("Error reading spells in army setting (" & $TempSpellTotal & " vs " & $aiSpellCamp[0] & ")", $COLOR_ERROR)
@@ -435,7 +433,7 @@ Func CheckQuickTrainTroop()
 				EndIf
 			EndIf
 			If _ArrayMax($g_aiArmyQuickSiegeMachines) > 0 Then
-				Local $aiSiegeCamp = GetCurrentArmy(236, 160)
+				Local $aiSiegeCamp = GetCurrentArmy(235, 133 + $g_iMidOffsetY)
 				$iSiegeMachineCamp = $aiSiegeCamp[1] * 2
 				If $TempSiegeTotal <> $aiSiegeCamp[0] Then
 					SetLog("Error reading siege machines in army setting (" & $TempSiegeTotal & " vs " & $aiSiegeCamp[0] & ")", $COLOR_ERROR)
@@ -456,7 +454,7 @@ Func CheckQuickTrainTroop()
 			SetLog('Cannot find "Edit" button for Army ' & $i + 1, $COLOR_ERROR)
 			$bResult = False
 		EndIf
-   Next
+	Next
 
 	$g_aiArmyCompTroops = $g_aiArmyQuickTroops
 	$g_aiArmyCompSpells = $g_aiArmyQuickSpells
@@ -474,7 +472,7 @@ EndFunc   ;==>CheckQuickTrainTroop
 Func CreateQuickTrainPreset($i)
 	SetLog("Creating troops/spells/siege machines preset for Army " & $i + 1)
 
-	Local $aRemoveButton[4] = [535, 300, 0xff8f94, 20] ; red
+	Local $aRemoveButton[4] = [535, 305, 0xFF888D, 20] ; red
 	Local $iArmyPage = 0
 
 	If _ColorCheck(_GetPixelColor($aRemoveButton[0], $aRemoveButton[1], True), Hex($aRemoveButton[2], 6), $aRemoveButton[2]) Then
@@ -510,7 +508,7 @@ Func CreateQuickTrainPreset($i)
 			Local $iIndex = $g_aiQuickSpellType[$i][$j]
 			If _ArrayIndexValid($g_aiArmyQuickSpells, $iIndex) Then
 				If $iArmyPage = 0 Then
-				    If _Sleep(250) Then Return
+					If _Sleep(250) Then Return
 					ClickDrag(715, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
 					ClickDrag(715, 475, 25, 475, 2000)
@@ -519,14 +517,14 @@ Func CreateQuickTrainPreset($i)
 					If _Sleep(1500) Then Return
 					$iArmyPage = 3
 				ElseIf $iArmyPage = 1 Then
-				    If _Sleep(250) Then Return
+					If _Sleep(250) Then Return
 					ClickDrag(715, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
 					ClickDrag(510, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
 					$iArmyPage = 3
 				ElseIf $iArmyPage = 2 Then
-				    If _Sleep(250) Then Return
+					If _Sleep(250) Then Return
 					ClickDrag(510, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
 					$iArmyPage = 3

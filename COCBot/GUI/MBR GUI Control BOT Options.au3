@@ -873,7 +873,7 @@ Func btnTestGetLocationBuildingImage()
 			Next
 		EndIf
 	EndIf
-	
+
 	; - DRAW Monolith -------------------------------------------------------------------
 	If $g_oBldgAttackInfo.exists($eBldgMonolith & "_LOCATION") Then
 		$g_aiCSVMonolithPos = $g_oBldgAttackInfo.item($eBldgMonolith & "_LOCATION")
@@ -883,7 +883,7 @@ Func btnTestGetLocationBuildingImage()
 				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 15, $pixel[1] - 15, 30, 30, $hPenPaleBlue)
 			Next
 		EndIf
-	EndIf	
+	EndIf
 
 	; - DRAW Wizard Towers -------------------------------------------------------------------
 	If $g_oBldgAttackInfo.exists($eBldgWizTower & "_LOCATION") Then

@@ -75,7 +75,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 			EndIf
 			If $bDropped = True Then
 				;If $bSlotDetectedAgain Then
-					; ok, hero was dropped, really? don't know yet... TODO add check if hero was really dropped...
+				; ok, hero was dropped, really? don't know yet... TODO add check if hero was really dropped...
 				;EndIf
 				SetDebugLog("Discard updating hero " & GetTroopName($g_avAttackTroops[$i][0]) & " because already dropped")
 				$iTroopNumber += $g_avAttackTroops[$i][2]
@@ -101,7 +101,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 										If $g_aiAttackUseSiege[$pMatchMode] <= $eSiegeMachineCount + 1 Then
 											SelectCastleOrSiege($avAttackBar[$j][0], Number($avAttackBar[$j][5]), $g_aiAttackUseSiege[$pMatchMode])
 
-											If $g_aiAttackUseSiege[$pMatchMode] = 0 And Not($avAttackBar[$j][0] = $eCastle) Then ; if the user wanted to drop castle and no troops were available, do not drop a siege
+											If $g_aiAttackUseSiege[$pMatchMode] = 0 And Not ($avAttackBar[$j][0] = $eCastle) Then ; if the user wanted to drop castle and no troops were available, do not drop a siege
 												SetDebugLog("Discard use of " & GetTroopName($avAttackBar[$j][0]) & " (" & $avAttackBar[$j][0] & ")", $COLOR_ERROR)
 												ContinueLoop
 											EndIf
@@ -160,7 +160,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 	Local $bNeedSwitch = False, $bAnySiege = False
 
 	Local $sLog = GetTroopName($iTroopIndex)
-	
+
 	Local $iMaxSiegeLevel = 4
 	If $iTroopIndex = $eWallW Or $iTroopIndex = $eStoneS Then $iMaxSiegeLevel = 5
 	If $g_iTownHallLevel < 10 Then $iMaxSiegeLevel = 3
@@ -298,7 +298,7 @@ Func SelectWardenMode($iMode, $XCoord)
 					If $aAvailableModeArray[0] = $aSelectSymbol[$iMode] Then
 						Local $aSymbolCoords = StringSplit($aAvailableModeArray[1], ",", $STR_NOCOUNT)
 						ClickP($aSymbolCoords, 1, 0)
-						$sLogText =  " (" & $aSelectMode[$iMode] & " mode)"
+						$sLogText = " (" & $aSelectMode[$iMode] & " mode)"
 						ExitLoop
 					EndIf
 				Next
@@ -316,7 +316,7 @@ Func IsUnitUsed($iMatchMode, $iTroopIndex)
 		If $iMatchMode = $DT Or $iMatchMode = $TB Then Return True
 		Local $aTempArray = $g_aaiTroopsToBeUsed[$g_aiAttackTroopSelection[$iMatchMode]]
 		Local $iFoundAt = _ArraySearch($aTempArray, $iTroopIndex)
-		If $iFoundAt <> -1 Then	Return True
+		If $iFoundAt <> -1 Then Return True
 		Return False
 	Else ; Index is a Hero/Siege/Castle/Spell
 		If $iMatchMode <> $DB And $iMatchMode <> $LB Then

@@ -295,7 +295,7 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 			$g_iAndroidClientHeight = $Values[1][2]
 			$g_iAndroidWindowWidth =  $Values[2][2]
 			$g_iAndroidWindowHeight = $Values[3][2]
-		#ce
+		#ce as of 2016-01-26 CoC release, system bar is transparent and should be closed when bot is running
 
 		For $i = 0 To UBound($Values) - 1
 			If $Values[$i][1] <> $Values[$i][2] Then

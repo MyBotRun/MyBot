@@ -156,7 +156,7 @@ Func checkDeadBaseNew()
 EndFunc   ;==>checkDeadBaseNew
 
 Func checkDeadBase()
-   If $g_bChkDeadEagle And $g_iSearchCount < $g_iDeadEagleSearch Then
+	If $g_bChkDeadEagle And $g_iSearchCount < $g_iDeadEagleSearch Then
 		SetDebugLog("Checking base for DeadEagle : " & $g_iSearchCount)
 		Return CheckForDeadEagle()
 	Else
@@ -503,9 +503,9 @@ EndFunc   ;==>checkDeadBaseFolder
 Func CheckForDeadEagle()
 	Local $sImgDeadEagleImages = @ScriptDir & "\imgxml\Buildings\DeadEagle"
 	Local $sBoostDiamond = "ECD"
-	Local $redlines = "ECD"
+	Local $redLines = "ECD"
 
-	Local $avDeadEagle = findMultiple($sImgDeadEagleImages, $sBoostDiamond, $redlines, 0, 1000, 0, "objectname,objectpoints")
+	Local $avDeadEagle = findMultiple($sImgDeadEagleImages, $sBoostDiamond, $redLines, 0, 1000, 0, "objectname,objectpoints")
 
 	If Not IsArray($avDeadEagle) Or UBound($avDeadEagle, $UBOUND_ROWS) <= 0 Then
 		SetDebugLog("No Dead Eagle!")
@@ -523,4 +523,4 @@ Func CheckForDeadEagle()
 	Next
 
 	Return True
-EndFunc
+EndFunc   ;==>CheckForDeadEagle

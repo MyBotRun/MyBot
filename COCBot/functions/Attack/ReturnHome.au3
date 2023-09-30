@@ -104,9 +104,9 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 						If ReturnHomeMainPage() Then Return
 						If $j > 10 Then
 							Select
-								Case $i < 5; if Okay button not found in 10*(200)ms or 2 seconds, then give up.
+								Case $i < 5 ; if Okay button not found in 10*(200)ms or 2 seconds, then give up.
 									ExitLoop
-								Case $i = 5; if Okay button not found Then Restart COC.
+								Case $i = 5 ; if Okay button not found Then Restart COC.
 									$bret = True
 									ExitLoop 2
 							EndSelect

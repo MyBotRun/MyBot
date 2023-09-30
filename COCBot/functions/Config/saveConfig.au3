@@ -40,6 +40,8 @@ Func saveConfig()
 	SaveRegularConfig()
 	;SetDebugLog("SaveRegularConfig(), time = " & Round(__TimerDiff($t)/1000, 2) & " sec")
 
+	SaveClanGamesConfig()
+
 	SetDebugLog("SaveConfig(), time = " & Round(__TimerDiff($t) / 1000, 2) & " sec")
 
 	$g_bSaveConfigIsActive = False
@@ -61,7 +63,7 @@ EndFunc   ;==>SaveProfileConfig
 Func _SaveProfileConfigAdbPath($sIniFile = Default, $sAdbPath = $g_sAndroidAdbPath)
 	If $sIniFile = Default Then $sIniFile = $g_sProfilePath & "\profile.ini"
 	IniWrite($sIniFile, "general", "adb.path", $sAdbPath)
-EndFunc   ;==>SaveProfileConfigAdbPath
+EndFunc   ;==>_SaveProfileConfigAdbPath
 
 Func SaveWeakBaseStats()
 	_Ini_Clear()
@@ -74,6 +76,107 @@ Func SaveWeakBaseStats()
 
 	_Ini_Save($g_sProfileBuildingStatsPath)
 EndFunc   ;==>SaveWeakBaseStats
+
+Func SaveClanGamesConfig()
+	SetDebugLog("Save Clan Games Config " & $g_sProfileClanGamesPath)
+	_Ini_Clear()
+
+	Local $clanGamesVersion = "2.0.0"
+	_Ini_Add("general", "version", GetVersionNormalized($g_sBotVersion))
+	_Ini_Add("general", "ClanGames", $clanGamesVersion)
+
+	# NEW CLANGAMES GUI
+	_Ini_Add("clangames", "ChkClanGamesEnabled", $g_bChkClanGamesEnabled ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesAllTimes", $g_bChkClanGamesAlltimes ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesNoOneDay", $g_bChkClanGamesNoOneDay ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesCollectRewards", $g_bChkClanGamesCollectRewards ? 1 : 0)
+
+	_Ini_Add("clangames", "ChkClanGamesLoot", $g_bChkClanGamesLoot ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesBattle", $g_bChkClanGamesBattle ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesDestruction", $g_bChkClanGamesDes ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesAirTroop", $g_bChkClanGamesAirTroop ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesGroundTroop", $g_bChkClanGamesGroundTroop ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesMiscellaneous", $g_bChkClanGamesMiscellaneous ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesSpell", $g_bChkClanGamesSpell ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesBBBattle", $g_bChkClanGamesBBBattle ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesBBDestruction", $g_bChkClanGamesBBDes ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesBBTroops", $g_bChkClanGamesBBTroops ? 1 : 0)
+	_Ini_Add("clangames", "ChkForceBBAttackOnClanGames", $g_bChkForceBBAttackOnClanGames ? 1 : 0)
+	_Ini_Add("clangames", "ChkForceAttackOnClanGamesWhenHalt", $g_bChkForceAttackOnClanGamesWhenHalt ? 1 : 0)
+	_Ini_Add("clangames", "SearchBBEventFirst", $bSearchBBEventFirst ? 1 : 0)
+	_Ini_Add("clangames", "SearchMainEventFirst", $bSearchMainEventFirst ? 1 : 0)
+	_Ini_Add("clangames", "SearchBothVillages", $bSearchBothVillages ? 1 : 0)
+
+	_Ini_Add("clangames", "ChkClanGamesPurgeAny", $g_bChkClanGamesPurgeAny ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesStopBeforeReachAndPurge", $g_bChkClanGamesStopBeforeReachAndPurge ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesSort", $g_bSortClanGames ? 1 : 0)
+	_Ini_Add("clangames", "ClanGamesSortBy", $g_iSortClanGames)
+
+	Local $str = ""
+	For $i = 0 To UBound($g_abCGMainLootItem) - 1
+		$str &= $g_abCGMainLootItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGLoot", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGMainBattleItem) - 1
+		$str &= $g_abCGMainBattleItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGBattle", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGMainDestructionItem) - 1
+		$str &= $g_abCGMainDestructionItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGDes", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGMainAirItem) - 1
+		$str &= $g_abCGMainAirItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGAirTroop", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGMainGroundItem) - 1
+		$str &= $g_abCGMainGroundItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGGroundTroop", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGMainMiscItem) - 1
+		$str &= $g_abCGMainMiscItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGMisc", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGMainSpellItem) - 1
+		$str &= $g_abCGMainSpellItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGSpell", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGBBBattleItem) - 1
+		$str &= $g_abCGBBBattleItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledBBBattle", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGBBDestructionItem) - 1
+		$str &= $g_abCGBBDestructionItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledBBDestruction", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGBBTroopsItem) - 1
+		$str &= $g_abCGBBTroopsItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledBBTroops", $str)
+
+	; <><><><> Clan Games / Debug <><><><>
+	SaveConfigCG_Debug()
+
+	_Ini_Save($g_sProfileClanGamesPath)
+EndFunc   ;==>SaveClanGamesConfig
 
 Func SaveBuildingConfig()
 	SetDebugLog("Save Building Config " & $g_sProfileBuildingPath)
@@ -90,18 +193,18 @@ Func SaveBuildingConfig()
 
 	_Ini_Add("upgrade", "StarLabPosX", $g_aiStarLaboratoryPos[0])
 	_Ini_Add("upgrade", "StarLabPosY", $g_aiStarLaboratoryPos[1])
-	
+
 	_Ini_Add("upgrade", "BattleMachinePosX", $g_aiBattleMachinePos[0])
 	_Ini_Add("upgrade", "BattleMachinePosY", $g_aiBattleMachinePos[1])
 
 	_Ini_Add("other", "BuilderHallPosX", $g_aiBuilderHallPos[0])
 	_Ini_Add("other", "BuilderHallPosY", $g_aiBuilderHallPos[1])
 	_Ini_Add("other", "LevelBuilderHall", $g_iBuilderHallLevel)
-	
+
 	_Ini_Add("other", "DoubleCannonPosX", $g_aiDoubleCannonPos[0]) ; ? not sure why this is needed
 	_Ini_Add("other", "DoubleCannonPosY", $g_aiDoubleCannonPos[1])
 	_Ini_Add("other", "DoubleCannonPosV", $g_aiDoubleCannonPos[2])
-	
+
 	_Ini_Add("other", "ArcherTowerPosX", $g_aiArcherTowerPos[0]) ; ? not sure why this is needed
 	_Ini_Add("other", "ArcherTowerPosY", $g_aiArcherTowerPos[1])
 	_Ini_Add("other", "ArcherTowerPosV", $g_aiArcherTowerPos[2])
@@ -330,7 +433,7 @@ Func SaveConfig_Debug()
 	_Ini_Add("debug", "debugsetlog", $g_bDebugSetlog ? 1 : 0)
 	_Ini_Add("debug", "debugAndroid", $g_bDebugAndroid ? 1 : 0)
 	_Ini_Add("debug", "debugsetclick", $g_bDebugClick ? 1 : 0)
-	_Ini_Add("debug", "debugFunc", ($g_bDebugFuncTime And $g_bDebugFuncCall)? 1 : 0)
+	_Ini_Add("debug", "debugFunc", ($g_bDebugFuncTime And $g_bDebugFuncCall) ? 1 : 0)
 	_Ini_Add("debug", "disablezoomout", $g_bDebugDisableZoomout ? 1 : 0)
 	_Ini_Add("debug", "disablevillagecentering", $g_bDebugDisableVillageCentering ? 1 : 0)
 	_Ini_Add("debug", "debugdeadbaseimage", $g_bDebugDeadBaseImage ? 1 : 0)
@@ -343,6 +446,14 @@ Func SaveConfig_Debug()
 	_Ini_Add("debug", "debugmakeimgcsv", $g_bDebugMakeIMGCSV ? 1 : 0)
 	_Ini_Add("debug", "DebugSmartZap", $g_bDebugSmartZap)
 EndFunc   ;==>SaveConfig_Debug
+
+Func SaveConfigCG_Debug()
+	; Debug
+	ApplyConfig_Debug(GetApplyConfigSaveAction())
+	; <><><><> Clan Games / Debug <><><><>
+	_Ini_Add("debug", "CGDebug", $g_bChkClanGamesDebug ? 1 : 0)
+	_Ini_Add("debug", "CGDebugEvents", $g_bCGDebugEvents ? 1 : 0)
+EndFunc   ;==>SaveConfigCG_Debug
 
 Func SaveConfig_600_1()
 	; <><><><> Village / Misc <><><><>
@@ -399,7 +510,7 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreWall", $g_iChkBBSuggestedUpgradesIgnoreWall)
 
 	_Ini_Add("other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings)
-	
+
 	; OTTO Building Upgrades
 	_Ini_Add("other", "chkBattleMachineUpgrade", $g_bBattleMachineUpgrade)
 	_Ini_Add("other", "chkDoubleCannonUpgrade", $g_bDoubleCannonUpgrade)
@@ -408,61 +519,25 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "chkBattlecopterUpgrade", $g_bBattlecopterUpgrade)
 	_Ini_Add("other", "chkAnyDefUpgrade", $g_bAnyDefUpgrade)
 
-	_Ini_Add("other", "ChkClanGamesAir", $g_bChkClanGamesAir ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesGround", $g_bChkClanGamesGround ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesMisc", $g_bChkClanGamesMisc ? 1 : 0)
-
-	_Ini_Add("other", "ChkClanGamesEnabled", $g_bChkClanGamesEnabled ? 1 : 0)
-	
-	_Ini_Add("other", "ChkClanGamesNightVillage", $g_bChkClanGamesNightVillage ? 1 : 0)	
-	
-	_Ini_Add("other", "ChkClanGames60", $g_bChkClanGames60 ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesPurge", $g_bChkClanGamesPurge ? 1 : 0)
-	
-	_Ini_Add("other", "ChkClanGamesPurgeHome", $g_bChkClanGamesPurgeHome ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesPurgeNight", $g_bChkClanGamesPurgeNight ? 1 : 0)
-	
-	
-	_Ini_Add("other", "ChkClanGamesStopBeforeReachAndPurge", $g_bChkClanGamesStopBeforeReachAndPurge ? 1 : 0)
-
-	_Ini_Add("other", "ChkClanGamesCollectRewards", $g_bChkClanGamesCollectRewards ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesDebug", $g_bChkClanGamesDebug ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesDebugImages", $g_bChkClanGamesDebugImages ? 1 : 0)
-
-	_Ini_Add("other", "ChkClanGamesLoot", $g_bChkClanGamesLoot ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesBattle", $g_bChkClanGamesBattle ? 1 : 0)
-
-    _Ini_Add("other", "ChkClanGamesBBBattle", $g_bChkClanGamesBBBattle ? 1 : 0)
-    _Ini_Add("other", "ChkClanGamesBBDestruction", $g_bChkClanGamesBBDestruction ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesSpell", $g_bChkClanGamesSpell ? 1 : 0)
-
-	_Ini_Add("other", "ChkClanGamesDestruction", $g_bChkClanGamesDestruction ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesAirTroop", $g_bChkClanGamesAirTroop ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesGroundTroop ", $g_bChkClanGamesGroundTroop ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesMiscellaneous", $g_bChkClanGamesMiscellaneous ? 1 : 0)
-	_Ini_Add("other", "PurgeMax", $g_iPurgeMax)
-
-	; Active Clan Game Challenges
-	_Ini_Add("other", "ActiveEventName", $g_sActiveEventName)
-
 	; Builder Base Attack
 	_Ini_Add("other", "ChkEnableBBAttack", $g_bChkEnableBBAttack)
 	_Ini_Add("other", "ChkBBTrophyRange", $g_bChkBBTrophyRange)
 	_Ini_Add("other", "TxtBBTrophyLowerLimit", $g_iTxtBBTrophyLowerLimit)
 	_Ini_Add("other", "TxtBBTrophyUpperLimit", $g_iTxtBBTrophyUpperLimit)
 	_Ini_Add("other", "ChkBBAttIfLootAvail", $g_bChkBBAttIfLootAvail)
-	
+
 	_Ini_Add("other", "ChkBBHaltOnGoldFull", $g_bChkBBHaltOnGoldFull)
 	_Ini_Add("other", "ChkBBHaltOnElixirFull", $g_bChkBBHaltOnElixirFull)
-	
+
 	_Ini_Add("other", "ChkBBWaitForMachine", $g_bChkBBWaitForMachine)
 	_Ini_Add("other", "iBBNextTroopDelay", $g_iBBNextTroopDelay)
 	_Ini_Add("other", "iBBSameTroopDelay", $g_iBBSameTroopDelay)
+	_Ini_Add("other", "iBBAttackCount", $g_iBBAttackCount)
 
 	; Builder Base Drop Order
 	_Ini_Add("other", "bBBDropOrderSet", $g_bBBDropOrderSet)
 	_Ini_Add("other", "sBBDropOrder", $g_sBBDropOrder)
-	
+
 	;Clan Capital
 	_Ini_Add("ClanCapital", "ChkCollectCCGold", $g_bChkEnableCollectCCGold)
 	_Ini_Add("ClanCapital", "ChkEnableForgeGold", $g_bChkEnableForgeGold)
@@ -555,7 +630,7 @@ Func SaveConfig_600_12()
 		_Ini_Add("donate", "txtBlacklist" & $sIniName, StringReplace($g_asTxtBlacklistSpell[$i], @CRLF, "|"))
 	Next
 
-	For $i = $eSiegeWallWrecker to $eSiegeMachineCount - 1
+	For $i = $eSiegeWallWrecker To $eSiegeMachineCount - 1
 		Local $index = $eTroopCount + $g_iCustomDonateConfigs
 		Local $sIniName = $g_asSiegeMachineShortNames[$i]
 		_Ini_Add("donate", "chkDonate" & $sIniName, $g_abChkDonateTroop[$index + $i] ? 1 : 0)
@@ -606,7 +681,7 @@ Func SaveConfig_600_15()
 	_Ini_Add("upgrade", "UpgradeChampion", $g_bUpgradeChampionEnable ? 1 : 0)
 	_Ini_Add("upgrade", "HeroReservedBuilder", $g_iHeroReservedBuilder)
 
-	For $i = 0 to $ePetCount - 1
+	For $i = 0 To $ePetCount - 1
 		_Ini_Add("upgrade", "UpgradePet[" & $g_asPetShortNames[$i] & "]", $g_bUpgradePetsEnable[$i] ? 1 : 0)
 	Next
 EndFunc   ;==>SaveConfig_600_15
@@ -622,7 +697,7 @@ Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
 	; Auto Upgrade
 	_Ini_Add("Auto Upgrade", "AutoUpgradeEnabled", $g_bAutoUpgradeEnabled)
-	For $i = 0 To Ubound($g_iChkUpgradesToIgnore) - 1
+	For $i = 0 To UBound($g_iChkUpgradesToIgnore) - 1
 		_Ini_Add("Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i])
 	Next
 	For $i = 0 To 2
@@ -944,7 +1019,7 @@ Func SaveConfig_600_29_DB_SmartFarm()
 	_Ini_Add("SmartFarm", "InsidePercentage", $g_iTxtInsidePercentage)
 	_Ini_Add("SmartFarm", "OutsidePercentage", $g_iTxtOutsidePercentage)
 	_Ini_Add("SmartFarm", "DebugSmartFarm", $g_bDebugSmartFarm)
-EndFunc
+EndFunc   ;==>SaveConfig_600_29_DB_SmartFarm
 
 Func SaveConfig_600_29_LB()
 	; <><><><> Attack Plan / Search & Attack / Activebase / Attack <><><><>

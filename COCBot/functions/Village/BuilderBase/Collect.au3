@@ -57,7 +57,7 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False, $bSetLog = T
 
 	If _Sleep($DELAYCOLLECT3) Then Return
 	If $bSwitchToNV Then SwitchBetweenBases() ; Switching back to the normal Village
-EndFunc
+EndFunc   ;==>CollectBuilderBase
 
 Func CollectElixirCart($bSwitchToBB = False, $bSwitchToNV = False)
 
@@ -67,6 +67,8 @@ Func CollectElixirCart($bSwitchToBB = False, $bSwitchToNV = False)
 		ClickAway()
 		If Not SwitchBetweenBases(True, True) Then Return ; Switching to Builders Base
 	EndIf
+
+	If CheckBBElixirStorageFull(False) Then Return
 
 	SetDebugLog("Collecting Elixir Cart", $COLOR_INFO)
 	ClickAway("Left")
@@ -81,7 +83,7 @@ Func CollectElixirCart($bSwitchToBB = False, $bSwitchToNV = False)
 		If _Sleep(1000) Then Return
 		$bRet = False
 		For $i = 0 To 10
-			$aiCollect = decodeSingleCoord(FindImageInPlace2("CollectElixirCart", $g_sImgCollectElixirCart, 620, 515 + $g_iMidOffsetY, 720, 560 + $g_iMidOffsetY))
+			$aiCollect = decodeSingleCoord(FindImageInPlace2("CollectElixirCart", $g_sImgCollectElixirCart, 600, 500 + $g_iMidOffsetY, 700, 540 + $g_iMidOffsetY))
 			If IsArray($aiCollect) And UBound($aiCollect, 1) = 2 Then
 				$bRet = True
 				If _Sleep(2000) Then Return
@@ -95,8 +97,8 @@ Func CollectElixirCart($bSwitchToBB = False, $bSwitchToNV = False)
 			If _Sleep(3000) Then Return
 		Else
 			SetLog("Collect Button Not Found", $COLOR_ERROR)
-		EndIf	
+		EndIf
 		CloseWindow(20)
 	EndIf
 
-EndFunc
+EndFunc   ;==>CollectElixirCart

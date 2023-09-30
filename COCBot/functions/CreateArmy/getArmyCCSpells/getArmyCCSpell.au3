@@ -32,10 +32,9 @@ Func getArmyCCSpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	;Local $sCCSpellDiamond = GetDiamondFromRect("450,495,605,593")
 	Local $sCCSpellDiamond = GetDiamondFromRect2(450, 465 + $g_iMidOffsetY, 605, 563 + $g_iMidOffsetY)
-	
-	Local $aCurrentCCSpells = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Spells", $sCCSpellDiamond, $sCCSpellDiamond, 0, 1000, 0,"objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentSpells[index] = $aArray[2] = ["SpellShortName", CordX,CordY]
+
+	Local $aCurrentCCSpells = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Spells", $sCCSpellDiamond, $sCCSpellDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentSpells[index] = $aArray[2] = ["SpellShortName", CordX,CordY]
 
 	Local $aTempSpellArray, $aSpells, $aSpellCoords
 	Local $sSpellName = ""
@@ -85,7 +84,7 @@ Func getArmyCCSpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 	;EndIf
 
 	If $bGetSlot Then
-		If Ubound($aSpellWSlot) > 1 Then _ArrayDelete($aSpellWSlot, Ubound($aSpellWSlot) - 1)
+		If UBound($aSpellWSlot) > 1 Then _ArrayDelete($aSpellWSlot, UBound($aSpellWSlot) - 1)
 		If UBound($aSpellWSlot) = 1 And $aSpellWSlot[0][0] = 0 And $aSpellWSlot[0][1] = "" Then Return
 		_ArraySort($aSpellWSlot)
 		Return $aSpellWSlot

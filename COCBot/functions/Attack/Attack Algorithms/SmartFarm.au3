@@ -657,7 +657,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 			ExitLoop ;Check remaining quantities
 		EndIf
 		For $i = $eBarb To $eAppWard
-		   ; launch remaining troops
+			; launch remaining troops
 			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
 				CheckHeroesHealth()
 				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
@@ -811,7 +811,7 @@ Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $iCh
 					Local $aiSlotPos = GetSlotPosition($infoDropTroop[0])
 					SetDebugLog("Slot Nun= " & $infoPixelDropTroop[0])
 					SetDebugLog("Slot Xaxis= " & $aiSlotPos[0])
-				    SetDebugLog($infoPixelDropTroop[5] & " - NumberLeft : " & $numberLeft)
+					SetDebugLog($infoPixelDropTroop[5] & " - NumberLeft : " & $numberLeft)
 				EndIf
 				If ($numberLeft > 0) Then
 					If _Sleep($DELAYLAUNCHTROOP21) Then Return

@@ -27,12 +27,12 @@ Func imglocCheckWall()
 	Local $levelWall = $g_iCmbUpgradeWallsLevel + 4
 
 	Switch $levelWall
-	Case 10
-		$iXClickOffset = 2
-		$iYClickOffset = 2
-	Case 11
-		$iXClickOffset = 1
-		$iYClickOffset = -2
+		Case 10
+			$iXClickOffset = 2
+			$iYClickOffset = 2
+		Case 11
+			$iXClickOffset = 1
+			$iYClickOffset = -2
 	EndSwitch
 
 
@@ -87,7 +87,7 @@ Func imglocCheckWall()
 						SetLog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is a Wall Level: " & $levelWall & ".")
 						$g_aiLastGoodWallPos[0] = $aCoord[0]
 						$g_aiLastGoodWallPos[1] = $aCoord[1]
-						ConvertFromVillagePos($g_aiLastGoodWallPos[0],$g_aiLastGoodWallPos[1])
+						ConvertFromVillagePos($g_aiLastGoodWallPos[0], $g_aiLastGoodWallPos[1])
 						Return True
 					Else
 						ClickAway()

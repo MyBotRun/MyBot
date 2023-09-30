@@ -20,21 +20,21 @@
 #include <WinAPIFiles.au3>
 #include <WinAPISys.au3>
 #include <Process.au3>
-#include <Math.au3> ; Added for Weak Base
+#include <Math.au3> ; Added For Weak Base
 #include <ButtonConstants.au3>
 #include <ComboConstants.au3>
 #include <EditConstants.au3>
 #include <FileConstants.au3>
 #include <GUIConstantsEx.au3>
-#include <GuiButton.au3> ; Added for Profiles
-#include <GuiImageList.au3> ; Added for Profiles
+#include <GuiButton.au3> ; Added For Profiles
+#include <GuiImageList.au3> ; Added For Profiles
 #include <GuiStatusBar.au3>
 #include <GUIEdit.au3>
 #include <GUIComboBox.au3>
 #include <GuiComboBoxEx.au3>
 #include <GuiSlider.au3>
 #include <GuiToolBar.au3>
-#include <ProgressConstants.au3> ; Added for Splash
+#include <ProgressConstants.au3> ; Added For Splash
 #include <StaticConstants.au3>
 #include <TabConstants.au3>
 #include <WinAPIProc.au3>
@@ -143,7 +143,6 @@ Global $g_oCOMErrorHandler = 0
 #Tidy_On
 #EndRegion debugging
 
-Global Const $COLOR_ORANGE = 0xFF7700 ; Used for donate GUI buttons
 Global Const $COLOR_ERROR = $COLOR_RED ; Error messages
 Global Const $COLOR_WARNING = $COLOR_MAROON ; Warning messages
 Global Const $COLOR_INFO = $COLOR_BLUE ; Information or Status updates for user
@@ -152,7 +151,7 @@ Global Const $COLOR_SUCCESS1 = 0x009900 ; Med green, optional success message fo
 Global Const $COLOR_DEBUG = $COLOR_PURPLE ; Purple, basic debug color
 Global Const $COLOR_DEBUG1 = 0x7A00CC ; Dark Purple, Debug for successful status checks
 Global Const $COLOR_DEBUG2 = 0xAA80FF ; lt Purple, secondary debug color
-Global Const $COLOR_DEBUGS = $COLOR_MEDGRAY ; Med Grey, debug color for less important but needed supporting data points in multiple messages
+Global Const $COLOR_DEBUGS = $COLOR_GRAY ; Med Grey, debug color for less important but needed supporting data points in multiple messages
 Global Const $COLOR_ACTION = 0xFF8000 ; Med Orange, debug color for individual actions, clicks, etc
 Global Const $COLOR_ACTION1 = 0xCC80FF ; Light Purple, debug color for pixel/window checks
 
@@ -279,8 +278,7 @@ Global $g_avAndroidAppConfig[6][16] = [ _ ;           |                         
 	["MEmu",       "MEmu",    "MEmu ",                "[CLASS:subWin; INSTANCE:1]",       "",              $g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0,             "127.0.0.1:21503",     2+4+8+16+32           +512, '# ',                  '(Microvirt Virtual Input|User Input)', 0,                                 2], _ ; MEmu
 	["BlueStacks5","Pie64",   "BlueStacks5 ",         "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.W",        $g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,0,             "127.0.0.1:5555",    1+2+4+8+16+32   +128,         '# ',                  'BlueStacks Virtual Touch',          0,                                    1], _ ; BlueStacks5
 	["BlueStacks2","Android", "BlueStacks ",          "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",   $g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,0,             "127.0.0.1:5555",    1+2+4+8+16+32   +128,         '$ ',                  'BlueStacks Virtual Touch',          0,                                    1], _ ; BlueStacks2
-	["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",   $g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,0,             "127.0.0.1:5555",    1    +8+16+32   +128,         '$ ',                  'BlueStacks Virtual Touch',          0,                                    1], _ ; BlueStacks
-	["iTools",     "iToolsVM","iTools ",              "[CLASS:subWin; INSTANCE:1]",       "",              $g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0,             "127.0.0.1:54001",   1+2+4+8+16+32+64        +512, '# ',                  'iTools Virtual PassThrough Input',  0,                                    1] _ ; iTools
+	["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",   $g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH,     $g_iDEFAULT_HEIGHT - 48,0,             "127.0.0.1:5555",    1    +8+16+32   +128,         '$ ',                  'BlueStacks Virtual Touch',          0,                                    1] _ ; BlueStacks
 ]
 
 ; Android Configutions, see COCBot\functions\Android\Android Status & Information.txt for more details
@@ -289,7 +287,6 @@ Global $__MEmu_Idx = _ArraySearch($g_avAndroidAppConfig, "MEmu", 0, 0, 0, 0, 1, 
 Global $__BS5_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks5", 0, 0, 0, 0, 1, 0) ; http://www.bluestacks.com/
 Global $__BS2_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks2", 0, 0, 0, 0, 1, 0) ; http://www.bluestacks.com/
 Global $__BS_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks", 0, 0, 0, 0, 1, 0) ; https://filehippo.com/de/download_bluestacks_app_player/64518/
-Global $__iTools_Idx = _ArraySearch($g_avAndroidAppConfig, "iTools", 0, 0, 0, 0, 1, 0) ; https://pro.itools.cn/simulate/
 
 ; Startup detection
 Global $g_bOnlyInstance = True
@@ -304,7 +301,7 @@ Global $g_iAndroidBackgroundMode = 0 ; 0 = Default (using $g_iAndroidBackgroundM
 Global $g_iAndroidBackgroundModeDefault = 1 ; Uses 1 or 2 of $g_iAndroidBackgroundMode
 Global $g_iAndroidConfig = 0 ; Default selected Android Config of $g_avAndroidAppConfig array
 Global $g_sAndroidVersion ; Identified version of Android Emulator (not Android Version, this is the version of the vendor!)
-Global $g_sAndroidEmulator ; Emulator used (BS, BS2, MEmu, Nox and iTools)
+Global $g_sAndroidEmulator ; Emulator used (BS, BS2, MEmu, Nox)
 Global $g_sAndroidInstance ; Clone or instance of emulator or "" if not supported
 Global $g_sAndroidTitle ; Emulator Window Title
 Global $g_bUpdateAndroidWindowTitle = False ; If Android has always same title (like iTools) instance name will be added
@@ -315,7 +312,7 @@ Global $g_iAndroidClientHeight ; Expected height of android rendering control
 Global $g_iAndroidWindowWidth ; Expected Width of android window
 Global $g_iAndroidWindowHeight ; Expected height of android window
 Global $g_bAndroidAdbUseMyBot = False ; Use MyBot provided adb.exe and not the one from emulator
-Global $g_iAndroidAdbReplace = 0 ; Replace Android Emulator adb.exe: 0 = don't replace, 1 = replace with MyBot version, 2 = repalce with dummy exe (default)
+Global $g_iAndroidAdbReplace = 0 ; 0 = Use from emulator, 1 = replace with MyBot version
 Global $g_sAndroidAdbPath ; Path to executable HD-Adb.exe or adb.exe
 Global $g_sAndroidAdbGlobalOptions ; Additional adb global options like -P 5037 for port
 Global $g_sAndroidAdbDevice ; full device name ADB connects to
@@ -353,7 +350,7 @@ Global Const $g_iAndroidJellyBean = 17
 Global Const $g_iAndroidKitKat = 19
 Global Const $g_iAndroidLollipop = 21
 Global Const $g_iAndroidNougat = 24
-Global Const $g_iAndroidpie = 28
+Global Const $g_iAndroidPie = 28
 Global $g_iAndroidVersionAPI = $g_iAndroidJellyBean ; getprop ro.build.version.sdk
 
 ; Updated in UpdateAndroidConfig() and $g_sAndroidEmulator&Init() as well
@@ -419,7 +416,6 @@ Global $__BlueStacks_Version, $__BlueStacks5_Version, $__MEmu_Version, $__Nox_Ve
 Global $__BlueStacks_Path, $__BlueStacks5_Path
 Global $__MEmu_Path
 Global $__Nox_Path
-Global $__iTools_Path
 
 Global $__VBoxManage_Path ; Full path to executable VBoxManage.exe
 Global $__VBoxVMinfo ; Virtualbox vminfo config details of android instance
@@ -447,6 +443,7 @@ Global $g_sProfileCurrentName = "" ; Name of profile currently being used
 Global $g_sProfileConfigPath = "" ; Path to the current config.ini being used in this profile
 Global $g_sProfileBuildingStatsPath = "" ; Path to stats_chkweakbase.ini file for this profile
 Global $g_sProfileBuildingPath = "" ; Paths to building.ini file for this profile
+Global $g_sProfileClanGamesPath = "" ; Paths to clangames.ini file for this profile
 Global $g_sProfileLogsPath = "", $g_sProfileLootsPath = "", $g_sProfileTempPath = "", $g_sProfileTempDebugPath = "" ; Paths to log/image/temp folders for this profile
 Global $g_sProfileDonateCapturePath = "", $g_sProfileDonateCaptureWhitelistPath = "", $g_sProfileDonateCaptureBlacklistPath = "" ; Paths to donate related folders for this profile
 Global $g_sProfileSecondaryInputFileName = ""
@@ -551,7 +548,7 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eIcnHeadhunter, $eIcnCollectAchievements, $eIcnInvisibilitySpell, $eIcnLogL, _
 		$eIcnSuperBarbarian, $eIcnSuperArcher, $eIcnSuperGiant, $eIcnSneakyGoblin, $eIcnSuperWallBreaker, $eIcnSuperWizard, $eIcnInfernoDragon, $eIcnSuperMinion, $eIcnSuperValkyrie, $eIcnSuperWitch, $eIcnIceHound, _
 		$eIcnPetLassi, $eIcnPetElectroOwl, $eIcnPetMightyYak, $eIcnPetUnicorn, $eIcnTH14, $eWall15, $eIcnPetHouse, $eIcnRocketBalloon, $eIcnDragonRider, $eHdV14, $eIcnSuperBowler, $eIcnSuperDragon, $eIcnFlameF, _
-        $eIcnClanCapital, $eIcnCapitalGold, $eIcnCapitalMedal, $eHdV15, $eWall16, $eIcnElectroTitan, $eIcnRecallSpell, $eIcnBattleD, $eIcnTH15, $eIcnPetFrosty, $eIcnPetDiggy, $eIcnPetPoisonLizard, $eIcnPetPhoenix, _
+		$eIcnClanCapital, $eIcnCapitalGold, $eIcnCapitalMedal, $eHdV15, $eWall16, $eIcnElectroTitan, $eIcnRecallSpell, $eIcnBattleD, $eIcnTH15, $eIcnPetFrosty, $eIcnPetDiggy, $eIcnPetPoisonLizard, $eIcnPetPhoenix, _
 		$eIconTH15Weapon, $eIcnBBGold, $eIcnBBElix, $eIcnBBTrophy, $eIcnLabUpgrade, $eIcnArcheTower6, $eIcnBattleMachine, $eIcnDoubleCannon4, $eIcnCannon9, $eIcnMultiMortar8, $g_sIcnMBisland, $eIcnPetHouseGreen, _
 		$eIcnSuperMiner, $eIcnCapitalTrophy, $eLigue1, $eLigue2, $eLigue3, $eIcnMonolith, $eIcnEFWizard, $eWood, $eClay, $eStone, $eCopper, $eBrass, $eIron, $eSteel, $eTitanium, $ePlatinum, $eEmerald, _
 		$eRuby, $eDiamond, $eLigue4, $eLigue5, $eIcnSuperHogRider, $eIcnAppWard, $eIcnSleepingChampion, $eIcnBattleCopter
@@ -853,6 +850,7 @@ Global $g_bChkCollectBuilderBase = False, $g_bChkStartClockTowerBoost = False, $
 
 ; Builder Base Attack
 Global $g_hChkEnableBBAttack = 0, $g_hChkBBTrophyRange = 0, $g_hTxtBBTrophyLowerLimit = 0, $g_hTxtBBTrophyUpperLimit = 0, $g_hChkBBAttIfLootAvail = 0, $g_hChkBBWaitForMachine = 0
+Global $g_hCmbBBAttackCount = 0
 Global $g_bChkEnableBBAttack = False, $g_bChkBBTrophyRange = False, $g_bChkBBAttIfLootAvail = False, $g_bChkBBWaitForMachine = False
 Global $g_iTxtBBTrophyLowerLimit = 0, $g_iTxtBBTrophyUpperLimit = 5000
 Global $g_bBBMachineReady = False
@@ -862,10 +860,9 @@ Global Const $g_iBBNextTroopDelayDefault = 2000,  $g_iBBSameTroopDelayDefault = 
 Global $g_iBBNextTroopDelay = $g_iBBNextTroopDelayDefault,  $g_iBBSameTroopDelay = $g_iBBSameTroopDelayDefault; delay time between different and same troops
 Global $g_iBBNextTroopDelayIncrement = 400,  $g_iBBSameTroopDelayIncrement = 60 ; used for math to calculate delays based on selection
 Global $g_hCmbBBNextTroopDelay = 0, $g_hCmbBBSameTroopDelay = 0
-
+Global $b_AbortedAttack = False
 Global $g_hChkBBHaltOnGoldFull = 0
 Global $g_bChkBBHaltOnGoldFull = False
-
 Global $g_hChkBBHaltOnElixirFull = 0
 Global $g_bChkBBHaltOnElixirFull = False
 
@@ -900,11 +897,11 @@ Global $g_abChkDonateQueueOnly[2]
 Global $g_aiQueueTroopFirstSlot[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiQueueSpellFirstSlot[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global Enum $eCustomA = $eTroopCount, $eCustomB = $eTroopCount + 1
-Global Const $g_iCustomDonateConfigs = 4
-Global $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-Global $g_abChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-Global $g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to match to a request string
-Global $g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to prevent a match to a request string
+Global Const $g_iCustomDonateConfigs = 2
+Global $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+Global $g_abChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+Global $g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to match to a request string
+Global $g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to prevent a match to a request string
 
 Global $g_abChkDonateSpell[$eSpellCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False]
 Global $g_abChkDonateAllSpell[$eSpellCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False]
@@ -1297,7 +1294,7 @@ Global $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_bDonateLikeCrazy
 Global $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False, $g_iNextAccount, $g_iCurAccount
 Global $g_abAccountNo[8], $g_asProfileName[8], $g_abDonateOnly[8]
 Global $g_aiAttackedCountSwitch[8], $g_iActiveSwitchCounter = 0, $g_iDonateSwitchCounter = 0
-Global $g_asTrainTimeFinish[8], $g_abPBActive[8]
+Global $g_asTrainTimeFinish[8]
 Global $g_aiRunTime[8], $g_ahTimerSinceSwitched[8]
 ; <><><><> Bot / Stats <><><><>
 ; <<< nothing here >>>
@@ -1340,9 +1337,9 @@ Global $g_iStatsTotalGain[$eLootCount] = [0, 0, 0, 0]
 Global $g_iStatsLastAttack[$eLootCount] = [0, 0, 0, 0]
 Global $g_iStatsBonusLast[$eLootCount] = [0, 0, 0, 0]
 Global $g_iSkippedVillageCount = 0, $g_iDroppedTrophyCount = 0 ; skipped village and dropped trophy counts
-Global $g_iCostGoldWall = 0, $g_iCostElixirWall = 0, $g_iCostGoldBuilding = 0, $g_iCostElixirBuilding = 0, $g_iCostDElixirHero = 0 ; wall, building and hero upgrade costs
+Global $g_iCostGoldWall = 0, $g_iCostElixirWall = 0, $g_iCostGoldBuilding = 0, $g_iCostElixirBuilding = 0, $g_iCostDElixirBuilding = 0, $g_iCostDElixirHero = 0, $g_iCostElixirWarden = 0 ; wall, building and hero upgrade costs
 Global $g_iNbrOfWallsUpped = 0, $g_iNbrOfWallsUppedGold = 0, $g_iNbrOfWallsUppedElixir = 0
-Global $g_iNbrOfBuildingsUppedGold = 0, $g_iNbrOfBuildingsUppedElixir = 0, $g_iNbrOfHeroesUpped = 0 ; number of wall, building, hero upgrades with gold, elixir, delixir
+Global $g_iNbrOfBuildingsUppedGold = 0, $g_iNbrOfBuildingsUppedElixir = 0, $g_iNbrOfBuildingsUppedDElixir = 0, $g_iNbrOfHeroesUpped = 0, $g_iNbrOfWardenUpped = 0 ; number of wall, building, hero upgrades with gold, elixir, delixir
 Global $g_iSearchCost = 0, $g_iTrainCostElixir = 0, $g_iTrainCostDElixir = 0, $g_iTrainCostGold = 0 ; search and train troops cost
 Global $g_iNbrOfOoS = 0 ; number of Out of Sync occurred
 Global $g_iGoldFromMines = 0, $g_iElixirFromCollectors = 0, $g_iDElixirFromDrills = 0 ; number of resources gain by collecting mines, collectors, drills
@@ -1374,6 +1371,7 @@ Global $g_abNotNeedAllTime[2] = [True, True] ; Collect LootCart, CheckTombs
 
 ;Builder Base
 Global $g_aiCurrentLootBB[$eLootCountBB] = [0, 0, 0] ; current stats on builders base
+Global $g_iBBAttackCount = 1, $g_hCmbBBAttackCount = 0
 Global $g_aiStarLaboratoryPos[2] = [-1, -1] ; Position of Starlaboratory
 Global $g_aiBattleMachinePos[2] = [-1, -1] ; Position of Battle Machine
 Global $g_aiBattleCopterPos[2] = [-1, -1] ; Position of BattleCopter
@@ -1485,48 +1483,48 @@ Global Const $g_iMaxChampionLevel = 40
 Global $g_iKingLevel = -1
 ;Updated for Oct2022
 Global Const $g_afKingUpgCost[$g_iMaxKingLevel] = [5, 6, 7, 8, 10, 11, 12, 13, 14, 15, _
-17, 19, 21, 23, 25, 27, 29, 31, 33, 35, _
-37, 39, 41, 43, 45, 47, 49, 51, 53, 55, _
-57, 59, 60, 62, 64, 66, 68, 70, 73, 76, _
-80, 85, 89, 94, 98, 103, 109, 114, 119, 125, _
-130, 135, 140, 146, 151, 158, 165, 172, 180, 187, _
-193, 200, 206, 211, 216, 225, 234, 243, 252, 261, _
-267, 270, 279, 284, 289, 300, 305, 310, 315, 320, _
-330, 335, 340, 345, 350, 352, 354, 256, 358, 360]
+		17, 19, 21, 23, 25, 27, 29, 31, 33, 35, _
+		37, 39, 41, 43, 45, 47, 49, 51, 53, 55, _
+		57, 59, 60, 62, 64, 66, 68, 70, 73, 76, _
+		80, 85, 89, 94, 98, 103, 109, 114, 119, 125, _
+		130, 135, 140, 146, 151, 158, 165, 172, 180, 187, _
+		193, 200, 206, 211, 216, 225, 234, 243, 252, 261, _
+		267, 270, 279, 284, 289, 300, 305, 310, 315, 320, _
+		330, 335, 340, 345, 350, 352, 354, 256, 358, 360]
 
 Global $g_iQueenLevel = -1
 ;Updated for Oct2022
 Global Const $g_afQueenUpgCost[$g_iMaxQueenLevel] = [10, 11, 12, 13, 15, 16, 17, 18, 19, 20, _
-22, 24, 26, 28, 30, 32, 34, 36, 38, 40, _
-42, 44, 46, 48, 50, 52, 54, 56, 58, 60, _
-63, 65, 67, 69, 72, 74, 77, 79, 82, 84, _
-89, 93, 97, 101, 106, 111, 116, 122, 127, 132, _
-138, 143, 148, 154, 159, 166, 172, 179, 186, 192, _
-198, 203, 208, 213, 219, 228, 237, 246, 255, 266, _
-269, 278, 283, 288, 297, 302, 308, 314, 319, 325, _
-334, 338, 342, 346, 350, 352, 354, 356, 358, 360]
+		22, 24, 26, 28, 30, 32, 34, 36, 38, 40, _
+		42, 44, 46, 48, 50, 52, 54, 56, 58, 60, _
+		63, 65, 67, 69, 72, 74, 77, 79, 82, 84, _
+		89, 93, 97, 101, 106, 111, 116, 122, 127, 132, _
+		138, 143, 148, 154, 159, 166, 172, 179, 186, 192, _
+		198, 203, 208, 213, 219, 228, 237, 246, 255, 266, _
+		269, 278, 283, 288, 297, 302, 308, 314, 319, 325, _
+		334, 338, 342, 346, 350, 352, 354, 356, 358, 360]
 
 Global $g_iChampionLevel = -1
 ;Royal Champion upgrade costs, xx.xK
 ;Updated for Oct2022
 Global Const $g_afChampionUpgCost[$g_iMaxChampionLevel] = [60, 73, 89, 105, 122, 140, 158, 170, 182, 192, 202, 211, 216, 222, 228, 234, 239, 245, 251, 257, 262, 267, 272, 277, 282, 295, 300, 305, 310, 315, _
-325, 330, 335, 340, 345, 347, 349, 351, 353, 355]
+		325, 330, 335, 340, 345, 347, 349, 351, 353, 355]
 
 ; Grand Warden Upgrade Costs = Elixir in xx.xK
 Global $g_iWardenLevel = -1
 ;Updated for Oct2022
 Global Const $g_afWardenUpgCost[$g_iMaxWardenLevel] = [1, 1.1, 1.4, 1.6, 1.8, 2, 2.2, 2.5, 2.7, 3.1, _
-3.6, 4, 4.4, 4.9, 5.3, 5.7, 6.2, 6.6, 7.1, 7.9, _
-8.8, 8.9, 9, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, _
-9.8, 9.9, 10, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, _
-10.8, 11.2, 11.6, 12, 12.4, 12.8, 13.2, 13.6, 14.3, 15.5, _
-16.6, 17.1, 17.6, 18.1, 18.6, _
-19.2, 19.4, 19.6, 19.8, 20, 20.2, 20.4, 20.6, 20.8, 21]
+		3.6, 4, 4.4, 4.9, 5.3, 5.7, 6.2, 6.6, 7.1, 7.9, _
+		8.8, 8.9, 9, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, _
+		9.8, 9.9, 10, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, _
+		10.8, 11.2, 11.6, 12, 12.4, 12.8, 13.2, 13.6, 14.3, 15.5, _
+		16.6, 17.1, 17.6, 18.1, 18.6, _
+		19.2, 19.4, 19.6, 19.8, 20, 20.2, 20.4, 20.6, 20.8, 21]
 
 ; Battle Machine
 Global $g_iMaxBattleMachineLevel = 35
 Global Const $g_afBattleMachineUpgCost[$g_iMaxBattleMachineLevel] = [0.9, 1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0, _
-4.1, 4.2, 4.3, 4.4, 4.5]
+		4.1, 4.2, 4.3, 4.4, 4.5]
 ;Battle Copter
 Global $g_iMaxBattleCopterLevel = 35
 Global Const $g_afBattleCopterUpgCost[$g_iMaxBattleCopterLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5]
@@ -1567,8 +1565,8 @@ Global Const $g_aaiBottomLeftDropPoints[5][2] = [[81, 390], [174, 475], [235, 52
 Global Const $g_aaiBottomRightDropPoints[5][2] = [[466, 600], [554, 555], [615, 510], [678, 460], [765, 394]]
 Global Const $g_aaiEdgeDropPoints[4] = [$g_aaiBottomRightDropPoints, $g_aaiTopLeftDropPoints, $g_aaiBottomLeftDropPoints, $g_aaiTopRightDropPoints]
 Global Const $g_aiUseAllTroops[$eArmyCount - 1] = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eSDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eSMine, $eEDrag, $eYeti, $eRDrag, $eETitan, $eMini, $eSMini, $eHogs, $eSHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eSBowl, $eIceG, $eHunt, $eAppWard, _
-$eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eBtSpell, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF, $eBattleD]
-Global Const $g_aiUseBarracks[45] = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eSDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eSMine, $eEDrag, $eYeti, $eRDrag, $eETitan, $eKing, $eQueen, $eWarden, $eChampion , $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
+		$eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eBtSpell, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF, $eBattleD]
+Global Const $g_aiUseBarracks[45] = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eSDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eSMine, $eEDrag, $eYeti, $eRDrag, $eETitan, $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
 Global Const $g_aiUseBarbs[20] = [$eBarb, $eSBarb, $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
 Global Const $g_aiUseArchs[20] = [$eArch, $eSArch, $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
 Global Const $g_aiUseBarcher[22] = [$eBarb, $eSBarb, $eArch, $eSArch, $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
@@ -1671,7 +1669,7 @@ Global Const $g_aiDonateTroopPriority[$eTroopCount] = [ _
 		$eTroopYeti, $eTroopIceGolem, $eTroopInfernoDragon, $eTroopSuperMinion, $eTroopSuperArcher, $eTroopWitch, $eTroopHealer, $eTroopBabyDragon, _
 		$eTroopSuperWizard, $eTroopSuperGiant, $eTroopValkyrie, $eTroopSuperWallBreaker, $eTroopBowler, $eTroopHeadhunter, $eTroopMiner, _
 		$eTroopGiant, $eTroopSuperBarbarian, $eTroopBalloon, $eTroopHogRider, $eTroopSuperHogRider, $eTroopWizard, _
- 		$eTroopSneakyGoblin, $eTroopWallBreaker, $eTroopMinion, $eTroopArcher, $eTroopBarbarian, $eTroopGoblin, $eTroopAppWard]
+		$eTroopSneakyGoblin, $eTroopWallBreaker, $eTroopMinion, $eTroopArcher, $eTroopBarbarian, $eTroopGoblin, $eTroopAppWard]
 Global Const $g_aiDonateSpellPriority[$eSpellCount] = [ _
 		$eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, $eSpellInvisibility, $eSpellRecall, _
 		$eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellBat]
@@ -1797,9 +1795,9 @@ Func _FilloBldgLevels()
 	$g_oBldgLevels.add($eBldgXBow, $aBldgXBow)
 	Local Const $aBldgAirDefense[$g_iMaxTHLevel] = [0, 0, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 	$g_oBldgLevels.add($eBldgAirDefense, $aBldgAirDefense)
-	Local const $aBldgScatterShot[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4] ;Jun23
+	Local Const $aBldgScatterShot[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4] ;Jun23
 	$g_oBldgLevels.add($eBldgScatter, $aBldgScatterShot)
-	Local const $aBldgMonolith[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+	Local Const $aBldgMonolith[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
 	$g_oBldgLevels.add($eBldgMonolith, $aBldgMonolith)
 EndFunc   ;==>_FilloBldgLevels
 _FilloBldgLevels()
@@ -1831,9 +1829,9 @@ Func _FilloBldgMaxQty()
 	$g_oBldgMaxQty.add($eBldgXBow, $aBldgXBow)
 	Local Const $aBldgAirDefense[$g_iMaxTHLevel] = [0, 0, 0, 1, 1, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4]
 	$g_oBldgMaxQty.add($eBldgAirDefense, $aBldgAirDefense)
-	Local const $aBldgScatterShot[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2]
+	Local Const $aBldgScatterShot[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2]
 	$g_oBldgMaxQty.add($eBldgScatter, $aBldgScatterShot)
-	Local const $aBldgMonolith[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+	Local Const $aBldgMonolith[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
 	$g_oBldgMaxQty.add($eBldgMonolith, $aBldgMonolith)
 EndFunc   ;==>_FilloBldgMaxQty
 _FilloBldgMaxQty()
@@ -1861,51 +1859,44 @@ $g_oBldgImages.add($eBldgMonolith & "_" & "0", @ScriptDir & "\imgxml\Buildings\M
 ; EOF
 
 ; Clan Games v3
-Global $g_IsClanGamesActive = False ; use to determine if regular AttackBB should stop
-Global $g_bClanGamesCompleted = False
-Global $g_sActiveEventName = ""
-Global $g_sClanGamesScore = "N/A", $g_sClanGamesTimeRemaining = "N/A"
-
-; Village Challenges
+Global $g_bChkClanGamesAir = 0, $g_bChkClanGamesGround = 0, $g_bChkClanGamesMisc = 0
 Global $g_bChkClanGamesEnabled = 0
-Global $g_bChkClanGamesNightVillage = 0
-
-; Home Village Challenges
+Global $g_bChkClanGamesAllTimes = 1, $g_bChkClanGamesNoOneDay = 0
 Global $g_bChkClanGamesLoot = 0
 Global $g_bChkClanGamesBattle = 0
-
-global $g_bChkClanGamesSpell = 0
-Global $g_bChkClanGamesBBBattle = 0
-Global $g_bChkClanGamesBBDestruction = 0
-
-Global $g_bChkClanGamesDestruction = 0
-Global $g_bChkClanGamesAirTroop = 0
-Global $g_bChkClanGamesGroundTroop = 0
-Global $g_bChkClanGamesSpell = 0
-Global $g_bChkClanGamesMiscellaneous = 0
-
-; Purge Events
-Global $g_bChkClanGamesPurgeHome = 0
-Global $g_bChkClanGamesPurgeNight = 0
 
 ; Collect Rewards
 Global $g_bChkClanGamesCollectRewards = 0
 
-; Debug
-Global $g_bChkClanGamesDebug = 0
-Global $g_bChkClanGamesDebugImages = 0
+;ClanGames Challenges Selection
+Global $g_bChkClanGamesSpell = 0
+Global $g_bChkClanGamesBBBattle = 0
+Global $g_bChkClanGamesBBDes = 0
+Global $g_bChkClanGamesBBTroops = 0
+Global $g_bChkClanGamesDes = 0
+Global $g_bChkClanGamesAirTroop = 0
+Global $g_bChkClanGamesGroundTroop = 0
+Global $g_bChkClanGamesMiscellaneous = 0
 
-
-; redundant?
-Global $g_bChkClanGamesAir = 0, $g_bChkClanGamesGround = 0, $g_bChkClanGamesMisc = 0
-
-Global $g_bChkClanGames60 = 0
-
+;ClanGames Option
 Global $g_bChkClanGamesPurge = 0
 Global $g_bChkClanGamesStopBeforeReachAndPurge = 0
-Global $g_bChkClanGamesDebug = 0
-Global $g_iPurgeJobCount[8] = [0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_iPurgeMax = 5 ; [0] is unlimited , 1-10
+Global $g_sClanGamesScore = "N/A", $g_sClanGamesTimeRemaining = "N/A"
+
+;ClanGames Challenges Variables/Misc
+Global $g_bChkForceBBAttackOnClanGames = True, $g_bIsBBevent = 0
+Global $bSearchBBEventFirst = False, $bSearchMainEventFirst = False, $bSearchBothVillages = True
+Global $g_bChkClanGamesPurgeAny = 0, $g_bIsCGCoolDownTime = False, $g_hCoolDownTimer = 0
+Global $IsCGEventRunning = 0, $g_bChkForceAttackOnClanGamesWhenHalt = False, $CurrentActiveChallenge = 0
+Global $g_bSortClanGames = True, $g_iSortClanGames = 0
+Global $g_abCGMainLootItem[6], $g_abCGMainBattleItem[22], $g_abCGMainDestructionItem[34], $g_abCGMainAirItem[13], _
+		$g_abCGMainGroundItem[29], $g_abCGMainMiscItem[3], $g_abCGMainSpellItem[12], $g_abCGBBBattleItem[4], _
+		$g_abCGBBDestructionItem[21], $g_abCGBBTroopsItem[12]
+Global $g_bClanGamesCompleted
+
+; Clan Games Debug
+Global $g_bChkClanGamesDebug = False
+Global $g_bCGDebugEvents = False
 
 ; Collect Achievement Rewards
 Global $g_bChkCollectAchievements = True
@@ -1979,72 +1970,74 @@ Global Const $g_asPetShortNames[$ePetCount] = ["Lassi", "Owl", "Yak", "Unicorn",
 Global Const $g_ePetLevels[$ePetCount] = [15, 10, 15, 10, 10, 10, 10, 10] ;Jun23 Update, Pets have not same max level.
 
 Global Const $g_aiPetUpgradeCostPerLevel[$ePetCount][15] = [ _
-		[0, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 260, 270, 280, 290], _; LASSI
-		[0, 135, 150, 165, 180, 195, 210, 225, 240, 255, 0, 0, 0, 0, 0], _; Electro Owl
-		[0, 165, 185, 205, 225, 245, 255, 265, 275, 285, 290, 295, 300, 305, 310], _; Mighty Yak
-		[0, 210, 220, 230, 240, 250, 260, 270, 280, 290, 0, 0, 0, 0, 0], _; Unicorn
-		[0, 215, 225, 235, 245, 255, 265, 275, 285, 295, 0, 0, 0, 0, 0], _; Frosty
-		[0, 220, 230, 240, 250, 260, 270, 280, 290, 300, 0, 0, 0, 0, 0], _; Diggy
-		[0, 225, 235, 245, 255, 265, 275, 285, 295, 305, 0, 0, 0, 0, 0], _; Poison Lizard
-		[0, 230, 240, 250, 260, 270, 280, 290, 300, 310, 0, 0, 0, 0, 0]]; Phoenix
+		[0, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 260, 270, 280, 290], _ ; LASSI
+		[0, 135, 150, 165, 180, 195, 210, 225, 240, 255, 0, 0, 0, 0, 0], _ ; Electro Owl
+		[0, 165, 185, 205, 225, 245, 255, 265, 275, 285, 290, 295, 300, 305, 310], _ ; Mighty Yak
+		[0, 210, 220, 230, 240, 250, 260, 270, 280, 290, 0, 0, 0, 0, 0], _ ; Unicorn
+		[0, 215, 225, 235, 245, 255, 265, 275, 285, 295, 0, 0, 0, 0, 0], _ ; Frosty
+		[0, 220, 230, 240, 250, 260, 270, 280, 290, 300, 0, 0, 0, 0, 0], _ ; Diggy
+		[0, 225, 235, 245, 255, 265, 275, 285, 295, 305, 0, 0, 0, 0, 0], _ ; Poison Lizard
+		[0, 230, 240, 250, 260, 270, 280, 290, 300, 310, 0, 0, 0, 0, 0]] ; Phoenix
 
 Global $g_iEventTime = -1
 
 ; Spring, Autumn, Clashy, Pirate, Epic Winter, Hog Mountain, Jungle, Epic Jungle, 9th Clash,
 ; PumpKin GraveYard, Snow Day, Tiger Mountain, Primal(PR), Shadow(SH), Royale Scenery, Summer Scenery, Pixel Scenery, 10th Clash,
-; Clash Fest, Magic Scenery, Epic Magic Scenery, Classic Scenery, Inferno Tower, Jolly Scenery,
-; Dark Ages, Painter, Goblin Caves, Future Scenery, Books of Clash, Spooky Scenery,
+; Clash Fest, Magic Scenery, Epic Magic Scenery, Classic Scenery, Inferno Tower, Jolly Scenery, Magic Theater Scenery,
+; Dark Ages, Painter, Goblin Caves, Future Scenery, Books of Clash, Spooky Scenery, Chess Scenery
 ; Builder Base
 Global Enum $eTreeDSS, $eTreeDAS, $eTreeCC, $eTreePS, $eTreeEW, $eTreeHM, $eTreeJS, $eTreeEJ, $eTree9C, _
-			$eTreePG, $eTreeSD, $eTreeTM, $eTreePR, $eTreeSH, $eTreeRS, $eTreeSM, $eTreePX, $eTreeXC, _
-			$eTreeCF, $eTreeMS, $eTreeEM, $eTreeCS, $eTreeIT, $eTreeJO, _
-			$eTreeDA, $eTreePA, $eTreeGC, $eTreeFS, $eTreeBK, $eTreeSP, _
-			$eTreeBB, $eTreeOO, $eTreeCR, $eTreeCount
+		$eTreePG, $eTreeSD, $eTreeTM, $eTreePR, $eTreeSH, $eTreeRS, $eTreeSM, $eTreePX, $eTreeXC, _
+		$eTreeCF, $eTreeMS, $eTreeEM, $eTreeCS, $eTreeIT, $eTreeJO, $eTreeMT, _
+		$eTreeDA, $eTreePA, $eTreeGC, $eTreeFS, $eTreeBK, $eTreeSP, $eTreeCH, _
+		$eTreeBB, $eTreeOO, $eTreeCR, $eTreeCount
 
 Global $g_asSceneryNames[$eTreeCount] = [ _
-	"Classic Spring", "Classic Autumn", "Clashy Construct", "Pirate Scenery", "Epic Winter", "Hog Mountain", "Jungle Scenery", "Epic Jungle", "9th Clashiversary", _
-	"Pumpkin Graveyard", "Snowy Day", "Tiger Mountain", "Primal Scenery", "Shadow Scenery", "Royale Scenery", "Summer Scenery", "Pixel Scenery", "10th Clashiversary", _
-	"Clash Fest", "Magic Scenery", "Epic Magic Scenery", "Classic Scenery", "Inferno Town", "Jolly Scenery", _
-	"Dark Ages Scenery", "Painter Scenery", "Goblin Caves Scenery", "Future Scenery", "Books of Clash", "Spooky Scenery", _
-	"Builder Base", "OTTO Outpost", "Crystal Caverns"]
+		"Classic Spring", "Classic Autumn", "Clashy Construct", "Pirate Scenery", "Epic Winter", "Hog Mountain", "Jungle Scenery", "Epic Jungle", "9th Clashiversary", _
+		"Pumpkin Graveyard", "Snowy Day", "Tiger Mountain", "Primal Scenery", "Shadow Scenery", "Royale Scenery", "Summer Scenery", "Pixel Scenery", "10th Clashiversary", _
+		"Clash Fest", "Magic Scenery", "Epic Magic Scenery", "Classic Scenery", "Inferno Town", "Jolly Scenery", "Magic Theater Scenery", _
+		"Dark Ages Scenery", "Painter Scenery", "Goblin Caves Scenery", "Future Scenery", "Books of Clash", "Spooky Scenery", "Chess Scenery", _
+		"Builder Base", "OTTO Outpost", "Crystal Caverns"]
 
 ; village size, left, right, top, bottom, village size 2, AdjLeft, AdjRight, AdjTop, AdjBottom
 Global Const $g_afRefVillage[$eTreeCount][10] = [ _
-	[476.814083840611, 36, 799, 64, 636, 470.847607649426, 50, 50, 42, 42], _		; SS complete
-	[476.470652278333, 36, 801, 63, 633, 476.470652278333, 50, 50, 42, 42], _		; AS partial
-	[463.064874687304, 56, 800, 68, 622, 473.183193210402, 50, 50, 42, 42], _		; CC complete
-	[487.190577721375, 35, 809, 57, 632, 487.190577721375, 50, 50, 42, 42], _		; PS partial
-	[485.292934467294, 35, 809, 57, 632, 485.292934467294, 50, 50, 42, 42], _		; EW partial
-	[471.591177471711, 40, 795, 62, 626, 471.591177471711, 50, 50, 42, 42], _		; HM partial
-	[469.503669847663, 46, 801, 65, 627, 469.503669847663, 50, 50, 42, 42], _		; JS complete
-	[481.531257240053, 35, 809, 57, 632, 481.531257240053, 50, 50, 42, 42], _		; EJ partial
-	[472.580445695883, 49, 803, 58, 625, 472.09836287867, 50, 50, 42, 42], _		; 9C partial
-	[481.447425356988, 35, 809, 57, 632, 481.447425356988, 50, 50, 42, 42], _		; PG partial
-	[482.492164166387, 35, 809, 57, 632, 482.492164166387, 50, 50, 42, 42], _		; SD partial
-	[503.29315963308, 35, 809, 57, 632, 503.29315963308, 50, 50, 42, 42], _		    ; TM partial
-	[481.049618717487, 35, 809, 57, 632, 481.049618717487, 50, 50, 42, 42], _		; PR partial
-	[486.827142073514, 35, 809, 57, 632, 486.827142073514, 50, 50, 42, 42], _		; SH partial
-	[474.160808435852, 46, 802, 61, 632, 474.160808435852, 50, 50, 42, 42], _		; RS partial
-	[462.772740076871, 55, 795, 65, 619, 462.772740076871, 50, 50, 42, 42], _		; SM partial
-	[472.211078091435, 48, 803, 66, 636, 472.211078091435, 50, 50, 42, 42], _		; PX partial
-	[473.526226121564, 55, 795, 65, 619, 473.526226121564, 50, 50, 42, 42], _		; XC partial
-    [477.718161770293, 38, 798, 60, 636, 477.718161770293, 50, 50, 42, 42], _		; CF partial
-	[497.088225054308, 42, 829, 57, 642, 497.088225054308, 50, 50, 42, 42], _		; MS partial
-	[527.91838832914, 35, 832, 58, 657, 527.91838832914, 50, 50, 42, 42], _		    ; EM partial
-	[480, 35, 809, 57, 632, 480, 50, 50, 42, 42], _									; CS partial
-	[480, 35, 809, 57, 632, 480, 50, 50, 42, 42], _									; IT partial
-	[495.492313456579, 32, 808, 46, 628, 495.492313456579, 50, 50, 42, 42], _		; JO Partial
-	[484.403614426064, 39, 825, 50, 639, 484.403614426064, 50, 50, 42, 42], _		; DA Partial
-	[480.650156148271, 84, 811, 63, 612, 480.650156148271, 50, 50, 42, 42], _		; PA partial
-	[556.047580246031, 26, 838, 45, 652, 556.047580246031, 50, 50, 42, 42], _		; GC partial
-	[463.593357868925, 63, 802, 65, 622, 463.593357868925, 50, 50, 42, 42], _		; FS partial
-	[504.518620302313, 61, 824, 61, 639, 504.518620302313, 50, 50, 42, 42], _		; BK partial
-	[520.72258205014, 39, 822, 65, 652, 520.72258205014, 50, 50, 42, 42], _	    	; SP partial
-	[376.2247294568, 114, 724, 152, 610, 376.2247294568, 50, 46, 38, 42], _ 		; BB partial
-	[433.366314406842, 120, 722, 158, 604, 433.366314406842, 50, 46, 38, 42], _ 	; OO partial
-	[379.741811787463, 130, 728, 162, 608, 379.741811787463, 50, 46, 38, 42]]	    ; CR partial
+		[476.814083840611, 36, 799, 64, 636, 470.847607649426, 50, 50, 42, 42], _    ; SS complete
+		[476.470652278333, 36, 801, 63, 633, 476.470652278333, 50, 50, 42, 42], _    ; AS partial
+		[463.064874687304, 56, 800, 68, 622, 473.183193210402, 50, 50, 42, 42], _    ; CC complete
+		[487.190577721375, 35, 809, 57, 632, 487.190577721375, 50, 50, 42, 42], _    ; PS partial
+		[485.292934467294, 35, 809, 57, 632, 485.292934467294, 50, 50, 42, 42], _    ; EW partial
+		[471.591177471711, 40, 795, 62, 626, 471.591177471711, 50, 50, 42, 42], _    ; HM partial
+		[469.503669847663, 46, 801, 65, 627, 469.503669847663, 50, 50, 42, 42], _    ; JS complete
+		[481.531257240053, 35, 809, 57, 632, 481.531257240053, 50, 50, 42, 42], _    ; EJ partial
+		[472.580445695883, 49, 803, 58, 625, 472.09836287867, 50, 50, 42, 42], _     ; 9C partial
+		[481.447425356988, 35, 809, 57, 632, 481.447425356988, 50, 50, 42, 42], _    ; PG partial
+		[482.492164166387, 35, 809, 57, 632, 482.492164166387, 50, 50, 42, 42], _    ; SD partial
+		[503.29315963308, 35, 809, 57, 632, 503.29315963308, 50, 50, 42, 42], _      ; TM partial
+		[481.049618717487, 35, 809, 57, 632, 481.049618717487, 50, 50, 42, 42], _    ; PR partial
+		[486.827142073514, 35, 809, 57, 632, 486.827142073514, 50, 50, 42, 42], _    ; SH partial
+		[474.160808435852, 46, 802, 61, 632, 474.160808435852, 50, 50, 42, 42], _    ; RS partial
+		[462.772740076871, 55, 795, 65, 619, 462.772740076871, 50, 50, 42, 42], _    ; SM partial
+		[472.211078091435, 48, 803, 66, 636, 472.211078091435, 50, 50, 42, 42], _    ; PX partial
+		[473.526226121564, 55, 795, 65, 619, 473.526226121564, 50, 50, 42, 42], _    ; XC partial
+		[477.718161770293, 38, 798, 60, 636, 477.718161770293, 50, 50, 42, 42], _    ; CF partial
+		[497.088225054308, 42, 829, 57, 642, 497.088225054308, 50, 50, 42, 42], _    ; MS partial
+		[527.91838832914, 35, 832, 58, 657, 527.91838832914, 50, 50, 42, 42], _      ; EM partial
+		[480, 35, 809, 57, 632, 480, 50, 50, 42, 42], _                              ; CS partial
+		[480, 35, 809, 57, 632, 480, 50, 50, 42, 42], _                              ; IT partial
+		[495.492313456579, 32, 808, 46, 628, 495.492313456579, 50, 50, 42, 42], _    ; JO Partial
+		[453.284086983073, 82, 812, 62, 614, 453.284086983073, 50, 50, 42, 42], _    ; MT Partial
+		[484.403614426064, 39, 825, 50, 639, 484.403614426064, 50, 50, 42, 42], _    ; DA Partial
+		[480.650156148271, 84, 811, 63, 612, 480.650156148271, 50, 50, 42, 42], _    ; PA partial
+		[556.047580246031, 26, 838, 45, 652, 556.047580246031, 50, 50, 42, 42], _    ; GC partial
+		[463.593357868925, 63, 802, 65, 622, 463.593357868925, 50, 50, 42, 42], _    ; FS partial
+		[504.518620302313, 61, 824, 61, 639, 504.518620302313, 50, 50, 42, 42], _    ; BK partial
+		[520.72258205014, 39, 822, 65, 652, 520.72258205014, 50, 50, 42, 42], _      ; SP partial
+		[525.959020068643, 24, 812, 66, 660, 525.959020068643, 50, 50, 42, 42], _    ; CH partial
+		[376.2247294568, 114, 724, 152, 610, 376.2247294568, 50, 46, 38, 42], _      ; BB partial
+		[433.366314406842, 120, 722, 158, 604, 433.366314406842, 50, 46, 38, 42], _  ; OO partial
+		[379.741811787463, 130, 728, 162, 608, 379.741811787463, 50, 46, 38, 42]]    ; CR partial
 
-Global $g_iTree = $eTreeDSS						; default to classic
+Global $g_iTree = $eTreeDSS                        ; default to classic
 Global $g_aiSearchZoomOutCounter[2] = [0, 1] ; 0: Counter of SearchZoomOut calls, 1: # of post zoomouts after image found
 Global $g_bOnBuilderBaseEnemyVillage = False
 

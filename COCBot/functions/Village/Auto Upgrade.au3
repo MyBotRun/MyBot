@@ -18,11 +18,11 @@ Func AutoUpgrade($bTest = False)
 	Local $Result = _AutoUpgrade()
 	$g_bRunState = $bWasRunState
 	Return $Result
-EndFunc
+EndFunc   ;==>AutoUpgrade
 
 Func _AutoUpgrade()
 	If Not $g_bAutoUpgradeEnabled Then Return
-	
+
 	SetLog("Starting Auto Upgrade", $COLOR_INFO)
 	Local $iLoopAmount = 0
 	Local $iLoopMax = 8
@@ -56,7 +56,7 @@ Func _AutoUpgrade()
 		Local $aTmpCoord
 		Local $IsElix = False
 		$aTmpCoord = QuickMIS("CNX", $g_sImgResourceIcon, 310, $g_iNextLineOffset, 450, 360 + $g_iMidOffsetY)
-		_ArraySort($aTmpCoord, 0, 0, 0, 2);sort by Y coord
+		_ArraySort($aTmpCoord, 0, 0, 0, 2) ;sort by Y coord
 		If IsArray($aTmpCoord) And UBound($aTmpCoord) > 0 Then
 			$g_iNextLineOffset = $aTmpCoord[0][2] + 14
 			If QuickMIS("BC1", $g_sImgAUpgradeZero, $aTmpCoord[0][1], $aTmpCoord[0][2] - 8, $aTmpCoord[0][1] + 100, $aTmpCoord[0][2] + 7) Then
@@ -70,9 +70,9 @@ Func _AutoUpgrade()
 			SetLog("No upgrade available... Exiting Auto Upgrade...", $COLOR_INFO)
 			ExitLoop
 		EndIf
-	
+
 		; check in the line if we can see "New" or the Gear of the equipment, in this case, will not do the upgrade
-		If QuickMIS("NX",$g_sImgAUpgradeObst, 180, $aTmpCoord[0][2] - 15, 480, $aTmpCoord[0][2] + 15) <> "none" Then
+		If QuickMIS("NX", $g_sImgAUpgradeObst, 180, $aTmpCoord[0][2] - 15, 480, $aTmpCoord[0][2] + 15) <> "none" Then
 			SetLog("This is a New Building or an Equipment, looking next...", $COLOR_WARNING)
 			ContinueLoop
 		EndIf
@@ -80,10 +80,10 @@ Func _AutoUpgrade()
 		; if it's an upgrade, will click on the upgrade, in builders menu
 		Click($aTmpCoord[0][1] + 20, $aTmpCoord[0][2])
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
-		
-		$g_aUpgradeNameLevel = BuildingInfo(242, 490 + $g_iBottomOffsetY)
+
+		$g_aUpgradeNameLevel = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 		Local $aUpgradeButton, $aTmpUpgradeButton
-		
+
 		; check if any wrong click by verifying the presence of the Upgrade button (the hammer)
 		$aUpgradeButton = findButton("Upgrade", Default, 1, True)
 
@@ -96,9 +96,9 @@ Func _AutoUpgrade()
 				$g_aUpgradeNameLevel[1] = "Town Hall Weapon"
 				$aUpgradeButton = $aTmpUpgradeButton
 			EndIf
-		Endif
+		EndIf
 
-		If Not(IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2) Then
+		If Not (IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2) Then
 			SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
 			ContinueLoop
 		EndIf
@@ -107,7 +107,7 @@ Func _AutoUpgrade()
 		If $g_aUpgradeNameLevel[1] = "Wall" Then
 			If WaitforPixel($aUpgradeButton[0], $aUpgradeButton[1] - 25, $aUpgradeButton[0] + 30, $aUpgradeButton[1] - 16, "FF887F", 20, 2) Or $IsElix Then ; Red On Gold Or Was Elix in Menu
 				If UBound(decodeSingleCoord(FindImageInPlace2("UpgradeButton2", $g_sImgUpgradeBtn2Wall, $aUpgradeButton[0] + 65, $aUpgradeButton[1] - 20, _
-				$aUpgradeButton[0] + 140, $aUpgradeButton[1] + 20, True))) > 1 Then	$aUpgradeButton[0] += 94
+						$aUpgradeButton[0] + 140, $aUpgradeButton[1] + 20, True))) > 1 Then $aUpgradeButton[0] += 94
 			EndIf
 		EndIf
 
@@ -116,7 +116,7 @@ Func _AutoUpgrade()
 			SetLog("Error when trying to get upgrade name and level, looking next...", $COLOR_ERROR)
 			ContinueLoop
 		EndIf
-		
+
 		Local $bMustIgnoreUpgrade = False
 		; matchmaking between building name and the ignore list
 		Switch $g_aUpgradeNameLevel[1]
@@ -168,19 +168,19 @@ Func _AutoUpgrade()
 
 		Switch $g_aUpgradeNameLevel[1]
 			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
-				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 690, 510 + $g_iMidOffsetY, 730, 550 + $g_iMidOffsetY) ; get resource
-				$g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(598, 522 + $g_iMidOffsetY) ; get cost
-				$g_aUpgradeResourceCostDuration[2] = getHeroUpgradeTime(578, 470 + $g_iMidOffsetY) ; get duration
-				Local $g_Xtype = 598
-				Local $g_Ytype = 522 + $g_iMidOffsetY
+				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 730, 535 + $g_iMidOffsetY, 790, 595 + $g_iMidOffsetY) ; get resource
+				$g_aUpgradeResourceCostDuration[1] = getCostsUpgradeHeroe(630, 552 + $g_iMidOffsetY) ; get cost
+				$g_aUpgradeResourceCostDuration[2] = getHeroUpgradeTime(595, 490 + $g_iMidOffsetY) ; get duration
+				Local $g_Xtype = 630
+				Local $g_Ytype = 553 + $g_iMidOffsetY
 			Case Else
-				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 460, 480 + $g_iMidOffsetY, 500, 520 + $g_iMidOffsetY) ; get resource
-				$g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(362, 488 + $g_iMidOffsetY) ; get cost
-				$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(185, 307 + $g_iMidOffsetY) ; get duration
-				Local $g_Xtype = 362
-				Local $g_Ytype = 488 + $g_iMidOffsetY
+				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 470, 510 + $g_iMidOffsetY, 525, 570 + $g_iMidOffsetY) ; get resource
+				$g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(345, 527 + $g_iMidOffsetY) ; get cost
+				$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(115, 299 + $g_iMidOffsetY) ; get duration
+				Local $g_Xtype = 345
+				Local $g_Ytype = 528 + $g_iMidOffsetY
 		EndSwitch
-		
+
 		Local $g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[1], 1)
 
 		; if one of the value is empty, there is an error, we must exit Auto Upgrade
@@ -188,13 +188,24 @@ Func _AutoUpgrade()
 			If $g_aUpgradeNameLevel[1] = "Wall" And $i = 2 Then ExitLoop ; Wall Case : No Upgrade Time
 			If $g_aUpgradeResourceCostDuration[$i] = "" Or ($i = 1 And ($g_aUpgradeResourceCostDuration[$i] < 1000 Or $g_ReadCorrect <> 0)) Then
 				If $i = 1 Then
-					$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade2($g_Xtype, $g_Ytype)
-					$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
-					If $g_aUpgradeResourceCostDuration[$i] = "" Or $g_aUpgradeResourceCostDuration[$i] < 1000 Or $g_ReadCorrect <> 0 Then
-						$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade1($g_Xtype, $g_Ytype)
-						$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
-						If $g_ReadCorrect <> 0 Then $g_aUpgradeResourceCostDuration[$i] = ""
-					EndIf
+					Switch $g_aUpgradeNameLevel[1]
+						Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
+							$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade1Heroe($g_Xtype, $g_Ytype)
+							$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
+							If $g_aUpgradeResourceCostDuration[$i] = "" Or $g_aUpgradeResourceCostDuration[$i] < 1000 Or $g_ReadCorrect <> 0 Then
+								$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade2Heroe($g_Xtype, $g_Ytype)
+								$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
+								If $g_ReadCorrect <> 0 Then $g_aUpgradeResourceCostDuration[$i] = ""
+							EndIf
+						Case Else
+							$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade1($g_Xtype, $g_Ytype)
+							$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
+							If $g_aUpgradeResourceCostDuration[$i] = "" Or $g_aUpgradeResourceCostDuration[$i] < 1000 Or $g_ReadCorrect <> 0 Then
+								$g_aUpgradeResourceCostDuration[$i] = getCostsUpgrade2($g_Xtype, $g_Ytype)
+								$g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[$i], 1)
+								If $g_ReadCorrect <> 0 Then $g_aUpgradeResourceCostDuration[$i] = ""
+							EndIf
+					EndSwitch
 					If $g_aUpgradeResourceCostDuration[$i] <> "" And $g_aUpgradeResourceCostDuration[$i] > 0 Then ContinueLoop
 				EndIf
 				SaveDebugImage("UpgradeReadError_")
@@ -241,15 +252,15 @@ Func _AutoUpgrade()
 			ClickAway()
 			ContinueLoop
 		EndIf
-		
+
 		; final click on upgrade button, click coord is get looking at upgrade type (heroes have a diferent place for Upgrade button)
 		Switch $g_aUpgradeNameLevel[1]
 			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
-				Click(660, 530 + $g_iMidOffsetY)
+				Click(705, 570 + $g_iMidOffsetY)
 			Case Else
-				Click(430, 500 + $g_iMidOffsetY)
+				Click(430, 540 + $g_iMidOffsetY)
 		EndSwitch
-		
+
 		;Check for 'End Boost?' pop-up
 		If _Sleep(1000) Then Return
 		Local $aImgAUpgradeEndBoost = decodeSingleCoord(findImage("EndBoost", $g_sImgAUpgradeEndBoost, GetDiamondFromRect2(350, 280 + $g_iMidOffsetY, 570, 200 + $g_iMidOffsetY), 1, True))
@@ -267,7 +278,7 @@ Func _AutoUpgrade()
 				Return
 			EndIf
 		EndIf
-		
+
 		; Upgrade completed, but at the same line there might be more...
 		$g_iNextLineOffset = $aTmpCoord[0][2] - 10
 		$iLoopMax += 1
@@ -286,14 +297,44 @@ Func _AutoUpgrade()
 					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)
 				Case 15
 					$g_aUpgradeNameLevel[1] = "Giga Inferno"
-					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)	
+					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)
 			EndSwitch
 		Else
 			SetLog("Launched upgrade of " & $g_aUpgradeNameLevel[1] & " to level " & $g_aUpgradeNameLevel[2] + 1 & " successfully !", $COLOR_SUCCESS)
-		Endif
-				
+		EndIf
+
 		SetLog(" - Cost : " & _NumberFormat($g_aUpgradeResourceCostDuration[1]) & " " & $g_aUpgradeResourceCostDuration[0], $COLOR_SUCCESS)
-		If $g_aUpgradeNameLevel[1] <> "Wall" Then SetLog(" - Duration : " & $g_aUpgradeResourceCostDuration[2], $COLOR_SUCCESS)
+		If $g_aUpgradeNameLevel[1] <> "Wall" Then SetLog(" - Duration : " & $g_aUpgradeResourceCostDuration[2], $COLOR_SUCCESS) ; Wall Case : No Upgrade Time
+
+		;Stats
+		Switch $g_aUpgradeNameLevel[1]
+			Case "Wall"
+				AutoWallsStatsMAJ($g_aUpgradeNameLevel[2])
+				If $g_aUpgradeResourceCostDuration[0] = "Gold" Then
+					$g_iNbrOfWallsUppedGold += 1
+					$g_iCostGoldWall += $g_aUpgradeResourceCostDuration[1]
+				Else
+					$g_iNbrOfWallsUppedElixir += 1
+					$g_iCostElixirWall += $g_aUpgradeResourceCostDuration[1]
+				EndIf
+			Case "Monolith"
+				$g_iNbrOfBuildingsUppedDElixir += 1
+				$g_iCostDElixirBuilding += $g_aUpgradeResourceCostDuration[1]
+			Case "Barbarian King", "Archer Queen", "Royal Champion"
+				$g_iNbrOfHeroesUpped += 1
+				$g_iCostDElixirHero += $g_aUpgradeResourceCostDuration[1]
+			Case "Grand Warden"
+				$g_iNbrOfWardenUpped += 1
+				$g_iCostElixirWarden += $g_aUpgradeResourceCostDuration[1]
+			Case Else
+				If $g_aUpgradeResourceCostDuration[0] = "Gold" Then
+					$g_iNbrOfBuildingsUppedGold += 1
+					$g_iCostGoldBuilding += $g_aUpgradeResourceCostDuration[1]
+				Else
+					$g_iNbrOfBuildingsUppedElixir += 1
+					$g_iCostElixirBuilding += $g_aUpgradeResourceCostDuration[1]
+				EndIf
+		EndSwitch
 
 		_GUICtrlEdit_AppendText($g_hTxtAutoUpgradeLog, _
 				@CRLF & _NowDate() & " " & _NowTime() & _
@@ -318,5 +359,13 @@ Func _AutoUpgrade()
 	SetLog("Auto Upgrade finished", $COLOR_INFO)
 	ClickAway()
 	ZoomOut() ; re-center village
-	
-EndFunc   ;==>AutoUpgrade
+
+EndFunc   ;==>_AutoUpgrade
+
+Func AutoWallsStatsMAJ($CurrentWallLevel = 10)
+	$g_aiWallsCurrentCount[$CurrentWallLevel + 1] = $g_aiWallsCurrentCount[$CurrentWallLevel + 1] + 1
+	$g_aiWallsCurrentCount[$CurrentWallLevel] = $g_aiWallsCurrentCount[$CurrentWallLevel] - 1
+	GUICtrlSetData($g_ahWallsCurrentCount[$CurrentWallLevel + 1], $g_aiWallsCurrentCount[$CurrentWallLevel + 1])
+	GUICtrlSetData($g_ahWallsCurrentCount[$CurrentWallLevel], $g_aiWallsCurrentCount[$CurrentWallLevel])
+	SaveConfig()
+EndFunc   ;==>AutoWallsStatsMAJ

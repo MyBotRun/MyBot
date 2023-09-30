@@ -337,11 +337,11 @@ Func _LocateWardenAltar($bCollect = True)
 		EndIf
 
 		;get GrandWarden info
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< need to work
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< need to work
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY)
+			$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -469,11 +469,11 @@ Func _LocateChampionAltar($bCollect = True)
 		EndIf
 
 		;get RoyalChampion info
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< need to work
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< need to work
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY)
+			$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1

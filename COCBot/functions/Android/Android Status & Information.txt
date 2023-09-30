@@ -15,12 +15,12 @@ MyBot Command Line Key: BlueStacks5
 Default Instance Key: Pie64
 Second Instance Key:  Pie64_1
 
-Known issues/bugs: -
+Known issues/bugs: - V5.12.x has window sizing problems
 
 Nox
 ===
 http://en.bignox.com/
-Versions v7.0.5.7
+Versions v7.0.5.7019-XXXXX0429, v7.0.5.8.X
 MyBot Command Line Key: Nox
 Default Instance Key: nox
 Second Instance Key:  Nox_1

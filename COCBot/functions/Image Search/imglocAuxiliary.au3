@@ -147,7 +147,7 @@ Func ClickB($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $iDelay
 EndFunc   ;==>ClickB
 
 Func ClickButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $iDelay = 100, $iLoop = 5)
-	For $i = 1 to $iLoop
+	For $i = 1 To $iLoop
 		Local $aiButton = findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath, 1, True)
 		If IsArray($aiButton) And UBound($aiButton) >= 2 Then
 			ClickP($aiButton, 1)
@@ -156,13 +156,13 @@ Func ClickButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $i
 		EndIf
 	Next
 	Return False
-EndFunc   ;==>ClickB
+EndFunc   ;==>ClickButton
 
 ; $sButtonName = search area X1Y1|X1Y2|X2Y2|X2Y1
 ; $buttonTileArrayOrPatternOrFullPath = image path
 ; Capture = FV
 ; Test : findButton($sButtonName, Default,1,1,1,1)
-Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $maxReturnPoints = 1, $bForceCapture = True, $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
+Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $maxReturnPoints = 1, $bForceCapture = True, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
 
 	If $buttonTileArrayOrPatternOrFullPath = Default Then $buttonTileArrayOrPatternOrFullPath = $sButtonName & "*"
 
@@ -258,20 +258,17 @@ Func GetButtonDiamond($sButtonName)
 	;$g_iMidOffsetY $g_iBottomOffsetY
 
 	Switch $sButtonName
-		case "ClanGamesStorageFullYes"
-			$btnDiamond = GetDiamondFromRect("245,250,615,480")
-		case "ClanGamesCollectRewards"
-			$btnDiamond = GetDiamondFromRect("570,505,830,570")
-		case "ClanGamesClaimReward"
-			$btnDiamond = GetDiamondFromRect("570,505,830,570")
-		case "UpgradePets"
-			$btnDiamond = GetDiamondFromRect("590,530,735,595")
+		Case "ClanGamesStorageFullYes"
+			$btnDiamond = GetDiamondFromRect("460,400,615,480")
+		Case "ClanGamesCollectRewards"
+			$btnDiamond = GetDiamondFromRect("570,470,830,530")
+		Case "ClanGamesClaimReward"
+			$btnDiamond = GetDiamondFromRect("570,470,830,530")
+		Case "UpgradePets"
+			$btnDiamond = GetDiamondFromRect("730,530,800,600")
 		Case "ReloadButton"
-			$btnDiamond = GetDiamondFromRect("550,450,850,700")
-		Case "CloseFindMatch" ;Find Match Screen
-			$btnDiamond = "780,15|830,15|830,60|780,60"
+			$btnDiamond = GetDiamondFromRect("650,560,850,675")
 		Case "AttackButton" ;Main Window Screen
-			;$btnDiamond = GetDiamondFromRect("0,600,160,720")
 			$btnDiamond = GetDiamondFromRect2(0, 540 + $g_iBottomOffsetY, 160, 660 + $g_iBottomOffsetY)
 		Case "OpenTrainWindow" ;Main Window Screen
 			$btnDiamond = "15,560|65,560|65,610|15,610"
@@ -279,27 +276,16 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("100,200,840,540")
 		Case "EventFailed"
 			$btnDiamond = GetDiamondFromRect("230,130,777,560")
-		Case "OK"
-			$btnDiamond = "440,395|587,395|587,460|440,460"
-		Case "CANCEL"
-			$btnDiamond = "272,395|420,395|420,460|272,460"
-		Case "ReturnHome"
-			$btnDiamond = "357,545|502,545|502,607|357,607"
-		Case "Next" ; attackpage attackwindow
-			$btnDiamond = "697,542|850,542|850,610|697,610"
 		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon" ; Full size of object buttons at the bottom
-			;$btnDiamond = GetDiamondFromRect("140,591,720,671")
 			$btnDiamond = GetDiamondFromRect2(140, 531 + $g_iBottomOffsetY, 720, 611 + $g_iBottomOffsetY)
-			If $g_bDebugImageSave Then SaveDebugDiamondImage("ObjectButtons", $btnDiamond)
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
-			;$btnDiamond = GetDiamondFromRect("359,412(148,66)") X,Y,X+148,Y+66
-			$btnDiamond = GetDiamondFromRect2(359, 382 + $g_iMidOffsetY, 507, 448 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(359, 382 + $g_iMidOffsetY, 507, 477 + $g_iMidOffsetY)
 		Case "EnterShop"
 			$btnDiamond = GetDiamondFromRect("359,392(148,66)")
 		Case "EndBattleSurrender" ;surrender - attackwindow
 			$btnDiamond = "12,577|125,577|125,615|12,615"
 		Case "ClanChat"
-			$btnDiamond = GetDiamondFromRect("0,300,400,450")
+			$btnDiamond = GetDiamondFromRect("0,300,400,430")
 		Case "ChatOpenRequestPage" ;mainwindow - chat open
 			$btnDiamond = "5,688|65,688|65,615|5,725"
 		Case "Profile" ;mainwindow - only visible if chat closed
@@ -320,13 +306,13 @@ Func GetButtonDiamond($sButtonName)
 			;$btnDiamond = GetDiamondFromRect("18,100,800,150")
 			$btnDiamond = GetDiamondFromRect2(18, 70 + $g_iMidOffsetY, 800, 120 + $g_iMidOffsetY)
 		Case "MessagesButton"
-			$btnDiamond = GetDiamondFromRect("0,0,250,250")
+			$btnDiamond = GetDiamondFromRect2(0, 0, 90, 170 + $g_iMidOffsetY)
 		Case "AttackLogTab", "ShareReplayButton"
-			$btnDiamond = GetDiamondFromRect("280,85,600,300")
+			$btnDiamond = GetDiamondFromRect2(280, 65, 600, 160 + $g_iMidOffsetY)
 		Case "EndBattle", "Surrender"
 			$btnDiamond = GetDiamondFromRect("1,570,140,628")
 		Case "Okay"
-			$btnDiamond = GetDiamondFromRect("241,249,616,478")
+			$btnDiamond = GetDiamondFromRect("240,250,630,480")
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch
@@ -447,7 +433,7 @@ Func GetDeployableNextTo($sPoints, $distance = 3, $redlineoverride = "")
 	EndIf
 
 	If UBound($result) = 0 Then Return ""
-	If $g_bDebugSetlog Then SetDebugLog("GetDeployableNextTo : " & $sPoints & ", dist. = " & $distance & " : " & $result[0], $COLOR_ORANGE)
+	If $g_bDebugSetlog Then SetDebugLog("GetDeployableNextTo : " & $sPoints & ", dist. = " & $distance & " : " & $result[0], $COLOR_OLIVE)
 	Return $result[0]
 EndFunc   ;==>GetDeployableNextTo
 
@@ -463,7 +449,7 @@ Func GetOffsetRedline($sArea = "TL", $distance = 3)
 	EndIf
 
 	If UBound($result) = 0 Then Return ""
-	If $g_bDebugSetlog Then SetDebugLog("GetOffSetRedline : " & $sArea & ", dist. = " & $distance & " : " & $result[0], $COLOR_ORANGE)
+	If $g_bDebugSetlog Then SetDebugLog("GetOffSetRedline : " & $sArea & ", dist. = " & $distance & " : " & $result[0], $COLOR_OLIVE)
 	Return $result[0]
 EndFunc   ;==>GetOffsetRedline
 
@@ -471,15 +457,15 @@ Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel 
 	; same has findButton, but allow custom area instead of button area decoding
 	; nice for dinamic locations
 	If $g_bDebugSetlog Then
-		SetDebugLog("******** findMultiple *** START ***", $COLOR_ORANGE)
-		SetDebugLog("findMultiple : directory : " & $directory, $COLOR_ORANGE)
-		SetDebugLog("findMultiple : sCocDiamond : " & $sCocDiamond, $COLOR_ORANGE)
-		SetDebugLog("findMultiple : redLines : " & $redLines, $COLOR_ORANGE)
-		SetDebugLog("findMultiple : minLevel : " & $minLevel, $COLOR_ORANGE)
-		SetDebugLog("findMultiple : maxLevel : " & $maxLevel, $COLOR_ORANGE)
-		SetDebugLog("findMultiple : maxReturnPoints : " & $maxReturnPoints, $COLOR_ORANGE)
-		SetDebugLog("findMultiple : returnProps : " & $returnProps, $COLOR_ORANGE)
-		SetDebugLog("******** findMultiple *** START ***", $COLOR_ORANGE)
+		SetDebugLog("******** findMultiple *** START ***", $COLOR_OLIVE)
+		SetDebugLog("findMultiple : directory : " & $directory, $COLOR_OLIVE)
+		SetDebugLog("findMultiple : sCocDiamond : " & $sCocDiamond, $COLOR_OLIVE)
+		SetDebugLog("findMultiple : redLines : " & $redLines, $COLOR_OLIVE)
+		SetDebugLog("findMultiple : minLevel : " & $minLevel, $COLOR_OLIVE)
+		SetDebugLog("findMultiple : maxLevel : " & $maxLevel, $COLOR_OLIVE)
+		SetDebugLog("findMultiple : maxReturnPoints : " & $maxReturnPoints, $COLOR_OLIVE)
+		SetDebugLog("findMultiple : returnProps : " & $returnProps, $COLOR_OLIVE)
+		SetDebugLog("******** findMultiple *** START ***", $COLOR_OLIVE)
 	EndIf
 
 	Local $error, $extError
@@ -506,7 +492,7 @@ Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel 
 
 	If checkImglocError($result, "findMultiple", $directory) = True Then
 		If $g_bDebugSetlog Then SetDebugLog("findMultiple Returned Error or No values : ", $COLOR_DEBUG)
-		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_ORANGE)
+		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
 		Return ""
 	Else
 		If $g_bDebugSetlog Then SetDebugLog("findMultiple found : " & $result[0])
@@ -539,12 +525,12 @@ Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel 
 			$g_sImglocRedline = RetrieveImglocProperty("redline", "") ;global var set in imgltocTHSearch
 			If $g_bDebugSetlog Then SetDebugLog("findMultiple : Redline argument is emty, setting global Redlines")
 		EndIf
-		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_ORANGE)
+		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
 		Return $returnValues
 
 	Else
-		If $g_bDebugSetlog Then SetDebugLog(" ***  findMultiple has no result **** ", $COLOR_ORANGE)
-		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_ORANGE)
+		If $g_bDebugSetlog Then SetDebugLog(" ***  findMultiple has no result **** ", $COLOR_OLIVE)
+		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
 		Return ""
 	EndIf
 
@@ -632,7 +618,7 @@ Func GetDiamondFromRect2($iX1 = -1, $iY1 = -1, $iX2 = -1, $iY2 = -1)
 	EndIf
 
 	Local $sReturnDiamond = ""
-	$sReturnDiamond = $iX1  & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
+	$sReturnDiamond = $iX1 & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
 	Return $sReturnDiamond
 EndFunc   ;==>GetDiamondFromRect2
 
@@ -663,7 +649,7 @@ Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = T
 EndFunc   ;==>FindImageInPlace
 
 ; Same as FindImageInPlace but takes individual coords instead of a string
-Func FindImageInPlace2($sImageName, $sImageTile, $iX1=-1, $iY1=-1, $iX2=-1, $iY2=-1, $bForceCaptureRegion = True, $AndroidTag = Default)
+Func FindImageInPlace2($sImageName, $sImageTile, $iX1 = -1, $iY1 = -1, $iX2 = -1, $iY2 = -1, $bForceCaptureRegion = True, $AndroidTag = Default)
 	;creates a reduced capture of the place area a finds the image in that area
 	;returns string with X,Y of ACTUALL FULL SCREEN coordinates or Empty if not found
 	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace2 : > " & $sImageName & " - " & $sImageTile, $COLOR_INFO)
@@ -675,7 +661,7 @@ Func FindImageInPlace2($sImageName, $sImageTile, $iX1=-1, $iY1=-1, $iX2=-1, $iY2
 
 	Local $returnvalue = ""
 	;Local $aPlaces = GetRectArray($place)
-	Local $sImageArea = $iX1  & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
+	Local $sImageArea = $iX1 & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
 	If $bForceCaptureRegion = True Then
 		$sImageArea = "FV"
 		_CaptureRegion2(Number($iX1), Number($iY1), Number($iX2), Number($iY2))
@@ -693,7 +679,7 @@ Func FindImageInPlace2($sImageName, $sImageTile, $iX1=-1, $iY1=-1, $iX2=-1, $iY2
 	EndIf
 	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
 
-;	SetLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
+	;	SetLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
 
 	Return $returnvalue
 EndFunc   ;==>FindImageInPlace2
@@ -711,7 +697,7 @@ Func SearchRedLines($sCocDiamond = $CocDiamondECD)
 	EndIf
 	If checkImglocError($result, "SearchRedLines") = True Then
 		If $g_bDebugSetlog Then SetDebugLog("SearchRedLines Returned Error or No values : ", $COLOR_DEBUG)
-		If $g_bDebugSetlog Then SetDebugLog("******** SearchRedLines *** END ***", $COLOR_ORANGE)
+		If $g_bDebugSetlog Then SetDebugLog("******** SearchRedLines *** END ***", $COLOR_OLIVE)
 		Return ""
 	Else
 		If $g_bDebugSetlog Then SetDebugLog("SearchRedLines found : " & $result[0])

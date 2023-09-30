@@ -36,7 +36,8 @@ Func ReplayShare($bShareLastReplay)
 		If IsArray($aiAttackLogTab) And UBound($aiAttackLogTab, 1) >= 2 Then
 			SetDebugLog("Found Attack Log tab", $COLOR_DEBUG)
 			Local $aIsAttackLogTabOpen[4] = [$aiAttackLogTab[0] - 30, $aiAttackLogTab[1], 0xF4F4F0, 20]
-			If Not _CheckPixel($aIsAttackLogTabOpen, True) Then ClickP($aiAttackLogTab) ; Check if Attack Log Tab is already open otherwise click it
+			If Not _CheckPixel($aIsAttackLogTabOpen, True) Then ClickP($aiAttackLogTab)  ; Check if Attack Log Tab is already open otherwise click it
+			If _Sleep(1000) Then Return
 
 			If ClickB("ShareReplayButton") Then
 				Local $asReplayText = StringSplit($g_sShareMessage, "|")     ; Split the String into an Array holding each seperat
@@ -46,7 +47,7 @@ Func ReplayShare($bShareLastReplay)
 
 				Local $aiSendButton = findButton("SendButton")
 				If IsArray($aiSendButton) And UBound($aiSendButton, 1) >= 1 Then
-					Click($aiSendButton[0], $aiSendButton[1] - 75) ; Select the Text Area Above the Send Button
+					Click($aiSendButton[0], $aiSendButton[1] - 100) ; Select the Text Area Above the Send Button
 					If _Sleep($DELAYREPLAYSHARE1) Then Return
 
 					If Not $g_bChkBackgroundMode And Not $g_bNoFocusTampering Then ControlFocus($g_hAndroidWindow, "", "") ; Fixes typos which could occur

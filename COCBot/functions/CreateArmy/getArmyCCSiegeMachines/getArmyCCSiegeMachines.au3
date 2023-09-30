@@ -30,9 +30,8 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	;Local $sCCSiegeDiamond = GetDiamondFromRect("620,510,710,588") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 	Local $sCCSiegeDiamond = GetDiamondFromRect2(620, 480 + $g_iMidOffsetY, 710, 558 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
-	
+
 	If $g_bDebugFuncTime Then StopWatchStart("findMultiple, \imgxml\ArmyOverview\SiegeMachines")
 	Local $aCurrentCCSiegeMachines = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\SiegeMachines", $sCCSiegeDiamond, $sCCSiegeDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentSiegeMachines[index] = $aArray[2] = ["Siege M Shortname", CordX,CordY]
 	If $g_bDebugFuncTime Then StopWatchStopLog()
@@ -48,9 +47,9 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	Local $sSiegeInfo = getSiegeCampCap(650, 468, $bNeedCapture) ; OCR read Siege built and total
 	If $g_bDebugSetlogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
 	Local $aGetSiegeCap = StringSplit($sSiegeInfo, "#", $STR_NOCOUNT) ; split the built Siege number from the total Siege number
-	If $bSetLog And Ubound($aGetSiegeCap) = 2 Then
+	If $bSetLog And UBound($aGetSiegeCap) = 2 Then
 		SetLog("Total Siege CC Capacity: " & $aGetSiegeCap[0] & "/" & $aGetSiegeCap[1])
-		If Number($aGetSiegeCap[0]) = 0 then Return
+		If Number($aGetSiegeCap[0]) = 0 Then Return
 	Else
 		Return
 	EndIf
@@ -80,4 +79,4 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 		ClickAway()
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
-EndFunc   ;==>getArmyTroops
+EndFunc   ;==>getArmyCCSiegeMachines

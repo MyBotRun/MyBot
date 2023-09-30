@@ -52,9 +52,9 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If checkObstacles_GfxError() Then Return True
 	EndIf
 
-	If _ColorCheck(_GetPixelColor(420, 160 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xB83420, 6), 20) Then
+	If _ColorCheck(_GetPixelColor(825, 170 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x882C1E, 6), 20) Then
 		SetDebugLog("checkObstacles: Found Window to close")
-		PureClick(440, 515 + $g_iMidOffsetY, 1, 0, "#0132") ;See if village was attacked or upgrades finished : Click Okay
+		PureClick(440, 525 + $g_iMidOffsetY, 1, 0, "#0132") ;See if village was attacked or upgrades finished : Click Okay
 		$g_abNotNeedAllTime[0] = True
 		$g_abNotNeedAllTime[1] = True
 		$g_bMinorObstacle = True
@@ -102,7 +102,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 
 		;;;;;;;;;;;;;;;;;;;; Connection Lost & Error & OOS & Inactivity ;;;;;;;;;;;;;;;;;;;;
 		Return CheckAllObstacles($g_bDebugImageSave, 0, 3, $bRecursive)
-		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	EndIf
 
@@ -110,8 +110,8 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	If CheckAllObstacles($g_bDebugImageSave, 4, 5, $bRecursive) Then Return True
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	If UBound(decodeSingleCoord(FindImageInPlace2("Maintenance", $g_sImgMaintenance, 270, 40 + $g_iMidOffsetY, 640, 130 + $g_iMidOffsetY, False))) > 1 Then ; Maintenance Break
-		$Result = getOcrMaintenanceTime(300, 523 + $g_iBottomOffsetY, "Check Obstacles OCR Maintenance Break=") ; OCR text to find wait time
+	If UBound(decodeSingleCoord(FindImageInPlace2("Maintenance", $g_sImgMaintenance, 250, 40, 500, 110, False))) > 1 Then ; Maintenance Break
+		$Result = getOcrMaintenanceTime(280, 591 + $g_iMidOffsetY, "Check Obstacles OCR Maintenance Break=") ; OCR text to find wait time
 		Local $iMaintenanceWaitTime = 0
 		Local $avTime = StringRegExp($Result, "([\d]+)[Mm]|(soon)|([\d]+[Hh])", $STR_REGEXPARRAYMATCH)
 		If UBound($avTime, 1) = 1 And Not @error Then
@@ -123,7 +123,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			EndIf
 		Else
 			$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES4 ; Wait 2 min
-			$Result = getOcrMaintenanceTime(120, 523 + $g_iBottomOffsetY, "Check Obstacles OCR Maintenance Break=")
+			$Result = getOcrMaintenanceTime(70, 591 + $g_iMidOffsetY, "Check Obstacles OCR Maintenance Break=")
 			If StringInStr($Result, "soon", $STR_NOCASESENSEBASIC) Then
 				SetLog("End Of Maintenance Break : Soon!, Waiting 2 Minutes", $COLOR_SUCCESS1)
 			Else
@@ -137,8 +137,8 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		checkObstacles_ResetSearch()
 	EndIf
 
-	If UBound(decodeSingleCoord(FindImageInPlace2("CCResults", $g_sImgClanCapitalResults, 260, 190 + $g_iMidOffsetY, 320, 250 + $g_iMidOffsetY, False))) > 1 Then ; Clan Capital Results
-		If _ColorCheck(_GetPixelColor(284, 316 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xFFFFFF, 6), 10) And _ColorCheck(_GetPixelColor(594, 316 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xFFFFFF, 6), 10) Then
+	If UBound(decodeSingleCoord(FindImageInPlace2("CCResults", $g_sImgClanCapitalResults, 210, 130 + $g_iMidOffsetY, 320, 240 + $g_iMidOffsetY, False))) > 1 Then ; Clan Capital Results
+		If _ColorCheck(_GetPixelColor(232, 312 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xFFFFFF, 6), 10) And _ColorCheck(_GetPixelColor(664, 242 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xFFFFFF, 6), 10) Then
 			$g_bMinorObstacle = True
 			CloseWindow()
 			Return False
@@ -146,15 +146,15 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	EndIf
 
 	Local $bHasTopBlackBar = _ColorCheck(_GetPixelColor(10, 3, $g_bCapturePixel), Hex(0x000000, 6), 1) And _ColorCheck(_GetPixelColor(300, 6, $g_bCapturePixel), Hex(0x000000, 6), 1) And _
-	_ColorCheck(_GetPixelColor(600, 9, $g_bCapturePixel), Hex(0x000000, 6), 1)
-	If Not $bHasTopBlackBar And _CheckPixel($aIsMainGrayed, $g_bNoCapturePixel) Then
+			_ColorCheck(_GetPixelColor(600, 9, $g_bCapturePixel), Hex(0x000000, 6), 1)
+	If Not $bHasTopBlackBar And _CheckPixel($aIsMainGrayed, $g_bCapturePixel) Then
 		SetDebugLog("checkObstacles: Found gray Window to close")
 		PureClickP($aAway, 1, 0, "#0133") ;Click away If things are open
 		$g_bMinorObstacle = True
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		Return False
 	EndIf
-	 If Not $bHasTopBlackBar And _CheckPixel($aIsBuilderBaseGrayed, $g_bNoCapturePixel) Then
+	If Not $bHasTopBlackBar And _CheckPixel($aIsBuilderBaseGrayed, $g_bCapturePixel) Then
 		SetLog("checkObstacles: Found Builder Base gray Window to close")
 		ClickAway("Left")
 		$g_bMinorObstacle = True
@@ -168,32 +168,32 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		Return False
 	EndIf
-	If _CheckPixel($aCancelFight, $g_bNoCapturePixel) Or _CheckPixel($aCancelFight2, $g_bNoCapturePixel) Then
+	If _CheckPixel($aCancelFight, $g_bCapturePixel) Or _CheckPixel($aCancelFight2, $g_bCapturePixel) Then
 		SetDebugLog("checkObstacles: Found Cancel Fight to close")
 		PureClickP($aCancelFight, 1, 0, "#0135") ;Clicks X
 		$g_bMinorObstacle = True
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		Return False
 	EndIf
-	If _CheckPixel($aChatTab, $g_bNoCapturePixel) Then
+	If _CheckPixel($aChatTab, $g_bCapturePixel) And _CheckPixel($aChatTab2, $g_bCapturePixel) And _CheckPixel($aChatTab3, $g_bCapturePixel) Then
 		SetDebugLog("checkObstacles: Found Chat Tab to close")
 		PureClickP($aChatTab, 1, 0, "#0136") ;Clicks chat tab
 		$g_bMinorObstacle = True
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		Return False
 	EndIf
-	If _CheckPixel($aEndFightSceneBtn, $g_bNoCapturePixel) Then
+	If _CheckPixel($aEndFightSceneBtn, $g_bCapturePixel) Then
 		SetDebugLog("checkObstacles: Found End Fight Scene to close")
 		PureClickP($aEndFightSceneBtn, 1, 0, "#0137") ;If in that victory or defeat scene
 		Return True
 	EndIf
-	If _CheckPixel($aSurrenderButton, $g_bNoCapturePixel) Then
+	If _CheckPixel($aSurrenderButton, $g_bCapturePixel) Then
 		SetDebugLog("checkObstacles: Found End Battle to close")
 		ReturnHome(False, False) ;If End battle is available
 		Return True
 	EndIf
-	If _CheckPixel($aNoCloudsAttack, $g_bNoCapturePixel) Then ; Prevent drop of troops while searching
-		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xF4F7E3, 6), 10, False)
+	If _CheckPixel($aNoCloudsAttack, $g_bCapturePixel) Then ; Prevent drop of troops while searching
+		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xF4F7E3, 6), 10, True)
 		If IsArray($aMessage) Then
 			SetDebugLog("checkObstacles: Found Return Home button")
 			PureClick(67, 602 + $g_iBottomOffsetY, 1, 0, "#0138") ;Check if Return Home button available
@@ -201,17 +201,17 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			Return True
 		EndIf
 	EndIf
-	If IsPostDefenseSummaryPage(False) Then
-		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xE0E1CE, 6), 10, False)
+	If IsPostDefenseSummaryPage() Then
+		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xEBECDB, 6), 10, True)
 		If IsArray($aMessage) Then
 			SetDebugLog("checkObstacles: Found Post Defense Summary to close")
-			PureClick(67, 602 + $g_iBottomOffsetY, 1, 0, "#0138") ;Check if Return Home button available
+			PureClick(62, 607 + $g_iBottomOffsetY, 1, 0, "#0138") ;Check if Return Home button available
 			If _Sleep($DELAYCHECKOBSTACLES2) Then Return
 			Return True
 		EndIf
 	EndIf
 
-	Local $CSFoundCoords = decodeSingleCoord(FindImageInPlace2("CocStopped", $g_sImgCocStopped, 250, 328 + $g_iMidOffsetY, 618, 402 + $g_iMidOffsetY, False))
+	Local $CSFoundCoords = decodeSingleCoord(FindImageInPlace2("CocStopped", $g_sImgCocStopped, 250, 328 + $g_iMidOffsetY, 618, 402 + $g_iMidOffsetY, True))
 	If UBound($CSFoundCoords) > 1 Then
 		SetLog("CoC Has Stopped Error .....", $COLOR_ERROR)
 		If TestCapture() Then Return "CoC Has Stopped Error ....."
@@ -237,7 +237,7 @@ Func checkObstacles_ReloadCoC($bRecursive = False)
 	If TestCapture() Then Return "Reload CoC"
 	ForceCaptureRegion(True)
 	OcrForceCaptureRegion(True)
-	
+
 	If ProfileSwitchAccountEnabled() And $g_bChkSharedPrefs And HaveSharedPrefs() Then
 		PushSharedPrefs()
 		If Not $bRecursive Then OpenCoC()
@@ -272,7 +272,7 @@ Func checkObstacles_StopBot($msg)
 EndFunc   ;==>checkObstacles_StopBot
 
 Func checkObstacles_ResetSearch()
-	; reset fast restart flags to ensure base is rearmed after error event that has base offline for long duration, like PB or Maintenance
+	; reset fast restart flags to ensure base is rearmed after error event that has base offline for long duration, like Maintenance
 	$g_bIsClientSyncError = False
 	$g_bIsSearchLimit = False
 	$g_abNotNeedAllTime[0] = True
@@ -340,7 +340,7 @@ Func ClashOfMagicAdvert($bDebugImageSave = $g_bDebugImageSave)
 
 	If $bDebugImageSave Then SaveDebugRectImage("ClashOfMagicAdvert", "820,10,850,35")
 
-	If IsArray($aiClashOfMagicAdvert) and UBound($aiClashOfMagicAdvert, 1) = 2 Then
+	If IsArray($aiClashOfMagicAdvert) And UBound($aiClashOfMagicAdvert, 1) = 2 Then
 		SetLog("Detected Clash Of Magic Advert! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 
 		If _Sleep(500) Then Return
@@ -353,8 +353,8 @@ Func ClashOfMagicAdvert($bDebugImageSave = $g_bDebugImageSave)
 	SetDebugLog("No Clash Of Magic Advert found! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 
 	Return False
-EndFunc
- 
+EndFunc   ;==>ClashOfMagicAdvert
+
 Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $MaxType = 5, $bRecursive = False)
 
 	Local $bRet = False, $Ref
@@ -370,17 +370,17 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 	;; 6 : Another Device Connected Then Wait $g_iAnotherDeviceWaitTime Then Click on "Reload"
 
 	Local $aiObstacleType[7][7] = [["", "Detected Connection Lost!", $sImgConnectionLost, 170, 260, 400, 320], _
-	["", "Detected Out Of Sync!", $sImgOos, 330, 310, 460, 350], _
-	["", "Detected Rate Game!", $sImgRateGame, 170, 260, 400, 320], _
-	["", "Detected Important Notice!", $sImgNotice, 170, 250, 400, 300], _
-	["", "Detected Google Play Services Has Stopped!", $sImgGPServices, 280, 300, 410, 340], _
-	["", "Detected COC isn't Responding!!", $sImgClashNotResponding, 210, 240, 360, 310], _
-	["", "Detected Another Device Connected!!", $sImgDevice, 220, 300, 360, 360]]
+			["", "Detected Out Of Sync!", $sImgOos, 330, 310, 460, 350], _
+			["", "Detected Rate Game!", $sImgRateGame, 170, 260, 400, 320], _
+			["", "Detected Important Notice!", $sImgNotice, 170, 250, 400, 300], _
+			["", "Detected Google Play Services Has Stopped!", $sImgGPServices, 280, 300, 410, 340], _
+			["", "Detected COC isn't Responding!!", $sImgClashNotResponding, 210, 240, 360, 310], _
+			["", "Detected Another Device Connected!!", $sImgDevice, 220, 300, 360, 360]]
 
 	Local $aiButtonType[4][6] = [["", $sImgReloadBtn, 170, 365, 330, 420], _
-	["", $sImgNeverBtn, 540, 365, 700, 420], _
-	["", $sImgOKBtn, 170, 370, 270, 430], _
-	["", $sImgOKBtn, 630, 355, 700, 385]]
+			["", $sImgNeverBtn, 540, 365, 700, 420], _
+			["", $sImgOKBtn, 170, 370, 270, 430], _
+			["", $sImgOKBtn, 630, 355, 700, 385]]
 
 	; Initial Timer
 	Local $hTimer = TimerInit()
@@ -388,7 +388,7 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 	For $i = $MinType To $MaxType
 
 		$aiObstacleType[$i][0] = decodeSingleCoord(FindImageInPlace2("ErrorType", $aiObstacleType[$i][2], $aiObstacleType[$i][3], $aiObstacleType[$i][4] + _
-								 $g_iMidOffsetY, $aiObstacleType[$i][5], $aiObstacleType[$i][6] + $g_iMidOffsetY, False))
+				$g_iMidOffsetY, $aiObstacleType[$i][5], $aiObstacleType[$i][6] + $g_iMidOffsetY, False))
 
 		If IsArray($aiObstacleType[$i][0]) And UBound($aiObstacleType[$i][0], 1) = 2 Then
 
@@ -396,7 +396,7 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 
 			If $i = 0 Then
 				$aiObstacleType[6][0] = decodeSingleCoord(FindImageInPlace2("Device", $aiObstacleType[6][2], $aiObstacleType[6][3], $aiObstacleType[6][4] + _
-										$g_iMidOffsetY, $aiObstacleType[6][5], $aiObstacleType[6][6] + $g_iMidOffsetY, False))
+						$g_iMidOffsetY, $aiObstacleType[6][5], $aiObstacleType[6][6] + $g_iMidOffsetY, False))
 				If IsArray($aiObstacleType[6][0]) And UBound($aiObstacleType[6][0], 1) = 2 Then
 					SetLog($aiObstacleType[6][1] & " (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 					If $g_iAnotherDeviceWaitTime > 3600 Then
@@ -417,7 +417,7 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 				checkObstacles_RebootAndroid(False, False, True)
 				$bRet = True
 				ExitLoop
-			EndIf	
+			EndIf
 
 			If _Sleep(100) Then Return
 
@@ -426,26 +426,26 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 			; Find OK, Reload, Try Again, Never, No Thanks buttons
 
 			Switch $i
-			;; 0 : Connection Lost, Error, Another Device, Inactivity Or Login Failed Then Click "Try Again" Or "Reload" Or "Reload Game"
-			;; 1 : Error! (Out of Sync)/OOS Then Click on "Reload Game"
+				;; 0 : Connection Lost, Error, Another Device, Inactivity Or Login Failed Then Click "Try Again" Or "Reload" Or "Reload Game"
+				;; 1 : Error! (Out of Sync)/OOS Then Click on "Reload Game"
 				Case 0 To 1
 					$Ref = 0
-			;; 2 : Rate Clash Of Clans Then click On "Never"
+					;; 2 : Rate Clash Of Clans Then click On "Never"
 				Case 2
 					$Ref = 1
-			;; 3 : Important Notice Then Click On "OK"
+					;; 3 : Important Notice Then Click On "OK"
 				Case 3
-				    $Ref = 2
-			;; 4 : Google Play Services Has Stopped Then Click on "OK"
+					$Ref = 2
+					;; 4 : Google Play Services Has Stopped Then Click on "OK"
 				Case 4
 					$Ref = 3
 			EndSwitch
 
 			$aiButtonType[$Ref][0] = decodeSingleCoord(FindImageInPlace2("Button", $aiButtonType[$Ref][1], $aiButtonType[$Ref][2], $aiButtonType[$Ref][3] + _
-								   $g_iMidOffsetY, $aiButtonType[$Ref][4], $aiButtonType[$Ref][5] + $g_iMidOffsetY, False))
+					$g_iMidOffsetY, $aiButtonType[$Ref][4], $aiButtonType[$Ref][5] + $g_iMidOffsetY, False))
 
 			If IsArray($aiButtonType[$Ref][0]) And UBound($aiButtonType[$Ref][0], 1) = 2 Then
-			
+
 				If _Sleep(100) Then Return
 				SetDebugLog("Found button....", $COLOR_SUCCESS1)
 				SetDebugLog("Click Coords : " & ($aiButtonType[$Ref][0])[0] & "," & ($aiButtonType[$Ref][0])[1], $COLOR_ERROR)
@@ -491,4 +491,4 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 
 	Return $bRet
 
-EndFunc
+EndFunc   ;==>CheckAllObstacles

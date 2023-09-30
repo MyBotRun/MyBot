@@ -33,27 +33,27 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 	; Gain Stats
 	Static $aiStatsTotalGain = $aiZero84, $aiStatsStartedWith = $aiZero84, $aiStatsLastAttack = $aiZero84, $aiStatsBonusLast = $aiZero84
-	
+
 	;Clan Capital
 	Static $gSiLootCCGold = $aiZero
 	Static $gSiLootCCMedal = $aiZero
 	Static $gSiCCTrophies = $aiZero
-	
+
 	;Super Troops Boost
 	Static $gSbFirstStartBarrel = $aiTrue
-	
+
 	;Builders Base
 	Static $gSaiCurrentLootBB = $aiZero83
 	Static $gSiFreeBuilderCountBB = $aiZero
 	Static $gSiTotalBuilderCountBB = $aiZero
-		
+
 	; Misc Stats
 	Static $aiNbrOfOoS = $aiZero
 	Static $aiDroppedTrophyCount = $aiZero
 	Static $aiSearchCost = $aiZero, $aiTrainCostElixir = $aiZero, $aiTrainCostDElixir = $aiZero, $aiTrainCostGold = $aiZero ; search and train troops cost
 	Static $aiGoldFromMines = $aiZero, $aiElixirFromCollectors = $aiZero, $aiDElixirFromDrills = $aiZero ; number of resources gain by collecting mines, collectors, drills
-	Static $aiCostGoldWall = $aiZero, $aiCostElixirWall = $aiZero, $aiCostGoldBuilding = $aiZero, $aiCostElixirBuilding = $aiZero, $aiCostDElixirHero = $aiZero ; wall, building and hero upgrade costs
-	Static $aiNbrOfWallsUppedGold = $aiZero, $aiNbrOfWallsUppedElixir = $aiZero, $aiNbrOfBuildingsUppedGold = $aiZero, $aiNbrOfBuildingsUppedElixir = $aiZero, $aiNbrOfHeroesUpped = $aiZero ; number of wall, building, hero upgrades with gold, elixir, delixir
+	Static $aiCostGoldWall = $aiZero, $aiCostElixirWall = $aiZero, $aiCostGoldBuilding = $aiZero, $aiCostElixirBuilding = $aiZero, $aiCostDElixirBuilding = $aiZero, $aiCostDElixirHero = $aiZero, $aiCostElixirWarden = $aiZero ; wall, building and hero upgrade costs
+	Static $aiNbrOfWallsUppedGold = $aiZero, $aiNbrOfWallsUppedElixir = $aiZero, $aiNbrOfBuildingsUppedGold = $aiZero, $aiNbrOfBuildingsUppedElixir = $aiZero, $aiNbrOfBuildingsUppedDElixir = $aiZero, $aiNbrOfHeroesUpped = $aiZero, $aiNbrOfWardenUpped = $aiZero ; number of wall, building, hero upgrades with gold, elixir, delixir
 	Static $aiNbrOfWallsUpped = $aiZero
 
 	; Attack Stats
@@ -88,6 +88,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 	Static $abNotNeedAllTime0 = $aiTrue
 	Static $abNotNeedAllTime1 = $aiTrue
+
+	;Clan Games
+	Static $gSbClanGamesCompleted = $aiZero
+	Static $gSbIsBBevent = $aiZero
+	Static $SIsCGEventRunning = $aiZero
+
+	$g_hCoolDownTimer = 0
+	$g_bIsCGCoolDownTime = False
 
 	; First time switch account
 	Switch $sType
@@ -128,12 +136,16 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiCostElixirWall = $aiZero
 			$aiCostGoldBuilding = $aiZero
 			$aiCostElixirBuilding = $aiZero
+			$aiCostDElixirBuilding = $aiZero
 			$aiCostDElixirHero = $aiZero
+			$aiCostElixirWarden = $aiZero
 			$aiNbrOfWallsUppedGold = $aiZero
 			$aiNbrOfWallsUppedElixir = $aiZero
 			$aiNbrOfBuildingsUppedGold = $aiZero
 			$aiNbrOfBuildingsUppedElixir = $aiZero
+			$aiNbrOfBuildingsUppedDElixir = $aiZero
 			$aiNbrOfHeroesUpped = $aiZero
+			$aiNbrOfWardenUpped = $aiZero
 			$aiNbrOfWallsUpped = $aiZero
 
 			; Attack Stats
@@ -164,6 +176,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiHeroUpgradingBit = $aiZero
 			$aiHeroUpgrading = $aiZero83
 
+			;Clan Games
+			$gSbClanGamesCompleted = $aiZero
+			$gSbIsBBevent = $aiZero
+			$SIsCGEventRunning = $aiZero
+
 			; QuickTrain comp
 			For $i = 0 To 7
 				$aaArmyQuickTroops[$i] = $aiZeroTroop
@@ -180,20 +197,20 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiBuilderBoostDiscount = $aiZero
 			$abNotNeedAllTime0 = $aiTrue
 			$abNotNeedAllTime1 = $aiTrue
-			
+
 			;Clan Capital
 			$gSiLootCCGold = $aiZero
 			$gSiLootCCMedal = $aiZero
 			$gSiCCTrophies = $aiZero
-			
+
 			;Super Troops Boost
 			$gSbFirstStartBarrel = $aiTrue
-			
+
 			;Builders Base
 			$gSaiCurrentLootBB = $aiZero83
 			$gSiFreeBuilderCountBB = $aiZero
 			$gSiTotalBuilderCountBB = $aiZero
-			
+
 		Case "Save"
 			$abFirstStart[$iAccount] = $g_bFirstStart
 			$aiFirstRun[$iAccount] = $g_iFirstRun
@@ -209,15 +226,15 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				$aiStatsLastAttack[$iAccount][$i] = $g_iStatsLastAttack[$i]
 				$aiStatsBonusLast[$iAccount][$i] = $g_iStatsBonusLast[$i]
 			Next
-			
+
 			;Clan Capital
 			$gSiLootCCGold[$iAccount] = $g_iLootCCGold
 			$gSiLootCCMedal[$iAccount] = $g_iLootCCMedal
 			$gSiCCTrophies[$iAccount] = $g_iCCTrophies
-			
+
 			;Super Troops Boost
 			$gSbFirstStartBarrel[$iAccount] = $g_bFirstStartBarrel
-			
+
 			;Builders Base
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
 				$gSaiCurrentLootBB[$iAccount][$i] = $g_aiCurrentLootBB[$i]
@@ -240,12 +257,16 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiCostElixirWall[$iAccount] = $g_iCostElixirWall
 			$aiCostGoldBuilding[$iAccount] = $g_iCostGoldBuilding
 			$aiCostElixirBuilding[$iAccount] = $g_iCostElixirBuilding
+			$aiCostDElixirBuilding[$iAccount] = $g_iCostDElixirBuilding
 			$aiCostDElixirHero[$iAccount] = $g_iCostDElixirHero
+			$aiCostElixirWarden[$iAccount] = $g_iCostElixirWarden
 			$aiNbrOfWallsUppedGold[$iAccount] = $g_iNbrOfWallsUppedGold
 			$aiNbrOfWallsUppedElixir[$iAccount] = $g_iNbrOfWallsUppedElixir
 			$aiNbrOfBuildingsUppedGold[$iAccount] = $g_iNbrOfBuildingsUppedGold
 			$aiNbrOfBuildingsUppedElixir[$iAccount] = $g_iNbrOfBuildingsUppedElixir
+			$aiNbrOfBuildingsUppedDElixir[$iAccount] = $g_iNbrOfBuildingsUppedDElixir
 			$aiNbrOfHeroesUpped[$iAccount] = $g_iNbrOfHeroesUpped
+			$aiNbrOfWardenUpped[$iAccount] = $g_iNbrOfWardenUpped
 			$aiNbrOfWallsUpped[$iAccount] = $g_iNbrOfWallsUpped
 
 			; Attack Stats
@@ -274,7 +295,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			Else
 				$aiLabStatus[$iAccount] = 0
 			EndIf
-			
+
 			$asPetLabUpgradeTime[$iAccount] = $g_sPetUpgradeTime
 			If GUICtrlGetState($g_hPicPetGreen) = $GUI_ENABLE + $GUI_SHOW Then
 				$aiPetStatus[$iAccount] = 1
@@ -284,7 +305,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				$aiPetStatus[$iAccount] = 0
 			EndIf
 			$asiMinDark4PetUpgrade[$iAccount] = $g_iMinDark4PetUpgrade
-			
+
 			$asStarLabUpgradeTime[$iAccount] = $g_sStarLabUpgradeTime
 
 			; Hero State
@@ -304,6 +325,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			; Other global status
 			$aiCommandStop[$iAccount] = $g_iCommandStop
 			$aiAllBarracksUpgd[$iAccount] = $g_bAllBarracksUpgd
+
+			;ClanGames
+			$gSbClanGamesCompleted[$iAccount] = $g_bClanGamesCompleted
+			$gSbIsBBevent[$iAccount] = $g_bIsBBevent
+			$SIsCGEventRunning[$iAccount] = $IsCGEventRunning
 
 			For $i = 0 To 3
 				$abFullStorage[$iAccount][$i] = $g_abFullStorage[$i]
@@ -327,7 +353,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				$g_iStatsLastAttack[$i] = $aiStatsLastAttack[$iAccount][$i]
 				$g_iStatsBonusLast[$i] = $aiStatsBonusLast[$iAccount][$i]
 			Next
-			
+
 			;Clan Capital
 			$g_iLootCCGold = $gSiLootCCGold[$iAccount]
 			$g_iLootCCMedal = $gSiLootCCMedal[$iAccount]
@@ -336,10 +362,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			GUICtrlSetData($g_lblCapitalMedal, _NumberFormat($g_iLootCCMedal, True))
 			GUICtrlSetData($g_lblCapitalTrophies, _NumberFormat($g_iCCTrophies, True))
 			PicCCTrophies()
-			
+
 			;Super Troops Boost
 			$g_bFirstStartBarrel = $gSbFirstStartBarrel[$iAccount]
-			
+
 			;Builders Base
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
 				$g_aiCurrentLootBB[$i] = $gSaiCurrentLootBB[$iAccount][$i]
@@ -364,12 +390,16 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$g_iCostElixirWall = $aiCostElixirWall[$iAccount]
 			$g_iCostGoldBuilding = $aiCostGoldBuilding[$iAccount]
 			$g_iCostElixirBuilding = $aiCostElixirBuilding[$iAccount]
+			$g_iCostDElixirBuilding = $aiCostDElixirBuilding[$iAccount]
 			$g_iCostDElixirHero = $aiCostDElixirHero[$iAccount]
+			$g_iCostElixirWarden = $aiCostElixirWarden[$iAccount]
 			$g_iNbrOfWallsUppedGold = $aiNbrOfWallsUppedGold[$iAccount]
 			$g_iNbrOfWallsUppedElixir = $aiNbrOfWallsUppedElixir[$iAccount]
 			$g_iNbrOfBuildingsUppedGold = $aiNbrOfBuildingsUppedGold[$iAccount]
 			$g_iNbrOfBuildingsUppedElixir = $aiNbrOfBuildingsUppedElixir[$iAccount]
+			$g_iNbrOfBuildingsUppedDElixir = $aiNbrOfBuildingsUppedDElixir[$iAccount]
 			$g_iNbrOfHeroesUpped = $aiNbrOfHeroesUpped[$iAccount]
+			$g_iNbrOfWardenUpped = $aiNbrOfWardenUpped[$iAccount]
 			$g_iNbrOfWallsUpped = $aiNbrOfWallsUpped[$iAccount]
 
 			; Attack Stats
@@ -398,7 +428,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				If $aiLabStatus[$iAccount] = $Counter Then GUICtrlSetState($i, $GUI_SHOW)
 				$Counter += 1
 			Next
-			
+
 			$g_sPetUpgradeTime = $asPetLabUpgradeTime[$iAccount]
 			GUICtrlSetData($g_hLbLPetTime, "")
 			Local $Counter = 0
@@ -408,8 +438,13 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				$Counter += 1
 			Next
 			$g_iMinDark4PetUpgrade = $asiMinDark4PetUpgrade[$iAccount]
-			
+
 			$g_sStarLabUpgradeTime = $asStarLabUpgradeTime[$iAccount]
+
+			;Clan Games
+			$g_bClanGamesCompleted = $gSbClanGamesCompleted[$iAccount]
+			$g_bIsBBevent = $gSbIsBBevent[$iAccount]
+			$IsCGEventRunning = $SIsCGEventRunning[$iAccount]
 
 			; Hero State
 			$g_iHeroAvailable = $aiHeroAvailable[$iAccount]
@@ -460,7 +495,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 					If $iLabTime > 0 Then
 						_TicksToDay($iLabTime, $day, $hour, $min, $sec)
 						GUICtrlSetData($g_ahLblLabTime[$i], $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-						GUICtrlSetColor($g_ahLblLabTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+						GUICtrlSetColor($g_ahLblLabTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_OLIVE)
 					Else
 						GUICtrlSetData($g_ahLblLabTime[$i], "")
 						$asLabUpgradeTime[$i] = ""
@@ -473,7 +508,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 					If $iStarLabTime > 0 Then
 						_TicksToDay($iStarLabTime, $day, $hour, $min, $sec)
 						GUICtrlSetData($g_ahLbLStarLabTime[$i], $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-						GUICtrlSetColor($g_ahLbLStarLabTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+						GUICtrlSetColor($g_ahLbLStarLabTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_OLIVE)
 					Else
 						GUICtrlSetData($g_ahLbLStarLabTime[$i], "")
 						$asStarLabUpgradeTime[$i] = ""
@@ -486,19 +521,19 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 					If $iPetHouseTime > 0 Then
 						_TicksToDay($iPetHouseTime, $day, $hour, $min, $sec)
 						GUICtrlSetData($g_ahLbLPetTime[$i], $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-						GUICtrlSetColor($g_ahLbLPetTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
- 					Else
+						GUICtrlSetColor($g_ahLbLPetTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_OLIVE)
+					Else
 						GUICtrlSetData($g_ahLbLPetTime[$i], "")
 						$asPetLabUpgradeTime[$i] = ""
- 					EndIf
+					EndIf
 				Else
 					GUICtrlSetData($g_ahLbLPetTime[$i], "")
- 				EndIf
+				EndIf
 			Next
 
 		Case "$g_iCommandStop"
-			return $aiCommandStop[$iAccount]
+			Return $aiCommandStop[$iAccount]
 
 	EndSwitch
 
-EndFunc   ;==>ResetSwitchAccVariable
+EndFunc   ;==>SwitchAccountVariablesReload

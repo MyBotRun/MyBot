@@ -24,7 +24,7 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 			["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
 			["Amazon", "com.supercell.clashofclans.amazon", "com.supercell.titan.amazon.GameAppAmazon", "Amazon"], _
 			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.titan.kunlun.GameAppKunlun", "Kunlun"], _
-			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.titan.kunlun.GameAppKunlun","Qihoo"], _
+			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.titan.kunlun.GameAppKunlun", "Qihoo"], _
 			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.titan.kunlun.GameAppKunlun", "Baidu"], _
 			["9game", "com.supercell.clashofclans.uc", "com.supercell.titan.kunlun.uc.GameAppKunlunUC", "9game"], _
 			["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.titan.kunlun.GameAppKunlun", "Wandoujia/Downjoy"], _
@@ -35,15 +35,15 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 			["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.titan.kunlun.GameAppKunlun", "Kaopu"], _
 			["Lenovo", "com.supercell.clashofclans.lenovo", "com.lenovo.lsf.gamesdk.ui.WelcomeActivity", "Lenovo"], _
 			["Guopan", "com.supercell.clashofclans.guopan", "com.flamingo.sdk.view.GPSplashActivity", "Guopan"], _
-			["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.titan.kunlun.mi.GameAppKunlunXiaomi","Xiaomi"], _
+			["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.titan.kunlun.mi.GameAppKunlunXiaomi", "Xiaomi"], _
 			["Haimawan", "com.supercell.clashofclans.ewan.hm", "cn.ewan.supersdk.activity.SplashActivity", "Haimawan"], _
 			["Leshi", "com.supercell.clashofclans.ewan.leshi", "cn.ewan.supersdk.activity.SplashActivity", "Leshi"], _
 			["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", "Microvirt"], _
-			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity","Yeshen"], _
-			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity","Aiyouxi"], _
-			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.supercell.titan.tencent.GameAppTencent","Tencent"], _
-			["Ewan", "com.supercell.clashofclans.ewan", "com.supercell.titan.kunlun.GameAppKunlun","Ewan"], _
-			["Magic", "cc.clashofmagic.s2", "com.atrasis.main.GameMain","Magic"]]
+			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity", "Yeshen"], _
+			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity", "Aiyouxi"], _
+			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.supercell.titan.tencent.GameAppTencent", "Tencent"], _
+			["Ewan", "com.supercell.clashofclans.ewan", "com.supercell.titan.kunlun.GameAppKunlun", "Ewan"], _
+			["Magic", "cc.clashofmagic.s2", "com.atrasis.main.GameMain", "Magic"]]
 EndFunc   ;==>InitializeCOCDistributors
 
 Func GetCOCDistributors()

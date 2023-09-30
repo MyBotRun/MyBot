@@ -174,7 +174,7 @@ Func InitMEmu($bCheckOnly = False)
 	If Not $bCheckOnly Then
 		;$g_iAndroidRecoverStrategy = 0
 		; newer MEmu doesn't support yet ADB mouse click/minitouch
-		local $memuCurr = GetVersionNormalized($__MEmu_Version)
+		Local $memuCurr = GetVersionNormalized($__MEmu_Version)
 		Local $memu6 = GetVersionNormalized("6.0")
 		If $memuCurr > $memu6 Then
 			;SetDebugLog("Disable ADB Mouse Click as not support for " & $g_sAndroidEmulator & " version " & $MEmuVersion)

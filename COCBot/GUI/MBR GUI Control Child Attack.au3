@@ -347,7 +347,7 @@ EndFunc   ;==>cmbAttackPlannerDayMax
 Func _cmbAttackPlannerDayLimit()
 	Switch Int(GUICtrlRead($g_hCmbAttackPlannerDayMin))
 		Case 0 To 15
-			GUICtrlSetBkColor($g_hCmbAttackPlannerDayMin, $COLOR_MONEYGREEN)
+			GUICtrlSetBkColor($g_hCmbAttackPlannerDayMin, $COLOR_GREEN)
 		Case 16 To 20
 			GUICtrlSetBkColor($g_hCmbAttackPlannerDayMin, $COLOR_YELLOW)
 		Case 21 To 999
@@ -355,7 +355,7 @@ Func _cmbAttackPlannerDayLimit()
 	EndSwitch
 	Switch Int(GUICtrlRead($g_hCmbAttackPlannerDayMax))
 		Case 0 To 15
-			GUICtrlSetBkColor($g_hCmbAttackPlannerDayMax, $COLOR_MONEYGREEN)
+			GUICtrlSetBkColor($g_hCmbAttackPlannerDayMax, $COLOR_GREEN)
 		Case 16 To 25
 			GUICtrlSetBkColor($g_hCmbAttackPlannerDayMax, $COLOR_YELLOW)
 		Case 26 To 999

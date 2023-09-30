@@ -45,7 +45,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	Local $abHeroUse[$eHeroCount] = [False, False, False, False]
 	For $i = 0 To $eHeroCount - 1
 		$abHeroUse[$i] = ($g_abSearchSearchesEnable[$DB] ? IsUnitUsed($DB, $eKing + $i) : False) _
-							Or ($g_abSearchSearchesEnable[$LB] ? IsUnitUsed($LB, $eKing + $i) : False)
+				Or ($g_abSearchSearchesEnable[$LB] ? IsUnitUsed($LB, $eKing + $i) : False)
 	Next
 
 	If $g_bDebugDeadBaseImage Or $g_aiSearchEnableDebugDeadBaseImage > 0 Then
@@ -378,7 +378,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 			If _Sleep($DELAYVILLAGESEARCH2) Then Return
 			$i += 1
 			_CaptureRegions()
-			
+
 			If (_ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1]), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage(False) Then
 				$g_bCloudsActive = True
 				Click($NextBtn[0] + 55, $NextBtn[1] - 18, 1, 0, "#0155") ;Click Next
@@ -406,9 +406,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_bRestart = True Then Return ; exit func
 
-		If isGemOpen(True) = True Then
+		If isGemOpen(True) Then
 			SetLog(" Not enough gold to keep searching.....", $COLOR_ERROR)
-			Click(585, 252, 1, 0, "#0156") ; Click close gem window "X"
 			If _Sleep($DELAYVILLAGESEARCH3) Then Return
 			$g_bOutOfGold = True ; Set flag for out of gold to search for attack
 			ReturnHome(False, False)
@@ -439,7 +438,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	If $g_bSearchAlertMe Then
 		TrayTip($g_sProfileCurrentName & ": " & $g_asModeText[$g_iMatchMode] & " Match Found!", "Gold: " & $g_iSearchGold & "; Elixir: " & $g_iSearchElixir & "; Dark: " & $g_iSearchDark & "; Trophy: " & $g_iSearchTrophy, "", 0)
 		SetDebugLog("Trying to play sound.  Set volume to 50%", $COLOR_DEBUG)
-		SoundSetWaveVolume( 50 ) ;50% WAV volume setting
+		SoundSetWaveVolume(50)   ;50% WAV volume setting
 		If FileExists(@WindowsDir & "\media\Festival\Windows Exclamation.wav") Then
 			SetDebugLog("Playing first sound.", $COLOR_DEBUG)
 			SoundPlay(@WindowsDir & "\media\Festival\Windows Exclamation.wav", 1)

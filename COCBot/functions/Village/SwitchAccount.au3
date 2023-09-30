@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: chalicucu (6/2016), demen (4/2017)
-; Modified ......:
+; Modified ......: Moebius14 (08/2023)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -58,7 +58,6 @@ Func InitiateSwitchAcc() ; Checking profiles setup in Mybot, First matching CoC 
 	SetSwitchAccLog("Initiating: " & $g_iTotalAcc + 1 & " acc", $COLOR_SUCCESS)
 
 	If Not $g_bRunState Then Return
-	;Local $iCurProfile = _GUICtrlComboBox_GetCurSel($g_hCmbProfile)
 	For $i = 0 To $g_iTotalAcc
 		; listing all accounts
 		Local $sBotType = "Idle"
@@ -73,10 +72,7 @@ Func InitiateSwitchAcc() ; Checking profiles setup in Mybot, First matching CoC 
 			EndIf
 		EndIf
 		SetLog("  - Account [" & $i + 1 & "]: " & $g_asProfileName[$i] & " - " & $sBotType)
-		;SetSwitchAccLog("  - Account [" & $i + 1 & "]: " & $g_asProfileName[$i] & " - " & $sBotType)
 		SetSwitchAccLog("  - Acc. " & $i + 1 & ": " & $sBotType)
-
-		$g_abPBActive[$i] = False
 	Next
 	$g_iCurAccount = $g_iNextAccount ; make sure no crash
 	SwitchAccountVariablesReload("Reset")
@@ -95,12 +91,8 @@ Func CheckSwitchAcc()
 	Local $bReachAttackLimit = ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - 2)
 	Local $bForceSwitch = $g_bForceSwitch
 	Local $nMinRemainTrain, $iWaitTime
-	Local $aActibePBTaccounts = _ArrayFindAll($g_abPBActive, True)
 
 	SetLog("Start Switch Account!", $COLOR_INFO)
-
-	; Force Switch when PBT detected
-	If $g_abPBActive[$g_iCurAccount] Then $bForceSwitch = True
 
 	If $g_iCommandStop = 0 Or $g_iCommandStop = 3 Then ; Forced to switch when in halt attack mode
 		SetLog("This account is in halt attack mode, switching to another account", $COLOR_ACTION)
@@ -186,25 +178,12 @@ Func CheckSwitchAcc()
 		SetDebugLog("- Current Account: " & $g_asProfileName[$g_iCurAccount] & " number: " & $g_iCurAccount + 1)
 		SetDebugLog("- Next Account: " & $g_asProfileName[$g_iNextAccount] & " number: " & $g_iNextAccount + 1)
 
-		; Check if the next account is PBT and IF the remain train time is more than 2 minutes
-		If $g_abPBActive[$g_iNextAccount] And _DateDiff("n", _NowCalc(), $g_asTrainTimeFinish[$g_iNextAccount]) > 2 Then
-			SetLog("Account " & $g_iNextAccount + 1 & " is in a Personal Break Time!", $COLOR_INFO)
-			SetSwitchAccLog(" - Account " & $g_iNextAccount + 1 & " is in PTB")
-			$g_iNextAccount = $g_iNextAccount + 1
-			If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
-			While $abAccountNo[$g_iNextAccount] = False
-				$g_iNextAccount += 1
-				If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0 ; avoid idle Account
-			WEnd
-		EndIf
-
-		If UBound($aActibePBTaccounts) + UBound($aDonateAccount) = UBound($aActiveAccount) Then
-			SetLog("All accounts set to Donate and/or are in PBT!", $COLOR_INFO)
-			SetSwitchAccLog("All accounts in PBT/Donate:")
+		If UBound($aDonateAccount) = UBound($aActiveAccount) Then
+			SetLog("All accounts set to Donate!", $COLOR_INFO)
+			SetSwitchAccLog("All accounts in Donate:")
 			; Just a Good User Log
 			For $i = 0 To $g_iTotalAcc
 				If $g_abDonateOnly[$i] Then SetSwitchAccLog(" - Donate Acc [" & $i + 1 & "]")
-				If $g_abPBActive[$i] Then SetSwitchAccLog(" - PBT Acc [" & $i + 1 & "]")
 			Next
 		EndIf
 
@@ -223,7 +202,7 @@ Func CheckSwitchAcc()
 	EndIf
 	If Not $g_bRunState Then Return
 
-	$g_bForceSwitch = false ; reset the need to switch
+	$g_bForceSwitch = False ; reset the need to switch
 EndFunc   ;==>CheckSwitchAcc
 
 Func SwitchCOCAcc($NextAccount)
@@ -356,7 +335,6 @@ Func SwitchCOCAcc($NextAccount)
 		CreateLogFile() ; Cause use of the right log file after switch
 		If Not $g_bRunState Then Return
 
-
 		If $g_bChkSharedPrefs Then
 			; disconnect account again for saving shared_prefs
 			waitMainScreen()
@@ -385,25 +363,21 @@ Func SwitchCOCAcc($NextAccount)
 			checkMainScreen()
 		Else
 			$iRetry = 0
-			UniversalCloseWaitOpenCoC()
+			;HArchH Testing for close Android on repeated switch fail.
+			SetLog("Switching account failed to many times!  Restart emulator.", $COLOR_ERROR)
+			SetSwitchAccLog("Too many fails, restart Emulator.", $COLOR_ERROR)
+			if _Sleep(2000) Then Return
+			CloseAndroid("Restart Emulator")
+			;UniversalCloseWaitOpenCoC()
 		EndIf
 		If Not $g_bRunState Then Return
 	EndIf
 	waitMainScreen()
 	If Not $g_bRunState Then Return
-	;switch using scid sometime makes emulator seem freeze but not, need to send back button first for click work again
-	;If $g_bChkSuperCellID Then
-	;	SetDebugLog("Checkscidswitch: Send AndroidBackButton", $COLOR_DEBUG)
-	;	AndroidBackButton() ;Send back button to android
-	;	If _Sleep(1000) Then Return
-	;	If IsEndBattlePage() Then
-	;		AndroidBackButton()
-	;	EndIf
-	;EndIf
 	CheckObstacles()
 
 	SetLog("Switch Account Load TownLevel : " & $g_iTownHallLevel)
-	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName)
 
 	runBot()
 
@@ -422,7 +396,7 @@ Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult, $bDisconnectOnly = $g_bChkSh
 			$aiButtonPos = StringSplit($avGoogleButtonSubResult[1], ",", $STR_NOCOUNT)
 			If Not $g_bRunState Then Return -1
 
-			If StringInStr($sButtonState, "Green", 0) Then; Google Play Disconnected
+			If StringInStr($sButtonState, "Green", 0) Then ; Google Play Disconnected
 				If Not $bDisconnectOnly Then
 					SetLog("   1. Click Connect & Disconnect")
 					ClickP($aiButtonPos, 2, 1000)
@@ -449,7 +423,7 @@ Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult, $bDisconnectOnly = $g_bChkSh
 				Return -1
 			EndIf
 		Else ; SupercellID
-			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("612,161,691,216"), 1, True, Default))
+			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("675,135,730,175"), 1, True, Default))
 			If IsArray($aSuperCellIDConnected) And UBound($aSuperCellIDConnected, 1) >= 2 Then
 				SetLog("Account connected to SuperCell ID")
 				;ExitLoop
@@ -533,7 +507,7 @@ Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $iNextAccount, $bStayDisconnected
 			If IsArray($aiButtonDisconnect) And UBound($aiButtonDisconnect, 1) >= 2 Then ClickP($aiButtonDisconnect)
 			If _Sleep(600) Then Return FuncReturn("Exit")
 		Else ; SupercellID
-			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("612,161,691,216"), 1, True, Default))
+			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("675,135,730,175"), 1, True, Default))
 			If IsArray($aSuperCellIDConnected) And UBound($aSuperCellIDConnected, 1) >= 2 Then
 				SetLog("Account connected to SuperCell ID, cannot disconnect")
 				If $bStayDisconnected Then
@@ -650,7 +624,7 @@ EndFunc   ;==>SwitchCOCAcc_ConfirmAccount
 
 Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 	For $i = 0 To 20 ; Checking Blue Reload button continuously in 20sec
-		Local $aSuperCellIDReload = decodeSingleCoord(findImage("SupercellID Reload", $g_sImgSupercellIDReload, GetDiamondFromRect("563,163,612,217"), 1, True, Default))
+		Local $aSuperCellIDReload = decodeSingleCoord(findImage("SupercellID Reload", $g_sImgSupercellIDReload, GetDiamondFromRect("585,125,650,180"), 1, True, Default))
 		If IsArray($aSuperCellIDReload) And UBound($aSuperCellIDReload, 1) >= 2 Then
 			Click($aSuperCellIDReload[0], $aSuperCellIDReload[1], 1, 0, "Click Reload SC_ID")
 			Setlog("   1. Click Reload Supercell ID")
@@ -672,39 +646,37 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 	Return "" ; should never get here
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
-Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
+Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
 	Local $sAccountDiamond = GetDiamondFromRect("520,353,555,725") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
-    Local $aSuperCellIDWindowsUI
+	Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
 
 	If Not $g_bRunState Then Return "Exit"
-
-	;SCIDragIfNeeded($NextAccount)
 
 	For $i = 0 To 30 ; Checking "New SuperCellID UI" continuously in 30sec
 		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("440,1,859,243"), 1, True, Default))
 		If _Sleep(500) Then Return "Exit"
 		If IsArray($aSuperCellIDWindowsUI) And UBound($aSuperCellIDWindowsUI, 1) >= 2 Then
 
-		 If $bVerifyAcc Then
-			; verifiy SCID Account slots has not moved for accounts 0 to 3
-			If $g_iTotalAcc < 4 Then
+			If $bVerifyAcc Then
+				; verifiy SCID Account slots has not moved for accounts 0 to 3
+				If $g_iTotalAcc < 4 Then
 
-				If Not IsSCIDAccComplete($g_iTotalAcc) Then
-					$bResult = False
-					Return False
+					If Not IsSCIDAccComplete($g_iTotalAcc) Then
+						$bResult = False
+						Return False
+					EndIf
+
+				Else
+
+					If Not IsSCIDAccComplete() Then
+						$bResult = False
+						Return False
+					EndIf
+
 				EndIf
-
-			Else
-
-				If Not IsSCIDAccComplete() Then
-					$bResult = False
-					Return False
-				EndIf
-
 			EndIf
-		 EndIf
 
 			; Make Drag only when SCID window is visible.
 			If Not SCIDragIfNeeded($NextAccount, $bVerifyAcc) Then
@@ -715,7 +687,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 
 			If $g_bDebugSetlog Then SetSwitchAccLog("Switching to Account: " & $NextAccount + 1, $COLOR_DEBUG)
 
-			If $bDebugImageSave Then SaveDebugDiamondImage("ClickAccountSCID",$sAccountDiamond)
+			If $bDebugImageSave Then SaveDebugDiamondImage("ClickAccountSCID", $sAccountDiamond)
 
 			$aSearchForAccount = decodeMultipleCoords(findImage("Account Locations", $g_sImgSupercellIDSlots, $sAccountDiamond, 0, True, Default))
 			If _Sleep(500) Then Return "Exit"
@@ -727,7 +699,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 				If $g_bDebugSetlog Then SetSwitchAccLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
 
 				; Correct Index for Profile if needs to drag
-				If $NextAccount >= 3 and UBound($aSearchForAccount) == 4 Then $iIndexSCID = 3 ; based on drag logic, the account will always be the bottom one
+				If $NextAccount >= 3 And UBound($aSearchForAccount) == 4 Then $iIndexSCID = 3 ; based on drag logic, the account will always be the bottom one
 
 				; fixes weird issue with arrays after getting image info
 				For $j = 0 To UBound($aSearchForAccount) - 1
@@ -739,14 +711,14 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 
 				; list all account see-able after drag on debug chat
 				Local $iProfiles = UBound($g_asProfileName)
-				
+
 				For $j = 0 To UBound($aCoordinates) - 1
-					SetDebugLog("[" & $j + 1 & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
-					If $g_bDebugSetlog Then SetSwitchAccLog("[" & $j + 1 & "] A/C coord: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " Profile: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
+					SetDebugLog("[" & $j + 1 & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$NextAccount - $iIndexSCID + $j])
+					If $g_bDebugSetlog Then SetSwitchAccLog("[" & $j + 1 & "] A/C coord: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " Profile: " & $g_asProfileName[$NextAccount - $iIndexSCID + $j])
 				Next
-				
+
 				SetLog("   " & $iStep & ". Click Account [" & $NextAccount + 1 & "] Supercell ID with Profile: " & $g_asProfileName[$NextAccount])
-								
+
 				Click($aCoordinates[$iIndexSCID][0], $aCoordinates[$iIndexSCID][1], 1)
 				If _Sleep(750) Then Return "Exit"
 				SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
@@ -801,7 +773,7 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum rem
 	If Not $g_bRunState Then Return
 	Local $abAccountNo = AccountNoActive()
 	Local $iMinRemainTrain = 999, $iRemainTrain, $bNextAccountDefined = False
-	If Not $bExcludeCurrent And Not $g_abPBActive[$g_iCurAccount] Then
+	If Not $bExcludeCurrent Then
 		$g_asTrainTimeFinish[$g_iCurAccount] = _DateAdd("n", Number(_ArrayMax($g_aiTimeTrain, 1, 0, 2)), _NowCalc())
 		SetDebugLog("Army times: Troop = " & $g_aiTimeTrain[0] & ", Spell = " & $g_aiTimeTrain[1] & ", Hero = " & $g_aiTimeTrain[2] & ", $g_asTrainTimeFinish = " & $g_asTrainTimeFinish[$g_iCurAccount])
 	EndIf
@@ -846,13 +818,13 @@ Func DisableGUI_AfterLoadNewProfile()
 	$g_bGUIControlDisabled = True
 	For $i = $g_hFirstControlToHide To $g_hLastControlToHide
 		If IsAlwaysEnabledControl($i) Then ContinueLoop
-		;If $g_bNotifyPBEnable And $i = $g_hBtnNotifyDeleteMessages Then ContinueLoop ; exclude the DeleteAllMesages button when PushBullet is enabled
+		If $i >= $g_hClanGamesTV And $i < $g_hChkForceBBAttackOnClanGames Then ContinueLoop
+		If $i >= $g_hChkForceBBAttackOnClanGames And $i <= $g_hBtnCGSettingsClose Then ContinueLoop
 		If BitAND(GUICtrlGetState($i), $GUI_ENABLE) Then GUICtrlSetState($i, $GUI_DISABLE)
 	Next
 	ControlEnable("", "", $g_hCmbGUILanguage)
 	$g_bGUIControlDisabled = False
 EndFunc   ;==>DisableGUI_AfterLoadNewProfile
-
 
 Func aquireSwitchAccountMutex($iSwitchAccountGroup = $g_iCmbSwitchAcc, $bReturnOnlyMutex = False, $bShowMsgBox = False)
 	Local $sMsg = GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Msg_SwitchAccounts_InUse", "My Bot with Switch Accounts Group %s is already in use or active.", $iSwitchAccountGroup)
@@ -865,7 +837,6 @@ Func aquireSwitchAccountMutex($iSwitchAccountGroup = $g_iCmbSwitchAcc, $bReturnO
 			$g_ahMutex_SwitchAccountsGroup[0] = $iSwitchAccountGroup
 			$g_ahMutex_SwitchAccountsGroup[1] = $hMutex_Profile
 		EndIf
-		;SetDebugLog("Aquire Switch Accounts Group " & $iSwitchAccountGroup & " Mutex: " & $hMutex_Profile)
 		If $bReturnOnlyMutex Then
 			Return $hMutex_Profile
 		EndIf
@@ -885,7 +856,6 @@ EndFunc   ;==>aquireSwitchAccountMutex
 
 Func releaseSwitchAccountMutex()
 	If $g_ahMutex_SwitchAccountsGroup[1] Then
-		;SetDebugLog("Release Switch Accounts Group " & $g_ahMutex_SwitchAccountsGroup[0] & " Mutex: " & $g_ahMutex_SwitchAccountsGroup[1])
 		ReleaseMutex($g_ahMutex_SwitchAccountsGroup[1])
 		$g_ahMutex_SwitchAccountsGroup[0] = 0
 		$g_ahMutex_SwitchAccountsGroup[1] = 0
@@ -952,7 +922,7 @@ Func CheckLoginWithSupercellIDScreen()
 	; "Log in with Supercell ID" check be there, validate with imgloc
 	Local $aiLogin = decodeSingleCoord(FindImageInPlace2("LoginWithSupercellID", $g_sImgLoginWithSupercellID, 100, 595 + $g_iBottomOffsetY, 425, 655 + $g_iBottomOffsetY, False))
 
-	If IsArray($aiLogin) And Ubound($aiLogin) = 2 Then
+	If IsArray($aiLogin) And UBound($aiLogin) = 2 Then
 		Local $iAccount = 0 ; default first account on list
 
 		SetLog("Verified Log in with Supercell ID boot screen for login")
@@ -1076,14 +1046,14 @@ Func SCIDragIfNeeded($iSCIDAccount, $bVerifyAcc = True)
 
 	If $iSCIDAccount < 4 Then Return True
 
-	Local $x1 = Random(444,748,1) ; 444 ;
-	Local $x2 = Random(444,748,1) ; 444 ;
-	Local $y  = Random(630,634,1)
+	Local $x1 = Random(444, 748, 1) ; 444 ;
+	Local $x2 = Random(444, 748, 1) ; 444 ;
+	Local $y = Random(630, 634, 1)
 
 	SetLog("ClickDrag SCID Window(" & $x1 & "," & $y & ")")
 	SetLog("ClickDrag SCID Window(" & $x2 & "," & $y & ")")
 
-	ClickDrag($x1, $y, $x2, $y-(94*($iSCIDAccount-3)), 500, True) ; drag a multiple of 90 pixels up for how many accounts down it is
+	ClickDrag($x1, $y, $x2, $y - (94 * ($iSCIDAccount - 3)), 500, True) ; drag a multiple of 90 pixels up for how many accounts down it is
 
 	If $bVerifyAcc Then
 		If Not IsSCIDAccComplete($iSCIDAccount) Then Return False
@@ -1120,12 +1090,10 @@ Func IsSCIDAccComplete($iAccounts = 3)
 	DirCreate($sFolder)
 
 	; check the barbarians are in their expected location
-	For $i = 0 to $iLoop
+	For $i = 0 To $iLoop - 1
 		Local $sProfileFolder = @ScriptDir & "\Profiles\" & $g_asProfileName[$i + $j] & "\"
 
 		SetLog("Checking SCID Slot: " & $i)
-		;SetLog($sProfileFolder)
-		;SetLog($g_asProfileName[$i + $j])
 
 		$aiHeadCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $sImgSupercellIDHead, GetDiamondFromArray($aiSearchArea), 1, True))
 
@@ -1142,15 +1110,8 @@ Func IsSCIDAccComplete($iAccounts = 3)
 
 				SetLog("Found file!")
 
-				Local $aiVillageNameCoord  = decodeSingleCoord(findImage("IsSCIDAccComplete", $sProfileFolder & $filename, GetDiamondFromArray($aiSearchArea), 1, True))
+				Local $aiVillageNameCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $sProfileFolder & $filename, GetDiamondFromArray($aiSearchArea), 1, True))
 
-;Arch debugging work
-;				If Not IsArray($aiVillageNameCoord) Then
-;					SetDebugLog("Arch: Is not an array", $COLOR_ERROR)
-;				EndIf
-;				SetDebugLog("Arch: UBoundRows is " & UBound($aiVillageNameCoord, $UBOUND_ROWS), $COLOR_ERROR)
-
-;Arch was <2.  Array array bound always 1.				
 				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 1 Then
 					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - missing!")
 					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - missing!")
@@ -1182,10 +1143,10 @@ Func IsSCIDAccComplete($iAccounts = 3)
 
 		If _Sleep(250) Then Return
 
-		If $i = 3 Then ExitLoop
+		If $i = 2 Then ExitLoop
 	Next
 
 	If $bSaveImage = True Then SaveSCIDebugImage("SCID_Errors", False)
 
 	Return $bResult
-EndFunc
+EndFunc   ;==>IsSCIDAccComplete

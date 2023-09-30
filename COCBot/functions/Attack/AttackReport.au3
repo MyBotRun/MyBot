@@ -67,7 +67,20 @@ Func AttackReport()
 	EndIf
 
 	If $g_iStatsLastAttack[$eLootTrophy] >= 0 Then
-		$iBonusLast = Number(getResourcesBonusPerc(570, 309 + $g_iMidOffsetY))
+		$iBonusLast = Number(getResourcesBonusPerc(578, 309 + $g_iMidOffsetY))
+		If $iBonusLast > 100 Then ; If % is detected as 7.
+			SaveDebugImage("AttackReport", True)
+			Local $Loop = 0
+			While $iBonusLast > 100
+				If $Loop = 20 Then
+					If $iBonusLast > 100 Then $iBonusLast = StringTrimRight($iBonusLast, 1)
+					ExitLoop
+				EndIf
+				$iBonusLast = Number(getResourcesBonusPerc(578, 309 + $g_iMidOffsetY))
+				$Loop += 1
+				If _Sleep(250) Then Return
+			WEnd
+		EndIf
 		If $iBonusLast > 0 Then
 			SetLog("Bonus Percentage: " & $iBonusLast & "%")
 			Local $iCalcMaxBonus = 0, $iCalcMaxBonusDark = 0
@@ -105,7 +118,7 @@ Func AttackReport()
 					$iCalcMaxBonus = $g_iStatsBonusLast[$eLootGold]
 					SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]), $COLOR_SUCCESS)
 				Else
-					$iCalcMaxBonus = Number($g_iStatsBonusLast[$eLootGold] / ($iBonusLast / 100))
+					$iCalcMaxBonus = Ceiling($g_iStatsBonusLast[$eLootGold] / ($iBonusLast / 100))
 					SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " out of " & _NumberFormat($iCalcMaxBonus) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]) & " out of " & _NumberFormat($iCalcMaxBonus), $COLOR_SUCCESS)
 				EndIf
 			EndIf
@@ -174,8 +187,8 @@ Func AttackReport()
 	SetLog("Stars earned: " & $starsearned)
 
 	Local $AtkLogTxt
-	$g_iStatsBonusLast[$eLootGold]=$g_iStatsBonusLast[$eLootGold]/1000
-	
+	$g_iStatsBonusLast[$eLootGold] = $g_iStatsBonusLast[$eLootGold] / 1000
+
 	$AtkLogTxt = "| " & String($g_iCurAccount + 1) & "|" & _NowTime(4) & "|"
 	$AtkLogTxt &= StringFormat("%6d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
 	$AtkLogTxt &= StringFormat("%3d", $g_iSearchCount) & "|"
@@ -190,9 +203,9 @@ Func AttackReport()
 	;$AtkLogTxt &= StringFormat("%4d", $g_iStatsBonusLast[$eLootElixir]) & "k|"
 	$AtkLogTxt &= StringFormat("%4d", $g_iStatsBonusLast[$eLootDarkElixir]) & "|"
 	$AtkLogTxt &= $g_asLeagueDetailsShort & "|"
-	
-	$g_iStatsBonusLast[$eLootGold]=$g_iStatsBonusLast[$eLootGold]*1000
-		
+
+	$g_iStatsBonusLast[$eLootGold] = $g_iStatsBonusLast[$eLootGold] * 1000
+
 	; Stats Attack
 	$g_sTotalDamage = $g_iPercentageDamage
 	$g_sAttacksides = $g_iSidesAttack

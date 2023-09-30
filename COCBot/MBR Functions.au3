@@ -140,7 +140,7 @@
 #include "functions\Main Screen\waitMainScreen.au3"
 #include "functions\Main Screen\isOnBuilderBase.au3"
 
-; Android support for MEmu, Nox, BlueStacks and iTools
+; Android support for MEmu, Nox, BlueStacks
 #include "functions\Android\AndroidMenuShortcuts.au3"
 #include "functions\Android\Close_OpenCoC.au3"
 #include "functions\Android\ZoomOut.au3"
@@ -151,7 +151,6 @@
 #include "functions\Android\AndroidBlueStacks.au3"
 #include "functions\Android\AndroidMEmu.au3"
 #include "functions\Android\AndroidNox.au3"
-#include "functions\Android\AndroidiTools.au3"
 #include "functions\Android\getBSPos.au3"
 #include "functions\Android\UniversalCloseWaitOpenCoC.au3"
 #include "functions\Android\AndroidEmbed.au3"

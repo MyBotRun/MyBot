@@ -67,7 +67,7 @@ Func LocateClanCastle($bCollect = True)
 			ClickAway()
 			Return
 		EndIf
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
 		If IsArray($sInfo) and ($sInfo[0] > 1 Or $sInfo[0] = "") Then
 			If StringInStr($sInfo[1], "clan") = 0 Then
 				Local $sLocMsg = ($sInfo[0] = "" ? "Nothing" : $sInfo[1])

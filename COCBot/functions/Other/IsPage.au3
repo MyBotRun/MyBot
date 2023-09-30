@@ -115,7 +115,7 @@ Func IsMainPageBuilderBase($iLoop = 30)
 	If $iLoop > 1 Then AndroidPageError("IsMainPageBase")
 	Return False
 
-EndFunc   ;==>IsMainPage
+EndFunc   ;==>IsMainPageBuilderBase
 
 Func IsMainChatOpenPage() ;main page open chat
 
@@ -169,7 +169,7 @@ Func IsLaunchAttackPage()
 EndFunc   ;==>IsLaunchAttackPage
 
 Func IsMultiplayerTabOpen()
-	Local $aMultiplayerTab = findImage("IsMultiplayerTab", $g_sImgIsMultiplayerTab, GetDiamondFromRect("4,46,258,680"), 1, True, Default)
+	Local $aMultiplayerTab = findImage("IsMultiplayerTab", $g_sImgIsMultiplayerTab, GetDiamondFromRect("25,100,260,650"), 1, True, Default)
 	If IsArray($aMultiplayerTab) And UBound($aMultiplayerTab, 1) > 0 Then
 		Local $aCoordinates = decodeSingleCoord($aMultiplayerTab)
 		ClickP($aCoordinates, 1)
@@ -181,7 +181,7 @@ Func IsMultiplayerTabOpen()
 	EndIf
 
 	Return False
-EndFunc
+EndFunc   ;==>IsMultiplayerTabOpen
 
 Func IsEndBattlePage($bWriteLog = True)
 
@@ -243,7 +243,7 @@ Func IsPostDefenseSummaryPage($bCapture = True)
 	Local $GoldSpot = _GetPixelColor(330, 201 + $g_iMidOffsetY, $bCapture) ; Gold Emblem
 	Local $ElixirSpot = _GetPixelColor(334, 233 + $g_iMidOffsetY, $bCapture) ; Elixir Emblem
 
-	$result = _ColorCheck($GoldSpot, Hex(0xF6E851, 6), 20) And _ColorCheck($ElixirSpot, Hex(0xE835E8, 6), 20)
+	$result = _ColorCheck($GoldSpot, Hex(0xF0E850, 6), 20) And _ColorCheck($ElixirSpot, Hex(0xE83CE8, 6), 20)
 
 	If $result Then
 		If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Post Defense Page visible**", $COLOR_ACTION)
@@ -257,7 +257,7 @@ Func IsPostDefenseSummaryPage($bCapture = True)
 EndFunc   ;==>IsPostDefenseSummaryPage
 
 Func IsPetHousePage($bSetLog = True, $iLoop = 30)
-	Local $aIsPetHousePage[4] = [425, 170, 0x006F5D, 10] ; green pixel under title 'Pet House'
+	Local $aIsPetHousePage[4] = [430, 90 + $g_iMidOffsetY, 0x00705C, 10] ; green pixel under title 'Pet House'
 
 	If IsPageLoop($aIsPetHousePage, $iLoop) Then
 		If ($g_bDebugSetlog Or $g_bDebugClick) And $bSetLog Then SetLog("**Pet House Window OK**", $COLOR_ACTION)

@@ -28,8 +28,8 @@ Global $g_hPicResultDEStart = 0, $g_hLblStatsSZRev1 = 0, $g_hLblStatsSZRev2 = 0,
 ; Misc
 Global $g_hLblResultRuntime = 0, $g_hLblNbrOfOoS = 0, $g_hLblResultVillagesAttacked = 0, $g_hLblResultVillagesSkipped = 0, $g_hLblResultTrophiesDropped = 0
 Global $g_hLblSearchCost = 0, $g_hLblTrainCostElixir = 0, $g_hLblTrainCostDElixir = 0, $g_hLblTrainCostGold = 0, $g_hLblGoldFromMines = 0, $g_hLblElixirFromCollectors = 0, $g_hLblDElixirFromDrills = 0
-Global $g_hLblWallGoldMake = 0, $g_hLblWallElixirMake = 0, $g_hLblNbrOfBuildingUpgGold = 0, $g_hLblNbrOfBuildingUpgElixir = 0, $g_hLblNbrOfHeroUpg = 0
-Global $g_hLblWallUpgCostGold = 0, $g_hLblWallUpgCostElixir = 0, $g_hLblBuildingUpgCostGold = 0, $g_hLblBuildingUpgCostElixir = 0, $g_hLblHeroUpgCost = 0
+Global $g_hLblWallGoldMake = 0, $g_hLblWallElixirMake = 0, $g_hLblNbrOfBuildingUpgGold = 0, $g_hLblNbrOfBuildingUpgElixir = 0, $g_hLblNbrOfBuildingUpgDElixir = 0, $g_hLblNbrOfHeroUpg = 0, $g_hLblNbrOfWardenUpg = 0
+Global $g_hLblWallUpgCostGold = 0, $g_hLblWallUpgCostElixir = 0, $g_hLblBuildingUpgCostGold = 0, $g_hLblBuildingUpgCostElixir = 0, $g_hLblBuildingUpgCostDElixir = 0, $g_hLblHeroUpgCost = 0, $g_hLblWardenUpgCost = 0
 
 ; Attacks
 Global $g_hLblAttacked[$g_iModeCount] = [0, 0, 0], $g_hLblTotalGoldGain[$g_iModeCount] = [0, 0, 0], $g_hLblTotalElixirGain[$g_iModeCount] = [0, 0, 0], _
@@ -478,7 +478,7 @@ Func CreateMiscSubTab()
 
 	$x = $xStart + 180
 	$y = $yStart + 25
-	$y -= 15
+	$y += 5
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMagnifier, $x + 22, $y, 16, 16)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblSearch-Cost_Info_01", "Search cost for skipping villages in gold")
 			_GUICtrlSetTip(-1, $sTxtTip)
@@ -488,6 +488,7 @@ Func CreateMiscSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
+#cs
 	$y += 20
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnArcher, $x + 22, $y, 16, 16)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTrain-Cost-Elixir_Info_01", "Elixir spent for training Barrack Troops")
@@ -519,7 +520,7 @@ Func CreateMiscSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
-
+#ce
 	$y += 20
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMine, $x + 22, $y, 16, 16)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblGold-collected_Info_01", "Gold gained by collecting mines")
@@ -603,12 +604,32 @@ Func CreateMiscSubTab()
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
 	$y += 20
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnHeroes, $x - 10, $y, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblHeroesUpg_Info_01", "The number of heroes upgraded")
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMonolith, $x - 10, $y, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblBuilUpg-by-Dark_Info_01", "The number of buildings upgraded using dark elixir")
 			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblHeroesUpg", "Hero Upgrade") & ":", $x + 13, $y + 2, -1, 17)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblUpg-by-DElixir", "Upg. by DElixir") & ":", $x + 13, $y + 2, -1, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hLblNbrOfBuildingUpgDElixir = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+	$y += 20
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnHeroes, $x - 10, $y, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblHeroesUpg_Info_01", "The number of dark heroes upgraded")
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblHeroesUpg", "Dark Hero Upgrade") & ":", $x + 13, $y + 2, -1, 17)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hLblNbrOfHeroUpg = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+	$y += 20
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWardenUpgr, $x - 10, $y, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblWardenUpg_Info_01", "The number of Grand Warden upgraded")
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblWardenUpg", "Warden Upgrade") & ":", $x + 13, $y + 2, -1, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hLblNbrOfWardenUpg = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
@@ -657,8 +678,18 @@ Func CreateMiscSubTab()
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
 	$y += 20
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMonolith, $x + 22, $y, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblBuilUpg-Cost-by-DElixir_Info_01", "The cost of dark elixir used by bot while upgrading buildings")
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblWallUpg-Cost-by-DElixir", "Upg. Cost DElixir") & ":", $x + 45, $y + 2, -1, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hLblBuildingUpgCostDElixir = GUICtrlCreateLabel("0", $x + 150, $y + 2, 70, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+	$y += 20
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnHeroes, $x + 22, $y, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblheroesUpg-Cost_Info_01", "The cost of dark elixir used by bot while upgrading heroes")
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblheroesUpg-Cost_Info_01", "The cost of dark elixir used by bot while upgrading dark heroes")
 			_GUICtrlSetTip(-1, $sTxtTip)
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblheroesUpg-Cost", "Upg. Cost DElixir") & ":", $x + 45, $y + 2, -1, 17)
 			_GUICtrlSetTip(-1, $sTxtTip)
@@ -666,9 +697,19 @@ Func CreateMiscSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
+	$y += 20
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWardenUpgr, $x + 22, $y, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblWardenUpg-Cost_Info_01", "The cost of elixir used by bot while upgrading Grand Warden")
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblWardenUpg-Cost", "Upg. Cost Elixir") & ":", $x + 45, $y + 2, -1, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hLblWardenUpgCost = GUICtrlCreateLabel("0", $x + 150, $y + 2, 70, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
 	$x -= 20
 	$y -= 85
-		GUICtrlCreateLabel("", $x + 28, $y - 160, 5, 300)
+		GUICtrlCreateLabel("", $x + 28, $y - 180, 5, 280)
 			GUICtrlSetBkColor(-1, 0xC3C3C3)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 

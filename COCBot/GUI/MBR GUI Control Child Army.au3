@@ -139,11 +139,11 @@ Func lblTotalCountTroop1()
 	GUICtrlSetData($g_hLblCountTotal, String($TotalTroopsToTrain))
 
 	If GUICtrlRead($g_hChkTotalCampForced) = $GUI_CHECKED And GUICtrlRead($g_hLblCountTotal) = GUICtrlRead($g_hTxtTotalCampForced) Then
-		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_MONEYGREEN)
+		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_GREEN)
 	ElseIf GUICtrlRead($g_hLblCountTotal) = $ArmyCampTemp Then
-		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_MONEYGREEN)
+		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_GREEN)
 	ElseIf GUICtrlRead($g_hLblCountTotal) > $ArmyCampTemp / 2 And GUICtrlRead($g_hLblCountTotal) < $ArmyCampTemp Then
-		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_ORANGE)
+		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_OLIVE)
 	Else
 		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_RED)
 	EndIf
@@ -211,14 +211,14 @@ Func lblTotalCountSiege2()
 
 	GUICtrlSetData($g_hLblTotalTimeSiege, CalculTimeTo($iTotalTotalTimeSiege))
 	GUICtrlSetData($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege)
-	GUICtrlSetBkColor($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege <= 3 ? $COLOR_MONEYGREEN : $COLOR_RED)
+	GUICtrlSetBkColor($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege <= 3 ? $COLOR_GREEN : $COLOR_RED)
 EndFunc
 
 Func lblTotalCountSiege()
 	$g_iTownHallLevel = Int($g_iTownHallLevel)
 	$g_iTotalTrainSpaceSiege = 0
 	_GUI_Value_STATE("DISABLE", $groupListSieges)
-		
+
 	If $g_iTownHallLevel > 11 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupWallWrecker)
 		_GUI_Value_STATE("ENABLE", $groupBattleBlimp)
@@ -229,7 +229,7 @@ Func lblTotalCountSiege()
 		Next
 		$g_iTotalTrainSpaceSiege = 0
 	EndIf
-	
+
 	If $g_iTownHallLevel > 12 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupSiegeBarracks)
 		_GUI_Value_STATE("ENABLE", $groupLogLauncher)
@@ -237,21 +237,21 @@ Func lblTotalCountSiege()
 		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeFlameFlinger], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill], 0)
 	EndIf
-	
+
 	If $g_iTownHallLevel > 13 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupFlameFlinger)
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill], 0)
 	EndIf
-	
+
 	If $g_iTownHallLevel > 14 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupBattleDrill)
 	EndIf
-	
+
 	For $i = 0 To $eSiegeMachineCount - 1
 		GUICtrlSetData($g_aiArmyCompSiegeMachines[$i], GUICtrlRead($g_ahTxtTrainArmySiegeCount[$i]))
 	Next
-	
+
 	lblTotalCountSiege2()
 EndFunc   ;==>lblTotalCountSiege
 
@@ -318,7 +318,7 @@ Func TotalSpellCountClick()
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellInvisibility], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
 	EndIf
-	
+
 	If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupInvisibility)
 	Else
@@ -1112,11 +1112,11 @@ Func Removecamp()
 	GUICtrlSetData($g_hLblGoldCostSiege, "0")
 	GUICtrlSetData($g_hLblCountTotalSiege, 0)
 	GUICtrlSetData($g_hLblTotalTimeSiege, " 0s")
-	GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_MONEYGREEN)
+	GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_GREEN)
 	For $i = 0 To $eSpellCount - 1
 		GUICtrlSetBkColor($g_ahTxtTrainArmySpellCount[$i], $COLOR_WHITE)
 	Next
-	GUICtrlSetBkColor($g_hLblCountTotalSiege, $COLOR_MONEYGREEN)
+	GUICtrlSetBkColor($g_hLblCountTotalSiege, $COLOR_GREEN)
 EndFunc   ;==>Removecamp
 
 Func TrainTroopCountEdit()

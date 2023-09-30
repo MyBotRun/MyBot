@@ -46,12 +46,12 @@ Func DoubleCannonUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Double Cannon info and Level
-	Local $sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -112,12 +112,12 @@ Func DoubleCannonUpgrade($test = False)
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 
-		Local $sImgBBUpgradeWindow =  @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
-		Local $sSearchArea = "275,160,550,190"
+		Local $sImgBBUpgradeWindow = @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
+		Local $sSearchArea = "225,105,340,165"
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -186,12 +186,12 @@ Func ArcherTowerUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Archer Tower info and Level
-	Local $sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -214,7 +214,7 @@ Func ArcherTowerUpgrade($test = False)
 				If $aArcherTowerLevel >= 6 Then ; BOB Control Requirement
 					SetLog("Your Archer Tower is at level needed for BOB Control upgrade!", $COLOR_INFO)
 					$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
-					GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)	
+					GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
 					ClickAway()
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
@@ -252,12 +252,12 @@ Func ArcherTowerUpgrade($test = False)
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 
-		Local $sImgBBUpgradeWindow =  @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
-		Local $sSearchArea = "275,160,550,190"
+		Local $sImgBBUpgradeWindow = @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
+		Local $sSearchArea = "225,105,340,165"
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -327,12 +327,12 @@ Func MultiMortarUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Multi Mortar info and Level
-	Local $sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -393,12 +393,12 @@ Func MultiMortarUpgrade($test = False)
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 
-		Local $sImgBBUpgradeWindow =  @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
-		Local $sSearchArea = "275,160,550,190"
+		Local $sImgBBUpgradeWindow = @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
+		Local $sSearchArea = "225,105,340,165"
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -468,12 +468,12 @@ Func AnyDefUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Cannon info and Level
-	Local $sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 492 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -534,12 +534,12 @@ Func AnyDefUpgrade($test = False)
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 
-		Local $sImgBBUpgradeWindow =  @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
-		Local $sSearchArea = "275,160,550,190"
+		Local $sImgBBUpgradeWindow = @ScriptDir & "\imgxml\Windows\BBUpgradeWindow*"
+		Local $sSearchArea = "225,105,340,165"
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -575,7 +575,7 @@ Func AnyDefUpgrade($test = False)
 	ClickAway()
 	If _Sleep(1000) Then Return
 	SwitchToBuilderbase()
-EndFunc   ;==>MultiMortarUpgrade
+EndFunc   ;==>AnyDefUpgrade
 
 Func BOBBuildingUpgrades($bTest = False)
 
@@ -590,7 +590,7 @@ Func BOBBuildingUpgrades($bTest = False)
 	If $g_bDoubleCannonUpgrade Then
 		DoubleCannonUpgrade()
 		If _Sleep($DELAYRUNBOT3) Then Return
-		If Not $bTest Then 
+		If Not $bTest Then
 			If checkObstacles() Then Return
 		EndIf
 		If $g_bRestart = True Then Return
@@ -599,7 +599,7 @@ Func BOBBuildingUpgrades($bTest = False)
 	If $g_bArcherTowerUpgrade Then
 		ArcherTowerUpgrade()
 		If _Sleep($DELAYRUNBOT3) Then Return
-		If Not $bTest Then 
+		If Not $bTest Then
 			If checkObstacles() Then Return
 		EndIf
 		If $g_bRestart = True Then Return
@@ -608,7 +608,7 @@ Func BOBBuildingUpgrades($bTest = False)
 	If $g_bMultiMortarUpgrade Then
 		MultiMortarUpgrade()
 		If _Sleep($DELAYRUNBOT3) Then Return
-		If Not $bTest Then 
+		If Not $bTest Then
 			If checkObstacles() Then Return
 		EndIf
 		If $g_bRestart = True Then Return
@@ -617,7 +617,7 @@ Func BOBBuildingUpgrades($bTest = False)
 	If $g_bAnyDefUpgrade Then
 		AnyDefUpgrade()
 		If _Sleep($DELAYRUNBOT3) Then Return
-		If Not $bTest Then 
+		If Not $bTest Then
 			If checkObstacles() Then Return
 		EndIf
 		If $g_bRestart = True Then Return
@@ -626,7 +626,7 @@ Func BOBBuildingUpgrades($bTest = False)
 	If $g_bBattleMachineUpgrade Then
 		BattleMachineUpgrade($bTest)
 		If _Sleep($DELAYRUNBOT3) Then Return
-		If Not $bTest Then 
+		If Not $bTest Then
 			If checkObstacles() Then Return
 		EndIf
 		If $g_bRestart = True Then Return
@@ -635,11 +635,11 @@ Func BOBBuildingUpgrades($bTest = False)
 	If $g_bBattlecopterUpgrade Then
 		BattlecopterUpgrade($bTest)
 		If _Sleep($DELAYRUNBOT3) Then Return
-		If Not $bTest Then 
+		If Not $bTest Then
 			If checkObstacles() Then Return
 		EndIf
 		If $g_bRestart = True Then Return
 	EndIf
 
 	Return
-EndFunc
+EndFunc   ;==>BOBBuildingUpgrades

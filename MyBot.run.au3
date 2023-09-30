@@ -342,6 +342,7 @@ Func SetupProfileFolder()
 	$g_sProfileConfigPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\config.ini"
 	$g_sProfileBuildingStatsPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\stats_buildings.ini"
 	$g_sProfileBuildingPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\building.ini"
+	$g_sProfileClanGamesPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\clangames.ini"
 	$g_sProfileLogsPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\Logs\"
 	$g_sProfileLootsPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\Loots\"
 	$g_sProfileTempPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\Temp\"
@@ -424,7 +425,7 @@ Func InitializeMBR(ByRef $sAI, $bConfigRead)
 			"With the first command line parameter, specify the Profilename (you can create profiles on the Bot/Profiles tab, if a " & _
 			"profilename contains a {space}, then enclose the profilename in double quotes). " & _
 			"With the second, specify the name of the Emulator and with the third, an Android Instance (not for BlueStacks). \r\n" & _
-			"Supported Emulators are MEmu, Nox, BlueStacks2, BlueStacks and iTools.\r\n\r\n" & _
+			"Supported Emulators are Memu, Nox and BlueStacks5.\r\n\r\n" & _
 			"Examples:\r\n" & _
 			"     MyBot.run.exe MyVillage BlueStacks2\r\n" & _
 			"     MyBot.run.exe ""My Second Village"" MEmu MEmu_1")
@@ -753,7 +754,7 @@ Func runBot() ;Bot that runs everything in order
 			If $g_bIsSearchLimit Then
 				Local $aRndFuncList = ['LabCheck', 'Collect', 'PetCheck']
 			Else
-				Local $aRndFuncList = ['LabCheck', 'Collect', 'CollectCCGold', 'CheckTombs', 'CleanYard', 'CollectAchievements', 'CollectFreeMagicItems', 'DailyChallenge', 'PetCheck', 'BBClanGames']
+				Local $aRndFuncList = ['LabCheck', 'Collect', 'CollectCCGold', 'CheckTombs', 'CleanYard', 'CollectAchievements', 'CollectFreeMagicItems', 'DailyChallenge', 'PetCheck']
 			EndIf
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
@@ -810,11 +811,25 @@ Func runBot() ;Bot that runs everything in order
 				If CheckAndroidReboot() Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			Next
 
-			;ARCH Trying it out here.
-			;If Not $g_bIsSearchLimit Then _ClanGames() ; move to here to pick event before going to BB.
+			If $g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack Then _ClanGames()
+
+			Local $BBaseAttacked = False
+			While $g_bIsBBevent
+				If SwitchForCGEvent() Then 
+					BuilderBase()
+					$BBaseAttacked = True
+				Else
+					ExitLoop
+				EndIf
+			WEnd
 
 			; Ensure, that wall upgrade is last of the upgrades
-			Local $aRndFuncList = ['UpgradeWall', 'BuilderBase'] ;Copied BuilderBase to AttackMain
+			If $BBaseAttacked Then
+				Local $aRndFuncList = ['UpgradeWall'] ;Copied BuilderBase to AttackMain
+			Else
+				Local $aRndFuncList = ['UpgradeWall', 'BuilderBase'] ;Copied BuilderBase to AttackMain
+			EndIf
+			$BBaseAttacked = False
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
 				If Not $g_bRunState Then Return
@@ -1028,9 +1043,17 @@ Func AttackMain() ;Main control for attack functions
 				;SetLog("BullyMode: " & $g_abAttackTypeEnable[$TB] & ", Bully Hero: " & BitAND($g_aiAttackUseHeroes[$g_iAtkTBMode], $g_aiSearchHeroWaitEnable[$g_iAtkTBMode], $g_iHeroAvailable) & "|" & $g_aiSearchHeroWaitEnable[$g_iAtkTBMode] & "|" & $g_iHeroAvailable, $COLOR_DEBUG)
 			EndIf
 			_ClanGames()
-			SetLog("Active CG Event " & $g_sActiveEventName)
+
+			While $g_bIsBBevent
+				If SwitchForCGEvent() Then
+					BuilderBase()
+				Else
+					ExitLoop
+				EndIf
+			WEnd
+
 			ClickAway()
-			If $g_bUpdateSharedPrefs Then PullSharedPrefs()
+			;	If $g_bUpdateSharedPrefs Then PullSharedPrefs()
 			PrepareSearch()
 			If Not $g_bRunState Then Return
 			If $g_bOutOfGold Then Return ; Check flag for enough gold to search
@@ -1164,7 +1187,7 @@ Func __RunFunction($action)
 
 		Case "BoostWorkshop"
 			BoostWorkshop()
-			If 	_Sleep($DELAYRESPOND) Then Return
+			If _Sleep($DELAYRESPOND) Then Return
 
 		Case "BoostKing"
 			BoostKing()
@@ -1242,10 +1265,6 @@ Func __RunFunction($action)
 			ForgeClanCapitalGold()
 		Case "AutoUpgradeCC"
 			AutoUpgradeCC()
-
-		Case "BBClanGames"
-			BBClanGames()
-			If _Sleep($DELAYRUNBOT3) Then Return
 
 		Case "CollectCCGold"
 			CollectCCGold()
@@ -1358,9 +1377,9 @@ Func BuilderBase($bTest = False)
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 
-	;	LocateBuilderHall()
-	;	If _Sleep($DELAYRUNBOT3) Then Return
-	;	If checkObstacles() Then Return
+		;	LocateBuilderHall()
+		;	If _Sleep($DELAYRUNBOT3) Then Return
+		;	If checkObstacles() Then Return
 
 		StarLabGuiDisplay()
 		If _Sleep($DELAYRUNBOT3) Then Return
@@ -1406,6 +1425,10 @@ Func BuilderBase($bTest = False)
 
 		; switch back to normal village
 		SwitchBetweenBases()
+
+		Sleep(Random(1500, 2000))
+		_ClanGames()
+		If Not $g_bRunState Then Return
 
 	EndIf
 

@@ -23,23 +23,23 @@ Func GetResources($bLog = True, $pMatchMode = -1) ;Reads resources
 	SuspendAndroid()
 
 	Local $iCount = 0
-	While (getGoldVillageSearch(48, 69) = "") Or (getElixirVillageSearch(48, 69 + 29) = "")
+	While (getGoldVillageSearch(48, 69 + 7) = "") Or (getElixirVillageSearch(48, 69 + 29 + 7) = "")
 		$iCount += 1
 		If _Sleep($DELAYGETRESOURCES3) Then Return
 		If $iCount >= 50 Or isProblemAffect(True) Then ExitLoop ; Wait 50*150ms=7.5 seconds max to read resources
 	WEnd
 
 	If _Sleep($DELAYRESPOND) Then Return
-	$g_iSearchGold = getGoldVillageSearch(48, 69)
+	$g_iSearchGold = getGoldVillageSearch(48, 69 + 7)
 	If _Sleep($DELAYRESPOND) Then Return
-	$g_iSearchElixir = getElixirVillageSearch(48, 69 + 29)
+	$g_iSearchElixir = getElixirVillageSearch(48, 69 + 29 + 7)
 	If _Sleep($DELAYRESPOND) Then Return
-	If _CheckPixel($aAtkHasDarkElixir, $g_bCapturePixel, Default, "HasDarkElixir1") Or  _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0F0617, 6), 5)  Then ; check if the village have a Dark Elixir Storage
-		$g_iSearchDark = getDarkElixirVillageSearch(48, 126)
-		$g_iSearchTrophy = getTrophyVillageSearch(45, 168)
+	If _CheckPixel($aAtkHasDarkElixir, $g_bCapturePixel, Default, "HasDarkElixir1") Or _ColorCheck(_GetPixelColor(31, 151, True), Hex(0x0F0617, 6), 5) Then ; check if the village have a Dark Elixir Storage
+		$g_iSearchDark = getDarkElixirVillageSearch(48, 126 + 7)
+		$g_iSearchTrophy = getTrophyVillageSearch(48, 168 + 7)
 	Else
 		$g_iSearchDark = "N/A"
-		$g_iSearchTrophy = getTrophyVillageSearch(48, 69 + 69)
+		$g_iSearchTrophy = getTrophyVillageSearch(48, 138 + 7)
 	EndIf
 
 	If $g_iSearchGold = $iSearchGold2 And $g_iSearchElixir = $iSearchElixir2 Then $iStuck += 1

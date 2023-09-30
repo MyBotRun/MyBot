@@ -88,7 +88,7 @@ Func CreateBottomPanel()
 			GUICtrlSetState(-1, (($g_bAndroidAdbScreencap = True) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
 
 		$g_hLblVersion = GUICtrlCreateLabel($g_sBotVersion, $x + 120, $y + 77, 60, 17, $SS_LEFT ) ;
-			GUICtrlSetColor(-1, $COLOR_MEDGRAY)
+			GUICtrlSetColor(-1, $COLOR_GRAY)
 
 
 		$g_hBtnAttackNowDB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowDB", "DB Attack!"), $x + 190, $y - 4, 60, -1)

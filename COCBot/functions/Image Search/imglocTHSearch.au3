@@ -57,7 +57,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 			$xdirectory = $xdirectoryb
 			$xdirectorySnow = $xdirectorySnowb
 		EndIf
-		
+
 		SetDebugLog("$xdirectory = " & $xdirectory, $COLOR_DEBUG)
 
 		If $g_iDetectedImageType = 1 And $retry < 2 Then ;Snow theme on
@@ -100,7 +100,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 								If $iLvl > $iHighestLvl Then
 									$iHighestLvl = $iLvl
 									$iBestResult = $iResult
-								EndIF
+								EndIf
 						EndSwitch
 					Next
 				Next

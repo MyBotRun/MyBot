@@ -57,7 +57,7 @@ Func renameProfile()
 
 		; rename the directory and all files and sub folders.
 		DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
-		
+
 		; rename also private pofile folder
 		$originalPath = $g_sPrivateProfilePath & "\" & GUICtrlRead($g_hCmbProfile)
 		$newPath = $g_sPrivateProfilePath & "\" & $g_sProfileCurrentName
@@ -66,7 +66,7 @@ Func renameProfile()
 			DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
 		EndIf
 	EndIf
-	
+
 EndFunc   ;==>renameProfile
 
 Func deleteProfile()
@@ -91,7 +91,7 @@ Func deleteProfile()
 		EndIf
 		; Remove the directory and all files and sub folders.
 		DirRemove($deletePath, $DIR_REMOVE)
-		
+
 		$deletePath = $g_sPrivateProfilePath & "\" & $sProfile
 		If FileExists($deletePath) Then
 			; Remove the directory and all files and sub folders.
@@ -176,7 +176,7 @@ Func setupProfile($sProfile = Default)
 	; Create the profile if needed, this also sets the variables if the profile exists.
 	createProfile()
 	; Set the profile name on the village info group.
-	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
 
 	Return FuncReturn(True)
@@ -216,7 +216,7 @@ Func selectProfile($sProfile = Default)
 	EndIf
 
 	; Set the profile name on the village info group.
-	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
 	Return FuncReturn(True)
 EndFunc   ;==>selectProfile

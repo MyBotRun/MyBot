@@ -27,8 +27,8 @@ Func UpdateStats($bForceUpdate = False)
 	Static $iOldLastLoot[$eLootCount] ; loot and trophy gain from last raid
 	Static $iOldLastBonus[$eLootCount] ; bonus loot from last raid
 	Static $iOldSkippedVillageCount, $iOldDroppedTrophyCount ; skipped village and dropped trophy counts
-	Static $iOldCostGoldWall, $iOldCostElixirWall, $iOldCostGoldBuilding, $iOldCostElixirBuilding, $iOldCostDElixirHero ; wall, building and hero upgrade costs
-	Static $iOldNbrOfWallsUppedGold, $iOldNbrOfWallsUppedElixir, $iOldNbrOfBuildingsUppedGold, $iOldNbrOfBuildingsUppedElixir, $iOldNbrOfHeroesUpped ; number of wall, building, hero upgrades with gold, elixir, delixir
+	Static $iOldCostGoldWall, $iOldCostElixirWall, $iOldCostGoldBuilding, $iOldCostElixirBuilding, $iOldCostDElixirBuilding, $iOldCostDElixirHero, $iOldCostElixirWarden ; wall, building and hero upgrade costs
+	Static $iOldNbrOfWallsUppedGold, $iOldNbrOfWallsUppedElixir, $iOldNbrOfBuildingsUppedGold, $iOldNbrOfBuildingsUppedElixir, $iOldNbrOfBuildingsUppedDElixir, $iOldNbrOfHeroesUpped, $iOldNbrOfWardenUpped ; number of wall, building, hero upgrades with gold, elixir, delixir
 	Static $iOldSearchCost, $iOldTrainCostElixir, $iOldTrainCostDElixir, $iOldTrainCostGold ; search and train troops cost
 	Static $iOldNbrOfOoS ; number of Out of Sync occurred
 	Static $iOldNbrOfTHSnipeFails, $iOldNbrOfTHSnipeSuccess ; number of fails and success while TH Sniping
@@ -65,12 +65,16 @@ Func UpdateStats($bForceUpdate = False)
 		$iOldCostElixirWall = 0
 		$iOldCostGoldBuilding = 0
 		$iOldCostElixirBuilding = 0
+		$iOldCostDElixirBuilding = 0
 		$iOldCostDElixirHero = 0 ; wall, building and hero upgrade costs
+		$iOldCostElixirWarden = 0
 		$iOldNbrOfWallsUppedGold = 0
 		$iOldNbrOfWallsUppedElixir = 0
 		$iOldNbrOfBuildingsUppedGold = 0
 		$iOldNbrOfBuildingsUppedElixir = 0
+		$iOldNbrOfBuildingsUppedDElixir = 0
 		$iOldNbrOfHeroesUpped = 0 ; number of wall, building, hero upgrades with gold, elixir, delixir
+		$iOldNbrOfWardenUpped = 0
 		$iOldSearchCost = 0
 		$iOldTrainCostElixir = 0
 		$iOldTrainCostDElixir = 0 ; search and train troops cost
@@ -323,10 +327,22 @@ Func UpdateStats($bForceUpdate = False)
 		$iOldCostElixirBuilding = $g_iCostElixirBuilding
 	EndIf
 
+	If $iOldCostDElixirBuilding <> $g_iCostDElixirBuilding Then
+		$bStatsUpdated = True
+		GUICtrlSetData($g_hLblBuildingUpgCostDElixir, _NumberFormat($g_iCostDElixirBuilding, True))
+		$iOldCostDElixirBuilding = $g_iCostDElixirBuilding
+	EndIf
+
 	If $iOldCostDElixirHero <> $g_iCostDElixirHero Then
 		$bStatsUpdated = True
 		GUICtrlSetData($g_hLblHeroUpgCost, _NumberFormat($g_iCostDElixirHero, True))
 		$iOldCostDElixirHero = $g_iCostDElixirHero
+	EndIf
+
+	If $iOldCostElixirWarden <> $g_iCostElixirWarden Then
+		$bStatsUpdated = True
+		GUICtrlSetData($g_hLblWardenUpgCost, _NumberFormat($g_iCostElixirWarden, True))
+		$iOldCostElixirWarden = $g_iCostElixirWarden
 	EndIf
 
 	If $iOldSkippedVillageCount <> $g_iSkippedVillageCount Then
@@ -367,11 +383,23 @@ Func UpdateStats($bForceUpdate = False)
 		GUICtrlSetData($g_hLblNbrOfBuildingUpgElixir, $g_iNbrOfBuildingsUppedElixir)
 		$iOldNbrOfBuildingsUppedElixir = $g_iNbrOfBuildingsUppedElixir
 	EndIf
+	
+	If $iOldNbrOfBuildingsUppedDElixir <> $g_iNbrOfBuildingsUppedDElixir Then
+		$bStatsUpdated = True
+		GUICtrlSetData($g_hLblNbrOfBuildingUpgDElixir, $g_iNbrOfBuildingsUppedDElixir)
+		$iOldNbrOfBuildingsUppedDElixir = $g_iNbrOfBuildingsUppedDElixir
+	EndIf
 
 	If $iOldNbrOfHeroesUpped <> $g_iNbrOfHeroesUpped Then
 		$bStatsUpdated = True
 		GUICtrlSetData($g_hLblNbrOfHeroUpg, $g_iNbrOfHeroesUpped)
 		$iOldNbrOfHeroesUpped = $g_iNbrOfHeroesUpped
+	EndIf
+
+	If $iOldNbrOfWardenUpped <> $g_iNbrOfwardenUpped Then
+		$bStatsUpdated = True
+		GUICtrlSetData($g_hLblNbrOfWardenUpg, $g_iNbrOfWardenUpped)
+		$iOldNbrOfwardenUpped = $g_iNbrOfWardenUpped
 	EndIf
 
 	If $iOldSearchCost <> $g_iSearchCost Then
@@ -708,12 +736,16 @@ Func ResetStats()
 	$g_iCostElixirWall = 0
 	$g_iCostGoldBuilding = 0
 	$g_iCostElixirBuilding = 0
+	$g_iCostDElixirBuilding = 0
 	$g_iCostDElixirHero = 0
+	$g_iCostElixirWarden = 0
 	$g_iNbrOfWallsUppedGold = 0
 	$g_iNbrOfWallsUppedElixir = 0
 	$g_iNbrOfBuildingsUppedGold = 0
 	$g_iNbrOfBuildingsUppedElixir = 0
+	$g_iNbrOfBuildingsUppedDElixir = 0
 	$g_iNbrOfHeroesUpped = 0
+	$g_iNbrOfWardenUpped = 0
 	$g_iSearchCost = 0
 	$g_iTrainCostElixir = 0
 	$g_iTrainCostDElixir = 0

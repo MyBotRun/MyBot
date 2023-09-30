@@ -95,12 +95,12 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 
 					$a = StringRegExp($avTempArray[0], ".*-(\d+)-(\d+)", $STR_REGEXPARRAYMATCH)
 
-					$x = number($aiSceneryCoords[0])
-					$y = number($aiSceneryCoords[1])
+					$x = Number($aiSceneryCoords[0])
+					$y = Number($aiSceneryCoords[1])
 
 					If UBound($a) = 2 Then
-						$x0 = number($a[0])
-						$y0 = number($a[1])
+						$x0 = Number($a[0])
+						$y0 = Number($a[1])
 
 						SetDeBugLog("Ref Coord : " & $x0 & ", " & $y0)
 
@@ -111,10 +111,10 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 						$scenery[4] = 0 ;$d0 ; distance to village map in pixel
 						$scenery[5] = $avTempArray[0]
 
-						Local $sVillage = StringSplit($avTempArray[0],"-") ; get filename only
+						Local $sVillage = StringSplit($avTempArray[0], "-") ; get filename only
 						$sScenery = StringRight($sVillage[1], 2) ; get extension
 
-						SetDeBugLog("Village Scenery Found: " & $sScenery, $COLOR_ORANGE)
+						SetDeBugLog("Village Scenery Found: " & $sScenery, $COLOR_OLIVE)
 
 						; if too far away from expected location then align
 						If $x > ($x0 + 75) Or $x < ($x0 - 75) Then
@@ -127,7 +127,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 						; reduce fix point search area
 						$iAdditionalX = 100
 						$iAdditionalY = 75
-						ExitLoop; found scenery
+						ExitLoop ; found scenery
 					EndIf
 				EndIf
 			Next
@@ -198,7 +198,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 				$stone[4] = $d0 ; distance to village map in pixel
 				$stone[5] = $findImage
 
-				Local $asStoneName = StringSplit($findImage,"-") ; get filename only
+				Local $asStoneName = StringSplit($findImage, "-") ; get filename only
 				Local $asStoneScenery = StringRight($asStoneName[1], 2) ; get extension
 
 				SetDeBugLog("Found Stone scenery : " & $asStoneScenery, $COLOR_INFO)
@@ -262,7 +262,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 				$tree[4] = $d0 ; distance to village map in pixel
 				$tree[5] = $findImage
 
-				Local $asTreeName = StringSplit($findImage,"-") ; get filename only
+				Local $asTreeName = StringSplit($findImage, "-") ; get filename only
 				Local $sTreeName = $asTreeName[1]
 				If StringInStr($sTreeName, "2tree") Then
 					SetDeBugLog("Using 2tree")
@@ -290,8 +290,8 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 
 	Local $iX_Exp = 0
 	Local $iY_Exp = 0
-	Local $z = 1	; for centering only
-	Local $c = 0	; for centering only
+	Local $z = 1    ; for centering only
+	Local $c = 0    ; for centering only
 	Local $a = 0, $b = 0, $iRefSize = 0
 
 	; Failed to locate Stone Or Tree ; zoom out
@@ -322,7 +322,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$x = $stone[0] - $stone_x_exp
 		$y = $stone[1] - $stone_y_exp
 
-		SetDeBugLog("Found Stone and Tree!", $COLOR_INFO);
+		SetDeBugLog("Found Stone and Tree!", $COLOR_INFO) ;
 		SetDeBugLog("Village Size : " & $c, $COLOR_INFO)
 		SetDeBugLog("Zoom Factor : " & $z, $COLOR_INFO)
 		SetDeBugLog("Offset : " & $x & ", " & $y, $COLOR_INFO)
@@ -418,7 +418,7 @@ Func CenterVillage($iX, $iY, $iOffsetX, $iOffsetY)
 	ClickDrag($aScrollPos[0], $aScrollPos[1], $aScrollPos[0] - $iOffsetX, $aScrollPos[1] - $iOffsetY)
 
 	If _Sleep(150) Then Return
-EndFunc
+EndFunc   ;==>CenterVillage
 
 Func IsCoordSafe($x, $y)
 	Local $bResult = True
@@ -443,4 +443,4 @@ Func IsCoordSafe($x, $y)
 	If _Sleep(100) Then Return
 
 	Return $bResult
-EndFunc
+EndFunc   ;==>IsCoordSafe

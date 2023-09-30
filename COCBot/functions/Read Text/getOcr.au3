@@ -24,7 +24,7 @@ EndFunc   ;==>getRemainTrainTimer
 
 Func getRemainBuildTimer($x_start, $y_start, $bNeedCapture = True) ;
 	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 98, 17, True, False, $bNeedCapture)
-EndFunc   ;==>getRemainTrainTimer
+EndFunc   ;==>getRemainBuildTimer
 
 Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete value of Elixir xxx,xxx, top left,  Getresources.au3
 	Return getOcrAndCapture("coc-v-e", $x_start, $y_start, 90, 16, True)
@@ -75,28 +75,52 @@ Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elix
 EndFunc   ;==>getResourcesBonus
 
 Func getCostsUpgrade($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
-	Return getOcrAndCapture("coc-CostsUpgrades-Big", $x_start, $y_start, 104, 16, True)
+	Return getOcrAndCapture("coc-CostsUpgrades-Gt", $x_start, $y_start, 127, 20, True)
 EndFunc   ;==>getCostsUpgrade
 
 Func getCostsUpgrade1($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
-	Return getOcrAndCapture("coc-cc-trophy", $x_start, $y_start, 104, 16, True)
+	Return getOcrAndCapture("coc-CostsUpgrades-Big", $x_start, $y_start, 127, 18, True)
 EndFunc   ;==>getCostsUpgrade1
 
 Func getCostsUpgrade2($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
-	Return getOcrAndCapture("coc-CostsUpgrades-Med", $x_start, $y_start, 104, 16, True)
+	Return getOcrAndCapture("coc-CostsUpgrades-Med", $x_start, $y_start, 127, 18, True)
 EndFunc   ;==>getCostsUpgrade2
 
+Func getCostsUpgradeHeroe($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
+	Return getOcrAndCapture("coc-CostsUpgrades-Gt", $x_start, $y_start, 114, 20, True)
+EndFunc   ;==>getCostsUpgradeHeroe
+
+Func getCostsUpgrade1Heroe($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
+	Return getOcrAndCapture("coc-CostsUpgrades-Big", $x_start, $y_start, 114, 18, True)
+EndFunc   ;==>getCostsUpgrade1Heroe
+
+Func getCostsUpgrade2Heroe($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
+	Return getOcrAndCapture("coc-CostsUpgrades-Med", $x_start, $y_start, 114, 18, True)
+EndFunc   ;==>getCostsUpgrade2Heroe
+
 Func getCostsUpgradeRed($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
-	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 104, 16, True)
+	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 127, 18, True)
 EndFunc   ;==>getCostsUpgradeRed
 
 Func getCostsUpgradeRed2($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
-	Return getOcrAndCapture("coc-u-r2", $x_start, $y_start, 104, 16, True)
+	Return getOcrAndCapture("coc-u-r2", $x_start, $y_start, 127, 18, True)
 EndFunc   ;==>getCostsUpgradeRed2
 
 Func getCostsUpgradeRed3($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
-	Return getOcrAndCapture("coc-u-r3", $x_start, $y_start, 104, 16, True)
+	Return getOcrAndCapture("coc-u-r3", $x_start, $y_start, 127, 20, True)
 EndFunc   ;==>getCostsUpgradeRed3
+
+Func getCostsUpgradeRedHeroe($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
+	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 114, 18, True)
+EndFunc   ;==>getCostsUpgradeRedHeroe
+
+Func getCostsUpgradeRed2Heroe($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
+	Return getOcrAndCapture("coc-u-r2", $x_start, $y_start, 114, 18, True)
+EndFunc   ;==>getCostsUpgradeRed2Heroe
+
+Func getCostsUpgradeRed3Heroe($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
+	Return getOcrAndCapture("coc-u-r3", $x_start, $y_start, 114, 20, True)
+EndFunc   ;==>getCostsUpgradeRed3Heroe
 
 Func getResourcesBonusPerc($x_start, $y_start) ; -> Gets complete value of Bonus % in "AttackReport.au3"
 	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 48, 16, True)
@@ -106,28 +130,36 @@ Func getLabUpgrdResourceWht($x_start, $y_start) ; -> Gets complete value of Elix
 	Return getOcrAndCapture("coc-lab-w", $x_start, $y_start, 70, 14, True)
 EndFunc   ;==>getLabUpgrdResourceWht
 
+Func getLabUpgrdResourceWhtNew($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons, xxx,xxx for "laboratory.au3" and "starlaboratory.au3" when white text
+	Return getOcrAndCapture("coc-lab-wNew", $x_start, $y_start, 80, 14, True)
+EndFunc   ;==>getLabUpgrdResourceWhtNew
+
 Func getLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons,  xxx,xxx for "laboratory.au3" when red text
-	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 70, 12, True)
+	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 80, 14, True)
 EndFunc   ;==>getLabUpgrdResourceRed
 
 Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir on the troop buttons,  xxx,xxx for "starlaboratory.au3" when red text
 	Return getOcrAndCapture("coc-starlab-r", $x_start, $y_start, 70, 14, True)
-EndFunc   ;==>getLabUpgrdResourceRed
+EndFunc   ;==>getStarLabUpgrdResourceRed
 
 Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 72, 18) ; "12d 19h"
+	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 105, 18) ; "12d 19h"
 EndFunc   ;==>getBldgUpgradeTime
 
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
-	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 80, 22) ; 80 is required to upgrades > 10 days
+	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 90, 22, True) ; 90 is required to upgrades > 10 days
 EndFunc   ;==>getLabUpgradeTime
+
+Func getLabUpgradeTime2($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
+	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 90, 22, True) ; 90 is required to upgrades > 10 days
+EndFunc   ;==>getLabUpgradeTime2
 
 Func getPetUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V4 for Jun2023 update
-	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 166, 22) ; 166 is required to upgrades > 10 days
-EndFunc   ;==>getLabUpgradeTime
+	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 166, 22) ; 166 is required to upgrades > 10 days
+EndFunc   ;==>getPetUpgradeTime
 
-Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 578, 470 + $g_iMidOffsetY
-	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 72, 20) ; 72 is required to days & hours for hero ; Jun2023
+Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 595, 490 + $g_iMidOffsetY
+	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 85, 20) ; 85 is required to days & hours for hero ; COC 15.352.22
 EndFunc   ;==>getHeroUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
@@ -159,6 +191,15 @@ Func getTroopsSpellsLevel($x_start, $y_start, $bDebugImageSave = $g_bDebugImageS
 	Return $Result
 EndFunc   ;==>getTroopsSpellsLevel
 
+Func getPetsLevel($x_start, $y_start, $bDebugImageSave = $g_bDebugImageSave) ;  -> Gets Pets level.
+	Local $Result = getOcrAndCapture("coc-petslevel", $x_start, $y_start, 20, 14, True)
+	If $bDebugImageSave Then
+		Local $sArea = $x_start & "," & $y_start & "," & $x_start + 20 & "," & $y_start + 14
+		SaveDebugRectImage("PetsOCR" & $Result, $sArea)
+	EndIf
+	Return $Result
+EndFunc   ;==>getPetsLevel
+
 Func getSiegeLevel($x_start, $y_start, $bDebugImageSave = $g_bDebugImageSave) ;  -> Gets Siege level on Attack Screen
 	Local $Result = getOcrAndCapture("coc-siegelevel", $x_start, $y_start, 20, 14, True)
 	If $bDebugImageSave Then
@@ -174,7 +215,7 @@ EndFunc   ;==>getArmyCampCap
 
 Func getSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
 	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 38, 20, True, False, $bNeedCapture)
-EndFunc   ;==>getArmyCampCap
+EndFunc   ;==>getSiegeCampCap
 
 Func getCastleDonateCap($x_start, $y_start) ;  -> Gets clan castle capacity,  --> donatecc.au3
 	Return getOcrAndCapture("coc-army", $x_start, $y_start, 30, 14, True)
@@ -196,10 +237,6 @@ Func getOcrGuardShield($x_start, $y_start) ;  -> Get the guard/shield time left,
 	Return getOcrAndCapture("coc-guardshield", $x_start, $y_start, 68, 15)
 EndFunc   ;==>getOcrGuardShield
 
-Func getOcrPBTtime($x_start, $y_start) ;  -> Get the Time until PBT starts from PBT info window
-	Return getOcrAndCapture("coc-pbttime", $x_start, $y_start, 59, 15)
-EndFunc   ;==>getOcrPBTtime
-
 Func getCCBuildingName($x_start, $y_start) ;  -> Get BuildingName on builder menu
 	Local $BuildingName = "", $Count = 1
 	Local $Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 18, False)
@@ -219,12 +256,12 @@ Func getCCBuildingName($x_start, $y_start) ;  -> Get BuildingName on builder men
 		Local $TmpBuildingName = StringReplace($BuildingName, $aReplace[0], "")
 		$BuildingName = StringStripWS($TmpBuildingName, $STR_STRIPTRAILING)
 	EndIf
-	
+
 	Local $aResult[2]
 	$aResult[0] = $BuildingName
 	$aResult[1] = Number($Count)
 	Return $aResult
-EndFunc   ;==>getBuildingName
+EndFunc   ;==>getCCBuildingName
 
 Func getCCBuildingNameSuggested($x_start, $y_start) ;  -> Get BuildingName on builder menu
 	Local $BuildingName = "", $Count = 1
@@ -245,16 +282,16 @@ Func getCCBuildingNameSuggested($x_start, $y_start) ;  -> Get BuildingName on bu
 		Local $TmpBuildingName = StringReplace($BuildingName, $aReplace[0], "")
 		$BuildingName = StringStripWS($TmpBuildingName, $STR_STRIPTRAILING)
 	EndIf
-	
+
 	If StringRight($BuildingName, 2) = " l" Then
 		$BuildingName = StringTrimRight($BuildingName, 2) ;remove "l" at the end in some cases
 	EndIf
-	
+
 	Local $aResult[2]
 	$aResult[0] = $BuildingName
 	$aResult[1] = Number($Count)
 	Return $aResult
-EndFunc   ;==>getBuildingName
+EndFunc   ;==>getCCBuildingNameSuggested
 
 Func getCCBuildingNameBlue($x_start, $y_start) ;  -> Get BuildingName on builder menu
 	Local $BuildingName = "", $Count = 1
@@ -275,7 +312,7 @@ Func getCCBuildingNameBlue($x_start, $y_start) ;  -> Get BuildingName on builder
 		Local $TmpBuildingName = StringReplace($BuildingName, $aReplace[0], "")
 		$BuildingName = StringStripWS($TmpBuildingName, $STR_STRIPTRAILING)
 	EndIf
-	
+
 	If StringRight($BuildingName, 2) = " l" Then
 		$BuildingName = StringTrimRight($BuildingName, 2) ;remove "l" at the end in some cases
 	EndIf
@@ -284,73 +321,77 @@ Func getCCBuildingNameBlue($x_start, $y_start) ;  -> Get BuildingName on builder
 	$aResult[0] = $BuildingName
 	$aResult[1] = Number($Count)
 	Return $aResult
-EndFunc   ;==>getBuildingName
+EndFunc   ;==>getCCBuildingNameBlue
 
 Func getOcrReloadMessage($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
-	Local $result = getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+	Local $Result = getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
 	Local $String = ""
 	If $sLogText = Default Then
-		$String = "getOcrReloadMessage: " & $result
+		$String = "getOcrReloadMessage: " & $Result
 	Else
-		$String = $sLogText & " " & $result
+		$String = $sLogText & " " & $Result
 	EndIf
 	If $g_bDebugSetlog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
-	ElseIf $result <> "" Then ;
+	ElseIf $Result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
 	EndIf
-	Return $result
+	Return $Result
 EndFunc   ;==>getOcrReloadMessage
 
 Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	;  -> Get the Text with time till maintenance is over from reload msg(171, 375)
-	Local $result = getOcrAndCapture("coc-maintenance", $x_start, $y_start, 200, 18, True)
+	Local $Result = getOcrAndCapture("coc-maintenance", $x_start, $y_start, 200, 18, True)
 	Local $String = ""
 	If $sLogText = Default Then
-		$String = "getOcrMaintenanceTime: " & $result
+		$String = "getOcrMaintenanceTime: " & $Result
 	Else
-		$String = $sLogText & " " & $result
+		$String = $sLogText & " " & $Result
 	EndIf
 	If $g_bDebugSetlog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
-	ElseIf $result <> "" Then ;
+	ElseIf $Result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
 	EndIf
-	Return $result
+	Return $Result
 EndFunc   ;==>getOcrMaintenanceTime
 
 Func getOcrTimeGameTime($x_start, $y_start) ;  -> Get the guard/shield time left, middle top of the screen
-	Return getOcrAndCapture("coc-clangames", $x_start, $y_start, 120, 31, True)
+	Return getOcrAndCapture("coc-clangames", $x_start, $y_start, 130, 26, True)
 EndFunc   ;==>getOcrTimeGameTime
 
 Func getOcrYourScore($x_start, $y_start) ; -> Gets CheckValuesCost on Train Window
-	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 120, 18, True)
+	Return getOcrAndCapture("coc-events", $x_start, $y_start, 110, 16, True)
 EndFunc   ;==>getOcrYourScore
 
 Func getOcrEventTime($x_start, $y_start) ; -> Gets CheckValuesCost on Train Window
-	Return getOcrAndCapture("coc-events", $x_start, $y_start, 80, 20, True)
+	Return getOcrAndCapture("coc-events", $x_start, $y_start, 35, 16, True)
 EndFunc   ;==>getOcrEventTime
 
 Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	;  -> Get the Text with time till maintenance is over from reload msg(228, 402)
-	Local $result = getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 28, True)
+	Local $Result = getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 28, True)
 	Local $String = ""
 	If $sLogText = Default Then
-		$String = "getOcrRateCoc: " & $result
+		$String = "getOcrRateCoc: " & $Result
 	Else
-		$String = $sLogText & " " & $result
+		$String = $sLogText & " " & $Result
 	EndIf
 	If $g_bDebugSetlog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
-	ElseIf $result <> "" Then ;
+	ElseIf $Result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
 	EndIf
-	Return $result
+	Return $Result
 EndFunc   ;==>getOcrRateCoc
 
 Func getRemainTLaboratory($x_start, $y_start) ; read actual time remaining in Lab for current upgrade (336,260), changed CoC v9.24 282,277
-	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 214, 25)
+	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 260, 26, True)
 EndFunc   ;==>getRemainTLaboratory
+
+Func getRemainTLaboratory2($x_start, $y_start) ; read actual time remaining in Lab for current upgrade (336,260), changed CoC v9.24 282,277
+	Return getOcrAndCapture("coc-RemainLaboratory2", $x_start, $y_start, 260, 26, True)
+EndFunc   ;==>getRemainTLaboratory2
 
 Func getRemainTHero($x_start, $y_start, $bNeedCapture = True) ; Get time remaining for hero to be ready for attack from train window, BK:443,504 AQ:504,504 GW:565:504
 	Return getOcrAndCapture("coc-remainhero", $x_start, $y_start, 55, 12, True, False, $bNeedCapture)
@@ -363,23 +404,23 @@ EndFunc   ;==>getRequestRemainTime
 Func getCloudTextShort($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	; Get 3 characters of yellow text in center of attack search window during extended cloud waiting (388,378)
 	; Full text length is 316 pixels, some is covered by chat window when open
-	Local $result = getOcrAndCapture("coc-cloudsearch", $x_start, $y_start, 51, 27)
+	Local $Result = getOcrAndCapture("coc-cloudsearch", $x_start, $y_start, 51, 27)
 	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
-		Local $String = $sLogText & $result
+		Local $String = $sLogText & $Result
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	EndIf
-	Return $result
+	Return $Result
 EndFunc   ;==>getCloudTextShort
 
 Func getCloudFailShort($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	; Get 6 characters of pink text in center of attack search window during failed attack search (271, 381)
 	; Full text length is 318 pixels, on checking for 1st 6 characters
-	Local $result = getOcrAndCapture("coc-cloudfail", $x_start, $y_start, 72, 24)
+	Local $Result = getOcrAndCapture("coc-cloudfail", $x_start, $y_start, 72, 24)
 	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
-		Local $String = $sLogText & $result
+		Local $String = $sLogText & $Result
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	EndIf
-	Return $result
+	Return $Result
 EndFunc   ;==>getCloudFailShort
 
 Func getBarracksNewTroopQuantity($x_start, $y_start, $bNeedCapture = True) ;  -> Gets quantity of troops in army Window
@@ -448,7 +489,7 @@ EndFunc   ;==>getChatStringPersian
 
 Func getArmyResourcesFromButtons($x_start, $y_start) ;  -> Gets cost of Troops/Spells from buttons
 	Return Number(getOcrAndCapture("coc-TrainResources", $x_start - 45, $y_start + 25, 89, 20, True))
-EndFunc   ;==>getArmyCapacityOnTrainTroops
+EndFunc   ;==>getArmyResourcesFromButtons
 
 Func OcrForceCaptureRegion($bForce = Default)
 	If $bForce = Default Then Return $g_bOcrForceCaptureRegion
@@ -467,18 +508,18 @@ Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpa
 	Else
 		$_hHBitmap = GetHHBitmapArea($g_hHBitmap2, $x_start, $y_start, $x_start + $width, $y_start + $height)
 	EndIf
-	Local $result
+	Local $Result
 	If $bImgLoc Then
 		If $_hHBitmap <> 0 Then
-			$result = getOcrImgLoc($_hHBitmap, $language)
+			$Result = getOcrImgLoc($_hHBitmap, $language)
 		Else
-			$result = getOcrImgLoc($g_hHBitmap2, $language)
+			$Result = getOcrImgLoc($g_hHBitmap2, $language)
 		EndIf
 	Else
 		If $_hHBitmap <> 0 Then
-			$result = getOcr($_hHBitmap, $language)
+			$Result = getOcr($_hHBitmap, $language)
 		Else
-			$result = getOcr($g_hHBitmap2, $language)
+			$Result = getOcr($g_hHBitmap2, $language)
 		EndIf
 	EndIf
 	If $_hHBitmap <> 0 Then
@@ -486,24 +527,24 @@ Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpa
 	EndIf
 	$_hHBitmap = 0
 	If ($removeSpace) Then
-		$result = StringReplace($result, " ", "")
+		$Result = StringReplace($Result, " ", "")
 	Else
-		$result = StringStripWS($result, BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING, $STR_STRIPSPACES))
+		$Result = StringStripWS($Result, BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING, $STR_STRIPSPACES))
 	EndIf
-	Return $result
+	Return $Result
 EndFunc   ;==>getOcrAndCapture
 
 Func getOcr(ByRef Const $_hHBitmap, $language)
-	Local $result = DllCallMyBot("ocr", "ptr", $_hHBitmap, "str", $language, "int", $g_bDebugOcr ? 1 : 0)
-	If IsArray($result) Then
-		Return $result[0]
+	Local $Result = DllCallMyBot("ocr", "ptr", $_hHBitmap, "str", $language, "int", $g_bDebugOcr ? 1 : 0)
+	If IsArray($Result) Then
+		Return $Result[0]
 	Else
 		Return ""
 	EndIf
 EndFunc   ;==>getOcr
 
 Func getOcrImgLoc(ByRef Const $_hHBitmap, $sLanguage)
-	Local $result = DllCallMyBot("DoOCR", "handle", $_hHBitmap, "str", $sLanguage)
+	Local $Result = DllCallMyBot("DoOCR", "handle", $_hHBitmap, "str", $sLanguage)
 
 	Local $error = @error ; Store error values as they reset at next function call
 	Local $extError = @extended
@@ -514,8 +555,8 @@ Func getOcrImgLoc(ByRef Const $_hHBitmap, $sLanguage)
 	EndIf
 	If $g_bDebugImageSave Then SaveDebugImage($sLanguage, False)
 
-	If IsArray($result) Then
-		Return $result[0]
+	If IsArray($Result) Then
+		Return $Result[0]
 	Else
 		Return ""
 	EndIf

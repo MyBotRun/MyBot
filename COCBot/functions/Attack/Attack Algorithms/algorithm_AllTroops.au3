@@ -428,51 +428,51 @@ EndFunc   ;==>CloseBattle
 
 
 Func SmartAttackStrategy($imode)
-		If ($g_abAttackStdSmartAttack[$imode]) Then
-			SetLog("Calculating Smart Attack Strategy", $COLOR_INFO)
-			Local $hTimer = __TimerInit()
-			_CaptureRegion2()
-			_GetRedArea()
+	If ($g_abAttackStdSmartAttack[$imode]) Then
+		SetLog("Calculating Smart Attack Strategy", $COLOR_INFO)
+		Local $hTimer = __TimerInit()
+		_CaptureRegion2()
+		_GetRedArea()
 
-			SetLog("Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+		SetLog("Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 
-			If ($g_abAttackStdSmartNearCollectors[$imode][0] Or $g_abAttackStdSmartNearCollectors[$imode][1] Or $g_abAttackStdSmartNearCollectors[$imode][2]) Then
-				SetLog("Locating Mines, Collectors & Drills", $COLOR_INFO)
-				$hTimer = __TimerInit()
-				Global $g_aiPixelMine[0]
-				Global $g_aiPixelElixir[0]
-				Global $g_aiPixelDarkElixir[0]
-				Global $g_aiPixelNearCollector[0]
-				; If drop troop near gold mine
-				If $g_abAttackStdSmartNearCollectors[$imode][0] Then
-					$g_aiPixelMine = GetLocationMine()
-					If (IsArray($g_aiPixelMine)) Then
-						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelMine, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
-					EndIf
+		If ($g_abAttackStdSmartNearCollectors[$imode][0] Or $g_abAttackStdSmartNearCollectors[$imode][1] Or $g_abAttackStdSmartNearCollectors[$imode][2]) Then
+			SetLog("Locating Mines, Collectors & Drills", $COLOR_INFO)
+			$hTimer = __TimerInit()
+			Global $g_aiPixelMine[0]
+			Global $g_aiPixelElixir[0]
+			Global $g_aiPixelDarkElixir[0]
+			Global $g_aiPixelNearCollector[0]
+			; If drop troop near gold mine
+			If $g_abAttackStdSmartNearCollectors[$imode][0] Then
+				$g_aiPixelMine = GetLocationMine()
+				If (IsArray($g_aiPixelMine)) Then
+					_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelMine, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 				EndIf
-				; If drop troop near elixir collector
-				If $g_abAttackStdSmartNearCollectors[$imode][1] Then
-					$g_aiPixelElixir = GetLocationElixir()
-					If (IsArray($g_aiPixelElixir)) Then
-						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
-					EndIf
-				EndIf
-				; If drop troop near dark elixir drill
-				If $g_abAttackStdSmartNearCollectors[$imode][2] Then
-					$g_aiPixelDarkElixir = GetLocationDarkElixir()
-					If (IsArray($g_aiPixelDarkElixir)) Then
-						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelDarkElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
-					EndIf
-				EndIf
-				SetLog("Located  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
-				SetLog("[" & UBound($g_aiPixelMine) & "] Gold Mines")
-				SetLog("[" & UBound($g_aiPixelElixir) & "] Elixir Collectors")
-				SetLog("[" & UBound($g_aiPixelDarkElixir) & "] Dark Elixir Drill/s")
-				$g_aiNbrOfDetectedMines[$imode] += UBound($g_aiPixelMine)
-				$g_aiNbrOfDetectedCollectors[$imode] += UBound($g_aiPixelElixir)
-				$g_aiNbrOfDetectedDrills[$imode] += UBound($g_aiPixelDarkElixir)
-				UpdateStats()
 			EndIf
-
+			; If drop troop near elixir collector
+			If $g_abAttackStdSmartNearCollectors[$imode][1] Then
+				$g_aiPixelElixir = GetLocationElixir()
+				If (IsArray($g_aiPixelElixir)) Then
+					_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
+				EndIf
+			EndIf
+			; If drop troop near dark elixir drill
+			If $g_abAttackStdSmartNearCollectors[$imode][2] Then
+				$g_aiPixelDarkElixir = GetLocationDarkElixir()
+				If (IsArray($g_aiPixelDarkElixir)) Then
+					_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelDarkElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
+				EndIf
+			EndIf
+			SetLog("Located  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+			SetLog("[" & UBound($g_aiPixelMine) & "] Gold Mines")
+			SetLog("[" & UBound($g_aiPixelElixir) & "] Elixir Collectors")
+			SetLog("[" & UBound($g_aiPixelDarkElixir) & "] Dark Elixir Drill/s")
+			$g_aiNbrOfDetectedMines[$imode] += UBound($g_aiPixelMine)
+			$g_aiNbrOfDetectedCollectors[$imode] += UBound($g_aiPixelElixir)
+			$g_aiNbrOfDetectedDrills[$imode] += UBound($g_aiPixelDarkElixir)
+			UpdateStats()
 		EndIf
+
+	EndIf
 EndFunc   ;==>SmartAttackStrategy

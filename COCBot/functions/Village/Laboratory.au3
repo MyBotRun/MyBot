@@ -12,12 +12,12 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Local $iSlotWidth = 94, $iDistBetweenSlots = 12 ; use for logic to upgrade troops.. good for generic-ness
-Local $iYMidPoint = 468 ;Space between rows in lab screen.  CHANGE ONLY WITH EXTREME CAUTION.
+Local $iSlotWidth = 107, $iDistBetweenSlots = 16 ; use for logic to upgrade troops.. good for generic-ness
+Local $iYMidPoint = 483 ;Space between rows in lab screen.  CHANGE ONLY WITH EXTREME CAUTION.
 Local $iPicsPerPage = 12, $iPages = 4 ; used to know exactly which page the users choice is on
-Local $sLabWindow = "99,122,760,616", $sLabTroopsSection = "115,363,750,577", $sLabTroopLastPage = "215,363,750,577"
+Local $sLabTroopsSection = "70,365,795,600", $sLabTroopLastPage = "185,365,795,577"
 ;$sLabTroopLastPage for partial last page, currently 5 columns.
-Local $sLabWindowDiam = GetDiamondFromRect($sLabWindow), $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection), $sLabTroopsLastPageDiam = GetDiamondFromRect($sLabTroopLastPage) ; easy to change search areas
+Local $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection), $sLabTroopsLastPageDiam = GetDiamondFromRect($sLabTroopLastPage) ; easy to change search areas
 
 Func TestLaboratory()
 	Local $bWasRunState = $g_bRunState
@@ -32,9 +32,9 @@ Func TestLaboratory()
 	$g_sLabUpgradeTime = $sWasLabUpgradeTime
 	$g_bAutoLabUpgradeEnable = $sWasLabUpgradeEnable
 	Return $Result
-EndFunc
+EndFunc   ;==>TestLaboratory
 
-Func Laboratory($debug=False)
+Func Laboratory($debug = False)
 
 	;SetLog("$g_bSilentSetDebugLog is " & $g_bSilentSetDebugLog) ;HarchH
 	;SetLog("$g_bDebugSetlog is " & $g_bDebugSetlog) ;HarchH
@@ -54,7 +54,7 @@ Func Laboratory($debug=False)
 		EndIf
 	EndIf
 
- 	If ChkUpgradeInProgress() Then Return False ; see if we know about an upgrade in progress without checking the lab
+	If ChkUpgradeInProgress() Then Return False  ; see if we know about an upgrade in progress without checking the lab
 
 	; Get updated village elixir and dark elixir values
 	VillageReport()
@@ -75,7 +75,7 @@ Func Laboratory($debug=False)
 	If $g_iCmbLaboratory <> 0 Then
 		SetDebugLog("User picked to upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0])
 		Local $iPage = Ceiling($g_iCmbLaboratory / $iPicsPerPage) ; page # of user choice
-		While($iCurPage < $iPage) ; go directly to the needed page
+		While ($iCurPage < $iPage) ; go directly to the needed page
 			LabNextPage($iCurPage, $iPages, $iYMidPoint) ; go to next page of upgrades
 			$iCurPage += 1 ; Next page
 			If _Sleep(2000) Then Return
@@ -83,10 +83,10 @@ Func Laboratory($debug=False)
 		SetDebugLog("On page " & $iCurPage & " of " & $iPages)
 		; Get coords of upgrade the user wants
 		If $iCurPage >= $iPages Then ;Use last partial page
-		SetDebugLog("Finding on last page diamond")
-			local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsLastPageDiam, $sLabTroopsLastPageDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
+			SetDebugLog("Finding on last page diamond")
+			Local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsLastPageDiam, $sLabTroopsLastPageDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 		Else ;Use full page
-			local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsSectionDiam, $sLabTroopsSectionDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
+			Local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsSectionDiam, $sLabTroopsSectionDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 		EndIf
 		Local $aCoords, $bUpgradeFound = False
 		If UBound($aPageUpgrades, 1) >= 1 Then ; if we found any troops
@@ -112,7 +112,7 @@ Func Laboratory($debug=False)
 		If $sCostResult = "" Then ; not enough resources
 			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0] & " - Not enough Resources." & @CRLF & "We will try again later.", $COLOR_INFO)
 			SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
-		ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
+		ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult) + 1 Or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
 			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0] & " - Max Level. Choose another upgrade.", $COLOR_INFO)
 			SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
 		Else
@@ -123,13 +123,13 @@ Func Laboratory($debug=False)
 		CloseWindow()
 
 	Else ; users choice is any upgrade
-		While($iCurPage <= $iPages)
+		While ($iCurPage <= $iPages)
 			SetDebugLog("User picked any upgrade.")
 			If $iCurPage >= $iPages Then ;Use last partial page
 				SetDebugLog("Finding on last page diamond")
-				local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsLastPageDiam, $sLabTroopsLastPageDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
+				Local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsLastPageDiam, $sLabTroopsLastPageDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 			Else ;Use full page
-				local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsSectionDiam, $sLabTroopsSectionDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
+				Local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsSectionDiam, $sLabTroopsSectionDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 			EndIf
 			If UBound($aPageUpgrades, 1) >= 1 Then ; if we found any troops
 				SetDebugLog("Found " & UBound($aPageUpgrades, 1) & " possible on this page #" & $iCurPage)
@@ -142,8 +142,8 @@ Func Laboratory($debug=False)
 
 					If $sCostResult = "" Then ; not enough resources
 						SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Not enough Resources")
-					ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
-							SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Max Level")
+					ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult) + 1 Or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
+						SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Max Level")
 					Else
 						Return LaboratoryUpgrade($aTempTroopArray[0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
 					EndIf
@@ -163,7 +163,7 @@ Func Laboratory($debug=False)
 	EndIf
 
 	Return False ; No upgrade started
-EndFunc
+EndFunc   ;==>Laboratory
 
 ; start a given upgrade
 Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
@@ -171,7 +171,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 	ClickP($aCoords) ; click troop
 	If _Sleep(2000) Then Return
 
-	If Not(SetLabUpgradeTime($name)) Then
+	If Not (SetLabUpgradeTime($name)) Then
 		;Not a fatal error.
 		SetDebugLog("Couldn't read upgrade time.  Continue anyway.", $COLOR_ERROR)
 		;ClickAway()
@@ -181,14 +181,14 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 
 	LabStatusGUIUpdate()
 	If $debug = True Then ; if debugging, do not actually click it
-		SetLog("[debug mode] - Start Upgrade, Click (" & 660 & "," & 520 + $g_iMidOffsetY & ")", $COLOR_ACTION)
+		SetLog("[debug mode] - Start Upgrade, Click (" & 705 & "," & 565 + $g_iMidOffsetY & ")", $COLOR_ACTION)
 		ClickAway()
 		Return True ; return true as if we really started an upgrade
 	Else
-		Click(660, 520 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
+		Click(705, 565 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
 		If isGemOpen(True) = False Then ; check for gem window
 			; check for green button to use gems to finish upgrade, checking if upgrade actually started
-			If Not (_ColorCheck(_GetPixelColor(625, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15) Or _ColorCheck(_GetPixelColor(660, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15)) Then
+			If Not (_ColorCheck(_GetPixelColor(665, 195 + $g_iMidOffsetY, True), Hex(0x6DBC1F, 6), 15) Or _ColorCheck(_GetPixelColor(720, 195 + $g_iMidOffsetY, True), Hex(0x6DBC1F, 6), 15)) Then
 				SetLog("Something went wrong with " & $name & " Upgrade, try again.", $COLOR_ERROR)
 				ClickAway()
 				Return False
@@ -207,11 +207,11 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 			Return False
 		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>LaboratoryUpgrade
 
 ; get the time for the selected upgrade
 Func SetLabUpgradeTime($sTrooopName)
-	Local $Result = getLabUpgradeTime(575, 465 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
+	Local $Result = getLabUpgradeTime2(595, 490 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
 	Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
 	SetDebugLog($sTrooopName & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 	Local $StartTime = _NowCalc() ; what is date:time now
@@ -227,7 +227,7 @@ Func SetLabUpgradeTime($sTrooopName)
 	EndIf
 	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
 	Return True ; success
-EndFunc
+EndFunc   ;==>SetLabUpgradeTime
 
 ; get the cost of an upgrade based on its coords
 ; find image slot that we found so that we can read the cost to see if we can upgrade it... slots read 1-12 top to bottom so barb = 1, arch = 2, giant = 3, etc...
@@ -235,70 +235,69 @@ Func GetLabCostResult($aCoords)
 	SetDebugLog("Getting lab cost.")
 	SetDebugLog("$iYMidPoint=" & $iYMidPoint)
 	Local $iCurSlotOnPage, $iCurSlotsToTheRight, $sCostResult
-	$iCurSlotsToTheRight = Ceiling( ( Int($aCoords[0]) - Int(StringSplit($sLabTroopsSection, ",")[1]) ) / ($iSlotWidth + $iDistBetweenSlots) )
+	$iCurSlotsToTheRight = Ceiling((Int($aCoords[0]) - Int(StringSplit($sLabTroopsSection, ",")[1])) / ($iSlotWidth + $iDistBetweenSlots))
 	If Int($aCoords[1]) < $iYMidPoint Then ; first row
 		SetDebugLog("First row.")
-		$iCurSlotOnPage = 2*$iCurSlotsToTheRight - 1
+		$iCurSlotOnPage = 2 * $iCurSlotsToTheRight - 1
 		SetDebugLog("$iCurSlotOnPage=" & $iCurSlotOnPage)
-		$sCostResult = getLabUpgrdResourceWht(Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots), Int(StringSplit($sLabTroopsSection, ",")[2]) + 76)
+		$sCostResult = getLabUpgrdResourceWhtNew(Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots), Int(StringSplit($sLabTroopsSection, ",")[2]) + 89)
 		If $sCostResult = "" Then
-			Local $XCoord = Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots) - 3
-			Local $YCoord = Int(StringSplit($sLabTroopsSection, ",")[2]) + 76
-			If QuickMIS("BC1", $g_sImgElixirDrop, $XCoord + 71, $YCoord, $XCoord + 87, $YCoord + 18) Then
+			Local $XCoord = Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots)
+			Local $YCoord = Int(StringSplit($sLabTroopsSection, ",")[2]) + 89
+			If QuickMIS("BC1", $g_sImgElixirDrop, $XCoord + 77, $YCoord - 4, $XCoord + 103, $YCoord + 18) Then
 				Local $g_iLaboratoryElixirCostOld = $g_iLaboratoryElixirCost
-				Local $g_iLaboratoryElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord + 2)
+				Local $g_iLaboratoryElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord)
 				If $g_iLaboratoryElixirCostNew <= $g_iLaboratoryElixirCostOld Or $g_iLaboratoryElixirCostOld = 0 Then $g_iLaboratoryElixirCost = $g_iLaboratoryElixirCostNew
 			Else
 				Local $g_iLaboratoryDElixirCostOld = $g_iLaboratoryDElixirCost
-				Local $g_iLaboratoryDElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord + 2)
+				Local $g_iLaboratoryDElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord)
 				If $g_iLaboratoryDElixirCostNew <= $g_iLaboratoryDElixirCostOld Or $g_iLaboratoryDElixirCostOld = 0 Then $g_iLaboratoryDElixirCost = $g_iLaboratoryDElixirCostNew
 			EndIf
 		EndIf
-	Else; second row
+	Else ; second row
 		SetDebugLog("Second row.")
-		$iCurSlotOnPage = 2*$iCurSlotsToTheRight
+		$iCurSlotOnPage = 2 * $iCurSlotsToTheRight
 		SetDebugLog("$iCurSlotOnPage=" & $iCurSlotOnPage)
-		$sCostResult = getLabUpgrdResourceWht(Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots), $iYMidPoint + 76 + 2) ;was 76
+		$sCostResult = getLabUpgrdResourceWhtNew(Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots), $iYMidPoint + 91)
 		If $sCostResult = "" Then
-			Local $XCoord = Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots) - 3
-			Local $YCoord = $iYMidPoint + 76 + 2
-			If QuickMIS("BC1", $g_sImgElixirDrop, $XCoord + 71, $YCoord, $XCoord + 87, $YCoord + 18) Then
+			Local $XCoord = Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots)
+			Local $YCoord = $iYMidPoint + 91
+			If QuickMIS("BC1", $g_sImgElixirDrop, $XCoord + 77, $YCoord - 4, $XCoord + 103, $YCoord + 18) Then
 				Local $g_iLaboratoryElixirCostOld = $g_iLaboratoryElixirCost
-				Local $g_iLaboratoryElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord + 2)
-				If $g_iLaboratoryElixirCostNew <= $g_iLaboratoryElixirCostOld  Or $g_iLaboratoryElixirCostOld = 0 Then $g_iLaboratoryElixirCost = $g_iLaboratoryElixirCostNew
+				Local $g_iLaboratoryElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord)
+				If $g_iLaboratoryElixirCostNew <= $g_iLaboratoryElixirCostOld Or $g_iLaboratoryElixirCostOld = 0 Then $g_iLaboratoryElixirCost = $g_iLaboratoryElixirCostNew
 			Else
 				Local $g_iLaboratoryDElixirCostOld = $g_iLaboratoryDElixirCost
-				Local $g_iLaboratoryDElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord + 2)
+				Local $g_iLaboratoryDElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord)
 				If $g_iLaboratoryDElixirCostNew <= $g_iLaboratoryDElixirCostOld Or $g_iLaboratoryDElixirCostOld = 0 Then $g_iLaboratoryDElixirCost = $g_iLaboratoryDElixirCostNew
 			EndIf
 		EndIf
 	EndIf
 	SetDebugLog("Cost found is " & $sCostResult)
 	Return $sCostResult
-EndFunc
+EndFunc   ;==>GetLabCostResult
 
 ; if we are on last page, smaller clickdrag... for future dev: this is whatever is enough distance to move 6 off to the left and have the next page similarily aligned.  "-50" to avoid the white triangle.
 Func LabNextPage($iCurPage, $iPages, $iYMidPoint)
 	If $iCurPage >= $iPages Then Return ; nothing left to scroll
 	If $iCurPage = $iPages - 1 Then ; last page
-		;Last page has 5 columns of icons.  5*(94+12)= 5*106=530 . 720-530=190 . Offset To be Sure : 190-12=178
-		SetDebugLog("Drag to last page to pixel 178")
+		SetDebugLog("Drag to last page")
 		ClickDrag(720, $iYMidPoint - 50, 178, $iYMidPoint, 300)
 	Else
 		SetDebugLog("Drag to next full page.")
-		ClickDrag(720, $iYMidPoint - 50, 85, $iYMidPoint, 300)
+		ClickDrag(720, $iYMidPoint - 50, 79, $iYMidPoint, 300)
 	EndIf
-EndFunc
+EndFunc   ;==>LabNextPage
 
 ; check the lab to see if something is upgrading in the lab already
 Func ChkLabUpgradeInProgress()
 	; check for upgrade in process - look for green in finish upgrade with gems button
-	SetDebugLog("_GetPixelColor(730, 200): " & _GetPixelColor(730, 200, True) & ":A2CB6C", $COLOR_DEBUG)
-	If _ColorCheck(_GetPixelColor(730, 200, True), Hex(0xA2CB6C, 6), 20) Then
+	SetDebugLog("_GetPixelColor(775, 165): " & _GetPixelColor(730, 200, True) & ":A2CB6C", $COLOR_DEBUG)
+	If _ColorCheck(_GetPixelColor(775, 135 + $g_iMidOffsetY, True), Hex(0xA2CB6C, 6), 20) Then ; Look for light green in upper right corner of lab window.
 		SetLog("Laboratory Upgrade in progress, waiting for completion", $COLOR_INFO)
 		If _Sleep($DELAYLABORATORY2) Then Return
 		; upgrade in process and time not recorded so update completion time!
-		Local $sLabTimeOCR = getRemainTLaboratory(270, 227 + $g_iMidOffsetY)
+		Local $sLabTimeOCR = getRemainTLaboratory2(250, 210 + $g_iMidOffsetY)
 		If $sLabTimeOCR = "" Then $sLabTimeOCR = getPetUpgradeTime(270, 227 + $g_iMidOffsetY)
 		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False)
 		SetDebugLog("$sLabTimeOCR: " & $sLabTimeOCR & ", $iLabFinishTime = " & $iLabFinishTime & " m")
@@ -320,7 +319,7 @@ Func ChkLabUpgradeInProgress()
 		Return True
 	EndIf
 	Return False ; returns False if no upgrade in progress
-EndFunc
+EndFunc   ;==>ChkLabUpgradeInProgress
 
 ; checks our global variable to see if we know of something already upgrading
 Func ChkUpgradeInProgress()
@@ -339,7 +338,7 @@ Func ChkUpgradeInProgress()
 		Return True
 	EndIf
 	Return False ; we currently do not know of any upgrades in progress
-EndFunc
+EndFunc   ;==>ChkUpgradeInProgress
 
 ; Find Research Button
 Func FindResearchButton()
@@ -354,4 +353,4 @@ Func FindResearchButton()
 		ClickAway()
 		Return False
 	EndIf
-EndFunc
+EndFunc   ;==>FindResearchButton

@@ -26,8 +26,8 @@ Func UpdateStats()
     Static $iOldLastLoot[$eLootCount] ; loot and trophy gain from last raid
     Static $iOldLastBonus[$eLootCount] ; bonus loot from last raid
     Static $iOldSkippedVillageCount, $iOldDroppedTrophyCount ; skipped village and dropped trophy counts
-    Static $iOldCostGoldWall, $iOldCostElixirWall, $iOldCostGoldBuilding, $iOldCostElixirBuilding, $iOldCostDElixirHero ; wall, building and hero upgrade costs
-    Static $iOldNbrOfWallsUppedGold, $iOldNbrOfWallsUppedElixir, $iOldNbrOfBuildingsUppedGold, $iOldNbrOfBuildingsUppedElixir, $iOldNbrOfHeroesUpped ; number of wall, building, hero upgrades with gold, elixir, delixir
+    Static $iOldCostGoldWall, $iOldCostElixirWall, $iOldCostGoldBuilding, $iOldCostElixirBuilding, $iOldCostDElixirBuilding, $iOldCostDElixirHero, $iOldCostElixirWarden ; wall, building and hero upgrade costs
+    Static $iOldNbrOfWallsUppedGold, $iOldNbrOfWallsUppedElixir, $iOldNbrOfBuildingsUppedGold, $iOldNbrOfBuildingsUppedElixir, $iOldNbrOfBuildingsUppedDElixir, $iOldNbrOfHeroesUpped, $iOldNbrOfWardenUpped ; number of wall, building, hero upgrades with gold, elixir, delixir
     Static $iOldSearchCost, $iOldTrainCostElixir, $iOldTrainCostDElixir ; search and train troops cost
     Static $iOldNbrOfOoS ; number of Out of Sync occurred
     Static $iOldGoldFromMines, $iOldElixirFromCollectors, $iOldDElixirFromDrills ; number of resources gain by collecting mines, collectors, drills
@@ -316,12 +316,16 @@ Func ResetStats()
 	$g_iCostElixirWall = 0
 	$g_iCostGoldBuilding = 0
 	$g_iCostElixirBuilding = 0
+	$g_iCostDElixirBuilding = 0
 	$g_iCostDElixirHero = 0
+	$g_iCostElixirWarden = 0
 	$g_iNbrOfWallsUppedGold = 0
 	$g_iNbrOfWallsUppedElixir = 0
 	$g_iNbrOfBuildingsUppedGold = 0
 	$g_iNbrOfBuildingsUppedElixir = 0
+	$g_iNbrOfBuildingsUppedDElixir = 0
 	$g_iNbrOfHeroesUpped = 0
+	$g_iNbrOfWardenUpped = 0
 	$g_iSearchCost = 0
 	$g_iTrainCostElixir = 0
 	$g_iTrainCostGold = 0

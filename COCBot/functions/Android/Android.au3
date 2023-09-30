@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Cosote (12-2015)
-; Modified ......: CodeSlinger69 (01-2017)
+; Modified ......: CodeSlinger69 (01-2017), TFKNazgul (08-2023)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -54,8 +54,8 @@ Global $g_PushedSharedPrefsProfile_Timer = 0 ; Last __TimerInit() shared_prefs w
 Global $g_bUpdateSharedPrefsLanguage = True ; Reset Language to English when pushing shared_prefs
 Global $g_bUpdateSharedPrefsSnow = True ; Reset Snow when pushing shared_prefs
 Global $g_bUpdateSharedPrefsZoomLevel = True ; Reset ZoomLevel when pushing shared_prefs
-Global $g_bUpdateSharedPrefsGoogleDisconnected  = True ; Reset GoogleDisconnected when pushing shared_prefs (not used, doesn't work!)
-Global $g_bUpdateSharedPrefsRated  = True ; Reset Rated when pushing shared_prefs
+Global $g_bUpdateSharedPrefsGoogleDisconnected = True  ; Reset GoogleDisconnected when pushing shared_prefs (not used, doesn't work!)
+Global $g_bUpdateSharedPrefsRated = True  ; Reset Rated when pushing shared_prefs
 Global $g_bAndroidZoomoutModeFallback = False ; If shared_prefs zoomout mode is used, shared_prefs pushed, then fallback to normal zoomout if still not zoomed out
 
 
@@ -767,51 +767,86 @@ Func DetectInstalledAndroid()
 	FuncReturn()
 EndFunc   ;==>DetectInstalledAndroid
 
-; Find preferred Adb Path. Current Android ADB is used and saved in profile.ini and shared across instances.
+; Find preferred Adb Path.
 Func FindPreferredAdbPath()
-	Local $aDll = ["AdbWinApi.dll", "AdbWinUsbApi.dll"]
-	Local $adbPath = Execute("Get" & $g_sAndroidEmulator & "AdbPath()")
-	Local $sAdbFolder = StringLeft($adbPath, StringInStr($adbPath, "\", 0, -1))
-	Local $sAdbFile = StringMid($adbPath, StringLen($sAdbFolder) + 1)
-	Local $sRealAdb = @ScriptDir & "\lib\adb\adb.exe"
-	Local $sDummyAdb = @ScriptDir & "\lib\DummyExe.exe"
-	Local $bDummy = $g_iAndroidAdbReplace = 2 And FileExists($sDummyAdb)
-	Local $sAdb = ($bDummy ? $sDummyAdb : $sRealAdb)
+	Local $sAdbPath = ""
+	; Use From Emulator
+	Switch $g_sAndroidEmulator
+		Case "BlueStacks5"
+			$sAdbPath = GetBlueStacks5AdbPath()
+		Case "MEmu"
+			$sAdbPath = GetMEmuAdbPath()
+		Case "Nox"
+			$sAdbPath = GetNoxAdbPath()
+	EndSwitch
 
-	If $g_iAndroidAdbReplace And $adbPath And FileExists($sAdb) And (Not $bDummy Or (FileExists(@ScriptDir & "\lib\adb\" & $aDll[0]) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[1]))) _
-			And (FileGetSize($adbPath) <> FileGetSize($sAdb) Or (Not $bDummy And (FileGetSize($sAdbFolder & $aDll[0]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[0]) Or FileGetSize($sAdbFolder & $aDll[1]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[1])))) Then
-		Local $aAdbProcess = ProcessesExist($adbPath)
-		For $i = 0 To UBound($aAdbProcess) -1
-			; ensure target process is not running
+	; Using From MyBotRun
+	If $g_iAndroidAdbReplace = 1 Then
+		; Stop Adb from Emulator
+		Local $aAdbProcess = ProcessesExist($sAdbPath)
+		For $i = 0 To UBound($aAdbProcess) - 1
 			KillProcess($aAdbProcess[$i], "FindPreferredAdbPath")
 		Next
-		If FileCopy($sAdb, $adbPath, 1) And ($bDummy Or (FileCopy(@ScriptDir & "\lib\adb\" & $aDll[0], $sAdbFolder & $aDll[0], 1) And FileCopy(@ScriptDir & "\lib\adb\" & $aDll[1], $sAdbFolder & $aDll[1], 1))) Then
-			SetLog("Replaced " & $g_sAndroidEmulator & " ADB with MyBot.run version")
-		Else
-			SetLog("Cannot replace " & $g_sAndroidEmulator & " ADB with MyBot.run version", $COLOR_ERROR)
+
+		; Use Bot Root Folder
+		Local $sBootPathAdb = @ScriptDir & "\lib\adb\adb.exe"
+		Local $sBootPathAdbWinApi = @ScriptDir & "\lib\adb\AdbWinApi.dll"
+		Local $sBootPathAdbWinUsbApi = @ScriptDir & "\lib\adb\AdbWinUsbApi.dll"
+		Local $sBootDirPath = @ScriptDir & "\Adb\"
+
+		; Copy Adb Files for Root Folder
+		Switch $g_sAndroidEmulator
+			Case "BlueStacks5"
+				; Check if File exist
+				If FileExists($sBootDirPath & "HD-Adb.exe") = 0 Then
+					If FileCopy($sBootPathAdb, $sBootDirPath & "HD-Adb.exe", $FC_CREATEPATH) = 1 Then
+						$sAdbPath = $sBootDirPath & "HD-Adb.exe"
+						SetDebugLog("Replaced " & $g_sAndroidEmulator & " Adb From MyBotRun", $COLOR_SUCCESS)
+					Else
+						SetDebugLog("Cannot replace " & $g_sAndroidEmulator & " ADB with MyBotRun", $COLOR_ERROR)
+					EndIf
+				Else
+					$sAdbPath = $sBootDirPath & "HD-Adb.exe"
+					SetDebugLog("Using " & $g_sAndroidEmulator & " Adb From MyBotRun", $COLOR_SUCCESS)
+				EndIf
+			Case "MEmu"
+				; Check if File exist
+				If FileExists($sBootDirPath & "adb.exe") = 0 Then
+					If FileCopy($sBootPathAdb, $sBootDirPath & "adb.exe", $FC_CREATEPATH) = 1 Then
+						$sAdbPath = $sBootDirPath & "adb.exe"
+						SetDebugLog("Replaced " & $g_sAndroidEmulator & " Adb From MyBotRun", $COLOR_SUCCESS)
+					Else
+						SetDebugLog("Cannot replace " & $g_sAndroidEmulator & " ADB with MyBotRun", $COLOR_ERROR)
+					EndIf
+				Else
+					$sAdbPath = $sBootDirPath & "adb.exe"
+					SetDebugLog("Using " & $g_sAndroidEmulator & " Adb From MyBotRun", $COLOR_SUCCESS)
+				EndIf
+			Case "Nox"
+				; Check if File exist
+				If FileExists($sBootDirPath & "nox_adb.exe") = 0 Then
+					If FileCopy($sBootPathAdb, $sBootDirPath & "nox_adb.exe", $FC_CREATEPATH) = 1 Then
+						$sAdbPath = $sBootDirPath & "nox_adb.exe"
+						SetDebugLog("Replaced " & $g_sAndroidEmulator & " Adb From MyBotRun", $COLOR_SUCCESS)
+					Else
+						SetDebugLog("Cannot replace " & $g_sAndroidEmulator & " ADB with MyBotRun", $COLOR_ERROR)
+					EndIf
+				Else
+					$sAdbPath = $sBootDirPath & "nox_adb.exe"
+					SetDebugLog("Using " & $g_sAndroidEmulator & " Adb From MyBotRun", $COLOR_SUCCESS)
+				EndIf
+		EndSwitch
+
+		If FileExists($sBootDirPath & "AdbWinApi.dll") = 0 Then
+			If FileCopy($sBootPathAdbWinApi, $sBootDirPath & "AdbWinApi.dll", $FC_CREATEPATH) = 0 Then SetDebugLog("AdbWinApi was not replaced!", $COLOR_ERROR)
+		EndIf
+		If FileExists($sBootDirPath & "AdbWinUsbApi.dll") = 0 Then
+			If FileCopy($sBootPathAdbWinUsbApi, $sBootDirPath & "AdbWinUsbApi.dll", $FC_CREATEPATH) = 0 Then SetDebugLog("AdbWinUsbApi was not replaced!", $COLOR_ERROR)
 		EndIf
 	EndIf
-	$sAdb = $sRealAdb
-	If $g_bAndroidAdbUseMyBot And FileExists($sAdb) Then
-		Return $sAdb
-	EndIf
 
-	If FileExists($g_sAndroidAdbPath) Then
-		Return $g_sAndroidAdbPath
-	EndIf
-
-	If $adbPath = "" Then
-		; find any
-		For $i = 0 To UBound($g_avAndroidAppConfig) - 1
-			$adbPath = Execute("Get" & $g_avAndroidAppConfig[$i][0] & "AdbPath()")
-			If $adbPath <> "" Then ExitLoop
-		Next
-	EndIf
-	If $adbPath <> "" Then
-		; Not used anymore since MBR v7.6.7
-		;_SaveProfileConfigAdbPath(Default, $adbPath) ; ensure profile.ini is saved as quickly as possible with new ADB path
-	EndIf
-	Return $adbPath
+	SetDebugLog("Using ADB Path " & $sAdbPath)
+	Return $sAdbPath
 EndFunc   ;==>FindPreferredAdbPath
 
 Func CompareAndUpdate(ByRef $UpdateWhenDifferent, Const $New)
@@ -1223,9 +1258,9 @@ Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True
 
 	$cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 15000) ; timeout of 15 Seconds
 	If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
-        SetLog("Unable to load Clash of Clans, possible solutions:", $COLOR_ERROR)	
+		SetLog("Unable to load Clash of Clans, possible solutions:", $COLOR_ERROR)
 		SetLog("1) install/reinstall the game.", $COLOR_ERROR)
-        SetLog("2) select Bot->Android->Reset to reset the game distributor", $COLOR_ERROR)		
+		SetLog("2) select Bot->Android->Reset to reset the game distributor", $COLOR_ERROR)
 		SetLog("Unable to continue........", $COLOR_ERROR)
 		btnStop()
 		SetError(1, 1, -1)
@@ -1944,7 +1979,7 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
 				EndIf
 				$s &= AndroidAdbSendShellCommand("stop media", Default, $wasRunState, False) ; stop media service as it can consume up to 30% Android CPU
-			#ce
+			#ce 2016-04-08 cosote Replaced by shell.init.script
 			Local $scriptFile = ""
 			If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\shell.init." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = "shell.init." & $g_sAndroidEmulator & ".script"
 			If $scriptFile = "" Then $scriptFile = "shell.init.script"
@@ -1971,7 +2006,7 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 				SetDebugLog("Android Version 5.1")
 			Case $g_iAndroidNougat
 				SetDebugLog("Android Version 7.0")
-			Case $g_iAndroidpie
+			Case $g_iAndroidPie
 				SetDebugLog("Android Version 9.0")
 			Case Else
 				SetDebugLog("Android Version not detected!")
@@ -2876,9 +2911,9 @@ Func AndroidZoomOut($loopCount = 0, $timeout = Default, $bMinitouch = Default, $
 		Return AndroidAdbScript("ZoomOutTop", Default, $timeout, $bMinitouch, $wasRunState)
 	Else
 		Local $iCounter = $g_aiSearchZoomOutCounter[0]
-		
+
 		If $iCounter > 5 Then $iCounter -= 5
-		
+
 		Local $sScript = "ZoomOut" & $iCounter
 		SetDeBugLog("Running minitouch script " & $sScript, $COLOR_INFO)
 		Return AndroidAdbScript($sScript, Default, $timeout, $bMinitouch, $wasRunState)
@@ -3068,9 +3103,9 @@ Func AndroidSlowClick($x, $y, $times = 1, $speed = 0)
 		Local $timer = __TimerInit()
 		AndroidAdbSendShellCommand($cmd, Default, $wasRunState)
 		Local $wait = $speed - __TimerDiff($timer)
-		If $wait > 0 Then 
+		If $wait > 0 Then
 			If _Sleep($wait, False) Then Return
-		EndIf 
+		EndIf
 	Else
 		Local $error = @error
 		SetDebugLog("Disabled " & $g_sAndroidEmulator & " ADB mouse click, error " & $error, $COLOR_ERROR)
@@ -3353,7 +3388,7 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 			; speed was overwritten with $g_iAndroidAdbClickGroupDelay
 			;AndroidAdbSendShellCommand($sleep)
 			Local $sleepTime = $speed - __TimerDiff($sleepTimer)
-			If $sleepTime > 0 Then 
+			If $sleepTime > 0 Then
 				If _Sleep($sleepTime, False) Then Return
 			EndIf
 		EndIf
@@ -3676,7 +3711,7 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 						AndroidAdbSendMinitouchShellCommand($send)
 					EndIf
 					_SleepMicro(($iDelay + $sleep) * 1000)
-					If $g_bDebugClick Then SetDebugLog("minitouch: d 0 " & $x & " " & $y & " "  & $iTimesCopy & ", speed=" & $sleep & ", delay=" & $iDelay)
+					If $g_bDebugClick Then SetDebugLog("minitouch: d 0 " & $x & " " & $y & " " & $iTimesCopy & ", speed=" & $sleep & ", delay=" & $iDelay)
 					;_SleepMicro(10000)
 				EndIf
 
@@ -3981,7 +4016,7 @@ Func AndroidCloseSystemBar()
 		Return False
 	EndIf
 	Local $cmdOutput = ""
-	If $g_iAndroidVersionAPI = $g_iAndroidPie Then 
+	If $g_iAndroidVersionAPI = $g_iAndroidPie Then
 		$cmdOutput = AndroidAdbSendShellCommand("settings put global policy_control immersive.status=*", Default, $wasRunState, False)
 	Else
 		$cmdOutput = AndroidAdbSendShellCommand("service call activity 42 s16 com.android.systemui", Default, $wasRunState, False)
@@ -4079,7 +4114,7 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 	;u0_a54    12560 84    1336996 189660 10    -10   0     0     futex_wait b7725424 S com.supercell.clashofclans
 	;u0_a54    13303 84    1338548 188464 16    -4    0     0     sys_epoll_ b7725424 S com.supercell.clashofclans
 	If AndroidInvalidState() Then Return 0
-	
+
 	If $g_iAndroidVersionAPI = $g_iAndroidPie Then
 		$cmd = "set result=$(ps -A -o USER,PID,NAME|grep """ & $g_sAndroidGamePackage & """ >&2)"
 		; ps -A|grep "com.supercell.clashofclans" >&2
@@ -4091,7 +4126,7 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 
 	Local $output = AndroidAdbSendShellCommand($cmd)
 	Local $error = @error
-	
+
 	;SetLog("$g_sAndroidGamePackage: " & $g_sAndroidGamePackage)
 	;SetLog("GetAndroidProcessPID StdOut :" & $output)
 
@@ -4200,7 +4235,7 @@ Func GetAndroidProcessPID1($sPackage = Default, $bForeground = True, $DEPRECATED
 		EndIf
 	Next
 	Return SetError($iError, 0, $iPid)
-EndFunc   ;==>GetAndroidProcessPID
+EndFunc   ;==>GetAndroidProcessPID1
 
 Func AndroidToFront($hHWndAfter = Default, $sSource = "Unknown")
 	If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
@@ -4313,11 +4348,11 @@ Func ConfigureSharedFolder($iMode = 0, $bSetLog = Default)
 
 	Switch $iMode
 		Case 0 ; check that shared folder is configured in VM
-			Local $aRegexResult = StringRegExp($__VBoxVMinfo, "Name: '" & $g_sAndroidSharedFolderName & "', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
+			Local $aRegExResult = StringRegExp($__VBoxVMinfo, "Name: '" & $g_sAndroidSharedFolderName & "', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
 			If Not @error Then
 				$bResult = True
 				$g_bAndroidSharedFolderAvailable = True
-				$g_sAndroidPicturesHostPath = $aRegexResult[UBound($aRegexResult) - 1] & "\"
+				$g_sAndroidPicturesHostPath = $aRegExResult[UBound($aRegExResult) - 1] & "\"
 			Else
 				SetLog($g_sAndroidEmulator & " shared folder is not available", $COLOR_ERROR)
 				$g_sAndroidPicturesHostPath = ""
@@ -4338,8 +4373,8 @@ Func ConfigureSharedFolder($iMode = 0, $bSetLog = Default)
 			EndIf
 	EndSwitch
 
-	Return SetError(0,0, $bResult)
-EndFunc
+	Return SetError(0, 0, $bResult)
+EndFunc   ;==>ConfigureSharedFolder
 
 Func OpenAdbShell()
 	Local $bWasRunState = $g_bRunState
@@ -4365,7 +4400,7 @@ Func _OpenAdbShell($bRunInitScript = True, $bAdbInstanceShellOptions = True, $bA
 	Local $hWnd = 0
 	Local $hTimer = __TimerInit()
 	Do
-		If $hWnd = 0 Then 
+		If $hWnd = 0 Then
 			If _Sleep(100, True, False) Then Return
 		EndIf
 		Local $winlist = WinList()
@@ -4428,10 +4463,10 @@ Func LaunchAndroid($sProgramPath, $sCmdParam, $sPath, $iWaitInSecAfterLaunch = D
 	If $sCmdParam And StringLeft($sCmdParam, 1) <> " " Then
 		$sCmdParam = " " & $sCmdParam
 	EndIf
-		; if shared folder is not available, configure it
-		If Not $g_sAndroidPicturesHostPath Then
-			SetScreenAndroid()
-		EndIf
+	; if shared folder is not available, configure it
+	If Not $g_sAndroidPicturesHostPath Then
+		SetScreenAndroid()
+	EndIf
 	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 	Local $pid = 0
 	;$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__MEmu_Path)
@@ -4715,7 +4750,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 	Local $iFiles = UBound($aNewFiles) - 1
 	Local $iFilesPushed = 0
 
-	If _Sleep(1000) Then Return
+	If _Sleep(1000, Default, False) Then Return
 	; use ADB push to transfer files
 	If $g_bPullPushSharedPrefsAbdCommand Then
 		$cmdOutput = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " push """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs"" /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", $process_killed)
@@ -4749,26 +4784,26 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 				If FileCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs\*", $hostFolder & "\shared_prefs", $FC_OVERWRITE) And UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1 >= $iFiles Then
 
 					; files copied, now check to update storage_new.xml
-					If $g_bUpdateSharedPrefs And ($g_bUpdateSharedPrefsLanguage OR $g_bUpdateSharedPrefsSnow Or $g_bUpdateSharedPrefsZoomLevel Or $g_bUpdateSharedPrefsGoogleDisconnected Or $g_bUpdateSharedPrefsRated) Then
+					If $g_bUpdateSharedPrefs And ($g_bUpdateSharedPrefsLanguage Or $g_bUpdateSharedPrefsSnow Or $g_bUpdateSharedPrefsZoomLevel Or $g_bUpdateSharedPrefsGoogleDisconnected Or $g_bUpdateSharedPrefsRated) Then
 						; read file
 						Local $hFile = FileOpen($hostFolder & "\shared_prefs\storage_new.xml", $FO_READ + $FO_UTF8_NOBOM)
 						Local $sStorage = FileRead($hFile)
 						FileClose($hFile)
 						If $sStorage Then
 							Local $sStorageUpdated = $sStorage
-						;Quick fix for "can't stop snow" proposed by Famine098 in Forum
-						Local $aTags[4][3] = _
-						[[$g_bUpdateSharedPrefsLanguage, "d0h6phQUOxO/uSfvat949w==", "FWCNTu39RUlYoSt0Y6mCwg=="], _
-						[$g_bUpdateSharedPrefsZoomLevel, "MjhxqoFNUV+begGvsz3gkg==", "vJsDdCCIGCzyfC7c1FsIrA=="], _
-                        [$g_bUpdateSharedPrefsRated, "7lJCTt3TmNyzikZuHh9wZQ==", "pmvEzdQuRQuKZob4KB0IeA=="], _
-                        [$g_bUpdateSharedPrefsGoogleDisconnected, "AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=", "pmvEzdQuRQuKZob4KB0IeA=="]]
-;						Local $aTags[5][3] = [[$g_bUpdateSharedPrefsLanguage, "d0h6phQUOxO/uSfvat949w==", "FWCNTu39RUlYoSt0Y6mCwg=="], _
-;						[$g_bUpdateSharedPrefsSnow, "WnITdUFs6FnH4NScnkEtyg==", "jS26iozgAh+i/424eyY5cA=="], _
-;						[$g_bUpdateSharedPrefsZoomLevel, "MjhxqoFNUV+begGvsz3gkg==", "oiMa1oDch9dThLoIKokZqQ=="], _
-;						[$g_bUpdateSharedPrefsRated, "7lJCTt3TmNyzikZuHh9wZQ==", "pmvEzdQuRQuKZob4KB0IeA=="], _
-;						[$g_bUpdateSharedPrefsGoogleDisconnected, "AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=", "pmvEzdQuRQuKZob4KB0IeA=="]]
+							;Quick fix for "can't stop snow" proposed by Famine098 in Forum
+							Local $aTags[4][3] = _
+									[[$g_bUpdateSharedPrefsLanguage, "d0h6phQUOxO/uSfvat949w==", "FWCNTu39RUlYoSt0Y6mCwg=="], _
+									[$g_bUpdateSharedPrefsZoomLevel, "MjhxqoFNUV+begGvsz3gkg==", "vJsDdCCIGCzyfC7c1FsIrA=="], _
+									[$g_bUpdateSharedPrefsRated, "7lJCTt3TmNyzikZuHh9wZQ==", "pmvEzdQuRQuKZob4KB0IeA=="], _
+									[$g_bUpdateSharedPrefsGoogleDisconnected, "AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=", "pmvEzdQuRQuKZob4KB0IeA=="]]
+							;						Local $aTags[5][3] = [[$g_bUpdateSharedPrefsLanguage, "d0h6phQUOxO/uSfvat949w==", "FWCNTu39RUlYoSt0Y6mCwg=="], _
+							;						[$g_bUpdateSharedPrefsSnow, "WnITdUFs6FnH4NScnkEtyg==", "jS26iozgAh+i/424eyY5cA=="], _
+							;						[$g_bUpdateSharedPrefsZoomLevel, "MjhxqoFNUV+begGvsz3gkg==", "oiMa1oDch9dThLoIKokZqQ=="], _
+							;						[$g_bUpdateSharedPrefsRated, "7lJCTt3TmNyzikZuHh9wZQ==", "pmvEzdQuRQuKZob4KB0IeA=="], _
+							;						[$g_bUpdateSharedPrefsGoogleDisconnected, "AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=", "pmvEzdQuRQuKZob4KB0IeA=="]]
 
-							For $i = 0 To UBound($aTags) -1
+							For $i = 0 To UBound($aTags) - 1
 								If $aTags[$i][0] Then
 									Local $sNewTag = '<string name="' & $aTags[$i][1] & '">' & $aTags[$i][2] & '</string>'
 									Local $sSearchName = StringRegExpReplace($aTags[$i][1], "([\/\+])", "\\$1")
@@ -4921,9 +4956,13 @@ Func CheckEmuNewVersions()
 
 	Switch $g_sAndroidEmulator
 		Case "BlueStacks2"
-			$NewVersion = GetVersionNormalized("4.280.0.1022")
+			$NewVersion = GetVersionNormalized("0.0.0.0")
+			SetLog("This " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ") is not supported!", $COLOR_ERROR)    ;Not Supported with v8.1+
+		Case "BlueStacks5"
+			$NewVersion = GetVersionNormalized("5.11.100.2102")
 		Case "MEmu"
-			$NewVersion = GetVersionNormalized("7.6.6.0")
+			$NewVersion = GetVersionNormalized("0.0.0.0")
+			SetLog("This " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ") is not supported!", $COLOR_ERROR)    ;Not Supported with v8.1+
 		Case "Nox"
 			$NewVersion = GetVersionNormalized("7.0.5.8")
 		Case Else

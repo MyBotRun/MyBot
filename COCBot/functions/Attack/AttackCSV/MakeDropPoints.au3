@@ -287,7 +287,7 @@ Func MakeTargetDropPoints($side, $pointsQty, $addtiles, $building)
 			Next
 			If Not isInsideDiamondRedArea($pixel) Then SetDebugLog("MakeTargetDropPoints() ADDTILES error!")
 			$sLoc = $pixel[0] & "-" & $pixel[1] ; make string for modified building location
-			SetLog("Target drop point for " &  $g_sBldgNames[$BuildingEnum] & " (adding " & $addtiles & " tiles): " & $sLoc)
+			SetLog("Target drop point for " & $g_sBldgNames[$BuildingEnum] & " (adding " & $addtiles & " tiles): " & $sLoc)
 			Return GetListPixel($sLoc, "-", "MakeTargetDropPoints TARGET") ; return ADDTILES modified location array
 		Case 5
 			$sLoc = $aLocation[0] & "|" & $aLocation[1] ; make string for bldg location

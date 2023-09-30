@@ -97,6 +97,10 @@ Func BotStart($bAutostartDelay = 0)
 		_SleepStatus($bAutostartDelay)
 	EndIf
 
+	$g_bIsBBevent = 0
+	$g_bClanGamesCompleted = 0
+	CloseCGSettings()
+
 	; wait for slot
 	LockBotSlot(True)
 	If $g_bRunState = False Then Return FuncReturn()
@@ -130,7 +134,7 @@ Func BotStart($bAutostartDelay = 0)
 			WinActivate($activeHWnD) ; restore current active window
 		EndIf
 		If Not $g_bRunState Then Return FuncReturn()
-		If $hWndActive = $g_hAndroidWindow And ($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable())  Then ; Really?
+		If $hWndActive = $g_hAndroidWindow And ($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable()) Then  ; Really?
 			Initiate() ; Initiate and run bot
 		Else
 			SetLog("Cannot use " & $g_sAndroidEmulator & ", please check log", $COLOR_ERROR)
@@ -210,15 +214,15 @@ Func BotStop()
 		;AdlibUnRegister("SetTime")
 		;$g_bRestart = True
 
-	   If $g_hLogFile <> 0 Then
-		  FileClose($g_hLogFile)
-		  $g_hLogFile = 0
-	   EndIf
+		If $g_hLogFile <> 0 Then
+			FileClose($g_hLogFile)
+			$g_hLogFile = 0
+		EndIf
 
-	   If $g_hAttackLogFile <> 0 Then
-		  FileClose($g_hAttackLogFile)
-		  $g_hAttackLogFile = 0
-	   EndIf
+		If $g_hAttackLogFile <> 0 Then
+			FileClose($g_hAttackLogFile)
+			$g_hAttackLogFile = 0
+		EndIf
 	Else
 		$g_bSearchMode = False
 	EndIf

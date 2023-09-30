@@ -111,9 +111,9 @@ Func ExportDataBase($bLog = True)
 
 		; Write the header file
 		Local $header = "Attack;Date;Profilename;SearchCount;Attacksides;ResIN;ResOUT;ResBySide;OppThlevel;OppGold;OppElixir;OppDE;OppTrophies;PerDamage;PerResources;LootGold;LootElixir;LootDE;League;BonusGold;BonusElixir;BonusDE"
-		local $aHeader = StringSplit($header , ";", $STR_NOCOUNT)
+		Local $aHeader = StringSplit($header, ";", $STR_NOCOUNT)
 		$header = ""
-		For $i = 0 to Ubound($header) - 1
+		For $i = 0 To UBound($header) - 1
 			$header &= StringFormat($StrinForm[$i], $aHeader[$i]) & ";"
 		Next
 		StringTrimRight($header, 1)
@@ -122,7 +122,7 @@ Func ExportDataBase($bLog = True)
 		For $iR = 0 To $iRows
 			Local $sText = ""
 			For $iC = 0 To $iColumns - 1
-				$sText &= StringFormat($StrinForm[$iC], $aResult[$iR][$iC])& ";"
+				$sText &= StringFormat($StrinForm[$iC], $aResult[$iR][$iC]) & ";"
 			Next
 			; remove the last ;
 			StringTrimRight($sText, 1)

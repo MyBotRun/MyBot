@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: ProMac (03-2018)
-; Modified ......:
+; Modified ......: Moebius14 (09-2023)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -52,35 +52,45 @@ Func CollectFreeMagicItems($bTest = False)
 
 	$iLastTimeChecked[$g_iCurAccount] = @MDAY
 
-	Local $aSoldOut[4] = [255, 290, 0xAD5C0D, 10]
-	If _CheckPixel($aSoldOut, True, Default, "CollectFreeMagicItems") Then
-		SetLog("Free Item Sold Out!", $COLOR_INFO)
-		If _Sleep(100) Then Return
-		Click(755, 160) ; Click Close Window Button
-		If _Sleep(100) Then Return
-		Return
-	EndIf
-
-	Local $Collected = False
+	Local $aOcrPositions[3][2] = [[270, 350], [480, 350], [690, 350]]
+	Local $ItemPosition = ""
+	Local $Collected = 0
 	Local $aResults = GetFreeMagic()
 	Local $aGem[3]
 
-	For $i = 0 To UBound($aResults) - 1
-		$aGem[$i] = $aResults[$i][0]
-	Next
-
 	For $t = 0 To UBound($aResults) - 1
-		If $aResults[$t][0] = "FREE" Then
-			If Not $bTest Then
-				Click($aResults[$t][1], $aResults[$t][2])
-			Else
-				SetLog("Should click on [" & $aResults[$t][1] & "," & $aResults[$t][2] & "]", $COLOR_ERROR)
+		$aGem[$t] = $aResults[$t][0]
+	Next
+	For $i = 0 To UBound($aResults) - 1
+		$ItemPosition = $i + 1
+		If Not $bTest Then
+			If $aResults[$i][0] = "FREE" Then
+				Click($aResults[$i][1], $aResults[$i][2])
+				If _Sleep(Random(3000, 4000, 1)) Then Return
+				If isGemOpen(True) Then
+					SetLog("Free Magic Item Collect Fail! Gem Window popped up!", $COLOR_ERROR)
+				EndIf
+				SetLog("Free Magic Item Detected On Slot #" & $ItemPosition & "", $COLOR_INFO)
+				If WaitforPixel($aOcrPositions[$i][0] + 25, $aOcrPositions[$i][1] - 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] - 25, "AD590D", 10, 1) Then
+					SetLog("Free Magic Item Collected On Slot #" & $ItemPosition & "", $COLOR_SUCCESS)
+					$aGem[$i] = "Collected"
+					If _Sleep(1500) Then Return
+					$Collected += 1
+				EndIf
+			ElseIf $aResults[$i][0] = "FreeFull" Then
+				SetLog("Free Magic Item Detected On Slot #" & $ItemPosition & "", $COLOR_INFO)
+				SetLog("But Item Can't be Collected, Stock is Full", $COLOR_INFO)
+				$aGem[$i] = "Full"
+			ElseIf $aResults[$i][0] = "Full" Then
+				$aGem[$i] = "Full"
+			ElseIf $aResults[$i][0] = "SoldOut" Then
+				SetLog("Free Magic Item Detected On Slot #" & $ItemPosition & "", $COLOR_INFO)
+				SetLog("But Item Out Of Stock", $COLOR_INFO)
+				$aGem[$i] = "Sold Out"
+				If _Sleep(Random(2000, 4000, 1)) Then Return
 			EndIf
-			SetLog("Free Magic Item detected", $COLOR_INFO)
-			If _Sleep(1000) Then Return
-			$Collected = True
-			ExitLoop
 		EndIf
+		If Not $g_bRunState Then Return
 	Next
 
 	If Not $Collected Then
@@ -93,23 +103,29 @@ Func CollectFreeMagicItems($bTest = False)
 EndFunc   ;==>CollectFreeMagicItems
 
 Func GetFreeMagic()
-	Local $aOcrPositions[3][2] = [[285, 345], [465, 345], [635, 345]]
-	Local $aClickFreeItemPositions[3][2] = [[320, 285], [500, 285], [680, 285]]
+	Local $aOcrPositions[3][2] = [[270, 350], [480, 350], [690, 350]]
+	Local $aClickFreeItemPositions[3][2] = [[305, 280], [512, 280], [723, 280]]
 	Local $aResults[0][3]
 
 	For $i = 0 To UBound($aOcrPositions) - 1
 
-		Local $Read = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 200, 25, True)
+		Local $Read = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 60, 25, True)
 		If $Read = "FREE" Then
-			If WaitforPixel($aOcrPositions[$i][0] - 10, $aOcrPositions[$i][1], $aOcrPositions[$i][0] - 9, $aOcrPositions[$i][1] + 1, "A3A3A3", 10, 1) Then
-				$Read = "N/A"
+			If WaitforPixel($aOcrPositions[$i][0] + 25, $aOcrPositions[$i][1] - 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] - 25, "AD590D", 10, 1) Then
+				$Read = "SoldOut"
+			EndIf
+			If WaitforPixel($aOcrPositions[$i][0] + 33, $aOcrPositions[$i][1] + 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] + 31, "969696", 10, 1) Then
+				$Read = "FreeFull"
 			EndIf
 		EndIf
 		If $Read = "" Then $Read = "N/A"
 		If Number($Read) > 10 Then
 			$Read = $Read & " Gems"
+			If WaitforPixel($aOcrPositions[$i][0] + 33, $aOcrPositions[$i][1] + 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] + 31, "b4b4b4", 10, 1) Then
+				$Read = "Full"
+			EndIf
 		EndIf
 		_ArrayAdd($aResults, $Read & "|" & $aClickFreeItemPositions[$i][0] & "|" & $aClickFreeItemPositions[$i][1])
 	Next
 	Return $aResults
-EndFunc
+EndFunc   ;==>GetFreeMagic

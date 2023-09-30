@@ -16,7 +16,7 @@
 
 Func CheckVersion()
 
-	If not $g_bCheckVersion Then Return
+	If Not $g_bCheckVersion Then Return
 
 	; Get the last Version from API
 	Local $g_sBotGitVersion = ""
@@ -33,15 +33,15 @@ Func CheckVersion()
 		EndIf
 		Local $version = GetLastVersion($Temp)
 		$g_sBotGitVersion = StringReplace($version[0], "MBR_v", "")
-		SetDebugLog("Last GitHub version is " & $g_sBotGitVersion )
-		SetDebugLog("Your version is " & $g_iBotVersionN )
+		SetDebugLog("Last GitHub version is " & $g_sBotGitVersion)
+		SetDebugLog("Your version is " & $g_iBotVersionN)
 
 		If _VersionCompare($g_iBotVersionN, $g_sBotGitVersion) = -1 Then
 			SetLog("WARNING, YOUR VERSION (" & $g_iBotVersionN & ") IS OUT OF DATE.", $COLOR_INFO)
 			Local $ChangelogTXT = GetLastChangeLog($Temp)
 			Local $Changelog = StringSplit($ChangelogTXT[0], '\r\n', $STR_ENTIRESPLIT + $STR_NOCOUNT)
 			For $i = 0 To UBound($Changelog) - 1
-				SetLog($Changelog[$i] )
+				SetLog($Changelog[$i])
 			Next
 			PushMsg("Update")
 		ElseIf _VersionCompare($g_iBotVersionN, $g_sBotGitVersion) = 0 Then

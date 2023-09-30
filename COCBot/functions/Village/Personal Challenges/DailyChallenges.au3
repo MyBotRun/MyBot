@@ -22,15 +22,15 @@ Func DailyChallenges()
 
 	checkMainScreen(False)
 	Local $bGoldPass = _CheckPixel($aPersonalChallengeOpenButton2, $g_bCapturePixel) ; golden badge button at mainscreen
-	
+
 	; Check at least one pet upgrade is enabled
 	Local $bUpgradePets = False
-	For $i = 0 to $ePetCount - 1
+	For $i = 0 To $ePetCount - 1
 		If $g_bUpgradePetsEnable[$i] Then
 			$bUpgradePets = True
 		EndIf
 	Next
-	
+
 	Local $bCheckDiscount = $bGoldPass And ($g_bUpgradeKingEnable Or $g_bUpgradeQueenEnable Or $g_bUpgradeWardenEnable Or $g_bUpgradeChampionEnable Or $g_bAutoUpgradeWallsEnable Or $bUpgradePets)
 
 	If Not $g_bChkCollectRewards And Not $bCheckDiscount Then Return
@@ -84,8 +84,8 @@ Func CollectDailyRewards($bGoldPass = False)
 
 	ClickP($aPersonalChallengeRewardsTab, 1, 0, "Rewards tab") ; Click Rewards tab
 	If _Sleep(1000) Then Return
-	
-	If QuickMIS("BC1", $g_sImgGreenButton, 790, 360 + $g_iMidOffsetY, 820, 395 + $g_iMidOffsetY) Then
+
+	If QuickMIS("BC1", $g_sImgGreenButton, 790, 360 + $g_iMidOffsetY, 820, 400 + $g_iMidOffsetY) Then
 		Click($g_iQuickMISX - 8, $g_iQuickMISY + 7)
 		If _Sleep(1500) Then Return
 	EndIf
@@ -106,15 +106,15 @@ Func CollectDailyRewards($bGoldPass = False)
 
 					For $j = 0 To UBound($aAllCoords) - 1
 						ClickP($aAllCoords[$j], 1, 0, "Claim " & $j + 1) ; Click Claim button
-						If WaitforPixel(350, 410, 351, 411, Hex(0xFDC875, 6), 20, 3) Then; wait for Cancel Button popped up in 1.5 second
-						    If $g_bChkSellRewards Then
-							    Setlog("Selling extra reward for gems", $COLOR_SUCCESS)
+						If WaitforPixel(329, 390 + $g_iMidOffsetY, 331, 392 + $g_iMidOffsetY, Hex(0xFDC875, 6), 20, 3) Then ; wait for Cancel Button popped up in 1.5 second
+							If $g_bChkSellRewards Then
+								Setlog("Selling extra reward for gems", $COLOR_SUCCESS)
 								ClickP($aPersonalChallengeOkBtn, 1, 0, "Okay Btn") ; Click the Okay
 								$iClaim += 1
 							Else
 								SetLog("Cancel. Not selling extra rewards.", $COLOR_SUCCESS)
 								ClickP($aPersonalChallengeCancelBtn, 1, 0, "Cancel Btn") ; Click Claim button
-							Endif
+							EndIf
 							If _Sleep(1000) Then ExitLoop
 						Else
 							$iClaim += 1
@@ -149,12 +149,12 @@ Func CheckDiscountPerks()
 	ClickP($aPersonalChallengePerksTab, 1, 0, "PerksTab")
 
 	If Not WaitforPixel($aPersonalChallengePerksTab[0] - 1, $aPersonalChallengePerksTab[1] - 1, $aPersonalChallengePerksTab[0] + 1, $aPersonalChallengePerksTab[1] + 1, _
-					Hex($aPersonalChallengePerksTab[2], 6), $aPersonalChallengePerksTab[3], 2) Then Return; wait for Perks Tab completely loaded in 1 second
+			Hex($aPersonalChallengePerksTab[2], 6), $aPersonalChallengePerksTab[3], 2) Then Return        ; wait for Perks Tab completely loaded in 1 second
 
 	If _Sleep(500) Then Return
 
 	; find builder boost rate %
-	Local $sDiscount = getOcrAndCapture("coc-builderboost", 370, 305  + $g_iMidOffsetY, 110, 40)
+	Local $sDiscount = getOcrAndCapture("coc-builderboost", 370, 305 + $g_iMidOffsetY, 110, 40)
 	SetDebugLog("Builder boost OCR: " & $sDiscount)
 	If StringInStr($sDiscount, "%") Then
 		Local $aDiscount = StringSplit($sDiscount, "%", $STR_NOCOUNT)

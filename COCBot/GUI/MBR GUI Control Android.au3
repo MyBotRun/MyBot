@@ -182,18 +182,14 @@ Func getAllEmulators()
 	Local $MEmuEmulator = GetMEmuPath()
 	If FileExists($MEmuEmulator) Then $sEmulatorString &= "MEmu|"
 
-	; iTools
-	Local $iToolsEmulator = GetiToolsPath()
-	If FileExists($iToolsEmulator) Then $sEmulatorString &= "iTools|"
-
 	Local $sResult = StringRight($sEmulatorString, 1)
 	If $sResult == "|" Then $sEmulatorString = StringTrimRight($sEmulatorString, 1)
-	
+
 	Local $aEmulator = StringSplit($sEmulatorString, "|", $STR_NOCOUNT)
 	If $sEmulatorString <> "" Then
 		If UBound($aEmulator) = 1 Then
 			Setlog("Emulator Found In Your Machine :")
-		Else	
+		Else
 			Setlog(UBound($aEmulator) & " Emulators Found In Your Machine :")
 		EndIf
 		For $i = 0 To UBound($aEmulator) - 1
@@ -236,15 +232,13 @@ Func getAllEmulatorsInstances()
 			Local $VMsBlueStacks = ""
 			$VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "DataDir")
 			$sEmulatorPath = $VMsBlueStacks ; C:\ProgramData\BlueStacks\Engine
-	   Case "BlueStacks5"
+		Case "BlueStacks5"
             Local $VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "DataDir")
             $sEmulatorPath = $VMsBlueStacks ; C:\ProgramData\BlueStacks\Engine
 		Case "Nox"
 			$sEmulatorPath = GetNoxPath() & "\BignoxVMS"
 		Case "MEmu"
 			$sEmulatorPath = GetMEmuPath() & "\MemuHyperv VMs"
-		Case "iTools"
-			$sEmulatorPath = GetiToolsPath() & "\Repos\VMs"  ; C:\Program Files (x86)\ThinkSky\iToolsAVM\Repos\VMs
 		Case Else
 			GUICtrlSetData($g_hCmbAndroidInstance, "Android", "Android")
 			Return

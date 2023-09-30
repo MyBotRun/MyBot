@@ -25,7 +25,7 @@ Func BotCommand()
 		$bChkBotStop = True ; set halt attack mode
 		$iCmbBotCond = 18 ; set stay online/collect only mode
 		$iCmbBotCommand = 0 ; set stop mode to stay online
-		Local $sOutOf = ($g_bOutOfGold ? "Gold" : "") & (($g_bOutOfGold And $g_bOutOfElixir)? " and " : "") & ($g_bOutOfElixir ? "Elixir" : "")
+		Local $sOutOf = ($g_bOutOfGold ? "Gold" : "") & (($g_bOutOfGold And $g_bOutOfElixir) ? " and " : "") & ($g_bOutOfElixir ? "Elixir" : "")
 		SetLog("Out of " & $sOutOf & " condition detected, force HALT mode!", $COLOR_WARNING)
 	Else
 		$bChkBotStop = $g_bChkBotStop ; Normal use GUI halt mode values
@@ -108,6 +108,13 @@ Func BotCommand()
 						SetLog("Star bonus available. Continue attacking to collect them.")
 						Return False
 					EndIf
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames()
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Don't Halt Attack.", $COLOR_SUCCESS)
+							Return False
+						EndIf
+					EndIf
 					If Not $g_bDonationEnabled Then
 						SetLog("Halt Attack, Stay Online/Collect", $COLOR_INFO)
 					ElseIf Not $g_bTrainEnabled Then
@@ -118,36 +125,85 @@ Func BotCommand()
 					$g_iCommandStop = 0 ; Halt Attack
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 				Case 1
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames(False, True)
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
+							Return False
+						EndIf
+					EndIf
 					SetLog("MyBot.run Bot Stop as requested", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Return True
 				Case 2
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames(False, True)
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
+							Return False
+						EndIf
+					EndIf
 					SetLog("MyBot.run Close Bot as requested", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					BotClose()
 					Return True ; HaHa - No Return possible!
 				Case 3
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames(False, True)
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
+							Return False
+						EndIf
+					EndIf
 					SetLog("Close Android and Bot as requested", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					CloseAndroid("BotCommand")
 					BotClose()
 					Return True ; HaHa - No Return possible!
 				Case 4
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames(False, True)
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
+							Return False
+						EndIf
+					EndIf
 					SetLog("Force Shutdown of Computer", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Shutdown(BitOR($SD_SHUTDOWN, $SD_FORCE)) ; Force Shutdown
 					Return True ; HaHa - No Return possible!
 				Case 5
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames(False, True)
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
+							Return False
+						EndIf
+					EndIf
 					SetLog("Computer Sleep Mode Start now", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Shutdown($SD_STANDBY) ; Sleep / Stand by
 					Return True ; HaHa - No Return possible!
 				Case 6
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames(False, True)
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
+							Return False
+						EndIf
+					EndIf
 					SetLog("Rebooting Computer", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Shutdown(BitOR($SD_REBOOT, $SD_FORCE)) ; Reboot
 					Return True ; HaHa - No Return possible!
 				Case 7
+					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+						_ClanGames(False, True)
+						If $IsCGEventRunning Then
+							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
+							Return False
+						EndIf
+					EndIf
 					If ProfileSwitchAccountEnabled() Then
 						Local $aActiveAccount = _ArrayFindAll($g_abAccountNo, True)
 						If UBound($aActiveAccount) >= 2 Then

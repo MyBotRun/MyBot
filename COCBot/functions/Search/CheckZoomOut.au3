@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 ;
 Func CheckZoomOut($sSource = "CheckZoomOut", $bCheckOnly = False, $bForecCapture = True)
-   	$g_aiSearchZoomOutCounter[0] = 0
+	$g_aiSearchZoomOutCounter[0] = 0
 	$g_aiSearchZoomOutCounter[1] = 1
 	If $bForecCapture = True Then
 		_CaptureRegion2()

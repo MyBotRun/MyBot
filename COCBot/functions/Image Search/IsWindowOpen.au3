@@ -12,20 +12,20 @@
 ; ===============================================================================================================================
 Global $g_avWindowCoordinates[2] = [-1, -1]
 
-Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = "", $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
+Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = "", $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
 	Local $aFiles = _FileListToArrayRec($sImagePath)
 	Local $aWindow, $avResetCoords[2] = [-1, -1]
 
 	If $sSearchArea = "" Then
-		Local $iMidPointX = round($g_iGAME_WIDTH / 2)
-		Local $iMidPointY = round($g_iGAME_HEIGHT / 2)
-		Local $iOffSetX = round($g_iGAME_WIDTH / 4)
+		Local $iMidPointX = Round($g_iGAME_WIDTH / 2)
+		Local $iMidPointY = Round($g_iGAME_HEIGHT / 2)
+		Local $iOffSetX = Round($g_iGAME_WIDTH / 4)
 		Local $iX1 = $iMidPointX - $iOffSetX
 		Local $iX2 = $iMidPointX + $iOffSetX
 		Local $iY1 = 0
 		Local $iY2 = $iMidPointY
 
-		$sSearchArea = $iX1  & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
+		$sSearchArea = $iX1 & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
 	EndIf
 
 	If $bDebugImageSave Then SaveDebugDiamondImage("IsWindowOpen", $sSearchArea)
@@ -53,27 +53,27 @@ Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = ""
 		Next
 	EndIf
 
-	SetLog("Failed to locate image: " & $sImagePath, $COLOR_ERROR);
+	SetLog("Failed to locate image: " & $sImagePath, $COLOR_ERROR) ;
 	Return False
-EndFunc
+EndFunc   ;==>IsWindowOpen
 
-Func CloseWindow($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
+Func CloseWindow($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
 	Local $aiButton
 	Local $sImageDir = @ScriptDir & "\imgxml\Windows\CloseButton\*"
 
 	If $aSearchArea = Default Then
-		Local $iMidPointX = round($g_iGAME_WIDTH / 2)
-		Local $iMidPointY = round($g_iGAME_HEIGHT / 2)
+		Local $iMidPointX = Round($g_iGAME_WIDTH / 2)
+		Local $iMidPointY = Round($g_iGAME_HEIGHT / 2)
 
 		Local $iX1 = $iMidPointX
 		Local $iX2 = $g_iGAME_WIDTH
 		Local $iY1 = 0
 		Local $iY2 = $iMidPointY
 
-		$aSearchArea = $iX1  & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
+		$aSearchArea = $iX1 & "," & $iY1 & "|" & $iX2 & "," & $iY1 & "|" & $iX2 & "," & $iY2 & "|" & $iX1 & "," & $iY2
 	EndIf
 
-	For $i = 1 to $iLoopCount
+	For $i = 1 To $iLoopCount
 		$aiButton = decodeSingleCoord(findImage("CloseWindow", $sImageDir, $aSearchArea, 1, True))
 
 		If $bDebugImageSave Then SaveDebugDiamondImage("CloseWindow", $aSearchArea)
@@ -104,4 +104,4 @@ Func CloseWindow($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebug
 	If _Sleep($iDelay) Then Return
 
 	Return False
-EndFunc
+EndFunc   ;==>CloseWindow

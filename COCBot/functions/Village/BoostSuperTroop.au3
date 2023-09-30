@@ -33,8 +33,8 @@ Func BoostSuperTroop($bTest = False)
 
 			If Not $g_bRunState Then Return
 
-			Local $iPicsPerRow = 4, $picswidth = 125, $picspad = 18
-			Local $columnStart = 150, $iColumnY1 = 280 + $g_iMidOffsetY, $iColumnY2 = 440 + $g_iMidOffsetY
+			Local $iPicsPerRow = 4, $picswidth = 160, $picspad = 18
+			Local $columnStart = 80, $iColumnY1 = 305 + $g_iMidOffsetY, $iColumnY2 = 465 + $g_iMidOffsetY
 
 			If $g_iCmbSuperTroops[$i] > 0 Then
 
@@ -58,8 +58,8 @@ Func BoostSuperTroop($bTest = False)
 				If _Sleep(1500) Then Return
 
 				If $iRow = 4 Then ; for last row, we cannot scroll it to middle page
-					$iColumnY1 = 360 + $g_iMidOffsetY
-					$iColumnY2 = 520 + $g_iMidOffsetY
+					$iColumnY1 = 400 + $g_iMidOffsetY
+					$iColumnY2 = 560 + $g_iMidOffsetY
 				EndIf
 
 				If QuickMIS("BC1", $g_sImgBoostTroopsClock, $iColumnX, $iColumnY1, $iColumnX + $picswidth, $iColumnY2, True, False) Then ;find pics Clock on spesific row / column (if clock found = troops already boosted)
@@ -74,11 +74,11 @@ Func BoostSuperTroop($bTest = False)
 							If _Sleep(1500) Then Return
 							If $g_bSuperTroopsBoostUsePotionFirst Then
 								Setlog("Using Super Potion...", $COLOR_INFO)
-								If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 400, 500 + $g_iMidOffsetY, 580, 570 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion
+								If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 480, 520 + $g_iMidOffsetY, 600, 600 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion
 									Click($g_iQuickMISX - 35, $g_iQuickMISY + 10, 1)
 									If _Sleep(1500) Then Return
 									If Not isGemOpen(True) Then
-										If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 330, 400 + $g_iMidOffsetY, 520, 480 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion button again (confirm upgrade)
+										If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 430, 430 + $g_iMidOffsetY, 510, 510 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion button again (confirm upgrade)
 											;Click boost
 											If $bTest Then
 												CancelBoost("Using Potion")
@@ -93,46 +93,46 @@ Func BoostSuperTroop($bTest = False)
 												CloseWindow()
 											Next
 										EndIf
-									Else ;try to use dark elixir because potion not found
+									EndIf
+								Else ;try to use dark elixir because potion not found
+									If _Sleep(1500) Then Return
+									Setlog("Cannot Find Potion, Using Dark Elixir...", $COLOR_INFO)
+									If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 740, 520 + $g_iMidOffsetY, 800, 600 + $g_iMidOffsetY) Then ;find image of dark elixir button
+										Click($g_iQuickMISX - 44, $g_iQuickMISY + 10, 1)
 										If _Sleep(1500) Then Return
-										Setlog("Cannot Find Potion, Using Dark Elixir...", $COLOR_INFO)
-										If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 600, 500 + $g_iMidOffsetY, 750, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
-											Click($g_iQuickMISX - 44, $g_iQuickMISY + 10, 1)
-											If _Sleep(1500) Then Return
-											If Not isGemOpen(True) Then
-												If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 320, 400 + $g_iMidOffsetY, 550, 480 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
-													;Click boost
-													If $bTest Then
-														CancelBoost("Using Dark Elixir")
-													Else
-														Click($g_iQuickMISX - 50, $g_iQuickMISY + 10, 1)
-														Setlog("Using Dark Elixir, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
-														$bRet = True
-													EndIf
+										If Not isGemOpen(True) Then
+											If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 430, 430 + $g_iMidOffsetY, 500, 510 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
+												;Click boost
+												If $bTest Then
+													CancelBoost("Using Dark Elixir")
 												Else
-													Setlog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
-													For $i = 0 To 1
-														CloseWindow()
-													Next
+													Click($g_iQuickMISX - 50, $g_iQuickMISY + 10, 1)
+													Setlog("Using Dark Elixir, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
+													$bRet = True
 												EndIf
 											Else
-												SetLog("Not Enough Dark Elixir To Boost Super Troop", $COLOR_ERROR)
-												If _Sleep(1500) Then Return
-												CloseWindow()
+												Setlog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
+												For $i = 0 To 1
+													CloseWindow()
+												Next
 											EndIf
 										Else
-											Setlog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
+											SetLog("Not Enough Dark Elixir To Boost Super Troop", $COLOR_ERROR)
+											If _Sleep(1500) Then Return
 											CloseWindow()
 										EndIf
+									Else
+										Setlog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
+										CloseWindow()
 									EndIf
 								EndIf
 							Else
 								Setlog("Using Dark Elixir...", $COLOR_INFO)
-								If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 600, 500 + $g_iMidOffsetY, 750, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
+								If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 740, 520 + $g_iMidOffsetY, 800, 600 + $g_iMidOffsetY) Then ;find image of dark elixir button
 									Click($g_iQuickMISX - 44, $g_iQuickMISY + 10, 1)
 									If _Sleep(1500) Then Return
 									If Not isGemOpen(True) Then
-										If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 320, 400 + $g_iMidOffsetY, 550, 480 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
+										If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 430, 430 + $g_iMidOffsetY, 500, 510 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
 											;Click boost
 											If $bTest Then
 												CancelBoost("Using Dark Elixir")
@@ -169,7 +169,7 @@ Func BoostSuperTroop($bTest = False)
 		Next
 		If _Sleep(1500) Then Return
 		CloseWindow()
-	EndIf ;open barrel	
+	EndIf ;open barrel
 	Return $bRet
 EndFunc   ;==>BoostSuperTroop
 
@@ -182,7 +182,7 @@ Func OpenBarrel($bTest = False)
 		Local $aiSearchNoBoost[4] = [$g_iQuickMISX - 10, $g_iQuickMISY - 10, $g_iQuickMISX + 25, $g_iQuickMISY + 35]
 		Local $aiSearchArrayLower[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 25, $g_iQuickMISX + 20, $g_iQuickMISY - 18]
 		Local $aiSearchArrayUpper[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 39, $g_iQuickMISX + 20, $g_iQuickMISY - 29]
-		
+
 		If QuickMIS("BC1", $g_sImgBarrelStopped, $aiSearchNoBoost[0], $aiSearchNoBoost[1], $aiSearchNoBoost[2], $aiSearchNoBoost[3], True, False) Then
 			SetLog("No Troop Currently Boosted", $COLOR_INFO)
 		Else
@@ -227,7 +227,7 @@ Func OpenBarrel($bTest = False)
 			Click($g_iQuickMISX, $g_iQuickMISY, 1)
 			If _Sleep(1000) Then Return
 			For $i = 1 To 10
-				If QuickMIS("BC1", $g_sImgBoostTroopsWindow, 400, 150 + $g_iMidOffsetY, 460, 190 + $g_iMidOffsetY, True, False) Then
+				If QuickMIS("BC1", $g_sImgBoostTroopsWindow, 380, 85 + $g_iMidOffsetY, 480, 180 + $g_iMidOffsetY, True, False) Then
 					SetDebugLog("Detected SuperTroops Window Image At " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_DEBUG)
 					$bRet = True
 					ExitLoop
@@ -249,7 +249,7 @@ Func OpenBarrel($bTest = False)
 
 EndFunc   ;==>OpenBarrel
 
-Func StroopNextPage($iRowTarget, Byref $iRow)
+Func StroopNextPage($iRowTarget, ByRef $iRow)
 	Local $iXMidPoint
 
 	While 1
@@ -257,15 +257,15 @@ Func StroopNextPage($iRowTarget, Byref $iRow)
 		$iXMidPoint = Random(360, 520, 1)
 
 		If $iRow < $iRowTarget Then
-			ClickDrag($iXMidPoint, 250 + $g_iMidOffsetY, $iXMidPoint, 95, 500)
+			ClickDrag($iXMidPoint, 480 + $g_iMidOffsetY, $iXMidPoint, 300 + $g_iMidOffsetY, 500)
 			$iRow += 1
 		EndIf
 
 		If $iRow > $iRowTarget Then
 			If $iRow = 4 Then
-				ClickDrag($iXMidPoint, 265 + $g_iMidOffsetY, $iXMidPoint, 346 + $g_iMidOffsetY, 500)
+				ClickDrag($iXMidPoint, 350 + $g_iMidOffsetY, $iXMidPoint, 450 + $g_iMidOffsetY, 500)
 			Else
-				ClickDrag($iXMidPoint, 250 + $g_iMidOffsetY, $iXMidPoint, 435 + $g_iMidOffsetY, 500)
+				ClickDrag($iXMidPoint, 255 + $g_iMidOffsetY, $iXMidPoint, 430 + $g_iMidOffsetY, 500)
 			EndIf
 			$iRow -= 1
 		EndIf
