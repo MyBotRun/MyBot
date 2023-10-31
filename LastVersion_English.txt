@@ -1,4 +1,4 @@
 [general]
-version    = "v8.1.1"
-messagenew = "Now supporting Clash of Clans APP v15.352.22!\n Requires update to game App!\n For more information, go to \n https://mybot.run \n Always free and open source."
+version    = "v8.1.2"
+messagenew = "Now supporting Clash of Clans Oct Update APP v15.547.8+!\n Requires update to game App!\n For more information, go to \n https://mybot.run \n Always free and open source."
 messageold = "A new version of MyBot is available!\nPlease download the latest from:\nhttps://mybot.run"
