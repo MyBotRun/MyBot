@@ -376,7 +376,7 @@ Func SwitchCOCAcc($NextAccount)
 	If Not $g_bRunState Then Return
 	CheckObstacles()
 
-	SetLog("Switch Account Load TownLevel : " & $g_iTownHallLevel)
+	SetLog("Switch Account Load Town Hall Level : " & $g_iTownHallLevel)
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName)
 
 	runBot()
@@ -423,7 +423,7 @@ Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult, $bDisconnectOnly = $g_bChkSh
 				Return -1
 			EndIf
 		Else ; SupercellID
-			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("675,135,730,175"), 1, True, Default))
+			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("630,150,720,200"), 1, True, Default))
 			If IsArray($aSuperCellIDConnected) And UBound($aSuperCellIDConnected, 1) >= 2 Then
 				SetLog("Account connected to SuperCell ID")
 				;ExitLoop
@@ -507,7 +507,7 @@ Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $iNextAccount, $bStayDisconnected
 			If IsArray($aiButtonDisconnect) And UBound($aiButtonDisconnect, 1) >= 2 Then ClickP($aiButtonDisconnect)
 			If _Sleep(600) Then Return FuncReturn("Exit")
 		Else ; SupercellID
-			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("675,135,730,175"), 1, True, Default))
+			Local $aSuperCellIDConnected = decodeSingleCoord(findImage("SupercellID Connected", $g_sImgSupercellIDConnected, GetDiamondFromRect("630,150,720,200"), 1, True, Default))
 			If IsArray($aSuperCellIDConnected) And UBound($aSuperCellIDConnected, 1) >= 2 Then
 				SetLog("Account connected to SuperCell ID, cannot disconnect")
 				If $bStayDisconnected Then
@@ -624,7 +624,7 @@ EndFunc   ;==>SwitchCOCAcc_ConfirmAccount
 
 Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 	For $i = 0 To 20 ; Checking Blue Reload button continuously in 20sec
-		Local $aSuperCellIDReload = decodeSingleCoord(findImage("SupercellID Reload", $g_sImgSupercellIDReload, GetDiamondFromRect("585,125,650,180"), 1, True, Default))
+		Local $aSuperCellIDReload = decodeSingleCoord(findImage("SupercellID Reload", $g_sImgSupercellIDReload, GetDiamondFromRect("570,145,635,200"), 1, True, Default))
 		If IsArray($aSuperCellIDReload) And UBound($aSuperCellIDReload, 1) >= 2 Then
 			Click($aSuperCellIDReload[0], $aSuperCellIDReload[1], 1, 0, "Click Reload SC_ID")
 			Setlog("   1. Click Reload Supercell ID")
@@ -647,7 +647,7 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
 Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
-	Local $sAccountDiamond = GetDiamondFromRect("520,353,555,725") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sAccountDiamond = GetDiamondFromRect("520,353,560,725") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 	Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
@@ -655,7 +655,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 	If Not $g_bRunState Then Return "Exit"
 
 	For $i = 0 To 30 ; Checking "New SuperCellID UI" continuously in 30sec
-		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("440,1,859,243"), 1, True, Default))
+		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("670,100,859,170"), 1, True, Default))
 		If _Sleep(500) Then Return "Exit"
 		If IsArray($aSuperCellIDWindowsUI) And UBound($aSuperCellIDWindowsUI, 1) >= 2 Then
 
@@ -920,7 +920,7 @@ Func CheckLoginWithSupercellIDScreen()
 	If Not $g_bRunState Then Return
 
 	; "Log in with Supercell ID" check be there, validate with imgloc
-	Local $aiLogin = decodeSingleCoord(FindImageInPlace2("LoginWithSupercellID", $g_sImgLoginWithSupercellID, 100, 595 + $g_iBottomOffsetY, 425, 655 + $g_iBottomOffsetY, False))
+	Local $aiLogin = decodeSingleCoord(FindImageInPlace2("LoginWithSupercellID", $g_sImgLoginWithSupercellID, 100, 595 + $g_iBottomOffsetY, 425, 655 + $g_iBottomOffsetY, True))
 
 	If IsArray($aiLogin) And UBound($aiLogin) = 2 Then
 		Local $iAccount = 0 ; default first account on list
@@ -1066,10 +1066,8 @@ EndFunc   ;==>SCIDragIfNeeded
 
 Func IsSCIDAccComplete($iAccounts = 3)
 	SetLog("-----IsSCIDAccComplete----")
-	Local $sImgSupercellIDHead = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Slots\SCIDHead*"
-	Local $sImgSupercellIDCup = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Slots\SCIDCup*"
 	Local $iDistanceBetweenAccounts = 95
-	Local $aiSlotCoord, $aiHeadCoord, $aiCupCoord
+	Local $aiHeadCoord
 	Local $aiSearchArea[4] = [455, 347, 845, 437]
 	Local $bSaveImage = False
 	Local $bResult = True
@@ -1079,7 +1077,7 @@ Func IsSCIDAccComplete($iAccounts = 3)
 	Local $j = 0
 
 	; Profile Index offset
-	SetLog("$iAccounts : " & $iAccounts)
+	SetDebugLog("$iAccounts : " & $iAccounts)
 	If $iAccounts < 4 Then
 		Local $j = 0
 		$iLoop = $iAccounts
@@ -1087,15 +1085,13 @@ Func IsSCIDAccComplete($iAccounts = 3)
 		Local $j = $iAccounts - 3
 	EndIf
 
-	DirCreate($sFolder)
-
 	; check the barbarians are in their expected location
-	For $i = 0 To $iLoop - 1
+	For $i = 0 To $iLoop
 		Local $sProfileFolder = @ScriptDir & "\Profiles\" & $g_asProfileName[$i + $j] & "\"
 
 		SetLog("Checking SCID Slot: " & $i)
 
-		$aiHeadCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $sImgSupercellIDHead, GetDiamondFromArray($aiSearchArea), 1, True))
+		$aiHeadCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $g_sImgSupercellIDSlots, GetDiamondFromArray($aiSearchArea), 1, True))
 
 		If Not IsArray($aiHeadCoord) Or UBound($aiHeadCoord, $UBOUND_ROWS) < 2 Then
 			SetSwitchAccLog("Slot: " & $i & " Barbarian Head missing!")
@@ -1112,23 +1108,22 @@ Func IsSCIDAccComplete($iAccounts = 3)
 
 				Local $aiVillageNameCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $sProfileFolder & $filename, GetDiamondFromArray($aiSearchArea), 1, True))
 
-				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 1 Then
+				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 2 Then
 					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - missing!")
 					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - missing!")
 					$bSaveImage = True
 					$bResult = False
-
 				Else
 					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - OK!")
 					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - OK!")
 				EndIf
 			Else
 				Local $x = $aiHeadCoord[0] - 10
-				Local $y = $aiHeadCoord[1] - 30
+				Local $y = $aiHeadCoord[1] - 26
 
 				; now crop image to have only village name and put in $hClone
 				Local $oBitmap = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
-				Local $hClone = _GDIPlus_BitmapCloneArea($oBitmap, $x, $y, 65, 20, $GDIP_PXF24RGB)
+				Local $hClone = _GDIPlus_BitmapCloneArea($oBitmap, $x, $y, 65, 18, $GDIP_PXF24RGB)
 
 				_GDIPlus_ImageSaveToFile($hClone, $sProfileFolder & $filename)
 				SetSwitchAccLog($g_asProfileName[$i + $j] & " image Stored: ")
@@ -1143,10 +1138,13 @@ Func IsSCIDAccComplete($iAccounts = 3)
 
 		If _Sleep(250) Then Return
 
-		If $i = 2 Then ExitLoop
+		If $i = 3 Then ExitLoop
 	Next
 
-	If $bSaveImage = True Then SaveSCIDebugImage("SCID_Errors", False)
+	If $bSaveImage = True Then
+		If Not FileExists($sFolder) Then DirCreate($sFolder)
+		SaveSCIDebugImage("SCID_Errors", False)
+	EndIf
 
 	Return $bResult
 EndFunc   ;==>IsSCIDAccComplete

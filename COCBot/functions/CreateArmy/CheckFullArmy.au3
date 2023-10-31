@@ -39,13 +39,13 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	EndIf
 
 	If _sleep($DELAYCHECKFULLARMY2) Then Return
-	Local $Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(40, 180, True), Hex(0x87BA27, 6), 20)
+	Local $Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(40, 150 + $g_iMidOffsetY, True), Hex(0x87BA27, 6), 20)
 	If Not $Pixel Then
 		If _sleep($DELAYCHECKFULLARMY2) Then Return
-		$Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(40, 180, True), Hex(0x87BA27, 6), 20)
+		$Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(40, 150 + $g_iMidOffsetY, True), Hex(0x87BA27, 6), 20)
 	EndIf
 
-	If $g_bDebugSetlogTrain Then SetLog("Checking Overview for full army [!] " & $Pixel & ", " & _GetPixelColor(40, 180, True), $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Then SetLog("Checking Overview for full army [!] " & $Pixel & ", " & _GetPixelColor(40, 150 + $g_iMidOffsetY, True), $COLOR_DEBUG)
 	If $Pixel Then
 		$g_bFullArmy = True
 	EndIf

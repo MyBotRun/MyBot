@@ -1,3 +1,16 @@
+* v8.1.2 **
+* Add support for CoC October 9th 2023 game update.
+* The game update forced a massive number of MBR changes to support all the game UI changes, including:
+** Updated or new OCR libraries (29 total changed)
+** Updated image detection templates (Over 200 changes)
+** Updated code in ~100 different MBR files.
+* This version requires an update to CoC game version v15.547.8+ and a new supported emulator version.
+** Nox use requires a patched version v7.0.5.9017-9.0901231011 or newer.
+** Added support for Memu v9.01 to v9.06
+** Removed support for BlueStacks. 
+** See MBR forum for details: https://mybot.run/forums/index.php?/topic/64696-which-emulator-is-best-for-me-aka-current-emulator-advice-from-developers/
+* Added Support for Bomber Ability Activation with several Bombers.
+
 * v8.1.1 **
 * Added Special Enemy Resources Offset Support.
 * Added Wall Count update for Auto-upgrade.

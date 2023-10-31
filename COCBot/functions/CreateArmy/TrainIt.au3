@@ -150,7 +150,7 @@ EndFunc   ;==>GetRNDName
 Func GetVariable(Const $asImageToUse, Const $iIndex)
 	Local $aTrainPos[5] = [-1, -1, -1, -1, $eBarb]
 	; Capture the screen for comparison
-	_CaptureRegion2(25, 345 + $g_iMidOffsetY, 840, 518 + $g_iMidOffsetY)
+	_CaptureRegion2(35, 345 + $g_iMidOffsetY, 835, 538 + $g_iMidOffsetY)
 
 	Local $iError = ""
 	For $i = 1 To $asImageToUse[0]
@@ -211,20 +211,20 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 
 	If $sTroopType = "Spell" Then
 		Switch $iTrainPos[0]
-			Case 28 To 122 ; 1 Column
-				$iSlotH = 102
-			Case 126 To 220 ; 2 Column
-				$iSlotH = 200
-			Case 224 To 318 ; 3 Column
-				$iSlotH = 298
-			Case 322 To 415 ; 4 Column
-				$iSlotH = 396
-			Case 428 To 520 ; 5 Column
-				$iSlotH = 502
-			Case 526 To 618 ; 6 Column
-				$iSlotH = 599
-			Case 623 To 716 ; 7 Column
-				$iSlotH = 697
+			Case 37 To 132 ; 1 Column
+				$iSlotH = 112
+			Case 133 To 228 ; 2 Column
+				$iSlotH = 207
+			Case 229 To 323 ; 3 Column
+				$iSlotH = 303
+			Case 324 To 422 ; 4 Column
+				$iSlotH = 398
+			Case 423 To 522 ; 5 Column
+				$iSlotH = 501
+			Case 523 To 617 ; 6 Column
+				$iSlotH = 597
+			Case 618 To 712 ; 7 Column
+				$iSlotH = 692
 			Case Else
 				If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
 					SetLog("GetFullNameSlot(): It seems that there is no Slot for an Spell on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
@@ -235,24 +235,24 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 			Case 370 To 470
 				$iSlotV = 387 ; First ROW
 			Case 475 To 570 ; Second ROW
-				$iSlotV = 487
+				$iSlotV = 486
 		EndSwitch
 
-		Local $aSlot[4] = [$iSlotH, $iSlotV, 0xB9B9B9, 20] ; Gray [i] icon
+		Local $aSlot[4] = [$iSlotH, $iSlotV, 0xBABABA, 20] ; Gray [i] icon
 		If $g_bDebugSetlogTrain Then SetLog("GetFullNameSlot(): Spell Icon found on: " & $iSlotH & "," & $iSlotV, $COLOR_DEBUG)
 		Return $aSlot
 	EndIf
 
 	If $sTroopType = "Normal" Then
 
-		If $iTroop >= $eETitan And $g_iNextPageTroop > $eETitan Then ; When Titan and Above are in second page.
+		If $iTroop > $g_iNextPageTroop Then ; Normal Troops in second page
 			Switch $iTrainPos[0]
-				Case 44 To 136 ; 1 Column
-					$iSlotH = 118
-				Case 142 To 235 ; 2 Column
-					$iSlotH = 215
-				Case 245 To 340 ; 3 Column
-					$iSlotH = 312
+				Case 54 To 148 ; 1 Column
+					$iSlotH = 128
+				Case 149 To 243 ; 2 Column
+					$iSlotH = 223
+				Case 244 To 338 ; 3 Column
+					$iSlotH = 318
 				Case Else
 					If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
 						SetLog("GetFullNameSlot(): It seems that there is no Slot for an Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
@@ -260,22 +260,22 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 			EndSwitch
 		Else
 			Switch $iTrainPos[0]
-				Case 28 To 122 ; 1 Column
-					$iSlotH = 102
-				Case 126 To 220 ; 2 Column
-					$iSlotH = 200
-				Case 224 To 318 ; 3 Column
-					$iSlotH = 298
-				Case 322 To 415 ; 4 Column
-					$iSlotH = 395
-				Case 420 To 513 ; 5 Column
+				Case 37 To 132 ; 1 Column
+					$iSlotH = 112
+				Case 133 To 228 ; 2 Column
+					$iSlotH = 207
+				Case 229 To 323 ; 3 Column
+					$iSlotH = 303
+				Case 324 To 418 ; 4 Column
+					$iSlotH = 398
+				Case 419 To 513 ; 5 Column
 					$iSlotH = 493
-				Case 517 To 610 ; 6 Column
-					$iSlotH = 591
-				Case 615 To 707 ; 7 Column
-					$iSlotH = 689
-				Case 713 To 805 ; 8 Column
-					$iSlotH = 787
+				Case 514 To 609 ; 6 Column
+					$iSlotH = 588
+				Case 610 To 704 ; 7 Column
+					$iSlotH = 683
+				Case 705 To 799 ; 8 Column
+					$iSlotH = 779
 				Case Else
 					If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
 						SetLog("GetFullNameSlot(): It seems that there is no Slot for an Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
@@ -287,10 +287,10 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 			Case 370 To 470
 				$iSlotV = 387 ; First ROW
 			Case 475 To 570 ; Second ROW
-				$iSlotV = 488
+				$iSlotV = 486
 		EndSwitch
 
-		Local $aSlot[4] = [$iSlotH, $iSlotV, 0xB9B9B9, 20] ; Gray [i] icon
+		Local $aSlot[4] = [$iSlotH, $iSlotV, 0xBABABA, 20] ; Gray [i] icon
 		If $g_bDebugSetlogTrain Then SetLog("GetFullNameSlot(): Elixir Troop Icon found on: " & $iSlotH & "," & $iSlotV, $COLOR_DEBUG)
 
 		Return $aSlot
@@ -298,20 +298,20 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 
 	If $sTroopType = "Dark" Then
 		Switch $iTrainPos[0]
-			Case 148 To 240 ; When 2 Dark Super Troops
-				$iSlotH = 221
-			Case 248 To 340
-				$iSlotH = 321
-			Case 345 To 440
-				$iSlotH = 419
-			Case 442 To 536
+			Case 157 To 252 ; When 2 Dark Super Troops
+				$iSlotH = 230
+			Case 253 To 347
+				$iSlotH = 326
+			Case 348 To 442
+				$iSlotH = 422
+			Case 443 To 537
 				$iSlotH = 516
-			Case 541 To 634
-				$iSlotH = 614
-			Case 638 To 731
-				$iSlotH = 712
-			Case 736 To 830
-				$iSlotH = 809
+			Case 538 To 632
+				$iSlotH = 612
+			Case 633 To 728
+				$iSlotH = 708
+			Case 729 To 824
+				$iSlotH = 804
 			Case Else
 				If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
 					SetLog("GetFullNameSlot(): It seems that there is no Slot for a Dark Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
@@ -322,10 +322,10 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 			Case 370 To 470
 				$iSlotV = 387 ; First ROW
 			Case 475 To 570 ; Second ROW
-				$iSlotV = 488
+				$iSlotV = 486
 		EndSwitch
 
-		Local $aSlot[4] = [$iSlotH, $iSlotV, 0xB9B9B9, 20] ; Gray [i] icon
+		Local $aSlot[4] = [$iSlotH, $iSlotV, 0xBABABA, 20] ; Gray [i] icon
 		If $g_bDebugSetlogTrain Then SetLog("GetFullNameSlot(): Dark Elixir Troop Icon found on: " & $iSlotH & "," & $iSlotV, $COLOR_DEBUG)
 		Return $aSlot
 	EndIf

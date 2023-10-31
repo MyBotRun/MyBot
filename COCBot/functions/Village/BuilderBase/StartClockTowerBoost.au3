@@ -15,7 +15,7 @@
 #include-once
 
 Func ClockTimeGained()
-Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 Local $TowerClockLevel = $aResult[2]
 SetLog("Clock Tower Level " & $TowerClockLevel & " Detected")
 Local $ClockTimeGained = 0

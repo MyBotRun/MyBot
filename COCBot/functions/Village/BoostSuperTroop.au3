@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .:
 ; Author ........: xbebenk (08/2021)
-; Modified ......: Moebius14 (07/2023)
+; Modified ......: Moebius14 (10/2023)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -74,87 +74,77 @@ Func BoostSuperTroop($bTest = False)
 							If _Sleep(1500) Then Return
 							If $g_bSuperTroopsBoostUsePotionFirst Then
 								Setlog("Using Super Potion...", $COLOR_INFO)
-								If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 480, 520 + $g_iMidOffsetY, 600, 600 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion
-									Click($g_iQuickMISX - 35, $g_iQuickMISY + 10, 1)
+								If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 500, 530 + $g_iMidOffsetY, 535, 570 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion
+									Click($g_iQuickMISX - 50, $g_iQuickMISY - 10, 1)
 									If _Sleep(1500) Then Return
 									If Not isGemOpen(True) Then
-										If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 430, 430 + $g_iMidOffsetY, 510, 510 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion button again (confirm upgrade)
+										If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 430, 440 + $g_iMidOffsetY, 500, 500 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion button again (confirm upgrade)
 											;Click boost
 											If $bTest Then
 												CancelBoost("Using Potion")
 											Else
-												Click($g_iQuickMISX - 30, $g_iQuickMISY + 10, 1)
+												Click($g_iQuickMISX - 40, $g_iQuickMISY, 1)
 												Setlog("Using Potion, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 												$bRet = True
 											EndIf
 										Else
 											Setlog("Could not find Potion button for final upgrade " & $sTroopName, $COLOR_ERROR)
-											For $i = 0 To 1
-												CloseWindow()
-											Next
+											CloseWindow()
 										EndIf
 									EndIf
 								Else ;try to use dark elixir because potion not found
 									If _Sleep(1500) Then Return
 									Setlog("Cannot Find Potion, Using Dark Elixir...", $COLOR_INFO)
-									If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 740, 520 + $g_iMidOffsetY, 800, 600 + $g_iMidOffsetY) Then ;find image of dark elixir button
-										Click($g_iQuickMISX - 44, $g_iQuickMISY + 10, 1)
+									If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 700, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
+										Click($g_iQuickMISX - 55, $g_iQuickMISY, 1)
 										If _Sleep(1500) Then Return
 										If Not isGemOpen(True) Then
-											If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 430, 430 + $g_iMidOffsetY, 500, 510 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
+											If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 470, 450 + $g_iMidOffsetY, 515, 495 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
 												;Click boost
 												If $bTest Then
 													CancelBoost("Using Dark Elixir")
 												Else
-													Click($g_iQuickMISX - 50, $g_iQuickMISY + 10, 1)
+													Click($g_iQuickMISX - 70, $g_iQuickMISY, 1)
 													Setlog("Using Dark Elixir, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 													$bRet = True
 												EndIf
 											Else
 												Setlog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
-												For $i = 0 To 1
-													CloseWindow()
-												Next
+												CloseWindow()
 											EndIf
 										Else
 											SetLog("Not Enough Dark Elixir To Boost Super Troop", $COLOR_ERROR)
 											If _Sleep(1500) Then Return
-											CloseWindow()
 										EndIf
 									Else
 										Setlog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
-										CloseWindow()
 									EndIf
 								EndIf
 							Else
 								Setlog("Using Dark Elixir...", $COLOR_INFO)
-								If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 740, 520 + $g_iMidOffsetY, 800, 600 + $g_iMidOffsetY) Then ;find image of dark elixir button
-									Click($g_iQuickMISX - 44, $g_iQuickMISY + 10, 1)
+								If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 700, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
+									Click($g_iQuickMISX - 55, $g_iQuickMISY, 1)
 									If _Sleep(1500) Then Return
 									If Not isGemOpen(True) Then
-										If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 430, 430 + $g_iMidOffsetY, 500, 510 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
+										If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 470, 450 + $g_iMidOffsetY, 515, 495 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
 											;Click boost
 											If $bTest Then
 												CancelBoost("Using Dark Elixir")
 											Else
-												Click($g_iQuickMISX - 50, $g_iQuickMISY + 10, 1)
+												Click($g_iQuickMISX - 70, $g_iQuickMISY, 1)
 												Setlog("Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 												$bRet = True
 											EndIf
 										Else
 											Setlog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
-											For $i = 0 To 1
-												CloseWindow()
-											Next
+											CloseWindow()
 										EndIf
 									Else
 										SetLog("Not Enough Dark Elixir To Boost Super Troop", $COLOR_ERROR)
 										If _Sleep(1500) Then Return
-										CloseWindow()
 									EndIf
 								Else
 									Setlog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
-									CloseWindow()
 								EndIf
 							EndIf
 						Else
@@ -175,15 +165,22 @@ EndFunc   ;==>BoostSuperTroop
 
 Func OpenBarrel($bTest = False)
 
-	If QuickMIS("BC1", $g_sImgBoostTroopsBarrel, 30, 90 + $g_iMidOffsetY, 180, 240 + $g_iMidOffsetY, True, False) Then
+	If QuickMIS("BC1", $g_sImgBoostTroopsBarrel, 30, 90 + $g_iMidOffsetY, 180, 240 + $g_iMidOffsetY) Then
 
 		Local $aSearchForProgress = 0
 		Local $iSTCount = 0, $bOpenBarrel = True, $bRet = False
 		Local $aiSearchNoBoost[4] = [$g_iQuickMISX - 10, $g_iQuickMISY - 10, $g_iQuickMISX + 25, $g_iQuickMISY + 35]
 		Local $aiSearchArrayLower[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 25, $g_iQuickMISX + 20, $g_iQuickMISY - 18]
 		Local $aiSearchArrayUpper[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 39, $g_iQuickMISX + 20, $g_iQuickMISY - 29]
+		Local $BarrelStoppedLoop = 0
 
-		If QuickMIS("BC1", $g_sImgBarrelStopped, $aiSearchNoBoost[0], $aiSearchNoBoost[1], $aiSearchNoBoost[2], $aiSearchNoBoost[3], True, False) Then
+		For $i = 0 To 5 ; To Detect Stopped Barrel even with animation.
+			If QuickMIS("BC1", $g_sImgBarrelStopped, $aiSearchNoBoost[0], $aiSearchNoBoost[1], $aiSearchNoBoost[2], $aiSearchNoBoost[3]) Then $BarrelStoppedLoop += 1
+			If $BarrelStoppedLoop > 0 Then ExitLoop
+			If _Sleep(200) Then Return
+		Next
+
+		If $BarrelStoppedLoop > 0 Then
 			SetLog("No Troop Currently Boosted", $COLOR_INFO)
 		Else
 			If WaitforPixel($aiSearchArrayLower[0], $aiSearchArrayLower[1], $aiSearchArrayLower[2], $aiSearchArrayLower[3], "E2E3D8", 20, 2) Then $aSearchForProgress = 1
@@ -308,7 +305,5 @@ EndFunc   ;==>FindStroopIcons
 Func CancelBoost($aMessage = "")
 	SetLog($aMessage & ", Test = True", $COLOR_DEBUG)
 	SetLog(" -- Cancelling", $COLOR_DEBUG)
-	For $i = 0 To 1
-		CloseWindow()
-	Next
+	CloseWindow()
 EndFunc   ;==>CancelBoost

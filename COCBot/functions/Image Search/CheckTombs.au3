@@ -193,16 +193,24 @@ Func CleanYard()
 EndFunc   ;==>CleanYard
 
 Func ClickRemoveObstacle()
-	If _ColorCheck(_GetPixelColor(330, 338 + $g_iMidOffsetY, True), Hex(0xC55115, 6), 20) Then  ; close chat
+	If _ColorCheck(_GetPixelColor(385, 338 + $g_iMidOffsetY, True), Hex(0xC75215, 6), 20) Then  ; close chat
 		If Not ClickB("ClanChat") Then
 			SetLog("Error finding the Clan Tab Button", $COLOR_ERROR)
-			Click(332, 312 + $g_iMidOffsetY)
+			Click(390, 312 + $g_iMidOffsetY)
 			Return
 		EndIf
 		If _Sleep(500) Then Return
 		Return False
 	EndIf
-	Local $aiButton = findButton("RemoveObstacle", Default, 1, True)
+
+	Local $bLoop = 0
+	While 1
+		Local $aiButton = findButton("RemoveObstacle", Default, 1, True)
+		If (IsArray($aiButton) And UBound($aiButton) >= 2) Or $bLoop = 20 Then ExitLoop
+		If _Sleep(200) Then Return
+		$bLoop += 1
+	WEnd
+
 	If IsArray($aiButton) And UBound($aiButton) >= 2 Then
 		SetDebugLog("Remove Button found! Clicking it at X: " & $aiButton[0] & ", Y: " & $aiButton[1], $COLOR_DEBUG1)
 		ClickP($aiButton)

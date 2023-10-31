@@ -16,7 +16,7 @@
 Func isOnBuilderBase($bNeedCaptureRegion = False)
 	If _Sleep($DELAYISBUILDERBASE) Then Return
 
-	Local $sArea = GetDiamondFromRect("260,0,406,54")
+	Local $sArea = GetDiamondFromRect("455,0,500,54")
 	Local $asSearchResult = findMultiple($g_sImgIsOnBB, $sArea, $sArea, 0, 1000, 1, "objectname", $bNeedCaptureRegion)
 
 	If IsArray($asSearchResult) And UBound($asSearchResult) > 0 Then
@@ -30,7 +30,7 @@ EndFunc
 Func isOnMainVillage($bNeedCaptureRegion = $g_bNoCapturePixel)
 	If _Sleep(250) Then Return
 
-	Local $sArea = GetDiamondFromRect("265,0,315,60")
+	Local $sArea = GetDiamondFromRect("360,0,450,60")
 	Local $asSearchResult = findMultiple($sImgIsOnMainVillage, $sArea, $sArea, 0, 1000, 1, "objectname", $bNeedCaptureRegion)
 
 	If IsArray($asSearchResult) And UBound($asSearchResult) > 0 Then

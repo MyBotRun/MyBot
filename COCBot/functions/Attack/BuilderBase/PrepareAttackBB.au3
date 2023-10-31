@@ -207,7 +207,7 @@ Func ReturnHomeDropTrophyBB($bOnlySurender = False)
 	For $i = 1 To 15
 		Select
 			Case IsBBAttackPage() = True
-				Click(65, 550) ;click surrender
+				Click(65, 540 + $g_iMidOffsetY) ;click surrender
 				If _Sleep(1000) Then Return
 			Case QuickMIS("BC1", $g_sImgBBReturnHome, 390, 515 + $g_iMidOffsetY, 470, 560 + $g_iMidOffsetY) = True
 				If $bOnlySurender Then

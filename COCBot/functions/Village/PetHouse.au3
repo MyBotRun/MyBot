@@ -94,6 +94,9 @@ Func PetHouse($test = False)
 
 		; check if pet upgrade unlocked ; c3b6a5 nox c1b7a5 memu?
 		If _ColorCheck(_GetPixelColor($iPetLevelxCoord[$i], 380 + $g_iMidOffsetY, True), Hex(0xC5BBA7, 6), 20) Then
+			If $g_iTownHallLevel = 14 Then
+				If $i = 0 Or $i = 2 Then $g_ePetLevels[$i] = 10 ; Max level 10 for TH14
+			EndIf
 			; get the Pet Level
 			Local $iPetLevel = getPetsLevel($iPetLevelxCoord[$i], 544 + $g_iMidOffsetY)
 			If Not ($iPetLevel > 0 And $iPetLevel <= $g_ePetLevels[$i]) Then ;If detected level is not between 1 and 10 Or 15, To Prevent Crash
@@ -119,49 +122,53 @@ Func PetHouse($test = False)
 				Click($iX, $iY)
 				; wait for ungrade window to open
 				If _Sleep(1500) Then Return
-				; use image search to find Upgrade Button
-				Local $aUpgradePetButton = findButton("UpgradePet", Default, 1, True)
-				; check button found
-				If IsArray($aUpgradePetButton) And UBound($aUpgradePetButton, 1) = 2 Then
-					If $g_bDebugImageSave Then SaveDebugImage("PetHouse") ; Debug Only
-					; check if this just a test
-					If Not $test Then
-						ClickP($aUpgradePetButton) ; click upgrade and window close
-						If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to close
-						; Just incase the buy Gem Window pop up!
-						If isGemOpen(True) Then
-							SetDebugLog("Not enough DE for to upgrade: " & $g_asPetNames[$i], $COLOR_DEBUG)
+				If _ColorCheck(_GetPixelColor(570, 525 + $g_iMidOffsetY, True), "D6F889", 20) Then
+					Local $RedZero = _PixelSearch(610, 548 + $g_iMidOffsetY, 650, 552 + $g_iMidOffsetY, Hex(0xFF887F, 6), 20)
+					If IsArray($RedZero) Then     ; Check for Red Zero = means not enough loot!
+						SetLog("Not Enough Loot To Upgrade Pet!", $COLOR_ERROR)
+						For $i = 0 To 1
 							CloseWindow()
-							Return False
-						EndIf
-						; Update gui
-						;==========Hide Red  Show Green Hide Gray===
-						GUICtrlSetState($g_hPicPetGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPetRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPetGreen, $GUI_SHOW)
-						;===========================================
-						If _Sleep($DELAYLABORATORY2) Then Return
-						Local $sPetTimeOCR = getLabUpgradeTime(235, 242 + $g_iMidOffsetY)
-						If $sPetTimeOCR = "" Then $sPetTimeOCR = getPetUpgradeTime(235, 242 + $g_iMidOffsetY)
-						Local $iPetFinishTime = ConvertOCRTime("Lab Time", $sPetTimeOCR, False)
-						SetDebugLog("$sPetTimeOCR: " & $sPetTimeOCR & ", $iPetFinishTime = " & $iPetFinishTime & " m")
-						If $iPetFinishTime > 0 Then
-							$g_sPetUpgradeTime = _DateAdd('n', Ceiling($iPetFinishTime), _NowCalc())
-							SetLog("Pet House will finish in " & $sPetTimeOCR & " (" & $g_sPetUpgradeTime & ")")
-						EndIf
+						Next
+						Return False
 					Else
-						ClickAway() ; close pet upgrade window
+						If $g_bDebugImageSave Then SaveDebugImage("PetHouse") ; Debug Only
+						; check if this just a test
+						If Not $test Then
+							Click(630, 540 + $g_iMidOffsetY) ; click upgrade
+							If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to close
+							; Just incase the buy Gem Window pop up!
+							If isGemOpen(True) Then
+								SetDebugLog("Not enough DE for to upgrade: " & $g_asPetNames[$i], $COLOR_DEBUG)
+								For $i = 0 To 1
+									CloseWindow()
+								Next
+								Return False
+							EndIf
+							CloseWindow() ; close pet upgrade window
+							; Update gui
+							;==========Hide Red  Show Green Hide Gray===
+							GUICtrlSetState($g_hPicPetGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicPetRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicPetGreen, $GUI_SHOW)
+							;===========================================
+							If _Sleep($DELAYLABORATORY1) Then Return
+							Local $sPetTimeOCR = getPetUpgradeTime(235, 242 + $g_iMidOffsetY)
+							Local $iPetFinishTime = ConvertOCRTime("Lab Time", $sPetTimeOCR, False)
+							SetDebugLog("$sPetTimeOCR: " & $sPetTimeOCR & ", $iPetFinishTime = " & $iPetFinishTime & " m")
+							If $iPetFinishTime > 0 Then
+								$g_sPetUpgradeTime = _DateAdd('n', Ceiling($iPetFinishTime), _NowCalc())
+								SetLog("Pet House will finish in " & $sPetTimeOCR & " (" & $g_sPetUpgradeTime & ")")
+							EndIf
+						Else
+							CloseWindow() ; close pet upgrade window
+						EndIf
+						SetLog("Started upgrade for : " & $g_asPetNames[$i])
+						If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
+						CloseWindow()
+						Return True
 					EndIf
-					SetLog("Started upgrade for : " & $g_asPetNames[$i])
-					If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
-					CloseWindow()
-					Return True
-				Else
-					SetLog("Failed to find the Pets button!", $COLOR_ERROR)
-					CloseWindow()
-					Return False
 				EndIf
-				SetLog("Failed to find Upgrade button", $COLOR_ERROR)
+				SetLog("Failed to find Confirm button", $COLOR_ERROR)
 			EndIf
 			SetLog("Upgrade Failed - Not enough Dark Elixir", $COLOR_ERROR)
 		ElseIf _ColorCheck(_GetPixelColor($iPetLevelxCoord[$i], 380 + $g_iMidOffsetY, True), Hex(0xABABAB, 6), 20) Then
@@ -181,8 +188,7 @@ Func CheckPetUpgrade()
 		SetLog("Pet House Upgrade in progress, waiting for completion", $COLOR_INFO)
 		If _Sleep($DELAYLABORATORY2) Then Return
 		; upgrade in process and time not recorded so update completion time!
-		Local $sPetTimeOCR = getLabUpgradeTime(235, 242 + $g_iMidOffsetY)
-		If $sPetTimeOCR = "" Then $sPetTimeOCR = getPetUpgradeTime(235, 242 + $g_iMidOffsetY)
+		Local $sPetTimeOCR = getPetUpgradeTime(235, 242 + $g_iMidOffsetY)
 		Local $iPetFinishTime = ConvertOCRTime("Lab Time", $sPetTimeOCR, False)
 		SetDebugLog("$sPetTimeOCR: " & $sPetTimeOCR & ", $iPetFinishTime = " & $iPetFinishTime & " m")
 		If $iPetFinishTime > 0 Then
@@ -346,8 +352,7 @@ Func PetGuiDisplay()
 		GUICtrlSetState($g_hPicPetGreen, $GUI_SHOW)
 		;===========================================
 		If _Sleep($DELAYLABORATORY2) Then Return
-		Local $sPetTimeOCR = getLabUpgradeTime(235, 242 + $g_iMidOffsetY)
-		If $sPetTimeOCR = "" Then $sPetTimeOCR = getPetUpgradeTime(235, 242 + $g_iMidOffsetY)
+		Local $sPetTimeOCR = getPetUpgradeTime(235, 242 + $g_iMidOffsetY)
 		Local $iPetFinishTime = ConvertOCRTime("Lab Time", $sPetTimeOCR, False)
 		SetDebugLog("$sPetTimeOCR: " & $sPetTimeOCR & ", $iPetFinishTime = " & $iPetFinishTime & " m")
 		If $iPetFinishTime > 0 Then
@@ -398,7 +403,9 @@ Func GetMinDark4PetUpgrade()
 
 		; check if pet upgrade enabled and unlocked ; c3b6a5 nox c1b7a5 memu?
 		If _ColorCheck(_GetPixelColor($iPetLevelxCoord[$i], 380 + $g_iMidOffsetY, True), Hex(0xC5BBA7, 6), 20) Then
-
+			If $g_iTownHallLevel = 14 Then
+				If $i = 0 Or $i = 2 Then $g_ePetLevels[$i] = 10 ; Max level 10 for TH14
+			EndIf
 			; get the Pet Level
 			Local $iPetLevel = getPetsLevel($iPetLevelxCoord[$i], 544 + $g_iMidOffsetY)
 			If Not ($iPetLevel > 0 And $iPetLevel <= $g_ePetLevels[$i]) Then ;If detected level is not between 1 and 10 Or 15, To Prevent Crash

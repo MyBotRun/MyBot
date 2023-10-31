@@ -29,12 +29,12 @@ Func BattleMachineUpgrade($test = False)
 	If Not LocateBattleMachine() Then Return False
 
 	;Get Battle Machine info and Level
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -145,7 +145,7 @@ Func LocateBattleMachine()
 		BuildingClickP($g_aiBattleMachinePos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
 
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Machine") = True Then ; we found the Battle Machine
@@ -228,7 +228,7 @@ Func LocateBattleMachine()
 		BuildingClickP($g_aiBattleMachinePos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
 
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Machine") = True Then ; we found the Battle Machine

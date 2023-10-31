@@ -117,11 +117,11 @@ Func QueenUpgrade()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Queen info and Level
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
 		$CountGetInfo += 1
@@ -175,9 +175,9 @@ Func QueenUpgrade()
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(777, 95 + $g_iMidOffsetY, True), Hex(0xCD1215, 6), 20) Then ; Check if the Hero Upgrade window is open
+		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
 
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("640,570,748,615"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				ClickAway()
@@ -220,11 +220,11 @@ Func KingUpgrade()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get King info
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		If _Sleep(100) Then Return
 		$CountGetInfo += 1
@@ -279,8 +279,8 @@ Func KingUpgrade()
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 
-		If _ColorCheck(_GetPixelColor(777, 95 + $g_iMidOffsetY, True), Hex(0xCD1215, 6), 20) Then ; Check if the Hero Upgrade window is open
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("640,570,748,615"), 1, True, Default))
+		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				ClickAway()
@@ -331,11 +331,11 @@ Func WardenUpgrade()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Warden info
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		If _Sleep(100) Then Return
 		$CountGetInfo += 1
@@ -394,9 +394,9 @@ Func WardenUpgrade()
 
 		If $g_bDebugSetlog Then SaveDebugImage("UpgradeElixirBtn1")
 
-		If _ColorCheck(_GetPixelColor(777, 95 + $g_iMidOffsetY, True), Hex(0xCD1215, 6), 20) Then ; Check if the Hero Upgrade window is open
+		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
 
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("640,570,748,615"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				ClickAway()
@@ -442,11 +442,11 @@ Func ChampionUpgrade()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Champion info and Level
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
 		$CountGetInfo += 1
@@ -500,9 +500,9 @@ Func ChampionUpgrade()
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(777, 95 + $g_iMidOffsetY, True), Hex(0xCD1215, 6), 20) Then ; Check if the Hero Upgrade window is open
+		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
 
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("640,570,748,615"), 1, True, Default))
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
 				ClickAway()

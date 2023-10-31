@@ -13,9 +13,9 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Local $iSlotWidth = 107, $iDistBetweenSlots = 16 ; use for logic to upgrade troops.. good for generic-ness
-Local $iYMidPoint = 483 ;Space between rows in lab screen.  CHANGE ONLY WITH EXTREME CAUTION.
+Local $iYMidPoint = 480 ;Space between rows in lab screen.  CHANGE ONLY WITH EXTREME CAUTION.
 Local $iPicsPerPage = 12, $iPages = 4 ; used to know exactly which page the users choice is on
-Local $sLabTroopsSection = "70,365,795,600", $sLabTroopLastPage = "185,365,795,577"
+Local $sLabTroopsSection = "70,365,795,600", $sLabTroopLastPage = "185,365,795,600"
 ;$sLabTroopLastPage for partial last page, currently 5 columns.
 Local $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection), $sLabTroopsLastPageDiam = GetDiamondFromRect($sLabTroopLastPage) ; easy to change search areas
 
@@ -59,13 +59,23 @@ Func Laboratory($debug = False)
 	; Get updated village elixir and dark elixir values
 	VillageReport()
 
+	$GobBuilderPresent = False
+	$GobBuilderOffsetRunning = 0
+	If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilder, 275, 45, 430, 70, True))) > 1 Then
+		$GobBuilderPresent = True
+		$GobBuilderOffsetRunning = 355
+	EndIf
+
 	;Click Laboratory
 	BuildingClickP($g_aiLaboratoryPos, "#0197")
 	If _Sleep($DELAYLABORATORY3) Then Return ; Wait for window to open
 
 	If Not FindResearchButton() Then Return False ; cant start because we cannot find the research button
 
-	If ChkLabUpgradeInProgress() Then Return False ; cant start if something upgrading
+	If ChkLabUpgradeInProgress() Then
+		CloseWindow()
+		Return False ; cant start if something upgrading
+	EndIf
 
 	; Lab upgrade is not in progress and not upgreading, so we need to start an upgrade.
 	Local $iCurPage = 1
@@ -172,35 +182,27 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 	If _Sleep(2000) Then Return
 
 	If Not (SetLabUpgradeTime($name)) Then
-		;Not a fatal error.
 		SetDebugLog("Couldn't read upgrade time.  Continue anyway.", $COLOR_ERROR)
-		;ClickAway()
-		;Return False ; couldnt set time to upgrade started
 	EndIf
 	If _Sleep($DELAYLABUPGRADE1) Then Return
 
 	LabStatusGUIUpdate()
 	If $debug = True Then ; if debugging, do not actually click it
-		SetLog("[debug mode] - Start Upgrade, Click (" & 705 & "," & 565 + $g_iMidOffsetY & ")", $COLOR_ACTION)
-		ClickAway()
+		SetLog("[debug mode] - Start Upgrade, Click (" & 630 & "," & 565 + $g_iMidOffsetY & ")", $COLOR_ACTION)
+		CloseWindow()
 		Return True ; return true as if we really started an upgrade
 	Else
-		Click(705, 565 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
+		Click(630, 545 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
 		If isGemOpen(True) = False Then ; check for gem window
-			; check for green button to use gems to finish upgrade, checking if upgrade actually started
-			If Not (_ColorCheck(_GetPixelColor(665, 195 + $g_iMidOffsetY, True), Hex(0x6DBC1F, 6), 15) Or _ColorCheck(_GetPixelColor(720, 195 + $g_iMidOffsetY, True), Hex(0x6DBC1F, 6), 15)) Then
-				SetLog("Something went wrong with " & $name & " Upgrade, try again.", $COLOR_ERROR)
-				ClickAway()
-				Return False
-			EndIf
-
 			; success
 			SetLog("Upgrade " & $name & " in your laboratory started with success...", $COLOR_SUCCESS)
+			If _Sleep(350) Then Return
+			ClickAway()
+			If _Sleep(1000) Then Return
 			PushMsg("LabSuccess")
+			ChkLabUpgradeInProgress($name)
 			If _Sleep($DELAYLABUPGRADE2) Then Return
-			ClickAway()
-			If _Sleep(1500) Then Return
-			ClickAway()
+			CloseWindow()
 			Return True ; upgrade started
 		Else
 			SetLog("Oops, Gems required for " & $name & " Upgrade, try again.", $COLOR_ERROR)
@@ -211,7 +213,7 @@ EndFunc   ;==>LaboratoryUpgrade
 
 ; get the time for the selected upgrade
 Func SetLabUpgradeTime($sTrooopName)
-	Local $Result = getLabUpgradeTime2(595, 490 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
+	Local $Result = getLabUpgradeTime2(730, 544 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
 	Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
 	SetDebugLog($sTrooopName & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 	Local $StartTime = _NowCalc() ; what is date:time now
@@ -240,10 +242,10 @@ Func GetLabCostResult($aCoords)
 		SetDebugLog("First row.")
 		$iCurSlotOnPage = 2 * $iCurSlotsToTheRight - 1
 		SetDebugLog("$iCurSlotOnPage=" & $iCurSlotOnPage)
-		$sCostResult = getLabUpgrdResourceWhtNew(Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots), Int(StringSplit($sLabTroopsSection, ",")[2]) + 89)
+		$sCostResult = getLabUpgrdResourceWhtNew(Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots), 420 + $g_iMidOffsetY)
 		If $sCostResult = "" Then
 			Local $XCoord = Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots)
-			Local $YCoord = Int(StringSplit($sLabTroopsSection, ",")[2]) + 89
+			Local $YCoord = 420 + $g_iMidOffsetY
 			If QuickMIS("BC1", $g_sImgElixirDrop, $XCoord + 77, $YCoord - 4, $XCoord + 103, $YCoord + 18) Then
 				Local $g_iLaboratoryElixirCostOld = $g_iLaboratoryElixirCost
 				Local $g_iLaboratoryElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord)
@@ -258,10 +260,10 @@ Func GetLabCostResult($aCoords)
 		SetDebugLog("Second row.")
 		$iCurSlotOnPage = 2 * $iCurSlotsToTheRight
 		SetDebugLog("$iCurSlotOnPage=" & $iCurSlotOnPage)
-		$sCostResult = getLabUpgrdResourceWhtNew(Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots), $iYMidPoint + 91)
+		$sCostResult = getLabUpgrdResourceWhtNew(Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots), 543 + $g_iMidOffsetY)
 		If $sCostResult = "" Then
 			Local $XCoord = Int(StringSplit($sLabTroopsSection, ",")[1]) + 2 + ($iCurSlotsToTheRight - 1) * ($iSlotWidth + $iDistBetweenSlots)
-			Local $YCoord = $iYMidPoint + 91
+			Local $YCoord = 543 + $g_iMidOffsetY
 			If QuickMIS("BC1", $g_sImgElixirDrop, $XCoord + 77, $YCoord - 4, $XCoord + 103, $YCoord + 18) Then
 				Local $g_iLaboratoryElixirCostOld = $g_iLaboratoryElixirCost
 				Local $g_iLaboratoryElixirCostNew = getLabUpgrdResourceRed($XCoord, $YCoord)
@@ -290,16 +292,19 @@ Func LabNextPage($iCurPage, $iPages, $iYMidPoint)
 EndFunc   ;==>LabNextPage
 
 ; check the lab to see if something is upgrading in the lab already
-Func ChkLabUpgradeInProgress()
+Func ChkLabUpgradeInProgress($name = "")
 	; check for upgrade in process - look for green in finish upgrade with gems button
-	SetDebugLog("_GetPixelColor(775, 165): " & _GetPixelColor(730, 200, True) & ":A2CB6C", $COLOR_DEBUG)
-	If _ColorCheck(_GetPixelColor(775, 135 + $g_iMidOffsetY, True), Hex(0xA2CB6C, 6), 20) Then ; Look for light green in upper right corner of lab window.
+	SetDebugLog("_GetPixelColor(X, Y): " & _GetPixelColor(775 - $GobBuilderOffsetRunning, 135 + $g_iMidOffsetY, True) & ":A1CA6B", $COLOR_DEBUG)
+	If _ColorCheck(_GetPixelColor(775 - $GobBuilderOffsetRunning, 135 + $g_iMidOffsetY, True), Hex(0xA1CA6B, 6), 20) Then ; Look for light green in upper right corner of lab window.
 		SetLog("Laboratory Upgrade in progress, waiting for completion", $COLOR_INFO)
 		If _Sleep($DELAYLABORATORY2) Then Return
 		; upgrade in process and time not recorded so update completion time!
-		Local $sLabTimeOCR = getRemainTLaboratory2(250, 210 + $g_iMidOffsetY)
-		If $sLabTimeOCR = "" Then $sLabTimeOCR = getPetUpgradeTime(270, 227 + $g_iMidOffsetY)
-		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False)
+		If $GobBuilderPresent Then
+			Local $sLabTimeOCR = getRemainTLaboratoryGob(210, 190 + $g_iMidOffsetY)
+		Else
+			Local $sLabTimeOCR = getRemainTLaboratory2(250, 210 + $g_iMidOffsetY)
+		EndIf
+		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False) + 1
 		SetDebugLog("$sLabTimeOCR: " & $sLabTimeOCR & ", $iLabFinishTime = " & $iLabFinishTime & " m")
 		If $iLabFinishTime > 0 Then
 			$g_sLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), _NowCalc())
@@ -311,10 +316,6 @@ Func ChkLabUpgradeInProgress()
 		ElseIf $g_bDebugSetlog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
-		If _Sleep(500) Then Return
-		ClickAway()
-		If _Sleep(1500) Then Return
-		ClickAway("Right")
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
 		Return True
 	EndIf

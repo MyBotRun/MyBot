@@ -21,7 +21,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 		BuildingClickP($aPos, "#0462")
 		If _Sleep($DELAYBOOSTHEROES2) Then Return
 		ForceCaptureRegion()
-		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 		If $aResult[0] > 1 Then
 			Local $sN = $aResult[1] ; Store bldg name
 			Local $sL = $aResult[2] ; Sotre bdlg level
@@ -95,7 +95,7 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 		BuildingClickP($aPos, "#0462")
 		If _Sleep($DELAYBOOSTHEROES2) Then Return
 		ForceCaptureRegion()
-		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 		If $aResult[0] > 1 Then
 			Local $sN = $aResult[1] ; Store bldg name
 			Local $sL = $aResult[2] ; Sotre bdlg level
@@ -120,12 +120,12 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 				If $g_bDebugSetlog Then SetDebugLog("Boost Potion Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 				ClickP($Boost)
 				If _Sleep($DELAYBOOSTHEROES1) Then Return
-				If Not _ColorCheck(_GetPixelColor(255, 535, True), Hex(0xFFFFFF, 6), 25) Then
+				If Not _ColorCheck(_GetPixelColor(256, 500 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 25) Then
 					SetLog("Cannot find/verify 'Use' Button", $COLOR_WARNING)
 					ClickAway()
 					Return False ; Exit Function
 				EndIf
-				Click(305, 556) ; Click on 'Use'
+				Click(260, 505 + $g_iMidOffsetY) ; Click on 'Use'
 				If _Sleep($DELAYBOOSTHEROES2) Then Return
 				$Boost = findButton("BoostPotionGreen")
 				If IsArray($Boost) Then

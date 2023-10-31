@@ -30,7 +30,7 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	Local $sCCSiegeDiamond = GetDiamondFromRect2(620, 480 + $g_iMidOffsetY, 710, 558 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sCCSiegeDiamond = GetDiamondFromRect2(620, 460 + $g_iMidOffsetY, 710, 555 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 
 	If $g_bDebugFuncTime Then StopWatchStart("findMultiple, \imgxml\ArmyOverview\SiegeMachines")
 	Local $aCurrentCCSiegeMachines = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\SiegeMachines", $sCCSiegeDiamond, $sCCSiegeDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentSiegeMachines[index] = $aArray[2] = ["Siege M Shortname", CordX,CordY]
@@ -44,7 +44,7 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	$g_aiCurrentCCSiegeMachines = $aCurrentCCSiegeEmpty ; Reset Current Siege Machine Array
 
 	; Get CC Siege Capacities
-	Local $sSiegeInfo = getSiegeCampCap(650, 468, $bNeedCapture) ; OCR read Siege built and total
+	Local $sSiegeInfo = getSiegeCampCap(645, 468, $bNeedCapture) ; OCR read Siege built and total
 	If $g_bDebugSetlogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
 	Local $aGetSiegeCap = StringSplit($sSiegeInfo, "#", $STR_NOCOUNT) ; split the built Siege number from the total Siege number
 	If $bSetLog And UBound($aGetSiegeCap) = 2 Then
@@ -64,12 +64,12 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 
 			If $iCCSiegeIndex < 0 Then ContinueLoop
 
-			$g_aiCurrentCCSiegeMachines[$iCCSiegeIndex] = Number(getBarracksNewTroopQuantity(650, 498, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
+			$g_aiCurrentCCSiegeMachines[$iCCSiegeIndex] = Number(getBarracksNewTroopQuantity(650, 496, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
 
 			$sCCSiegeName = $g_aiCurrentCCSiegeMachines[$iCCSiegeIndex] >= 2 ? $g_asSiegeMachineNames[$iCCSiegeIndex] & "s" : $g_asSiegeMachineNames[$iCCSiegeIndex] & ""
 
 			If $g_bDebugSetlogTrain Then Setlog($sCCSiegeName & " Coord: (" & $aCCSiegeCoords[0] & "," & $aCCSiegeCoords[1] & ") Quant :" & $g_aiCurrentCCSiegeMachines[$iCCSiegeIndex])
-			If $g_bDebugSetlogTrain Then Setlog($sCCSiegeName & " Slot (" & 650 & "," & 498 & ")")
+			If $g_bDebugSetlogTrain Then Setlog($sCCSiegeName & " Slot (" & 650 & "," & 496 & ")")
 
 			If $bSetLog Then SetLog(" - " & $g_aiCurrentCCSiegeMachines[$iCCSiegeIndex] & " " & $sCCSiegeName & " Available", $COLOR_SUCCESS)
 		Next

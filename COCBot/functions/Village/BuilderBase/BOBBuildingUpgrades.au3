@@ -46,12 +46,12 @@ Func DoubleCannonUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Double Cannon info and Level
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -186,12 +186,12 @@ Func ArcherTowerUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Archer Tower info and Level
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -327,12 +327,12 @@ Func MultiMortarUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Multi Mortar info and Level
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -468,12 +468,12 @@ Func AnyDefUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Cannon info and Level
-	Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)

@@ -398,7 +398,7 @@ Func ToggleGuiControls($bEnabled, $bOptimizedRedraw = True)
 EndFunc   ;==>ToggleGuiControls
 
 Func GetCoCAppVersion()
-	Local $sCMD = "dumpsys package com.supercell.clashofclans | grep versionName"  ;Get info from APK and grep version number line from text string
+	Local $sCMD = "dumpsys package " & $g_sAndroidGamePackage & " | grep versionName"  ;Get info from APK and grep version number line from text string
 	Local $sReturn = AndroidAdbSendShellCommand($sCMD) ; Grep return string = versionName=15.352.8
 	If @error Then
 		SetLog("Failed to get CoC vesion, Result= " & $sReturn, $COLOR_ERROR)

@@ -52,9 +52,9 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If checkObstacles_GfxError() Then Return True
 	EndIf
 
-	If _ColorCheck(_GetPixelColor(825, 170 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x882C1E, 6), 20) Then
+	If _ColorCheck(_GetPixelColor(810, 185 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x892B1F, 6), 20) Then
 		SetDebugLog("checkObstacles: Found Window to close")
-		PureClick(440, 525 + $g_iMidOffsetY, 1, 0, "#0132") ;See if village was attacked or upgrades finished : Click Okay
+		PureClick(440, 510 + $g_iMidOffsetY, 1, 0, "#0132") ;See if village was attacked or upgrades finished : Click Okay
 		$g_abNotNeedAllTime[0] = True
 		$g_abNotNeedAllTime[1] = True
 		$g_bMinorObstacle = True
@@ -110,8 +110,8 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	If CheckAllObstacles($g_bDebugImageSave, 4, 5, $bRecursive) Then Return True
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	If UBound(decodeSingleCoord(FindImageInPlace2("Maintenance", $g_sImgMaintenance, 250, 40, 500, 110, False))) > 1 Then ; Maintenance Break
-		$Result = getOcrMaintenanceTime(280, 591 + $g_iMidOffsetY, "Check Obstacles OCR Maintenance Break=") ; OCR text to find wait time
+	If UBound(decodeSingleCoord(FindImageInPlace2("Maintenance", $g_sImgMaintenance, 250, 40, 500, 100 + $g_iMidOffsetY, False))) > 1 Then ; Maintenance Break
+		$Result = getOcrMaintenanceTime(285, 581 + $g_iMidOffsetY, "Check Obstacles OCR Maintenance Break=") ; OCR text to find wait time
 		Local $iMaintenanceWaitTime = 0
 		Local $avTime = StringRegExp($Result, "([\d]+)[Mm]|(soon)|([\d]+[Hh])", $STR_REGEXPARRAYMATCH)
 		If UBound($avTime, 1) = 1 And Not @error Then
@@ -123,7 +123,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			EndIf
 		Else
 			$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES4 ; Wait 2 min
-			$Result = getOcrMaintenanceTime(70, 591 + $g_iMidOffsetY, "Check Obstacles OCR Maintenance Break=")
+			$Result = getOcrMaintenanceTime(82, 581 + $g_iMidOffsetY, "Check Obstacles OCR Maintenance Break=")
 			If StringInStr($Result, "soon", $STR_NOCASESENSEBASIC) Then
 				SetLog("End Of Maintenance Break : Soon!, Waiting 2 Minutes", $COLOR_SUCCESS1)
 			Else

@@ -115,8 +115,8 @@ Func StarLaboratory($bTestRun = False)
 			Local $aTempArray = $aSearchForTroop[$i]
 			If IsArray($aTempArray) And UBound($aTempArray) = 2 Then
 				Local $iCurrentTroop = 2 * Int(($aTempArray[0] - 90) / 127) + Int(($aTempArray[1] - 375) / 127) + 1 ; calculating troop index from found elixir coords
-				$g_avStarLabTroops[$iCurrentTroop][0] = $aTempArray[0] - 80 ; setting troop position relativ to found elixir coords
-				$g_avStarLabTroops[$iCurrentTroop][1] = $aTempArray[1] - 82 ; setting troop position relativ to found elixir coords
+				$g_avStarLabTroops[$iCurrentTroop][0] = $aTempArray[0] - 98 ; setting troop position relativ to found elixir coords
+				$g_avStarLabTroops[$iCurrentTroop][1] = $aTempArray[1] - 101 ; setting troop position relativ to found elixir coords
 				If $g_bDebugSetlog Then
 					Setlog("New icon X position of " & $g_avStarLabTroops[$iCurrentTroop][3] & " : " & $g_avStarLabTroops[$iCurrentTroop][0], $COLOR_DEBUG)
 					Setlog("New icon Y position of " & $g_avStarLabTroops[$iCurrentTroop][3] & " : " & $g_avStarLabTroops[$iCurrentTroop][1], $COLOR_DEBUG)
@@ -135,10 +135,10 @@ Func StarLaboratory($bTestRun = False)
 			$aUpgradeValue[$i] = -1
 			If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " is not upgradeable, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 		Else
-			$aUpgradeValue[$i] = getStarLabUpgrdResourceRed($g_avStarLabTroops[$i][0] + 2, $g_avStarLabTroops[$i][1] + 76)
+			$aUpgradeValue[$i] = getStarLabUpgrdResourceRed($g_avStarLabTroops[$i][0] + 2, $g_avStarLabTroops[$i][1] + 93)
 			If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 			If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 3000 Then ; check if blank or below min value for any upgrade
-				$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avStarLabTroops[$i][0] + 2, $g_avStarLabTroops[$i][1] + 76)
+				$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avStarLabTroops[$i][0] + 2, $g_avStarLabTroops[$i][1] + 93)
 				If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 			EndIf
 			If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 3000 Then ; check if blank or below min value for any upgrade
@@ -219,7 +219,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $bTestRun = False)
 
 		Case Else
 			; If none of other error conditions apply, begin upgrade process
-			Click($g_avStarLabTroops[$iSelectedUpgrade][0] + 40, $g_avStarLabTroops[$iSelectedUpgrade][1] + 40, 1, 0, "#0200") ; Click Upgrade troop button
+			Click($g_avStarLabTroops[$iSelectedUpgrade][0] + 45, $g_avStarLabTroops[$iSelectedUpgrade][1] + 55, 1, 0, "#0200") ; Click Upgrade troop button
 			If _Sleep($DELAYLABUPGRADE1) Then Return ; Wait for window to open
 			If $g_bDebugImageSave Then SaveDebugImage("StarLabUpgrade")
 
@@ -232,7 +232,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $bTestRun = False)
 			EndIf
 
 			; double check enough elixir?
-			If _PixelSearch($g_avStarLabTroops[$iSelectedUpgrade][0] + 67, $g_avStarLabTroops[$iSelectedUpgrade][1] + 79, $g_avStarLabTroops[$iSelectedUpgrade][0] + 69, $g_avStarLabTroops[$iSelectedUpgrade][0] + 84, $sStarColorNoLoot, 20) <> 0 Then ; Check for Red Zero = means not enough loot!
+			If _PixelSearch($g_avStarLabTroops[$iSelectedUpgrade][0] + 67, $g_avStarLabTroops[$iSelectedUpgrade][1] + 98, $g_avStarLabTroops[$iSelectedUpgrade][0] + 69, $g_avStarLabTroops[$iSelectedUpgrade][0] + 103, $sStarColorNoLoot, 20) <> 0 Then ; Check for Red Zero = means not enough loot!
 				SetLog("Missing Loot to upgrade " & $g_avStarLabTroops[$iSelectedUpgrade][3] & " (secondary check after Upgrade Value read failed)", $COLOR_ERROR)
 				If _Sleep($DELAYLABUPGRADE2) Then Return
 				ClickAway()
@@ -328,7 +328,7 @@ Func LocateStarLab()
 		BuildingClickP($g_aiStarLaboratoryPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(245, 490 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Lab") = True Then ; we found the Star Laboratory
 				SetLog("Star Laboratory located.", $COLOR_INFO)
@@ -409,7 +409,7 @@ Func LocateStarLab()
 		BuildingClickP($g_aiStarLaboratoryPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(245, 490 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Lab") = True Then ; we found the Star Laboratory
 				SetLog("Star Laboratory located.", $COLOR_INFO)

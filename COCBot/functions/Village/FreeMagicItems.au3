@@ -27,32 +27,13 @@ Func CollectFreeMagicItems($bTest = False)
 	If _Sleep($DELAYCOLLECT2) Then Return
 
 	; Check Trader Icon on Main Village
-
-	Local $sSearchArea = GetDiamondFromRect("120,160,210,215")
-	Local $avTraderIcon = findMultiple($g_sImgTrader, $sSearchArea, $sSearchArea, 0, 1000, 1, "objectpoints", True)
-
-	If IsArray($avTraderIcon) And UBound($avTraderIcon) > 0 Then
-		Local $asTempArray = $avTraderIcon[0]
-		Local $aiCoords = decodeSingleCoord($asTempArray[0])
-		SetLog("Trader available, Entering Daily Discounts", $COLOR_SUCCESS)
-		ClickP($aiCoords)
-		If _Sleep(1500) Then Return
-	Else
-		SetLog("Trader unavailable", $COLOR_INFO)
-		Return
-	EndIf
-
-	Local $aiDailyDiscount = decodeSingleCoord(findImage("DailyDiscount", $g_sImgDailyDiscountWindow, GetDiamondFromRect("310,175,375,210"), 1, True, Default))
-	If Not IsArray($aiDailyDiscount) Or UBound($aiDailyDiscount, 1) < 1 Then
-		ClickAway()
-		Return
-	EndIf
+	If Not OpenTraderWindow() Then Return
 
 	If Not $g_bRunState Then Return
 
 	$iLastTimeChecked[$g_iCurAccount] = @MDAY
 
-	Local $aOcrPositions[3][2] = [[270, 350], [480, 350], [690, 350]]
+	Local $aOcrPositions[3][2] = [[275, 357], [480, 357], [685, 357]]
 	Local $ItemPosition = ""
 	Local $Collected = 0
 	Local $aResults = GetFreeMagic()
@@ -103,7 +84,7 @@ Func CollectFreeMagicItems($bTest = False)
 EndFunc   ;==>CollectFreeMagicItems
 
 Func GetFreeMagic()
-	Local $aOcrPositions[3][2] = [[270, 350], [480, 350], [690, 350]]
+	Local $aOcrPositions[3][2] = [[275, 357], [480, 357], [685, 357]]
 	Local $aClickFreeItemPositions[3][2] = [[305, 280], [512, 280], [723, 280]]
 	Local $aResults[0][3]
 
@@ -129,3 +110,37 @@ Func GetFreeMagic()
 	Next
 	Return $aResults
 EndFunc   ;==>GetFreeMagic
+
+Func OpenTraderWindow()
+	Local $Found = False
+	For $i = 1 To 5
+		If QuickMIS("BC1", $g_sImgTrader, 90, 130, 210, 210 + $g_iMidOffsetY) Then
+			Click($g_iQuickMISX, $g_iQuickMISY)
+			If _Sleep(1500) Then Return
+			$Found = True
+			ExitLoop
+		EndIf
+		If _Sleep(1000) Then Return
+	Next
+	If Not $Found Then
+		SetLog("Trader unavailable", $COLOR_INFO)
+		SetLog("Bot will recheck next loop", $COLOR_OLIVE)
+		Return False
+	Else
+		Local $aTabButton = findButton("WeeklyDeals", Default, 1, True)
+		If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
+			SetDebugLog("Weekly Deals is already selected", $COLOR_DEBUG)
+		Else
+			Click(90, 245 + $g_iMidOffsetY)
+			If _Sleep(1000) Then Return
+		EndIf
+	EndIf
+
+	Local $aiDailyDiscount = decodeSingleCoord(findImage("DailyDiscount", $g_sImgDailyDiscountWindow, GetDiamondFromRect("420,105,510,155"), 1, True, Default))
+	If Not IsArray($aiDailyDiscount) Or UBound($aiDailyDiscount, 1) < 1 Then
+		ClickAway()
+		Return False
+	EndIf
+
+	Return True
+EndFunc   ;==>OpenTraderWindow

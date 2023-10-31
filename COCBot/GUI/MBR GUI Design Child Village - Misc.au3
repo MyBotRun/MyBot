@@ -816,7 +816,7 @@ Func CreateClanGamesSettings()
 	GUICtrlSetState(-1, $GUI_UNCHECKED)
 
 	$y += 35
-	$g_hChkClanGamesSort = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesSort", "Sort Clan Games By :"), $x, $y, -1, -1)
+	$g_hChkClanGamesSort = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesSort", "Sort Challenges By :"), $x, $y, -1, -1)
 	GUICtrlSetOnEvent(-1, "chkSortClanGames")
 	GUICtrlSetState(-1, $GUI_CHECKED)
 

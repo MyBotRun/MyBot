@@ -662,11 +662,11 @@ Func NotifyPushMessageToBoth($Message, $Source = "")
 		Case "BuilderInfo"
 			ClickAway()
 			; open the builders menu
-			Click(295, 30)
+			Click(400, 30)
 			If _Sleep(750) Then Return
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(215, 77, 450, 360)
+			_CaptureRegion(305, 75, 579, 350)
 			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 			_GDIPlus_ImageSaveToFile($g_hBitmap, $g_sProfileTempPath & $Screnshotfilename)
 			If $g_bTGRequestBuilderInfo Then

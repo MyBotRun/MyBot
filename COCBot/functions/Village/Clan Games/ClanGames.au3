@@ -566,6 +566,10 @@ Func _ClanGames($test = False, $HaltMode = False)
 							$IsSomethingWrong = True
 							ExitLoop 2
 						EndIf
+						; Clear
+						$aAllDetectionsOnScreen = ""
+						$aSelectChallenges = ""
+						$aTempSelectChallenges = ""
 						$sEventName = ""
 						ChallengeNextPage(1, $iRow)
 						ContinueLoop 2
@@ -737,13 +741,13 @@ Func ChallengeNextPage($iRowTarget, ByRef $iRow)
 		$iXMidPoint = Random(810, 840, 1)
 
 		If $iRow < $iRowTarget Then
-			ClickDrag($iXMidPoint, 450 + $g_iMidOffsetY, $iXMidPoint, 270 + $g_iMidOffsetY)
+			ClickDrag($iXMidPoint, 470 + $g_iMidOffsetY, $iXMidPoint, 270 + $g_iMidOffsetY)
 			$iRow += 1
 			If _Sleep(2500) Then Return
 		EndIf
 
 		If $iRow > $iRowTarget Then
-			ClickDrag($iXMidPoint, 270 + $g_iMidOffsetY, $iXMidPoint, 450 + $g_iMidOffsetY)
+			ClickDrag($iXMidPoint, 250 + $g_iMidOffsetY, $iXMidPoint, 450 + $g_iMidOffsetY)
 			$iRow -= 1
 			If _Sleep(2500) Then Return
 		EndIf
@@ -1514,16 +1518,16 @@ Func ClanGamesChallenges($sReturnArray)
 			["DESpell", "Dark Spell Factory", 8, 1, "Destroy 2-6 Dark Spell Factories in Multiplayer Battles"], _
 			["WallWhacker", "Wall Whacker", 10, 8, "Destroy 50-250 Walls in Multiplayer Battles"], _
 			["BBreakdown", "Building Breakdown", 6, 1, "Destroy 50-250 Buildings in Multiplayer Battles"], _
-			["BKaltar", "Barbarian King Altars", 9, 4, "Destroy 2-5 Barbarian King Altars in Multiplayer Battles"], _
-			["AQaltar", "Archer Queen Altars", 10, 4, "Destroy 2-5 Archer Queen Altars in Multiplayer Battles"], _
-			["GWaltar", "Grand Warden Altars", 11, 4, "Destroy 2-5 Grand Warden Altars in Multiplayer Battles"], _
-			["HeroLevelHunter", "Hero Level Hunter", 9, 5, "Knockout 125 Level Heroes on Multiplayer Battles"], _
-			["KingLevelHunter", "King Level Hunter", 9, 5, "Knockout 50 Level King on Multiplayer Battles"], _
-			["QueenLevelHunt", "Queen Level Hunter", 10, 5, "Knockout 50 Level Queen on Multiplayer Battles"], _
-			["WardenLevelHunter", "Warden Level Hunter", 11, 5, "Knockout 20 Level Warden on Multiplayer Battles"], _
+			["BKaltar", "Barbarian King Altars", 9, 3, "Destroy 2-5 Barbarian King Altars in Multiplayer Battles"], _
+			["AQaltar", "Archer Queen Altars", 10, 3, "Destroy 2-5 Archer Queen Altars in Multiplayer Battles"], _
+			["GWaltar", "Grand Warden Altars", 11, 3, "Destroy 2-5 Grand Warden Altars in Multiplayer Battles"], _
+			["HeroLevelHunter", "Hero Level Hunter", 9, 4, "Knockout 125 Level Heroes on Multiplayer Battles"], _
+			["KingLevelHunter", "King Level Hunter", 9, 3, "Knockout 50 Level King on Multiplayer Battles"], _
+			["QueenLevelHunt", "Queen Level Hunter", 10, 3, "Knockout 50 Level Queen on Multiplayer Battles"], _
+			["WardenLevelHunter", "Warden Level Hunter", 11, 3, "Knockout 20 Level Warden on Multiplayer Battles"], _
 			["ArmyCamp", "Destroy ArmyCamp", 6, 1, "Destroy 3-16 Army Camp in Multiplayer Battles"], _
 			["ScatterShotSabotage", "ScatterShot", 13, 5, "Destroy 1-4 ScatterShot in Multiplayer Battles"], _
-			["ChampionLevelHunt", "Champion Level Hunter", 13, 5, "Knockout 20 Level Champion on Multiplayer Battles"]]
+			["ChampionLevelHunt", "Champion Level Hunter", 13, 3, "Knockout 20 Level Champion on Multiplayer Battles"]]
 
 	Local $AirTroopChallenges[13][5] = [ _
 			["Ball", "Balloon", 4, 1, "Earn 1-5 Stars (accumulated from many attacks) from Multiplayer Battles using certain count of Balloons"], _
@@ -1707,8 +1711,14 @@ Func CollectClanGamesRewards($bTest = False)
 			["FullPotPower", 90], _        ; 10 gems
 			["FullPotSuper", 90]]          ; 10 gems
 
-	Local $aiColumn[4] = [274, 246, 341, 453]
-	Local $iColumnWidth = 91
+	Local $aiColumn[4] = [276, 246, 348, 453]
+	Local $aColWinOffColors[1][3] = [[0xD2D259, 2, 0]]
+	Local $aFirstColumn = _MultiPixelSearch(260, 205 + $g_iMidOffsetY, 290, 205 + $g_iMidOffsetY, 1, 1, Hex(0xD2D259, 6), $aColWinOffColors, 10)
+	If IsArray($aFirstColumn) And $aFirstColumn[0] < 270 Then
+		$aiColumn[0] = $aFirstColumn[0] - 2
+		$aiColumn[2] = $aiColumn[0] + 73
+	EndIf
+	Local $iColumnWidth = 92
 	Local $sImgClanGamesReceivedWindow = @ScriptDir & "\imgxml\Windows\ClanGamesReceivedWindow*"
 	Local $sImgClanGamesRewardsTab = @ScriptDir & "\imgxml\Windows\ClanGamesRewardsTab*"
 	Local $sImgClanGamesExtraRewardWindow = @ScriptDir & "\imgxml\Windows\ClanGamesExtraRewardWindow*"
@@ -1842,8 +1852,8 @@ Func CollectClanGamesRewards($bTest = False)
 		Else
 			$aiColumn[0] = 745
 			$aiColumn[1] = 246
-			$aiColumn[2] = 825
-			$aiColumn[3] = 455
+			$aiColumn[2] = 818
+			$aiColumn[3] = 453
 		EndIf
 
 		If ($i = 5 And _ColorCheck(_GetPixelColor(823, 200 + $g_iMidOffsetY, True), Hex(0xE8E8E0, 6), 20)) Or $i = 6 Then $bLoop = False
@@ -1914,7 +1924,7 @@ EndFunc   ;==>SearchColumn
 
 Func SelectReward($iX, $iY)
 	Local $sImgClanGamesStorageFullWindow = @ScriptDir & "\imgxml\Windows\ClanGamesStorageFull*"
-	Local $sSearchArea = "245,200,615,300"
+	Local $sSearchArea = "420,200,560,300"
 
 	; click reward
 	Click($iX, $iY)

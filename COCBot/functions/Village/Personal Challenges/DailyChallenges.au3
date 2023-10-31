@@ -85,15 +85,15 @@ Func CollectDailyRewards($bGoldPass = False)
 	ClickP($aPersonalChallengeRewardsTab, 1, 0, "Rewards tab") ; Click Rewards tab
 	If _Sleep(1000) Then Return
 
-	If QuickMIS("BC1", $g_sImgGreenButton, 790, 360 + $g_iMidOffsetY, 820, 400 + $g_iMidOffsetY) Then
+	If QuickMIS("BC1", $g_sImgGreenButton, 770, 360 + $g_iMidOffsetY, 820, 410 + $g_iMidOffsetY) Then
 		Click($g_iQuickMISX - 8, $g_iQuickMISY + 7)
 		If _Sleep(1500) Then Return
 	EndIf
 
 	Local $iClaim = 0
-	For $i = 0 To 13
+	For $i = 0 To 14
 		If Not $g_bRunState Then Return
-		Local $SearchArea = $bGoldPass ? GetDiamondFromRect("25,336(810,240)") : GetDiamondFromRect("25,535(810,35)")
+		Local $SearchArea = $bGoldPass ? GetDiamondFromRect("25,336(810,270)") : GetDiamondFromRect("25,550(810,60)")
 		Local $aResult = findMultiple(@ScriptDir & "\imgxml\DailyChallenge\", $SearchArea, $SearchArea, 0, 1000, $bGoldPass ? 5 : 2, "objectname,objectpoints", True)
 		If $aResult <> "" And IsArray($aResult) Then
 			For $i = 0 To UBound($aResult) - 1
@@ -130,7 +130,7 @@ Func CollectDailyRewards($bGoldPass = False)
 			Else
 				SetLog($i & ".. ", Default, Default, Default, Default, Default, 0, $i < 13 ? False : Default) ; no time
 			EndIf
-			ClickDrag(100, 385 + $g_iMidOffsetY, 750, 385 + $g_iMidOffsetY, 1000) ;x1 was 50. x2 was 810  Change for Dec '20 update
+			ClickDrag(120, 400 + $g_iMidOffsetY, 740, 400 + $g_iMidOffsetY, 1000) ;x1 was 50. x2 was 810  Change for Dec '20 update
 			If _Sleep(500) Then ExitLoop
 		Else
 			If $i > 0 Then SetLog($i & ".", Default, Default, Default, Default, Default, False) ; no time + end line

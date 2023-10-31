@@ -9,7 +9,7 @@ Func LocateBuilderHall()
 		BuildingClickP($g_aiBuilderHallPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Builder") = True Then ; we found the Clan Castle
 				SetLog("Builder Hall located.", $COLOR_INFO)
@@ -103,7 +103,7 @@ Func LocateBuilderHall()
 		BuildingClickP($g_aiBuilderHallPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Builder") = True Then ; we found the Clan Castle
 				SetLog("Builder Hall located.", $COLOR_INFO)
@@ -179,7 +179,7 @@ Func _LocateDoubleCannon($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Double Cannon info and Level
-		Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -306,11 +306,11 @@ Func _LocateDoubleCannon($bCollect = False)
 		EndIf
 
 		;get Double Cannon info
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -420,7 +420,7 @@ Func _LocateArcherTower($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Archer Tower info and Level
-		Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -547,11 +547,11 @@ Func _LocateArcherTower($bCollect = False)
 		EndIf
 
 		;get  Archer Tower info
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -663,7 +663,7 @@ Func _LocateMultiMortar($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Multi Mortar info and Level
-		Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -790,11 +790,11 @@ Func _LocateMultiMortar($bCollect = False)
 		EndIf
 
 		;get Multi Mortar info
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -905,7 +905,7 @@ Func _LocateAnyDef($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Multi Mortar info and Level
-		Local $sInfo = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -1027,11 +1027,11 @@ Func _LocateAnyDef($bCollect = False)
 		EndIf
 
 		;get Cannon info
-		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1

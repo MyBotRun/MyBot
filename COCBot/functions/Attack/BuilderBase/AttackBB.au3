@@ -532,6 +532,7 @@ EndFunc   ;==>CheckBMLoop
 
 Func CheckBomberLoop()
 	Local $bRet = True
+	Local $nbrDeadBomber = 0
 	If Not $g_bBomberOnAttackBar Or UBound($g_aBomberOnAttackBar) = 0 Then Return False
 	Local $isGreyBanner = False, $ColorPickBannerX = 0, $iTroopBanners = 583 + $g_iBottomOffsetY
 
@@ -540,16 +541,29 @@ Func CheckBomberLoop()
 		$ColorPickBannerX = $g_aBomberOnAttackBar[$i][0] + 37
 		$isGreyBanner = _ColorCheck(_GetPixelColor($ColorPickBannerX, $iTroopBanners, True), Hex(0x707070, 6), 10, Default) ;Grey Banner on TroopSlot = Troop Die
 		If $isGreyBanner Then
-			SetLog("Bomber is Dead", $COLOR_DEBUG2)
-			$bRet = False
-			ExitLoop
+			If UBound($g_aBomberOnAttackBar) = 1 Then
+				SetLog("Bomber is Dead", $COLOR_DEBUG2)
+			Else
+				If $BomberDead[$i] = 0 Then SetLog("Bomber " & $i + 1 & " is Dead", $COLOR_DEBUG2)
+				$BomberDead[$i] = 1
+			EndIf
+			$nbrDeadBomber += 1
+			If $nbrDeadBomber = UBound($g_aBomberOnAttackBar) Then
+				$bRet = False
+				ExitLoop
+			EndIf
 		EndIf
 		If QuickMIS("BC1", $g_sImgDirBomberAbility, $g_aBomberOnAttackBar[$i][0], $g_aBomberOnAttackBar[$i][1] - 30, $g_aBomberOnAttackBar[$i][0] + 70, $g_aBomberOnAttackBar[$i][1] + 30) Then
 			If StringInStr($g_iQuickMISName, "Ability") Then
 				Click($g_iQuickMISX, $g_iQuickMISY)
-				SetLog("Activate Bomber Ability", $COLOR_SUCCESS)
+				If UBound($g_aBomberOnAttackBar) = 1 Then
+					SetLog("Activate Bomber Ability", $COLOR_SUCCESS)
+					ExitLoop
+				Else
+					SetLog("Activate Bomber " & $i + 1 & " Ability", $COLOR_SUCCESS)
+					If _Sleep(Random(500, 1000, 1)) Then ExitLoop
+				EndIf
 			EndIf
-			ExitLoop
 		EndIf
 	Next
 	Return $bRet
@@ -557,7 +571,7 @@ EndFunc   ;==>CheckBomberLoop
 
 Func IsBBAttackPage()
 	Local $bRet = False
-	If _ColorCheck(_GetPixelColor(22, 550 + $g_iMidOffsetY, True), Hex(0xCD0D0D, 6), 20) Then ;check red color on surrender button
+	If _ColorCheck(_GetPixelColor(30, 550 + $g_iMidOffsetY, True), Hex(0xCF0D0E, 6), 20) Then ;check red color on surrender button
 		$bRet = True
 	EndIf
 	Return $bRet

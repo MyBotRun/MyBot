@@ -233,7 +233,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 
 	If $bOopsFlag And $g_bDebugImageSave Then SaveDebugImage("ButtonView")
 
-	$aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY)
+	$aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 	If $aResult[0] > 0 Then
 		$g_avBuildingUpgrades[$inum][4] = $aResult[1] ; Store bldg name
 		GUICtrlSetData($g_hTxtUpgradeName[$inum], $g_avBuildingUpgrades[$inum][4]) ; Set GUI name to match $g_avBuildingUpgrades variable
@@ -277,15 +277,15 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If $bOopsFlag And $g_bDebugImageSave Then SaveDebugImage("UpgradeView")
 
 		If $IsTHWeapon Then
-			Local $THWLevelUp = getOcrAndCapture("coc-RemainLaboratory2", 518, 89 + $g_iMidOffsetY, 22, 22)
+			Local $THWLevelUp = getOcrAndCapture("coc-THWeapon", 503, 113 + $g_iMidOffsetY, 18, 17)
 			If $THWLevelUp > 0 And $THWLevelUp <= 5 Then $g_avBuildingUpgrades[$inum][5] = Number($THWLevelUp - 1)
 			GUICtrlSetData($g_hTxtUpgradeLevel[$inum], $g_avBuildingUpgrades[$inum][5])
 		EndIf
 
 		_CaptureRegion()
 		Select ;Ensure the right upgrade window is open!
-			Case _ColorCheck(_GetPixelColor(752, 118 + $g_iMidOffsetY, True), Hex(0xCD171D, 6), 20) ; Check if the building Upgrade window is open red bottom of white X to close
-				If _ColorCheck(_GetPixelColor(300, 530 + $g_iMidOffsetY, True), Hex(0xE1433F, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
+			Case _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) ; Check if the building Upgrade window is open red bottom of white X to close
+				If _ColorCheck(_GetPixelColor(500, 455 + $g_iMidOffsetY, True), Hex(0xD62F47, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
 					If $g_abUpgradeRepeatEnable[$inum] = True Then
 						SetLog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_ERROR)
 						$g_abUpgradeRepeatEnable[$inum] = False
@@ -304,83 +304,15 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					Return False
 				EndIf
 
-				If _ColorCheck(_GetPixelColor(485, 530 + $g_iMidOffsetY, True), Hex(0xFFF155, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
-				If _ColorCheck(_GetPixelColor(485, 530 + $g_iMidOffsetY, True), Hex(0xE756FF, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
-				If _ColorCheck(_GetPixelColor(485, 530 + $g_iMidOffsetY, True), Hex(0x352D3D, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Dark" ;Check if Dark Elixir required and update type
+				If _ColorCheck(_GetPixelColor(681, 545 + $g_iMidOffsetY, True), Hex(0xFFF956, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
+				If _ColorCheck(_GetPixelColor(681, 545 + $g_iMidOffsetY, True), Hex(0xFF5AFF, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
+				If _ColorCheck(_GetPixelColor(681, 545 + $g_iMidOffsetY, True), Hex(0x4E3C54, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Dark" ;Check if Dark Elixir required and update type
 
-				$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade(345, 527 + $g_iMidOffsetY)) ; Try to read white text.
-				Local $g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-				If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-					$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade1(345, 528 + $g_iMidOffsetY))
-					$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-					If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-						$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade2(345, 528 + $g_iMidOffsetY))
-						$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-					EndIf
-					If $g_ReadCorrect <> 0 Then $g_avBuildingUpgrades[$inum][2] = ""
-					If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRed3(345, 527 + $g_iMidOffsetY)) ;read RED upgrade text
-					$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-					If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-						$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRed2(345, 528 + $g_iMidOffsetY))
-						$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-						If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-							$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRed(345, 528 + $g_iMidOffsetY))
-							$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-						EndIf
-					EndIf
-					If $g_ReadCorrect <> 0 Then $g_avBuildingUpgrades[$inum][2] = ""
-				EndIf
+				$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade(552, 541 + $g_iMidOffsetY)) ; Try to read white text.
+				If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRed(552, 541 + $g_iMidOffsetY)) ;read RED upgrade text
 				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value if not repeat upgrade
 
-				;HArchH X value was 195
-				$g_avBuildingUpgrades[$inum][6] = getBldgUpgradeTime(115, 299 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
-				SetLog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
-				If $g_avBuildingUpgrades[$inum][6] <> "" Then $g_avBuildingUpgrades[$inum][7] = "" ; Clear old upgrade end time
-
-			Case _ColorCheck(_GetPixelColor(777, 95 + $g_iMidOffsetY, True), Hex(0xCD1215, 6), 20) ; Check if the Hero Upgrade window is open
-				If _ColorCheck(_GetPixelColor(400, 560 + $g_iMidOffsetY, True), Hex(0xE1433F, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
-					If $g_abUpgradeRepeatEnable[$inum] = True Then
-						SetLog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_ERROR)
-						$g_abUpgradeRepeatEnable[$inum] = False
-						GUICtrlSetState($g_hChkUpgradeRepeat[$inum], $GUI_UNCHECKED) ; Change repeat selection box to unchecked
-					Else
-						SetLog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_ERROR)
-					EndIf
-					ClearUpgradeInfo($inum) ; clear upgrade information
-					_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnBlank)
-					_GUICtrlSetImage($g_hPicUpgradeStatus[$inum], $g_sLibIconPath, $eIcnRedLight) ; change to needs trained indicator
-					$g_abBuildingUpgradeEnable[$inum] = False
-					GUICtrlSetState($g_hChkUpgrade[$inum], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
-					$g_avBuildingUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
-					GUICtrlSetData($g_hTxtUpgradeEndTime[$inum], "") ; Set GUI time to match $g_avBuildingUpgrades variable
-					ClickAway()
-					Return False
-				EndIf
-				If _ColorCheck(_GetPixelColor(755, 560 + $g_iMidOffsetY, True), Hex(0x3E3145, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Dark" ; Check if DE required and update type
-				$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeHeroe(630, 552 + $g_iMidOffsetY)) ; Try to read white text.
-				Local $g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-				If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-					$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade1Heroe(630, 553 + $g_iMidOffsetY))
-					$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-					If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-						$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade2Heroe(630, 553 + $g_iMidOffsetY))
-						$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-					EndIf
-					If $g_ReadCorrect <> 0 Then $g_avBuildingUpgrades[$inum][2] = ""
-					If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRed3Heroe(630, 552 + $g_iMidOffsetY)) ;read RED upgrade text
-					$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-					If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-						$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRed2Heroe(630, 553 + $g_iMidOffsetY))
-						$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-						If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][2] < 1000 Or $g_ReadCorrect <> 0 Then
-							$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRedHeroe(630, 553 + $g_iMidOffsetY))
-							$g_ReadCorrect = StringRight($g_avBuildingUpgrades[$inum][2], 1)
-						EndIf
-					EndIf
-					If $g_ReadCorrect <> 0 Then $g_avBuildingUpgrades[$inum][2] = ""
-				EndIf
-				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value
-				$g_avBuildingUpgrades[$inum][6] = getHeroUpgradeTime(595, 490 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
+				$g_avBuildingUpgrades[$inum][6] = getBldgUpgradeTime(730, 544 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
 				SetLog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
 				If $g_avBuildingUpgrades[$inum][6] <> "" Then $g_avBuildingUpgrades[$inum][7] = "" ; Clear old upgrade end time
 

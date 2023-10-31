@@ -7,23 +7,29 @@ Android 5 will no longer be supported; SC removed the support.
 Only Android9 Pie64 is working after May 2023 game update
 The once listed here have been tested and do work.
 
-BlueStacks
-==========
-http://www.bluestacks.com/
-Version 5.10.x / 5.11.x
-MyBot Command Line Key: BlueStacks5
-Default Instance Key: Pie64
-Second Instance Key:  Pie64_1
-
-Known issues/bugs: - V5.12.x has window sizing problems
-
 Nox
 ===
 http://en.bignox.com/
-Versions v7.0.5.7019-XXXXX0429, v7.0.5.8.X
+Versions patched v7.0.5.9017-9.0901231011 or newer
 MyBot Command Line Key: Nox
 Default Instance Key: nox
 Second Instance Key:  Nox_1
+
+MEmu
+====
+http://www.memuplay.com/
+Versions 9.0.1 - 9.0.6
+MyBot Command Line Key: MEmu
+Default Instance Key: MEmu
+Second Instance Key:  MEmu_1
+
+Known issues/bugs: Runs spam advertisements that cause errors during game. 
+
+
+BlueStacks - Not Supported
+==========
+http://www.bluestacks.com/
+Known issues/bugs: - V5.11.X not compatible with Oct 2023 game update, and all V5.12.x+ has window sizing problems
 
 Info/known issues/bugs: -
 

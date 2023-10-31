@@ -60,6 +60,8 @@ Func UpgradeBuilding()
 		Return False
 	EndIf
 
+	ZoomOut()
+
 	For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 
 		If $g_bDebugSetlog Then SetlogUpgradeValues($iz) ; massive debug data dump for each upgrade
@@ -226,7 +228,7 @@ Func UpgradeNormal($iUpgradeNumber)
 	BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0296") ; Select the item to be upgrade
 	If _Sleep($DELAYUPGRADENORMAL1) Then Return ; Wait for window to open
 
-	Local $aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
+	Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
 	If UBound($aResult) < 2 Then Return False
 
 	Local $aUpgradeButton = findButton("Upgrade", Default, 1, True)
@@ -256,7 +258,7 @@ Func UpgradeNormal($iUpgradeNumber)
 		BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0296") ; Select the item to be upgrade again in case full collector/mine
 		If _Sleep($DELAYUPGRADENORMAL1) Then Return ; Wait for window to open
 
-		$aResult = BuildingInfo(242, 488 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
+		$aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
 		If $aResult[0] > 1 Then
 			If $aResult[1] = "Town Hall" And $aResult[2] > 11 Then ;Upgrade THWeapon If TH > 11
 				$aTmpUpgradeButton = findButton("THWeapon") ;try to find UpgradeTHWeapon button (swords)
@@ -286,16 +288,16 @@ Func UpgradeNormal($iUpgradeNumber)
 		ClickP($aUpgradeButton, 1, 0, "#0297") ; Click Upgrade Button
 		If _Sleep(2000) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn1")
-		If _ColorCheck(_GetPixelColor(752, 118 + $g_iMidOffsetY, True), Hex(0xCD171D, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
-			If _ColorCheck(_GetPixelColor(466, 535 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _ColorCheck(_GetPixelColor(466, 538 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _
-					_ColorCheck(_GetPixelColor(466, 540 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) Then ; Check for Red Zero = means not enough loot!
+		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
+			Local $RedZero = _PixelSearch(610, 548 + $g_iMidOffsetY, 650, 552 + $g_iMidOffsetY, Hex(0xFF887F, 6), 20)
+			If IsArray($RedZero) Then ; Check for Red Zero = means not enough loot!
 
 				SetLog("Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ", No Loot!", $COLOR_ERROR)
 
 				ClickAway()
 				Return False
 			Else
-				Click(430, 540 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
+				Click(630, 540 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADENORMAL3) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn2")
 				If isGemOpen(True) Then ; Redundant Safety Check if the use Gem window opens
@@ -304,46 +306,6 @@ Func UpgradeNormal($iUpgradeNumber)
 					Return False
 				EndIf
 				SetLog("Upgrade #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " started", $COLOR_SUCCESS)
-				_GUICtrlSetImage($g_hPicUpgradeStatus[$iUpgradeNumber], $g_sLibIconPath, $eIcnGreenLight) ; Change GUI upgrade status to done
-				$g_aiPicUpgradeStatus[$iUpgradeNumber] = $eIcnGreenLight ; Change GUI upgrade status to done
-				GUICtrlSetData($g_hTxtUpgradeValue[$iUpgradeNumber], -($g_avBuildingUpgrades[$iUpgradeNumber][2])) ; Show Negative Upgrade value in GUI
-				GUICtrlSetData($g_hTxtUpgradeLevel[$iUpgradeNumber], $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+") ; Set GUI level to match $g_avBuildingUpgrades variable
-				$g_aiUpgradeLevel[$iUpgradeNumber] = $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+" ; Set GUI level to match $g_avBuildingUpgrades variable
-				If Not $g_abUpgradeRepeatEnable[$iUpgradeNumber] Then ; Check for repeat upgrade
-					GUICtrlSetState($g_hChkUpgrade[$iUpgradeNumber], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
-					$g_abBuildingUpgradeEnable[$iUpgradeNumber] = False ; Change upgrade selection box to unchecked
-					$g_avBuildingUpgrades[$iUpgradeNumber][0] = -1 ;Reset $UpGrade position coordinate variable to blank to show its completed
-					$g_avBuildingUpgrades[$iUpgradeNumber][1] = -1
-					$g_avBuildingUpgrades[$iUpgradeNumber][3] = "" ; Reset loot type
-					GUICtrlSetData($g_hTxtUpgradeLevel[$iUpgradeNumber], $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+") ; Set GUI level to match $g_avBuildingUpgrades variable
-					$g_avBuildingUpgrades[$iUpgradeNumber][5] = $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+" ; Set GUI level to match $g_avBuildingUpgrades variable
-				ElseIf $g_abUpgradeRepeatEnable[$iUpgradeNumber] Then
-					GUICtrlSetState($g_hChkUpgrade[$iUpgradeNumber], $GUI_CHECKED) ; Ensure upgrade selection box is checked
-					$g_abBuildingUpgradeEnable[$iUpgradeNumber] = True ; Ensure upgrade selection box is checked
-				EndIf
-				ClickAway()
-				If _Sleep($DELAYUPGRADENORMAL3) Then Return ; Wait for window to close
-
-				Return True
-			EndIf
-		ElseIf _ColorCheck(_GetPixelColor(777, 95 + $g_iMidOffsetY, True), Hex(0xCD1215, 6), 20) Then ; Check if the building Upgrade window is open, For Warden
-			If _ColorCheck(_GetPixelColor(737, 558 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _ColorCheck(_GetPixelColor(737, 561 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _
-					_ColorCheck(_GetPixelColor(737, 564 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) Then ; Check for Red Zero = means not enough loot!
-
-				SetLog("Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ", No Loot!", $COLOR_RED)
-
-				ClickAway()
-				Return False
-			Else
-				Click(705, 570 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
-				If _Sleep($DELAYUPGRADENORMAL3) Then Return
-				If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn2")
-				If isGemOpen(True) Then ; Redundant Safety Check if the use Gem window opens
-					SetLog("Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No Loot!", $COLOR_RED)
-					ClickAway()
-					Return False
-				EndIf
-				SetLog("Upgrade #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " started", $COLOR_GREEN)
 				_GUICtrlSetImage($g_hPicUpgradeStatus[$iUpgradeNumber], $g_sLibIconPath, $eIcnGreenLight) ; Change GUI upgrade status to done
 				$g_aiPicUpgradeStatus[$iUpgradeNumber] = $eIcnGreenLight ; Change GUI upgrade status to done
 				GUICtrlSetData($g_hTxtUpgradeValue[$iUpgradeNumber], -($g_avBuildingUpgrades[$iUpgradeNumber][2])) ; Show Negative Upgrade value in GUI
@@ -388,14 +350,14 @@ Func UpgradeHero($iUpgradeNumber)
 		ClickP($aUpgradeButton, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep(2000) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(777, 95 + $g_iMidOffsetY, True), Hex(0xCD1215, 6), 20) Then ; wait up to 2 seconds upgrade window to open
-			If _ColorCheck(_GetPixelColor(737, 558 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _ColorCheck(_GetPixelColor(737, 561 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) And _
-					_ColorCheck(_GetPixelColor(737, 564 + $g_iMidOffsetY, True), Hex(0xFF887F, 6), 20) Then ; Check for Red Zero = means not enough loot!
+		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
+			Local $RedZero = _PixelSearch(610, 548 + $g_iMidOffsetY, 650, 552 + $g_iMidOffsetY, Hex(0xFF887F, 6), 20)
+			If IsArray($RedZero) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Hero Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No DE!", $COLOR_ERROR)
 				ClickAway()
 				Return False
 			Else
-				Click(705, 570 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
+				Click(630, 540 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
 				ClickAway()
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")

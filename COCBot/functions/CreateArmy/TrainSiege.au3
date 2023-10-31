@@ -16,8 +16,9 @@
 
 Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	Local $iPage = 0 ;
-	Local $sImgSieges = @ScriptDir & "\imgxml\Train\Siege_Train\" ; "25,410,840,515"
-	Local $sSearchArea = GetDiamondFromRect2(25, 380 + $g_iMidOffsetY, 840, 485 + $g_iMidOffsetY)
+	Local $sImgSieges = @ScriptDir & "\imgxml\Train\Siege_Train\"
+	Local $sSearchArea = GetDiamondFromRect2(25, 345 + $g_iMidOffsetY, 840, 510 + $g_iMidOffsetY)
+	
 
 	; Check if is necessary run the routine
 	If Not $g_bRunState Then Return
@@ -27,15 +28,15 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	If Not OpenSiegeMachinesTab(True, "TrainSiege()") Then Return
 	If _Sleep(500) Then Return
 
-	Local $aCheckIsOccupied[4] = [822, 176 + $g_iMidOffsetY, 0xE00D0D, 15]
-	Local $aCheckIsFilled[4] = [802, 158 + $g_iMidOffsetY, 0xD7AFA9, 15]
+	Local $aCheckIsOccupied[4] = [814, 182 + $g_iMidOffsetY, 0xE21012, 15]
+	Local $aCheckIsFilled[4] = [802, 164 + $g_iMidOffsetY, 0xD7AFA9, 15]
 	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiTotalSiegeMachine = $g_aiCurrentSiegeMachines
 
 	; check queueing siege
 	If _CheckPixel($aCheckIsFilled, True, Default, "Siege is Filled") Or _CheckPixel($aCheckIsOccupied, True, Default, "Siege is Queued") Then
 		Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\SiegeMachinesQueued"
-		Local $aSearchResult = SearchArmy($Dir, 18, 152 + $g_iMidOffsetY, 840, 231 + $g_iMidOffsetY, "Queue")
+		Local $aSearchResult = SearchArmy($Dir, 30, 165 + $g_iMidOffsetY, 835, 230 + $g_iMidOffsetY, "Queue")
 		If $aSearchResult[0][0] <> "" Then
 			For $i = 0 To UBound($aSearchResult) - 1
 				Local $iSiegeIndex = TroopIndexLookup($aSearchResult[$i][0]) - $eWallW
@@ -106,20 +107,20 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	If _Sleep(500) Then Return
 
 	; OCR to get remain time - coc-siegeremain
-	Local $sSiegeTime = getRemainTrainTimer(760, 133 + $g_iMidOffsetY) ; Get time via OCR.
+	Local $sSiegeTime = getRemainTrainTimer(735, 138 + $g_iMidOffsetY) ; Get time via OCR.
 	If $sSiegeTime <> "" Then
 		$g_aiTimeTrain[3] = ConvertOCRTime("Siege", $sSiegeTime, False) ; Update global array
 		SetLog("Remaining Siege build time: " & StringFormat("%.2f", $g_aiTimeTrain[3]), $COLOR_INFO)
 	EndIf
 EndFunc   ;==>TrainSiege
 
-Func CheckQueueSieges($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlot = False)
+Func CheckQueueSieges($bGetQuantity = True, $bSetLog = True, $x = 835, $bQtyWSlot = False)
 	Local $aResult[1] = [""]
 	If $bSetLog Then SetLog("Checking siege queue", $COLOR_INFO)
 
 	Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\SiegeMachinesQueued"
 
-	Local $aSearchResult = SearchArmy($Dir, 18, 152 + $g_iMidOffsetY, $x, 231 + $g_iMidOffsetY, $bGetQuantity ? "queue" : "")
+	Local $aSearchResult = SearchArmy($Dir, 30, 165 + $g_iMidOffsetY, $x, 230 + $g_iMidOffsetY, $bGetQuantity ? "queue" : "")
 	ReDim $aResult[UBound($aSearchResult)]
 
 	If $aSearchResult[0][0] = "" Then
@@ -157,8 +158,6 @@ EndFunc   ;==>CheckQueueSieges
 
 Func DragSiegeIfNeeded($iSiegeIndex, ByRef $iPage)
 
-	SetDebugLog("---- DragSiegeIfNeeded ----")
-	SetDebugLog("Current Page : " & $iPage)
 	SetLog("Siege Needed: " & $g_asSiegeMachineNames[$iSiegeIndex])
 
 	Local $iY1 = Random(400 + $g_iMidOffsetY, 440 + $g_iMidOffsetY, 1)

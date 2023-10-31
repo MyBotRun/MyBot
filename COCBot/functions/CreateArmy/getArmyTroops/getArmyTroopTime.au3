@@ -33,7 +33,7 @@ Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChe
 	EndIf
 
 
-	Local $sResultTroops = getRemainTrainTimer(460, 140 + $g_iMidOffsetY, $bNeedCapture) ;Get time via OCR.
+	Local $sResultTroops = getRemainTrainTimer(450, 146 + $g_iMidOffsetY, $bNeedCapture) ;Get time via OCR.
 	$g_aiTimeTrain[0] = ConvertOCRTime("Troops", $sResultTroops, $bSetLog) ; update global array
 
 	If $bCloseArmyWindow Then

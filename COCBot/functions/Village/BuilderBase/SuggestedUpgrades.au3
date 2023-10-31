@@ -80,7 +80,7 @@ Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave)
 	If $g_iChkBBSuggestedUpgrades = 0 Then Return
 	Local $bDebug = $g_bDebugSetlog
 	Local $bScreencap = True
-	Local $y = 102, $x = 400, $x1 = 540
+	Local $y = 102, $x = 520, $x1 = 630
 
 	; Master Builder is not available return
 	If $g_iFreeBuilderCountBB = 0 Then
@@ -217,7 +217,7 @@ EndFunc   ;==>MainSuggestedUpgradeCode
 Func ClickOnBuilder()
 
 	; Master Builder Check pixel [i] icon
-	Local Const $aMasterBuilder[4] = [360, 11, 0x7CBDDE, 10]
+	Local Const $aMasterBuilder[4] = [463, 10, 0x7ABDE3, 10]
 	; Debug Stuff
 	Local $sDebugText = ""
 	Local Const $Debug = False
@@ -234,7 +234,7 @@ Func ClickOnBuilder()
 			Click($aMasterBuilder[0], $aMasterBuilder[1], 1)
 			If _Sleep(2000) Then Return
 			; Let's verify if the Suggested Window open
-			If QuickMIS("BC1", $g_sImgAutoUpgradeWindow, 360, 50, 490, 100, $Screencap, $Debug) Then
+			If QuickMIS("BC1", $g_sImgAutoUpgradeWindow, 455, 50, 585, 100, $Screencap, $Debug) Then
 				Return True
 			Else
 				$sDebugText = "Window didn't opened"
@@ -279,13 +279,13 @@ Func GetIconPosition($x, $y, $x1, $y1, $directory, $Screencap = True, $Debug = F
 EndFunc   ;==>GetIconPosition
 
 Func IsWallDetected()
-	Local $aBuildingName = BuildingInfo(245, 490 + $g_iBottomOffsetY)
+	Local $aBuildingName = BuildingInfo(242, 468 + $g_iBottomOffsetY)
 	If StringInStr($aBuildingName[1], "Wall") And Not $g_iChkBBSuggestedUpgradesIgnoreWall Then Return True
 	Return False
 EndFunc   ;==>IsWallDetected
 
 Func GetUpgradeButton($sUpgButton = "", $Debug = False, $bDebugImage = $g_bDebugImageSave, $bWallUpgrade = False, $ElixForced = False)
-	Local $sIconBarDiamond = GetDiamondFromRect2(140, 531 + $g_iBottomOffsetY, 720, 611 + $g_iBottomOffsetY)
+	Local $sIconBarDiamond = GetDiamondFromRect2(140, 500 + $g_iBottomOffsetY, 720, 590 + $g_iBottomOffsetY)
 	Local $sUpgradeButtonDiamond = GetDiamondFromRect2(350, 500 + $g_iMidOffsetY, 805, 600 + $g_iMidOffsetY)
 
 	If $sUpgButton = "" Then Return
@@ -297,7 +297,7 @@ Func GetUpgradeButton($sUpgButton = "", $Debug = False, $bDebugImage = $g_bDebug
 	; search icon bar for 'upgrade' icon
 	Local $aUpgradeIcon = decodeSingleCoord(findImage("GetUpgradeButon", $g_sImgAutoUpgradeBtnDir & "\*", $sIconBarDiamond, 1, True))
 	If IsArray($aUpgradeIcon) And UBound($aUpgradeIcon) = 2 Then
-		Local $aBuildingName = BuildingInfo(245, 490 + $g_iBottomOffsetY) ; read building text
+		Local $aBuildingName = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; read building text
 		SetDebugLog("BuildingName 0 : " & $aBuildingName[0])
 		If $aBuildingName[0] >= 1 Then
 			SetLog("Building: " & $aBuildingName[1], $COLOR_INFO)

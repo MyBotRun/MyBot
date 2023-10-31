@@ -69,7 +69,7 @@ Func AttackReport()
 	If $g_iStatsLastAttack[$eLootTrophy] >= 0 Then
 		$iBonusLast = Number(getResourcesBonusPerc(578, 309 + $g_iMidOffsetY))
 		If $iBonusLast > 100 Then ; If % is detected as 7.
-			SaveDebugImage("AttackReport", True)
+			If $g_bDebugImageSave Then SaveDebugImage("AttackReport", True)
 			Local $Loop = 0
 			While $iBonusLast > 100
 				If $Loop = 20 Then
