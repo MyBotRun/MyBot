@@ -402,8 +402,9 @@ Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult, $bDisconnectOnly = $g_bChkSh
 					ClickP($aiButtonPos, 2, 1000)
 					If _Sleep(200) Then Return -1
 				Else
-					SetLog("   1. Click Connected")
-					ClickP($aiButtonPos, 1, 1000)
+					SetLog("   1. Click Connected Skipped")
+					; ClickP($aiButtonPos, 1, 1000)
+					;When switching accounts this button click causes an infinite loop due to a CoC message about how account switches are changing (Tested in nox)
 					If _Sleep(200) Then Return -1
 				EndIf
 
