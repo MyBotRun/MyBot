@@ -44,7 +44,7 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	$g_aiCurrentCCSiegeMachines = $aCurrentCCSiegeEmpty ; Reset Current Siege Machine Array
 
 	; Get CC Siege Capacities
-	Local $sSiegeInfo = getSiegeCampCap(645, 468, $bNeedCapture) ; OCR read Siege built and total
+	Local $sSiegeInfo = getCCSiegeCampCap(644, 438 + $g_iMidOffsetY, $bNeedCapture) ; OCR read Siege built and total
 	If $g_bDebugSetlogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
 	Local $aGetSiegeCap = StringSplit($sSiegeInfo, "#", $STR_NOCOUNT) ; split the built Siege number from the total Siege number
 	If $bSetLog And UBound($aGetSiegeCap) = 2 Then

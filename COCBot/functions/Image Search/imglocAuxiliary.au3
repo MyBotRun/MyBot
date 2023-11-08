@@ -279,7 +279,7 @@ Func GetButtonDiamond($sButtonName)
 		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon", "MagicItems" ; Full size of object buttons at the bottom
 			$btnDiamond = GetDiamondFromRect2(140, 500 + $g_iBottomOffsetY, 720, 590 + $g_iBottomOffsetY)
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
-			$btnDiamond = GetDiamondFromRect2(359, 382 + $g_iMidOffsetY, 507, 477 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(340, 370 + $g_iMidOffsetY, 525, 495 + $g_iMidOffsetY)
 		Case "EnterShop"
 			$btnDiamond = GetDiamondFromRect("359,392(148,66)")
 		Case "EndBattleSurrender" ;surrender - attackwindow
@@ -301,11 +301,11 @@ Func GetButtonDiamond($sButtonName)
 		Case "Collect"
 			$btnDiamond = "350,450|505,450|505,521|350,521"
 		Case "BoostBarrack", "BarrackBoosted"
-			$btnDiamond = GetDiamondFromRect("630,280,850,360")
+			$btnDiamond = GetDiamondFromRect2(700, 270 + $g_iMidOffsetY, 830, 330 + $g_iMidOffsetY)
 		Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
 			$btnDiamond = GetDiamondFromRect2(30, 80 + $g_iMidOffsetY, 785, 130 + $g_iMidOffsetY)
 		Case "WeeklyDeals"
-			$btnDiamond = GetDiamondFromRect2(20, 120 + $g_iMidOffsetY, 130, 320 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(30, 115 + $g_iMidOffsetY, 170, 320 + $g_iMidOffsetY)
 		Case "MessagesButton"
 			$btnDiamond = GetDiamondFromRect2(0, 0, 90, 170 + $g_iMidOffsetY)
 		Case "AttackLogTab", "ShareReplayButton"
@@ -815,11 +815,11 @@ Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 			Case 603 To 670 ; Slot 8
 				Return 615 ; Siege Machines slot 1
 
-			Case 676 To 743 ; Slot 9
-				Return 688 ; Siege Machines slot 2
+			Case 675 To 743 ; Slot 9
+				Return 687 ; Siege Machines slot 2
 
-			Case 746 To 813 ; Slot 10
-				Return 761 ; Siege Machines slot 2
+			Case 746 To 814 ; Slot 10
+				Return 758 ; Siege Machines slot 2
 		EndSwitch
 	Else ;CC Troops & Spells
 		Switch $iX

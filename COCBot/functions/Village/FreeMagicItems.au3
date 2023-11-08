@@ -114,7 +114,7 @@ EndFunc   ;==>GetFreeMagic
 Func OpenTraderWindow()
 	Local $Found = False
 	For $i = 1 To 5
-		If QuickMIS("BC1", $g_sImgTrader, 90, 130, 210, 210 + $g_iMidOffsetY) Then
+		If QuickMIS("BC1", $g_sImgTrader, 90, 100 + $g_iMidOffsetY, 210, 210 + $g_iMidOffsetY) Then
 			Click($g_iQuickMISX, $g_iQuickMISY)
 			If _Sleep(1500) Then Return
 			$Found = True
@@ -127,18 +127,28 @@ Func OpenTraderWindow()
 		SetLog("Bot will recheck next loop", $COLOR_OLIVE)
 		Return False
 	Else
+		Local $aIsWeekyDealsOpen[4] = [40, 0, 0x8BC11D, 20]
 		Local $aTabButton = findButton("WeeklyDeals", Default, 1, True)
 		If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
-			SetDebugLog("Weekly Deals is already selected", $COLOR_DEBUG)
+			$aIsWeekyDealsOpen[1] = $aTabButton[1]
+			If Not _CheckPixel($aIsWeekyDealsOpen, True) Then 
+				ClickP($aTabButton)
+				If Not _WaitForCheckPixel($aIsWeekyDealsOpen, True) Then
+					SetLog("Error : Cannot open Gems Menu. Pixel to check did not appear", $COLOR_ERROR)
+					CloseWindow()
+					Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlog)
+				EndIf
+			EndIf
 		Else
-			Click(90, 245 + $g_iMidOffsetY)
-			If _Sleep(1000) Then Return
+			SetDebugLog("Error when opening Gems Menu: $aTabButton is no valid Array", $COLOR_ERROR)
+			CloseWindow()
+			Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlog)
 		EndIf
 	EndIf
 
 	Local $aiDailyDiscount = decodeSingleCoord(findImage("DailyDiscount", $g_sImgDailyDiscountWindow, GetDiamondFromRect("420,105,510,155"), 1, True, Default))
 	If Not IsArray($aiDailyDiscount) Or UBound($aiDailyDiscount, 1) < 1 Then
-		ClickAway()
+		CloseWindow()
 		Return False
 	EndIf
 

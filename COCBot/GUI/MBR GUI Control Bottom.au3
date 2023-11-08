@@ -24,6 +24,14 @@ Func Initiate()
 		Local $Compiled = @ScriptName & (@Compiled ? " Executable" : " Script")
 		SetLog($Compiled & " running on " & @OSVersion & " " & @OSServicePack & " " & @OSArch)
 
+		If _Sleep($DELAYRESPOND) Then Return
+		If StringInStr(@OSVersion, "WIN_11", $STR_NOCASESENSEBASIC) Or _
+				StringInStr(@OSVersion, "WIN_2019", $STR_NOCASESENSEBASIC) Or _
+				StringInStr(@OSVersion, "WIN_2022", $STR_NOCASESENSEBASIC) Then
+			Setlog(" Unsupported Windows 11 OS detected!!", $COLOR_ERROR)
+			Setlog(" See MBR forum for more information", $COLOR_ERROR)
+		EndIf
+
 		Local $sGameVersion = GetCoCAppVersion()
 		If Not @error Then SetLog(">>  CoC Game App Version = " & $sGameVersion, $COLOR_DEBUG)
 

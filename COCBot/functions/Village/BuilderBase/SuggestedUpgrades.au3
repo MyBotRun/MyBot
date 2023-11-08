@@ -77,10 +77,12 @@ EndFunc   ;==>chkPlacingNewBuildings
 Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave)
 
 	; If is not selected return
-	If $g_iChkBBSuggestedUpgrades = 0 Then Return
+	If Not $g_iChkBBSuggestedUpgrades Then Return
 	Local $bDebug = $g_bDebugSetlog
 	Local $bScreencap = True
-	Local $y = 102, $x = 520, $x1 = 630
+	Local $y = 102, $x = 510, $x1 = 630
+
+	BuilderBaseReport(True, True)
 
 	; Master Builder is not available return
 	If $g_iFreeBuilderCountBB = 0 Then
@@ -216,33 +218,41 @@ EndFunc   ;==>MainSuggestedUpgradeCode
 ; This fucntion will Open the Suggested Window and check if is OK
 Func ClickOnBuilder()
 
-	; Master Builder Check pixel [i] icon
-	Local Const $aMasterBuilder[4] = [463, 10, 0x7ABDE3, 10]
-	; Debug Stuff
+	Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("MasterBuilderHead", $g_sImgMasterBuilderHead, 445, 0, 500, 54, True))
 	Local $sDebugText = ""
-	Local Const $Debug = False
-	Local Const $Screencap = True
 
-	; Master Builder is not available return
-	If $g_iFreeBuilderCountBB = 0 Then SetLog("No Master Builder available! [" & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB & "]", $COLOR_INFO)
+	If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
+		; Master Builder Check pixel [i] icon
+		Local Const $aMasterBuilder[4] = [$asSearchResult[0] - 15, $asSearchResult[1] - 9, 0x7ABDE3, 10]
+		; Debug Stuff
+		Local Const $Debug = False
+		Local Const $Screencap = True
 
-	; Master Builder available
-	If $g_iFreeBuilderCountBB > 0 Then
-		; Check the Color and click
-		If _CheckPixel($aMasterBuilder, True) Then
-			; Click on Builder
-			Click($aMasterBuilder[0], $aMasterBuilder[1], 1)
-			If _Sleep(2000) Then Return
-			; Let's verify if the Suggested Window open
-			If QuickMIS("BC1", $g_sImgAutoUpgradeWindow, 455, 50, 585, 100, $Screencap, $Debug) Then
-				Return True
+		; Master Builder is not available return
+		If $g_iFreeBuilderCountBB = 0 Then SetLog("No Master Builder available! [" & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB & "]", $COLOR_INFO)
+
+		; Master Builder available
+		If $g_iFreeBuilderCountBB > 0 Then
+			; Check the Color and click
+			If _CheckPixel($aMasterBuilder, True) Then
+				; Click on Builder
+				Click($aMasterBuilder[0], $aMasterBuilder[1], 1)
+				If _Sleep(2000) Then Return
+				; Let's verify if the Suggested Window open
+				If QuickMIS("BC1", $g_sImgAutoUpgradeWindow, $asSearchResult[0] - 23, 50, $asSearchResult[0] + 107, 100, $Screencap, $Debug) Then
+					Return True
+				Else
+					$sDebugText = "Window didn't opened"
+				EndIf
 			Else
-				$sDebugText = "Window didn't opened"
+				$sDebugText = "BB Pixel problem"
 			EndIf
-		Else
-			$sDebugText = "BB Pixel problem"
 		EndIf
+	Else
+		$sDebugText = "Cannot find Master Builder Head"
+		If $g_bDebugImageSave Then SaveDebugImage("MasterBuilderHead")
 	EndIf
+
 	If $sDebugText <> "" Then SetLog("Problem on Suggested Upg Window: [" & $sDebugText & "]", $COLOR_ERROR)
 	Return False
 EndFunc   ;==>ClickOnBuilder
@@ -254,24 +264,31 @@ Func GetIconPosition($x, $y, $x1, $y1, $directory, $Screencap = True, $Debug = F
 	If QuickMIS("BC1", $directory, $x, $y, $x1, $y1, $Screencap, $Debug) Then
 		If $bDebugImage Then SaveDebugRectImage("GetIconPosition", $x & "," & $y & "," & $x1 & "," & $y1)
 		; Correct positions to Check Green 'New' Building word
-		Local $iYoffset = $g_iQuickMISY - 15, $iY1offset = $g_iQuickMISY + 7
-		Local $iX = 285, $iX1 = $g_iQuickMISX
-		; Store the values
-		$aResult[0] = $g_iQuickMISX
-		$aResult[1] = $g_iQuickMISY
-		$aResult[2] = $g_iQuickMISName
-		; The pink/salmon color on zeros
-		If QuickMIS("BC1", $g_sImgAutoUpgradeNoRes, $aResult[0], $iYoffset, $aResult[0] + 100, $iY1offset, True, $Debug) Then
-			; Store new values
-			$aResult[2] = "NoResources"
-			Return $aResult
-		EndIf
-		; Proceeds with 'New' detection
-		If QuickMIS("BC1", $g_sImgAutoUpgradeNew, $iX, $iYoffset, $iX1, $iY1offset, True, $Debug) Then
-			; Store new values
-			$aResult[0] = $g_iQuickMISX + 35
+		Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("MasterBuilderHead", $g_sImgMasterBuilderHead, 445, 0, 500, 54, True))
+		If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
+			Local $iYoffset = $g_iQuickMISY - 15, $iY1offset = $g_iQuickMISY + 7
+			Local $iX = $asSearchResult[0] - 193, $iX1 = $g_iQuickMISX
+			; Store the values
+			$aResult[0] = $g_iQuickMISX
 			$aResult[1] = $g_iQuickMISY
-			$aResult[2] = "New"
+			$aResult[2] = $g_iQuickMISName
+			; The pink/salmon color on zeros
+			If QuickMIS("BC1", $g_sImgAutoUpgradeNoRes, $aResult[0], $iYoffset, $aResult[0] + 100, $iY1offset, True, $Debug) Then
+				; Store new values
+				$aResult[2] = "NoResources"
+				Return $aResult
+			EndIf
+			; Proceeds with 'New' detection
+			If QuickMIS("BC1", $g_sImgAutoUpgradeNew, $iX, $iYoffset, $iX1, $iY1offset, True, $Debug) Then
+				; Store new values
+				$aResult[0] = $g_iQuickMISX + 35
+				$aResult[1] = $g_iQuickMISY
+				$aResult[2] = "New"
+			EndIf
+		Else
+			SetLog("Cannot find Master Builder Head", $COLOR_ERROR)
+			If $g_bDebugImageSave Then SaveDebugImage("MasterBuilderHead")
+			Return 0
 		EndIf
 	EndIf
 

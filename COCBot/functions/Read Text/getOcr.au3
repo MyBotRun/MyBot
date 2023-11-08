@@ -107,7 +107,7 @@ Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building u
 EndFunc   ;==>getBldgUpgradeTime
 
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
-	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 95, 22, True) ; 95 is required to upgrades
+	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 100, 22, True) ; 95 is required to upgrades
 EndFunc   ;==>getLabUpgradeTime
 
 Func getLabUpgradeTime2($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
@@ -174,8 +174,12 @@ Func getArmyCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army ca
 EndFunc   ;==>getArmyCampCap
 
 Func getSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
-	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 38, 16, True, False, $bNeedCapture)
+	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 40, 16, True, False, $bNeedCapture)
 EndFunc   ;==>getSiegeCampCap
+
+Func getCCSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
+	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 34, 16, True, False, $bNeedCapture)
+EndFunc   ;==>getCCSiegeCampCap
 
 Func getCastleDonateCap($x_start, $y_start) ;  -> Gets clan castle capacity,  --> donatecc.au3
 	Return getOcrAndCapture("coc-army", $x_start, $y_start, 30, 14, True)

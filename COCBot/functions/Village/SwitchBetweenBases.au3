@@ -20,7 +20,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True, $GoToBB = False)
 
 	If Not $g_bRunState Then Return
 
-	For $i = 0 To 2
+	For $i = 0 To 3
 		If isOnBuilderBase(True) Then
 			$sSwitchFrom = "Builder Base"
 			$sSwitchTo = "Normal Village"
@@ -46,8 +46,8 @@ Func SwitchBetweenBases($bCheckMainScreen = True, $GoToBB = False)
 
 		If Not $g_bRunState Then Return
 
-		If $bIsOnBuilderBase And $g_iTree = $eTreeOO Then $sRegionToSearch = GetDiamondFromRect("650,180,820,330")
-		
+		If $bIsOnBuilderBase And $g_iTree = $eTreeOO Then $sRegionToSearch = GetDiamondFromRect("650,180,820,360")
+
 		For $b = 0 To 9
 			$avBoat = findMultiple($sTileDir, $sRegionToSearch, $sRegionToSearch, 0, 1000, 1, "objectname,objectpoints", True)
 			If IsArray($avBoat) And UBound($avBoat, $UBOUND_ROWS) > 0 Then ExitLoop
@@ -63,12 +63,14 @@ Func SwitchBetweenBases($bCheckMainScreen = True, $GoToBB = False)
 		If Not IsArray($avBoat) Or UBound($avBoat, $UBOUND_ROWS) <= 0 Then
 			SetLog("Couldn't find Boat on " & $sSwitchFrom, $COLOR_ERROR)
 			If $g_bDebugImageSave Then SaveDebugImage("SwitchBetweenBases", False)
-			If $i = 2 And $g_bStayOnBuilderBase And $sSwitchFrom = "Normal Village" Then $g_bStayOnBuilderBase = False
-			If $i = 2 And $sSwitchFrom = "Builder Base" Then
-				CloseCoC(True)
-				checkMainScreen(False, True)
+			If $i = 2 Then
+				If $g_bStayOnBuilderBase And $sSwitchFrom = "Normal Village" Then $g_bStayOnBuilderBase = False
+				If $sSwitchFrom = "Builder Base" Then
+					CloseCoC(True)
+					checkMainScreen(False, True)
+				EndIf
 			EndIf
-			Return False
+			If $i = 3 Then Return False
 		Else
 			; loop through the detected images
 			For $j = 0 To UBound($avBoat, $UBOUND_ROWS) - 1
@@ -108,7 +110,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True, $GoToBB = False)
 						If $i = 2 Then $g_bStayOnBuilderBase = False
 					EndIf
 
-					If $i >= 1 Then RestartAndroidCoC() ; Need to try to restart CoC
+					If $i >= 2 Then RestartAndroidCoC() ; Need to try to restart CoC
 				EndIf
 			Next
 		EndIf
@@ -136,8 +138,8 @@ Func SwitchToBuilderBase()
 		Return True
 	Else
 		SetDebugLog("Failed to locate the tunnel", $COLOR_INFO)
-		If $g_bDebugImageSave Then SaveDebugImage("OO2BBTunnel");
+		If $g_bDebugImageSave Then SaveDebugImage("OO2BBTunnel") ;
 		Return False
-	EndIf	
+	EndIf
 
-EndFunc
+EndFunc   ;==>SwitchToBuilderBase

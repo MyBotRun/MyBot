@@ -16,7 +16,7 @@
 Func isOnBuilderBase($bNeedCaptureRegion = False)
 	If _Sleep($DELAYISBUILDERBASE) Then Return
 
-	Local $sArea = GetDiamondFromRect("455,0,500,54")
+	Local $sArea = GetDiamondFromRect("445,0,500,54")
 	Local $asSearchResult = findMultiple($g_sImgIsOnBB, $sArea, $sArea, 0, 1000, 1, "objectname", $bNeedCaptureRegion)
 
 	If IsArray($asSearchResult) And UBound($asSearchResult) > 0 Then

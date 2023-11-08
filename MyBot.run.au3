@@ -815,7 +815,7 @@ Func runBot() ;Bot that runs everything in order
 
 			Local $BBaseAttacked = False
 			While $g_bIsBBevent
-				If SwitchForCGEvent() Then 
+				If SwitchForCGEvent() Then
 					BuilderBase()
 					$BBaseAttacked = True
 				Else
@@ -1377,6 +1377,10 @@ Func BuilderBase($bTest = False)
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 
+		CleanBBYard()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
 		;	LocateBuilderHall()
 		;	If _Sleep($DELAYRUNBOT3) Then Return
 		;	If checkObstacles() Then Return
@@ -1408,10 +1412,6 @@ Func BuilderBase($bTest = False)
 		If checkObstacles() Then Return
 
 		StarLaboratory()
-		If _Sleep($DELAYRUNBOT3) Then Return
-		If checkObstacles() Then Return
-
-		CleanBBYard()
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 

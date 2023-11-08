@@ -30,6 +30,8 @@ Func TestSmartFarm()
 	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Then
 		If _Sleep(100) Then Return FuncReturn()
 		PrepareSearch()
+		If $g_bOutOfGold Then Return ; Check flag for enough gold to search
+		If $g_bRestart Then Return
 		If _Sleep(1000) Then Return FuncReturn()
 		VillageSearch()
 		If $g_bOutOfGold Then Return ; Check flag for enough gold to search

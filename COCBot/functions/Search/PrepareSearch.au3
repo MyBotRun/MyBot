@@ -134,9 +134,21 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 				SetLog("Unknown Find a Match Button State: " & $sButtonState, $COLOR_WARNING)
 				Return
 			EndIf
-		ElseIf Number($g_aiCurrentLoot[$eLootTrophy]) >= Number($g_asLeagueDetails[21][4]) Then
-			SetLog("Couldn't find the Attack Button!", $COLOR_ERROR)
-			Return
+		Else
+			Local $g_iFindMatchButtonClassic = _PixelSearch(579, 439 + $g_iMidOffsetY, 581, 441 + $g_iMidOffsetY, Hex(0x838383, 6), 20)
+			Local $g_iFindMatchButtonLegend = _PixelSearch(579, 489 + $g_iMidOffsetY, 581, 491 + $g_iMidOffsetY, Hex(0x838383, 6), 20)
+			If IsArray($g_iFindMatchButtonClassic) Or IsArray($g_iFindMatchButtonLegend) Then
+				SetLog("Couldn't find the Attack Button : Grey Button!", $COLOR_ERROR)
+				$g_bRestart = True
+				CloseWindow()
+				Return
+			EndIf
+			If Number($g_aiCurrentLoot[$eLootTrophy]) >= Number($g_asLeagueDetails[21][4]) Then
+				SetLog("Couldn't find the Attack Button!", $COLOR_ERROR)
+				$g_bRestart = True
+				CloseWindow()
+				Return
+			EndIf
 		EndIf
 	Until Not $bSignedUpLegendLeague
 

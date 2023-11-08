@@ -1,3 +1,29 @@
+* v8.1.3 **
+* Fixed Costs OCR in Labs.
+* Improved Super Dragon Training.
+* Improved 8 red detection in troops queue.
+* Improved Close Donate Window speed.
+* Added : Read all request lines for donations.
+* Updated LatinA OCR for donations
+* Improved Full Dark Elixir detection (Was detected as true in some sceneries).
+* Fixed Switch Siege -> Clan Castle.
+* Improved Siege Machine OCR.
+* Improved Donate Super Troops.
+* Improved Edrag and Loons Detection While Training.
+* Fixed Super Troop icons reset.
+* Improved Weekly Deals tab detection.
+* Cleaned BB Attack management code.
+* Improved Boat Detection in base builder.
+* Added New Sieges to Test Donate().
+* Updated Portuguese translation file from Eustacio (Fixes array error with new profile)
+* Updated donateCCWBL.
+* Improved LatinA Lib.
+* Improved BB troop Upgrade Time detection.
+* Added Support for Grey Search Button.
+* Improved Battle Blimp and Stone Slammer Donate.
+* Added BB resources and builder(s) check just before suggested upgrade.
+* Fixed BB Master Builder Icon Offset.
+
 * v8.1.2 **
 * Add support for CoC October 9th 2023 game update.
 * The game update forced a massive number of MBR changes to support all the game UI changes, including:

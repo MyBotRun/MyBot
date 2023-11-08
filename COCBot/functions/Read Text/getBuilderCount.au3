@@ -29,7 +29,13 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 		If Not $bBuilderBase Then
 			$sBuilderInfo = getBuilders($aBuildersDigits[0], $aBuildersDigits[1]) ; get builder string with OCR
 		Else
-			$sBuilderInfo = getBuilders($aBuildersDigitsBuilderBase[0], $aBuildersDigitsBuilderBase[1]) ; get builder base builder string with OCR
+			Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("MasterBuilderHead", $g_sImgMasterBuilderHead, 445, 0, 500, 54, True))
+			If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
+				$sBuilderInfo = getBuilders($asSearchResult[0] + 24, $aBuildersDigitsBuilderBase[1]) ; get builder base builder string with OCR
+			Else
+				SetLog("Cannot find Master Builder Head", $COLOR_ERROR)
+				If $g_bDebugImageSave Then SaveDebugImage("MasterBuilderHead") ; Debug Only
+			EndIf
 		EndIf
 		If StringInStr($sBuilderInfo, "#") > 0 Then ; check for valid OCR read
 			$aGetBuilders = StringSplit($sBuilderInfo, "#", $STR_NOCOUNT) ; Split into free and total builder strings

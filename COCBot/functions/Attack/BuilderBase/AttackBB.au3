@@ -52,27 +52,23 @@ Func DoAttackBB()
 	Local $AttackCount = 0
 
 	If $g_iBBAttackCount = 0 Then
-		Local $count = 1
 		While PrepareAttackBB()
 			If Not $g_bRunState Then Return
 			SetDebugLog("PrepareAttackBB(): Success.", $COLOR_SUCCESS)
 			SetLog("Attacking For Stars", $COLOR_OLIVE)
-			SetLog("Attack #" & $count & "/~", $COLOR_INFO)
-			If $b_AbortedAttack Then $b_AbortedAttack = False ; Reset Value
+			SetLog("Attack #" & $AttackCount + 1 & "/~", $COLOR_INFO)
 			_AttackBB()
-			If Not $g_bRunState Then Return
-			If Not $b_AbortedAttack Then $AttackCount += 1 ; Count if no Zoom Out fail
+			If Not $g_bRunState Then ExitLoop
 			If $IsChallengeCompleted Then ExitLoop
-			If _Sleep($DELAYATTACKMAIN2) Then Return
-			checkObstacles()
-			$count += 1
-			If $count > 10 Then
+			$AttackCount += 1
+			If $AttackCount > 10 Then
 				SetLog("Already Attack 10 times, continue next time", $COLOR_INFO)
 				ExitLoop
 			EndIf
+			If _Sleep($DELAYATTACKMAIN2) Then ExitLoop
+			checkObstacles()
 		WEnd
 		SetLog("Skip Attack This Time..", $COLOR_DEBUG)
-		ClickAway()
 	Else
 		Local $g_iBBAttackCountFinal = 0
 		Local $AttackNbDisplay = 0
@@ -82,6 +78,7 @@ Func DoAttackBB()
 			$g_iBBAttackCountFinal = $g_iBBAttackCount - 1
 		EndIf
 		For $i = 1 To $g_iBBAttackCountFinal
+			If Not $g_bRunState Then ExitLoop
 			If PrepareAttackBB() Then
 				If $AttackNbDisplay = 0 Then
 					If $g_iBBAttackCount = 1 Then
@@ -95,7 +92,7 @@ Func DoAttackBB()
 				SetLog("Attack #" & $i & "/" & $g_iBBAttackCountFinal, $COLOR_INFO)
 				If $b_AbortedAttack Then $b_AbortedAttack = False ; Reset Value
 				_AttackBB()
-				If Not $g_bRunState Then Return
+				If Not $g_bRunState Then ExitLoop
 				If Not $b_AbortedAttack Then
 					$AttackCount += 1 ; Count if no Zoom Out fail
 				Else
@@ -106,21 +103,26 @@ Func DoAttackBB()
 					SetLog("Skip Attack This Time..", $COLOR_DEBUG)
 					ExitLoop
 				EndIf
-				If _Sleep($DELAYATTACKMAIN2) Then Return
-				checkObstacles()
+				If $i = $g_iBBAttackCountFinal Then
+					SetLog("Skip Attack This Time..", $COLOR_DEBUG)
+					ExitLoop
+				EndIf
 				If $AttackCount > 10 Then
 					SetLog("Already Attack 10 times, continue next time", $COLOR_INFO)
 					ExitLoop
 				EndIf
+				If _Sleep($DELAYATTACKMAIN2) Then ExitLoop
+				checkObstacles()
 			Else
 				SetLog("Skip Attack This Time..", $COLOR_DEBUG)
-				ClickAway()
 				ExitLoop
 			EndIf
 		Next
 	EndIf
-	ZoomOut()
+	If Not $g_bRunState Then Return
 	If $AttackCount > 0 Then SetLog("BB Attack Cycle Done", $COLOR_SUCCESS1)
+	ClickAway()
+	ZoomOut()
 EndFunc   ;==>DoAttackBB
 
 Func ClickFindNowButton()

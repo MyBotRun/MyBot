@@ -247,7 +247,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $bTestRun = False)
 				Return False
 			Else
 				; get upgrade time from window
-				$Result = getLabUpgradeTime(595, 493 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
+				$Result = getLabUpgradeTime(590, 493 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
 				Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
 				SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 				$StartTime = _NowCalc() ; what is date:time now
