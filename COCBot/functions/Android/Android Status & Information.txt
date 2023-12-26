@@ -10,7 +10,7 @@ The once listed here have been tested and do work.
 Nox
 ===
 http://en.bignox.com/
-Versions patched v7.0.5.9017-9.0901231011 or newer
+Version: CoC patched v7.0.5.9065-9.0901231213 or newer
 MyBot Command Line Key: Nox
 Default Instance Key: nox
 Second Instance Key:  Nox_1
@@ -18,7 +18,7 @@ Second Instance Key:  Nox_1
 MEmu
 ====
 http://www.memuplay.com/
-Versions 9.0.1 - 9.0.6
+Versions 9.0.1 - 9.0.8
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1

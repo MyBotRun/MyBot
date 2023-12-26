@@ -71,13 +71,13 @@ Func IsDonateQueueOnly(ByRef $abDonateQueueOnly)
 
 			If Not OpenTrainTab($i = 0 ? "Train Troops Tab" : "Brew Spells Tab", True, "IsDonateQueueOnly()") Then ContinueLoop
 
-			Local $xQueue = 822
+			Local $xQueue = 775
 			For $j = 0 To 10
 				If _Sleep(100) Then Return
-				$xQueue -= 68.5 * $j
-				If _ColorCheck(_GetPixelColor($xQueue, 163 + $g_iMidOffsetY, True), Hex(0xD7AFA9, 6), 20) Then ; Pink background found at $xQueue
+				$xQueue -= 60.5 * $j
+				If _ColorCheck(_GetPixelColor($xQueue, 185 + $g_iMidOffsetY, True), Hex(0xD7AFA9, 6), 20) Then ; Pink background found at $xQueue
 					ExitLoop
-				ElseIf _ColorCheck(_GetPixelColor($xQueue, 180 + $g_iMidOffsetY, True), Hex(0xCFCFC8, 6), 20) Then ; Gray background
+				ElseIf _ColorCheck(_GetPixelColor($xQueue, 195 + $g_iMidOffsetY, True), Hex(0xCFCFC8, 6), 20) Then ; Gray background
 					SetLog("2nd army is not prepared. Donate whatever exists in 1st army!!")
 					$abDonateQueueOnly[$i] = False
 					ContinueLoop 2
@@ -94,7 +94,7 @@ Func IsDonateQueueOnly(ByRef $abDonateQueueOnly)
 			For $j = 0 To (UBound($aSearchResult) - 1)
 				Local $TroopIndex = TroopIndexLookup($aSearchResult[$j][0], "IsDonateQueueOnly()")
 				If $TroopIndex < 0 Then ContinueLoop
-				If _ColorCheck(_GetPixelColor(($xQueue - 10) - $j * 68.5, 220 + $g_iMidOffsetY, True), Hex(0x92A41F, 6), 20) Then ; the green check symbol
+				If _ColorCheck(_GetPixelColor(($xQueue - 10) - $j * 60.5, 234 + $g_iMidOffsetY, True), Hex(0x96A724, 6), 20) Then ; the green check symbol
 					If $i = 0 Then
 						If _ArrayIndexValid($g_aiAvailQueuedTroop, $TroopIndex) Then
 							$g_aiAvailQueuedTroop[$TroopIndex] += $aSearchResult[$j][1]

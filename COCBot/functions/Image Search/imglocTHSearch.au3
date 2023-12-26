@@ -175,6 +175,16 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 							Else
 								$g_aiTownHallPos = decodeSingleCoord($propsValues[$pv])
 								ConvertFromVillagePos($g_aiTownHallPos[0], $g_aiTownHallPos[1])
+								Switch $iLvlFound
+									Case 9
+										$g_aiTownHallPos[1] = $g_aiTownHallPos[1] + 22
+									Case 10
+										$g_aiTownHallPos[0] = $g_aiTownHallPos[0] - 7
+									Case 12
+										$g_aiTownHallPos[1] = $g_aiTownHallPos[1] - 10
+									Case 15
+										$g_aiTownHallPos[1] = $g_aiTownHallPos[1] + 15
+								EndSwitch
 							EndIf
 						Case "nearpoints"
 							If $myVillage = False Then

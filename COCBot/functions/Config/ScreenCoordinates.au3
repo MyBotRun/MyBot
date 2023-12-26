@@ -50,12 +50,12 @@ Global $aChatTab3[4] = [331, 290 + $g_iMidOffsetY, 0xFCA12D, 20] ; Chat Window O
 Global $aOpenChat[2] = [19, 309 + $g_iMidOffsetY] ; Open Chat Windows, Main Screen
 Global $aClanTab[2] = [189, 24] ; Clan Tab, Chat Window, Main Screen
 Global $aClanInfo[2] = [282, 55] ; Clan Info Icon
-Global $aArmyCampSize[2] = [124, 144 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
-Global $aSiegeMachineSize[2] = [749, 144 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Number/Total Number
-Global $aArmySpellSize[2] = [113, 286 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
-Global $g_aArmyCCSpellSize[2] = [473, 437 + $g_iMidOffsetY] ; Training Window, Overview Screen, Current CC Spell number/total cc spell capacity
+Global $aArmyCampSize[2] = [153, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
+Global $aSiegeMachineSize[2] = [707, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Number/Total Number
+Global $aArmySpellSize[2] = [143, 296 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
+Global $g_aArmyCCSpellSize[2] = [465, 428 + $g_iMidOffsetY] ; Training Window, Overview Screen, Current CC Spell number/total cc spell capacity
 Global $aArmyCCRemainTime[2] = [782, 552 + $g_iMidOffsetY] ; Training Window Overviewscreen, Minutes & Seconds remaining till can request again
-Global $aIsCampFull[4] = [128, 151 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
+Global $aIsCampFull[4] = [82, 177 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full
 Global $aBuildersDigits[2] = [424, 21] ; Main Screen, Free/Total Builders
 Global $aBuildersDigitsBuilderBase[2] = [0, 21] ; Main Screen on Builders Base Free/Total Builders
 Global $aTrophies[2] = [69, 84] ; Main Screen, Trophies
@@ -74,15 +74,15 @@ Global $aIsGemWindow1[4] = [608, 240 + $g_iMidOffsetY, 0xEB1617, 20] ; Main Scre
 Global $aIsGemWindow2[4] = [610, 246 + $g_iMidOffsetY, 0xCD161A, 20] ; Main Screen, pixel below Red X to close gem window
 Global $aIsGemWindow3[4] = [625, 246 + $g_iMidOffsetY, 0xCE1519, 20] ; Main Screen, pixel below Red X to close gem window
 Global $aIsGemWindow4[4] = [640, 246 + $g_iMidOffsetY, 0xCD151C, 20] ; Main Screen, pixel below Red X to close gem window
-Global $aIsTrainPgChk1[4] = [803, 95 + $g_iMidOffsetY, 0xFF8D95, 10] ; Main Screen, Train page open - left upper corner of x button.
+Global $aIsTrainPgChk1[4] = [760, 120 + $g_iMidOffsetY, 0xFF8D95, 10] ; Main Screen, Train page open - left upper corner of x button. Updated 16.0.4
 Global $aRtnHomeCloud1[4] = [56, 592 + $g_iBottomOffsetY, 0x0A223F, 15] ; Cloud Screen, during search, blue pixel in left eye
 Global $aRtnHomeCloud2[4] = [72, 592 + $g_iBottomOffsetY, 0x103F7E, 15] ; Cloud Screen, during search, blue pixel in right eye
 Global $aDetectLang[2] = [16, 634 + $g_iBottomOffsetY] ; Detect Language, bottom left Attack button must read "Attack"
-Global $aGreenArrowTrainTroops[2] = [316, 95 + $g_iMidOffsetY]
-Global $aGreenArrowBrewSpells[2] = [469, 95 + $g_iMidOffsetY]
-Global $aGreenArrowTrainSiegeMachines[2] = [621, 95 + $g_iMidOffsetY]
+Global $aGreenArrowTrainTroops[2] = [325, 122 + $g_iMidOffsetY]
+Global $aGreenArrowBrewSpells[2] = [460, 122 + $g_iMidOffsetY]
+Global $aGreenArrowTrainSiegeMachines[2] = [594, 122 + $g_iMidOffsetY]
 Global $g_aShopWindowOpen[4] = [804, 54, 0xC00508, 15] ; Red pixel in lower right corner of RED X to close shop window
-Global $aTreasuryWindow[4] = [689, 138 + $g_iMidOffsetY, 0xFF8D95, 20] ; Redish pixel above X to close treasury window
+Global $aTreasuryWindow[4] = [695, 138 + $g_iMidOffsetY, 0xFF8D95, 20] ; Redish pixel above X to close treasury window
 Global $aAttackForTreasury[4] = [88, 619 + $g_iMidOffsetY, 0xF0EBE8, 5] ; Red pixel below X to close treasury window
 Global $aAtkHasDarkElixir[4] = [31, 121 + $g_iMidOffsetY, 0x282020, 10]  ; Attack Page, Check for DE icon ; New 23 August offset
 Global $aVillageHasDarkElixir[4] = [837, 134, 0x3D2D3D, 10] ; Main Page, Base has dark elixir storage
@@ -90,18 +90,25 @@ Global $aVillageHasDarkElixir[4] = [837, 134, 0x3D2D3D, 10] ; Main Page, Base ha
 Global $aCheckTopProfile[4] = [130, 350 + $g_iMidOffsetY, 0x6B7899, 5]
 Global $aCheckTopProfile2[4] = [160, 455 + $g_iMidOffsetY, 0x4E4D79, 5]
 
-Global $aIsTabOpen[4] = [0, 115 + $g_iMidOffsetY, 0xEDEDE6, 25] ;Check if specific Tab is opened, X Coordinate is a dummy
+Global $aIsTabOpen[4] = [0, 145 + $g_iMidOffsetY, 0xECECE5, 25] ;Check if specific Tab is opened, X Coordinate is a dummy
 
-Global $aRecievedTroops[4] = [200, 215, 0xFFFFFF, 20] ; Y of You have recieved blabla from xx!
+Global $aReceivedTroops[4] = [185, 235 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsOCR[4] = [400, 178 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedSieges[4] = [650, 235 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsDoubleOCR[4] = [400, 170 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsDouble[4] = [380, 220 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsTab[4] = [207, 140 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsTreasury[4] = [660, 140 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsWeeklyDeals[4] = [175, 195 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
 
 ; King Health Bar, check at the middle of the bar, index 4 is x-offset added to middle of health bar
-Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 13]
+Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x4CD515, 20, 12] ; Was 0x00D500
 ; Queen Health Bar, check at the middle of the bar, index 4 is x-offset added to middle of health bar
-Global $aQueenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 8]
+Global $aQueenHealth = [-1, 569 + $g_iBottomOffsetY, 0x4CD515, 20, 7]
 ; Warden Health Bar, check at the middle of the bar, index 4 is x-offset added to middle of health bar
-Global $aWardenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 3]
+Global $aWardenHealth = [-1, 567 + $g_iBottomOffsetY, 0x4CD515, 20, 0]
 ; Champion Health Bar, check at the middle of the bar, index 4 is x-offset added to middle of health bar
-Global $aChampionHealth = [-1, 567 + $g_iBottomOffsetY, 0x00D500, 15, 7]
+Global $aChampionHealth = [-1, 566 + $g_iBottomOffsetY, 0x4CD515, 20, 5]
 
 ; attack report... stars won
 Global $aWonOneStarAtkRprt[4] = [325, 180 + $g_iMidOffsetY, 0xC8CaC4, 30] ; Center of 1st Star reached attacked village
@@ -110,8 +117,8 @@ Global $aWonThreeStarAtkRprt[4] = [534, 180 + $g_iMidOffsetY, 0xC8CAC7, 30] ; Ce
 ; pixel color: location information								BS 850MB (Reg GFX), BS 500MB (Med GFX) : location
 
 Global $NextBtn[4] = [720, 536 + $g_iBottomOffsetY, 0xE5510D, 20] ;  Next Button
-Global $a12OrMoreSlots[4] = [24, 579 + $g_iBottomOffsetY, 0x86DEFC, 25] ; Attackbar Check if 12+ Slots exist / BS5
-Global $a12OrMoreSlots2[4] = [24, 580 + $g_iBottomOffsetY, 0xFF4040, 25] ; Attackbar Check if 12+ Slots exist SuperTroops / BS5
+Global $a12OrMoreSlots[4] = [20, 579 + $g_iBottomOffsetY, 0x86DEFC, 25] ; Attackbar Check if 12+ Slots exist / BS5
+Global $a12OrMoreSlots2[4] = [20, 580 + $g_iBottomOffsetY, 0xFF4040, 25] ; Attackbar Check if 12+ Slots exist SuperTroops / BS5
 Global $aDoubRowAttackBar[4] = [68, 486, 0xFC5D64, 20]
 Global $aTroopIsDeployed[4] = [0, 0, 0x404040, 20] ; Attackbar Remain Check X and Y are Dummies
 Global Const $aIsAttackPage[4] = [50, 548 + $g_iBottomOffsetY, 0xD10D0E, 20] ; red button "end battle" - left portion
@@ -152,8 +159,8 @@ Global $aButtonConnectedSCID[4] = [640, 160 + $g_iMidOffsetY, 0x2D89FD, 20] ; Se
 Global $aCloseTabSCID[4] = [831, 57] ; Button Close Supercell ID tab
 
 ;Train
-Global $aButtonEditArmy[4] = [800, 510 + $g_iMidOffsetY, 0xDAF582, 25]
-Global $aButtonRemoveTroopsOK1[4] = [767, 528 + $g_iMidOffsetY, 0xDCF684, 20]
+Global $aButtonEditArmy[4] = [700, 495 + $g_iMidOffsetY, 0xD0F078, 25]
+Global $aButtonRemoveTroopsOK1[4] = [723, 509 + $g_iMidOffsetY, 0xDAF582, 20]
 Global $aButtonRemoveTroopsOK2[4] = [530, 435 + $g_iMidOffsetY, 0x6DBC1F, 20]
 
 ;Change Language To English
@@ -175,6 +182,6 @@ Global Const $aPersonalChallengeCancelBtn[4] = [288, 391 + $g_iMidOffsetY, 0xFDC
 Global Const $aPersonalChallengeOkBtn[4] = [500, 391 + $g_iMidOffsetY, 0xDFF887, 20] ; Personal Challenge Window - Okay button at Storage Full msg
 
 ;BB Attack 2.0
-Global $aBBGoldEnd[4] = [629, 435, 0xFFE64B, 20] ; Gold At the end Of BB attack
-Global $aOkayButton[2] = [430, 570]    ; Okay button after BB attack
-Global $aOkayButtonRND[4] = [372, 560, 484, 595]    ; Okay button after BB attack, RND
+Global $aBBGoldEnd[4] = [632, 400 + $g_iMidOffsetY, 0xFEFE4F, 20] ; Gold At the end Of BB attack
+Global $aOkayButton[2] = [430, 540 + $g_iMidOffsetY]    ; Return Home after BB attack
+Global $aOkayButtonRND[4] = [372, 530 + $g_iMidOffsetY, 484, 565 + $g_iMidOffsetY]    ; Okay button after BB attack, RND

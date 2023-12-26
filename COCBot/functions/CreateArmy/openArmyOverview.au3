@@ -71,16 +71,16 @@ Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
 	Local $aTabButton = findButton(StringStripWS($sTab, 8), Default, 1, True)
 	If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
 		Switch $aTabButton[0]
-			Case 50 To 150
-				$aIsTabOpen[0] = 165
-			Case 190 To 290
+			Case 75 To 200
+				$aIsTabOpen[0] = 175
+			Case 210 To 330
 				$aIsTabOpen[0] = 315
-			Case 345 To 455
-				$aIsTabOpen[0] = 470
-			Case 495 To 600
-				$aIsTabOpen[0] = 620
-			Case 645 To 765
-				$aIsTabOpen[0] = 770
+			Case 345 To 470
+				$aIsTabOpen[0] = 460
+			Case 480 To 600
+				$aIsTabOpen[0] = 590
+			Case 615 To 740
+				$aIsTabOpen[0] = 730
 		EndSwitch
 		If Not _CheckPixel($aIsTabOpen, True) Then
 			If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Open " & $sTab & ($g_bDebugSetlogTrain ? " (Called from " & $sWhereFrom & ")" : ""), $COLOR_INFO)
@@ -100,10 +100,10 @@ Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
 EndFunc   ;==>OpenTrainTab
 
 Func UpdateNextPageTroop()
-	Local $aSlot1[4] = [610, 565, 705, 475]
-	Local $aSlot2[4] = [705, 465, 800, 375]
-	Local $aSlot3[4] = [705, 565, 800, 475]
-	Local $aSlot4[4] = [610, 465, 705, 375]
+	Local $aSlot1[4] = [585, 545, 667, 465]
+	Local $aSlot2[4] = [670, 460, 752, 375]
+	Local $aSlot3[4] = [670, 545, 752, 465]
+	Local $aSlot4[4] = [585, 460, 667, 375]
 
 	Local $sEDragTile = @ScriptDir & "\imgxml\Train\Train_Train\EDrag*"
 	Local $sMinerTile = @ScriptDir & "\imgxml\Train\Train_Train\Mine*"
@@ -114,9 +114,9 @@ Func UpdateNextPageTroop()
 
 	If _Sleep(500) Then Return
 
-	Local $aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sEDragTile, GetDiamondFromRect("35,375,835,575"), 1, True))
+	Local $aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sEDragTile, GetDiamondFromRect("75,375,780,550"), 1, True))
 
-	If IsArray($aiTileCoord) And UBound($aiTileCoord, 1) = 2 And _ColorCheck(_GetPixelColor(35, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord[0] > 610 Then
+	If IsArray($aiTileCoord) And UBound($aiTileCoord, 1) = 2 And _ColorCheck(_GetPixelColor(75, 385 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord[0] > 580 Then
 		SetDebugLog("Found EDrag at " & $aiTileCoord[0] & ", " & $aiTileCoord[1])
 
 		$g_iNextPageTroop = $eETitan
@@ -138,11 +138,11 @@ Func UpdateNextPageTroop()
 
 	Else ; Support 2 Super Troops + 2+ Event Troops (Moebius14)
 
-		$aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sMinerTile, GetDiamondFromRect("35,375,835,575"), 1, True))
-		If IsArray($aiTileCoord) And UBound($aiTileCoord, 1) = 2 And _ColorCheck(_GetPixelColor(35, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord[0] > 610 Then
+		$aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sMinerTile, GetDiamondFromRect("75,375,780,550"), 1, True))
+		If IsArray($aiTileCoord) And UBound($aiTileCoord, 1) = 2 And _ColorCheck(_GetPixelColor(75, 385 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord[0] > 580 Then
 
 			If PointInRect($aSlot2[0], $aSlot2[1], $aSlot2[2], $aSlot2[3], $aiTileCoord[0], $aiTileCoord[1]) Then
-				Local $aiTileCoord2 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sSMinerTile, GetDiamondFromRect("35,375,835,575"), 1, True))
+				Local $aiTileCoord2 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sSMinerTile, GetDiamondFromRect("75,375,780,550"), 1, True))
 				If IsArray($aiTileCoord2) And UBound($aiTileCoord2, 1) = 2 Then
 					$g_iNextPageTroop = $eSMine
 					SetDebugLog("Found Miner moved 3 Slots and SuperMiner Detected")
@@ -156,8 +156,8 @@ Func UpdateNextPageTroop()
 
 		Else ; No Miner Tile Found
 
-			Local $aiTileCoord3 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sBabyDragonTile, GetDiamondFromRect("35,375,835,575"), 1, True))
-			If IsArray($aiTileCoord3) And UBound($aiTileCoord3, 1) = 2 And _ColorCheck(_GetPixelColor(35, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord3[0] > 700 Then
+			Local $aiTileCoord3 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sBabyDragonTile, GetDiamondFromRect("75,375,780,550"), 1, True))
+			If IsArray($aiTileCoord3) And UBound($aiTileCoord3, 1) = 2 And _ColorCheck(_GetPixelColor(75, 385 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord3[0] > 668 Then
 
 				If PointInRect($aSlot3[0], $aSlot3[1], $aSlot3[2], $aSlot3[3], $aiTileCoord3[0], $aiTileCoord3[1]) Then
 					$g_iNextPageTroop = $eBabyD
@@ -166,8 +166,8 @@ Func UpdateNextPageTroop()
 
 			Else ; No Baby Drag Tile Found
 
-				Local $aiTileCoord4 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sPekkaTile, GetDiamondFromRect("35,375,835,575"), 1, True))
-				If IsArray($aiTileCoord4) And UBound($aiTileCoord4, 1) = 2 And _ColorCheck(_GetPixelColor(35, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord4[0] > 700 Then
+				Local $aiTileCoord4 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sPekkaTile, GetDiamondFromRect("75,375,780,550"), 1, True))
+				If IsArray($aiTileCoord4) And UBound($aiTileCoord4, 1) = 2 And _ColorCheck(_GetPixelColor(75, 385 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord4[0] > 668 Then
 
 					If PointInRect($aSlot3[0], $aSlot3[1], $aSlot3[2], $aSlot3[3], $aiTileCoord4[0], $aiTileCoord4[1]) Then
 						$g_iNextPageTroop = $ePekk
@@ -176,8 +176,8 @@ Func UpdateNextPageTroop()
 
 				Else ; No Pekka Tile Found
 
-					Local $aiTileCoord5 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sDragonTile, GetDiamondFromRect("35,375,835,575"), 1, True))
-					If IsArray($aiTileCoord5) And UBound($aiTileCoord5, 1) = 2 And _ColorCheck(_GetPixelColor(35, 373 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord5[0] > 610 Then
+					Local $aiTileCoord5 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sDragonTile, GetDiamondFromRect("75,375,780,550"), 1, True))
+					If IsArray($aiTileCoord5) And UBound($aiTileCoord5, 1) = 2 And _ColorCheck(_GetPixelColor(75, 385 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) And $aiTileCoord5[0] > 580 Then
 
 						If PointInRect($aSlot4[0], $aSlot4[1], $aSlot4[2], $aSlot4[3], $aiTileCoord5[0], $aiTileCoord5[1]) Then
 							$g_iNextPageTroop = $eMine

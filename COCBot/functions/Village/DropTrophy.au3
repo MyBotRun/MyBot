@@ -153,7 +153,19 @@ Func DropTrophy()
 					SetSlotSpecialTroops()
 
 					;b) calculate random drop point...
-					$aRandomEdge = $g_aaiEdgeDropPoints[Round(Random(0, 3))]
+					Local $IsBoostButton = False
+					For $i = 1 To 5
+						If _Sleep(300) Then Return
+						If QuickMIS("BFI", $g_sImgImgLocButtons & "\BoostButtons\BoostButton*.xml", 130, 520 + $g_iBottomOffsetY, 390, 555 + $g_iBottomOffsetY) Then
+							$IsBoostButton = True
+							ExitLoop
+						EndIf
+					Next
+					If $IsBoostButton Then
+						$aRandomEdge = $g_aaiEdgeDropPoints2[Round(Random(0, 3))]
+					Else
+						$aRandomEdge = $g_aaiEdgeDropPoints[Round(Random(0, 3))]
+					EndIf
 					$iRandomXY = Round(Random(0, 4))
 					SetDebugLog("Hero Loc = " & $iRandomXY & ", X:Y= " & $aRandomEdge[$iRandomXY][0] & "|" & $aRandomEdge[$iRandomXY][1], $COLOR_DEBUG)
 

@@ -262,6 +262,9 @@ Func _AutoUpgrade()
 				Case 15
 					$g_aUpgradeNameLevel[1] = "Giga Inferno"
 					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)
+				Case 16
+					$g_aUpgradeNameLevel[1] = "Giga Inferno"
+					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)
 			EndSwitch
 		Else
 			SetLog("Launched upgrade of " & $g_aUpgradeNameLevel[1] & " to level " & $g_aUpgradeNameLevel[2] + 1 & " successfully !", $COLOR_SUCCESS)

@@ -18,8 +18,9 @@ Func checkObstacles($bBuilderBase = Default) ;Checks if something is in the way 
 	If $bBuilderBase = Default Then $bBuilderBase = $g_bStayOnBuilderBase
 	Static $iRecursive = 0
 
-	If UBound(decodeSingleCoord(FindImageInPlace2("MinorUpdate", $g_sImgCOCUpdate, 220, 165 + $g_iMidOffsetY, 350, 260 + $g_iMidOffsetY, True))) > 1 Then ; COC Minor Update
-		SetLog("Chief, we have minor COC Update!", $COLOR_INFO)
+	If UBound(decodeSingleCoord(FindImageInPlace2("Update", $g_sImgCOCUpdate, 220, 165 + $g_iMidOffsetY, 350, 260 + $g_iMidOffsetY, True))) > 1 Or _
+			UBound(decodeSingleCoord(FindImageInPlace2("UpdateNew", $g_sImgCOCUpdate, 350, 370 + $g_iMidOffsetY, 510, 450 + $g_iMidOffsetY, True))) > 1 Then ; COC Minor Update
+		SetLog("Chief, we have COC Update!", $COLOR_INFO)
 		ClickAway()
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 	EndIf

@@ -281,7 +281,7 @@ Func GetButtonDiamond($sButtonName)
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			$btnDiamond = GetDiamondFromRect2(340, 370 + $g_iMidOffsetY, 525, 495 + $g_iMidOffsetY)
 		Case "EnterShop"
-			$btnDiamond = GetDiamondFromRect("359,392(148,66)")
+			$btnDiamond = GetDiamondFromRect2(350, 380 + $g_iMidOffsetY, 515, 460 + $g_iMidOffsetY)
 		Case "EndBattleSurrender" ;surrender - attackwindow
 			$btnDiamond = "12,577|125,577|125,615|12,615"
 		Case "ClanChat"
@@ -301,9 +301,9 @@ Func GetButtonDiamond($sButtonName)
 		Case "Collect"
 			$btnDiamond = "350,450|505,450|505,521|350,521"
 		Case "BoostBarrack", "BarrackBoosted"
-			$btnDiamond = GetDiamondFromRect2(700, 270 + $g_iMidOffsetY, 830, 330 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(675, 285 + $g_iMidOffsetY, 770, 330 + $g_iMidOffsetY)
 		Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
-			$btnDiamond = GetDiamondFromRect2(30, 80 + $g_iMidOffsetY, 785, 130 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(75, 110 + $g_iMidOffsetY, 740, 160 + $g_iMidOffsetY)
 		Case "WeeklyDeals"
 			$btnDiamond = GetDiamondFromRect2(30, 115 + $g_iMidOffsetY, 170, 320 + $g_iMidOffsetY)
 		Case "MessagesButton"
@@ -313,7 +313,7 @@ Func GetButtonDiamond($sButtonName)
 		Case "EndBattle", "Surrender"
 			$btnDiamond = GetDiamondFromRect("1,570,140,628")
 		Case "Okay"
-			$btnDiamond = GetDiamondFromRect("240,250,630,480")
+			$btnDiamond = GetDiamondFromRect("240,250,630,630")
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch
@@ -791,61 +791,61 @@ EndFunc   ;==>SearchRedLinesMultipleTimes
 Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 	If $iY < 455 Then
 		Switch $iX ; Troops & Spells Slots
-			Case 35 To 107 ; Slot 1
-				Return 50
-			
-			Case 108 To 180 ; Slot 2
-				Return 123
+			Case 75 To 139 ; Slot 1
+				Return 85
 
-			Case 181 To 253 ; Slot 3
-				Return 196
+			Case 140 To 202 ; Slot 2
+				Return 150
 
-			Case 254 To 326 ; Slot 4
-				Return 269
+			Case 203 To 266 ; Slot 3
+				Return 215
 
-			Case 327 To 399 ; Slot 5
-				Return 342
+			Case 266 To 328 ; Slot 4
+				Return 280
 
-			Case 400 To 472 ; Slot 6
-				Return 415
+			Case 329 To 390 ; Slot 5
+				Return 340
 
-			Case 473 To 545 ; Slot 7
-				Return 488
+			Case 391 To 454 ; Slot 6
+				Return 405
 
-			Case 603 To 670 ; Slot 8
-				Return 615 ; Siege Machines slot 1
+			Case 455 To 517 ; Slot 7
+				Return 465
 
-			Case 675 To 743 ; Slot 9
-				Return 687 ; Siege Machines slot 2
+			Case 575 To 639 ; Slot 8
+				Return 585 ; Siege Machines slot 1
 
-			Case 746 To 814 ; Slot 10
-				Return 758 ; Siege Machines slot 2
+			Case 640 To 703 ; Slot 9
+				Return 655 ; Siege Machines slot 2
+
+			Case 704 To 768 ; Slot 10
+				Return 715 ; Siege Machines slot 2
 		EndSwitch
 	Else ;CC Troops & Spells
 		Switch $iX
-			Case 35 To 107 ; Slot 1
-				Return 50
-			
-			Case 108 To 180 ; Slot 2
-				Return 123
+			Case 75 To 139 ; Slot 1
+				Return 85
 
-			Case 181 To 253 ; Slot 3
-				Return 196
+			Case 140 To 202 ; Slot 2
+				Return 150
 
-			Case 254 To 326 ; Slot 4
-				Return 269
+			Case 203 To 266 ; Slot 3
+				Return 215
 
-			Case 327 To 399 ; Slot 5
-				Return 342
+			Case 266 To 328 ; Slot 4
+				Return 280
 
-			Case 455 To 510 ; CC Spell Slot 1
-				Return 475
-			Case 511 To 535 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
-				Return 510
-			Case 536 To 605 ; CC Spell Slot 2
-				Return 550
-			Case 625 To 695; CC Siege Machines
-				Return 640
+			Case 329 To 390 ; Slot 5
+				Return 340
+
+			Case 450 To 500 ; CC Spell Slot 1
+				Return 455
+			Case 501 To 524 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
+				Return 505
+			Case 525 To 573 ; CC Spell Slot 2
+				Return 520
+			Case 598 To 660; CC Siege Machines
+				Return 610
 		EndSwitch
 	EndIf
 EndFunc   ;==>Slot

@@ -39,7 +39,7 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 	If Not $g_bRunState Then Return
 	If _Sleep(1000) Then Return
 
-	Local $sSearchDiamond = GetDiamondFromRect("718,580,780,614")
+	Local $sSearchDiamond = GetDiamondFromRect("673,553,740,583")
 	Local Static $aRequestButtonPos[2] = [-1, -1]
 
 	Local $aRequestButton = findMultiple($g_sImgRequestCCButton, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
@@ -136,14 +136,15 @@ Func _makerequest($aRequestButtonPos)
 EndFunc   ;==>_makerequest
 
 Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine = 2
-	Local $aCheckCCNotFull[3] = [38, 456, 628], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
+	Local $aCheckCCNotFull[3] = [78, 449, 601], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
 	Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
 	Local $bIsCCRequestTypeNotUsed = Not ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2])
 	If $CCType <> 0 And $bIsCCRequestTypeNotUsed Then ; Continue reading CC status if all 3 items are unchecked, but only if not troop
 		If $g_bDebugSetlog Then SetLog($sLog[$CCType] & " not cared about, only checking troops.")
 		Return True
 	Else
-		If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$CCType], 447 + $g_iMidOffsetY, True), Hex(0xEA5054, 6), 30) Then ; red symbol
+		Local $aRedPixel = _PixelSearch($aCheckCCNotFull[$CCType], 433 + $g_iMidOffsetY, $aCheckCCNotFull[$CCType] + 3, 435 + $g_iMidOffsetY, Hex(0xEA5054, 6), 30, True) ; red symbol
+		If IsArray($aRedPixel) Then
 			If Not $g_abRequestType[$CCType] And Not $bIsCCRequestTypeNotUsed And $CCType <> 0 Then
 				; Don't care about the CC limit configured in setting
 				SetDebugLog("Found CC " & $sLog[$CCType] & " not full, but check is disabled")
@@ -164,9 +165,9 @@ Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine =
 				Return False
 			Else
 				If $CCType < 2 Then
-					Local $sCCReceived = getOcrAndCapture("coc-camps", 296 + $CCType * 177, 438 + $g_iMidOffsetY, 60, 16, True, False, True) ; read CC (troops x/40 or spells x/2)
+					Local $sCCReceived = getOcrAndCapture("coc-camps", 307 + $CCType * 158, 428 + $g_iMidOffsetY, 60, 16, True, False, True) ; read CC (troops x/40 or spells x/2)
 				Else
-					Local $sCCReceived = getOcrAndCapture("coc-camps", 645, 438 + $g_iMidOffsetY, 30, 16, True, False, True) ; read CC (Siege x/1)
+					Local $sCCReceived = getOcrAndCapture("coc-camps", 617, 428 + $g_iMidOffsetY, 28, 16, True, False, True) ; read CC (Siege x/1)
 				EndIf
 				SetDebugLog("Read CC " & $sLog[$CCType] & "s: " & $sCCReceived)
 				Local $aCCReceived = StringSplit($sCCReceived, "#", $STR_NOCOUNT) ; split the trained troop number from the total troop number
@@ -319,11 +320,11 @@ Func RemoveCastleArmy($aToRemove)
 	If _Sleep(500) Then Return
 
 	; Click remove Troops & Spells
-	Local $aPos[2] = [35, 575]
+	Local $aPos[2] = [79, 518 + $g_iMidOffsetY]
 	For $i = 0 To UBound($aToRemove) - 1
 		If $aToRemove[$i][1] > 0 Then
-			$aPos[0] = $aToRemove[$i][0] + 35
-			If $i = 7 Then $aPos[0] = 685 ; x-coordinate of Siege machine slot
+			$aPos[0] = $aToRemove[$i][0] + 48
+			If $i = 7 Then $aPos[0] = 647 ; x-coordinate of Siege machine slot
 			SetDebugLog(" - Click at slot " & $i & ". (" & $aPos[0] & ") x " & $aToRemove[$i][1])
 			ClickRemoveTroop($aPos, $aToRemove[$i][1], $g_iTrainClickDelay) ; Click on Remove button as much as needed
 		EndIf

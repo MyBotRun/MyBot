@@ -86,7 +86,7 @@ Func StarLaboratory($bTestRun = False)
 		SetLog("Laboratory Upgrade in progress, waiting for completion", $COLOR_INFO)
 		If _Sleep($DELAYLABORATORY2) Then Return
 		; upgrade in process and time not recorded so update completion time!
-		Local $sLabTimeOCR = getRemainTLaboratory(220, 202 + $g_iMidOffsetY)
+		Local $sLabTimeOCR = getRemainTLaboratory(220, 200 + $g_iMidOffsetY)
 		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False)
 		SetDebugLog("$sLabTimeOCR: " & $sLabTimeOCR & ", $iLabFinishTime = " & $iLabFinishTime & " m")
 		If $iLabFinishTime > 0 Then
@@ -484,7 +484,7 @@ Func StarLabGuiDisplay()
 		SetLog("Star Laboratory Upgrade in progress, waiting for completion", $COLOR_INFO)
 		If _Sleep($DELAYLABORATORY2) Then Return
 		; upgrade in process and time not recorded so update completion time!
-		Local $sLabTimeOCR = getRemainTLaboratory(220, 202 + $g_iMidOffsetY)
+		Local $sLabTimeOCR = getRemainTLaboratory(220, 200 + $g_iMidOffsetY)
 		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False)
 		SetDebugLog("$sLabTimeOCR: " & $sLabTimeOCR & ", $iLabFinishTime = " & $iLabFinishTime & " m")
 		If $iLabFinishTime > 0 Then

@@ -32,14 +32,14 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	Local $sTroopDiamond = GetDiamondFromRect2(30, 460 + $g_iMidOffsetY, 440, 555 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sTroopDiamond = GetDiamondFromRect2(70, 450 + $g_iMidOffsetY, 430, 530 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 
 	Local $aCurrentCCTroops = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Troops", $sTroopDiamond, $sTroopDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 
 	Local $aTempTroopArray, $avTroops, $aTroopCoords
 	Local $sTroopName = ""
 	Local $iTroopIndex = -1
-	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
+	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
 	Local $aCurrentTroopsLog[0][3] ; [0] = Name [1] = Quantities [3] Xaxis
 
 	$g_aiCurrentCCTroops = $aCurrentCCTroopsEmpty ; Reset Current Troops Array
@@ -53,7 +53,7 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 				$avTroops = StringSplit($aTempTroopArray[1], "|")
 				For $j = 1 To $avTroops[0]
 					$aTroopCoords = StringSplit($avTroops[$j], ",", $STR_NOCOUNT) ; Split the Coordinates where the Troop got found into X and Y
-					Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 466 + $g_iMidOffsetY, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
+					Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 454 + $g_iMidOffsetY, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
 					$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
 					$aTroopWSlot[UBound($aTroopWSlot) - 1][0] = Slot($aTroopCoords[0], $aTroopCoords[1])
 					$aTroopWSlot[UBound($aTroopWSlot) - 1][1] = $iTroopIndex
@@ -65,7 +65,7 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 				Next
 			Else
 				$aTroopCoords = StringSplit($aTempTroopArray[1], ",", $STR_NOCOUNT) ; Split the Coordinates where the Troop got found into X and Y
-				Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 466 + $g_iMidOffsetY, $bNeedCapture))
+				Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 454 + $g_iMidOffsetY, $bNeedCapture))
 				$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
 
 				$aTroopWSlot[UBound($aTroopWSlot) - 1][0] = Slot($aTroopCoords[0], $aTroopCoords[1])

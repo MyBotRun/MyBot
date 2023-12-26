@@ -150,6 +150,15 @@ Func GoldElixirChangeEBO()
 		If Number($CurDamage) > Number($g_iPercentageDamage) Then $g_iPercentageDamage = Number($CurDamage)
 
 		If Number($CurDamage) >= 92 Then
+
+			If $g_iKingSlot >= 11 Or $g_iQueenSlot >= 11 Or $g_iWardenSlot >= 11 Or $g_iChampionSlot >= 11 Then
+				If Not $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, False) ; drag forward
+			Else
+				If $g_iKingSlot >= 0 Or $g_iQueenSlot >= 0 Or $g_iWardenSlot >= 0 Or $g_iChampionSlot >= 0 Then
+					If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
+				EndIf
+			EndIf
+
 			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Or $g_bCheckChampionPower) Then
 				If $g_bCheckKingPower And $g_iActivateKing = 0 Then
 					SetLog("Activating King's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)

@@ -1093,11 +1093,12 @@ Func SwitchToMainVillage()
 	Local $bRet = False, $loop = 0
 	SetDebugLog("Going To MainVillage", $COLOR_ACTION)
 	SwitchToCapitalMain()
-	For $i = 1 To 10
+	For $i = 1 To 20
 		If QuickMIS("BC1", $g_sImgGeneralCloseButton, 780, 90, 840, 130 + $g_iMidOffsetY) Then ; check if we have window covering map, close it!
+			SetLog("Found Raid Window Covering Map, Close it!", $COLOR_INFO)
+			If _Sleep(Random(1250, 2000, 1)) Then Return
 			Click($g_iQuickMISX, $g_iQuickMISY)
-			SetLog("Found a window covering map, close it!", $COLOR_INFO)
-			If _Sleep(2000) Then Return
+			If _Sleep(3000) Then Return
 			SwitchToCapitalMain()
 		EndIf
 		If QuickMIS("BC1", $g_sImgCCMap, 15, 550 + $g_iBottomOffsetY, 115, 640 + $g_iBottomOffsetY) Then
@@ -1107,7 +1108,7 @@ Func SwitchToMainVillage()
 				ExitLoop
 			EndIf
 		EndIf
-		If _Sleep(500) Then Return
+		If _Sleep(250) Then Return
 	Next
 
 	While 1
@@ -1131,25 +1132,46 @@ EndFunc   ;==>SwitchToMainVillage
 Func SwitchToClanCapital()
 	Local $bRet = False
 	Local $bAirShipFound = False
-	For $z = 0 To 10
+	For $z = 0 To 14
 		If QuickMIS("BC1", $g_sImgAirShip, 200, 510 + $g_iBottomOffsetY, 400, 670 + $g_iBottomOffsetY) Then
 			$bAirShipFound = True
 			Click($g_iQuickMISX, $g_iQuickMISY)
+			If _Sleep(3000) Then Return
 			ExitLoop
 		EndIf
-		If _Sleep(350) Then Return
+		If _Sleep(250) Then Return
 	Next
 	If $bAirShipFound = False Then Return $bRet
-	If _Sleep(3000) Then Return
-	If QuickMIS("BC1", $g_sImgGeneralCloseButton, 780, 90, 840, 130 + $g_iMidOffsetY) Then
-		SetLog("Found raid window covering map, close it!", $COLOR_INFO)
-		Click($g_iQuickMISX, $g_iQuickMISY)
-		If _Sleep(3000) Then Return
-	EndIf
-	If QuickMIS("BC1", $g_sImgCCRaid, 360, 445 + $g_iMidOffsetY, 500, 500 + $g_iMidOffsetY) Then
-		Click($g_iQuickMISX, $g_iQuickMISY)
-		If _Sleep(5000) Then Return
-	EndIf
+	For $i = 0 To 14
+		If QuickMIS("BC1", $g_sImgGeneralCloseButton, 780, 90, 840, 130 + $g_iMidOffsetY) Then
+			SetLog("Found Raid Window Covering Map, Close it!", $COLOR_INFO)
+			If _Sleep(Random(1250, 2000, 1)) Then Return
+			Click($g_iQuickMISX, $g_iQuickMISY)
+			If _Sleep(3000) Then Return
+			ExitLoop
+		EndIf
+		If _Sleep(250) Then Return
+		If QuickMIS("BC1", $g_sImgCCMap, 15, 550 + $g_iBottomOffsetY, 115, 640 + $g_iBottomOffsetY) Then
+			If $g_iQuickMISName = "ReturnHome" Then
+				SetDebugLog("We are on Clan Capital", $COLOR_ACTION)
+				ExitLoop
+			EndIf
+		EndIf
+	Next
+	For $t = 0 To 14
+		If QuickMIS("BC1", $g_sImgCCRaid, 360, 445 + $g_iMidOffsetY, 500, 500 + $g_iMidOffsetY) Then
+			Click($g_iQuickMISX, $g_iQuickMISY)
+			If _Sleep(6000) Then Return
+			ExitLoop
+		EndIf
+		If _Sleep(250) Then Return
+		If QuickMIS("BC1", $g_sImgCCMap, 15, 550 + $g_iBottomOffsetY, 115, 640 + $g_iBottomOffsetY) Then
+			If $g_iQuickMISName = "ReturnHome" Then
+				SetDebugLog("We are on Clan Capital", $COLOR_ACTION)
+				ExitLoop
+			EndIf
+		EndIf
+	Next
 	SwitchToCapitalMain()
 	For $i = 1 To 10
 		SetDebugLog("Waiting for Travel to Clan Capital Map #" & $i, $COLOR_ACTION)
@@ -1167,7 +1189,7 @@ EndFunc   ;==>SwitchToClanCapital
 Func SwitchToCapitalMain()
 	Local $bRet = False
 	SetDebugLog("Going to Clan Capital", $COLOR_ACTION)
-	For $i = 1 To 5
+	For $i = 1 To 14
 		If QuickMIS("BC1", $g_sImgCCMap, 15, 550 + $g_iBottomOffsetY, 115, 640 + $g_iBottomOffsetY) Then
 			If $g_iQuickMISName = "MapButton" Then
 				Click(60, 610 + $g_iBottomOffsetY) ;Click Map
@@ -1181,6 +1203,7 @@ Func SwitchToCapitalMain()
 				ExitLoop
 			EndIf
 		EndIf
+		If _Sleep(250) Then Return
 	Next
 	Return $bRet
 EndFunc   ;==>SwitchToCapitalMain
@@ -1323,7 +1346,7 @@ Func CapitalMainUpgradeLoop($aUpgrade)
 				$Failed = True
 				ExitLoop
 			EndIf
-			Local $BuildingName = getOcrAndCapture("coc-build", 200, 512 + $g_iBottomOffsetY, 460, 25)
+			Local $BuildingName = getOcrAndCapture("coc-build", 180, 512 + $g_iBottomOffsetY, 510, 25)
 			Click($aRet[1], $aRet[2])
 			If _Sleep(2000) Then Return
 			If Not WaitUpgradeWindowCC() Then
@@ -1366,7 +1389,7 @@ Func DistrictUpgrade($aUpgrade)
 				SetLog("Upgrade Ignored, Looking Next Upgrade", $COLOR_INFO) ; Shouldn't happen
 				ContinueLoop
 			EndIf
-			Local $BuildingName = getOcrAndCapture("coc-build", 200, 488 + $g_iBottomOffsetY, 460, 25)
+			Local $BuildingName = getOcrAndCapture("coc-build", 180, 512 + $g_iBottomOffsetY, 510, 25)
 			Click($aRet[1], $aRet[2])
 			If _Sleep(2000) Then Return
 			If Not WaitUpgradeWindowCC() Then
@@ -1390,41 +1413,38 @@ Func DistrictUpgrade($aUpgrade)
 EndFunc   ;==>DistrictUpgrade
 
 Func WaitForMap($sMapName = "Capital Peak")
-	Local $bRet
+	Local $bRet = False
 	For $i = 1 To 10
 		SetDebugLog("Waiting for " & $sMapName & "#" & $i, $COLOR_ACTION)
-		If _Sleep(2000) Then Return
-		If QuickMIS("BC1", $g_sImgCCMap, 300, 10, 430, 40) Then ExitLoop
-	Next
-	Local $aMapName = StringSplit($sMapName, " ", $STR_NOCOUNT)
-	Local $Text = getOcrAndCapture("coc-mapname", $g_iQuickMISX, $g_iQuickMISY - 12, 230, 35)
-	SetDebugLog("$Text: " & $Text)
-	For $i In $aMapName
-		If StringInStr($Text, $i) Then
-			SetDebugLog("Match with: " & $i)
-			$bRet = True
-			SetLog("We are on " & $sMapName, $COLOR_INFO)
+		If QuickMIS("BC1", $g_sImgCCMap, 300, 10, 430, 40) Then
+			If _Sleep(500) Then Return
 			ExitLoop
 		EndIf
+		If _Sleep(1000) Then Return
+		If $i = 10 Then Return $bRet
 	Next
-	If Not $bRet Then
-		SetDebugLog("checking with image")
-		Local $ccMap = QuickMIS("CNX", $g_sImgCCMapName, $g_iQuickMISX, $g_iQuickMISY - 10, $g_iQuickMISX + 200, $g_iQuickMISY + 50)
-		If IsArray($ccMap) And UBound($ccMap) > 0 Then
-			Local $mapName = "dummyName"
-			For $z = 0 To UBound($ccMap) - 1
-				$mapName = String($ccMap[$z][0])
-				For $i In $aMapName
-					If StringInStr($mapName, $i) Then
-						SetDebugLog("Match with: " & $i)
-						$bRet = True
-						SetLog("We are on " & $sMapName, $COLOR_INFO)
-						ExitLoop
-					EndIf
-				Next
-			Next
-		EndIf
-	EndIf
+	Local $aMapName = StringSplit($sMapName, " ", $STR_NOCOUNT)
+	SetDebugLog("checking with image", $COLOR_DEBUG)
+	Local $bLoop = 0
+	While 1
+		Local $ccMap = QuickMIS("CNX", $g_sImgCCMapName, $g_iQuickMISX, $g_iQuickMISY - 10, $g_iQuickMISX + 220, $g_iQuickMISY + 20)
+		If IsArray($ccMap) And UBound($ccMap) > 0 Then ExitLoop
+		$bLoop += 1
+		If _Sleep(250) Then Return
+		If $bLoop = 20 Then Return $bRet
+	WEnd
+	Local $mapName = "dummyName"
+	For $z = 0 To UBound($ccMap) - 1
+		$mapName = String($ccMap[$z][0])
+		For $i In $aMapName
+			If StringInStr($mapName, $i) Then
+				SetDebugLog("Match with: " & $i)
+				$bRet = True
+				SetLog("We are on " & $sMapName, $COLOR_INFO)
+				ExitLoop
+			EndIf
+		Next
+	Next
 	Return $bRet
 EndFunc   ;==>WaitForMap
 

@@ -347,8 +347,6 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkBattlecopterUpgrade, $g_bBattlecopterUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			chkActivateBBSuggestedUpgrades()
-			chkActivateBBSuggestedUpgradesGold()
-			chkActivateBBSuggestedUpgradesElixir()
 			chkPlacingNewBuildings()
 
 			#NEW CLANGAMES GUI
@@ -1036,7 +1034,7 @@ Func ApplyConfig_600_17($TypeReadSave)
 			EndSwitch
 			GUICtrlSetState($g_hChkSaveWallBldr, $g_bUpgradeWallSaveBuilder ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbWalls, $g_iCmbUpgradeWallsLevel)
-			For $i = 4 To 16
+			For $i = 4 To 17
 				GUICtrlSetData($g_ahWallsCurrentCount[$i], $g_aiWallsCurrentCount[$i])
 			Next
 			cmbWalls()
@@ -1054,7 +1052,7 @@ Func ApplyConfig_600_17($TypeReadSave)
 			EndIf
 			$g_bUpgradeWallSaveBuilder = (GUICtrlRead($g_hChkSaveWallBldr) = $GUI_CHECKED)
 			$g_iCmbUpgradeWallsLevel = _GUICtrlComboBox_GetCurSel($g_hCmbWalls)
-			For $i = 4 To 16 ; added wall-lvl16
+			For $i = 4 To 17 ; added wall-lvl17
 				$g_aiWallsCurrentCount[$i] = Number(GUICtrlRead($g_ahWallsCurrentCount[$i]))
 			Next
 	EndSwitch

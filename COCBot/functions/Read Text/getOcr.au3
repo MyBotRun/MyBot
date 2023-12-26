@@ -19,7 +19,7 @@ Func getGoldVillageSearch($x_start, $y_start) ;48, 69 -> Gets complete value of 
 EndFunc   ;==>getGoldVillageSearch
 
 Func getRemainTrainTimer($x_start, $y_start, $bNeedCapture = True) ;
-	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 90, 14, True, False, $bNeedCapture)
+	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 70, 16, True, False, $bNeedCapture)
 EndFunc   ;==>getRemainTrainTimer
 
 Func getRemainBuildTimer($x_start, $y_start, $bNeedCapture = True) ;
@@ -91,11 +91,11 @@ Func getLabUpgrdResourceWht($x_start, $y_start) ; -> Gets complete value of Elix
 EndFunc   ;==>getLabUpgrdResourceWht
 
 Func getLabUpgrdResourceWhtNew($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons, xxx,xxx for "laboratory.au3" and "starlaboratory.au3" when white text
-	Return getOcrAndCapture("coc-lab-wNew", $x_start, $y_start, 80, 14, True)
+	Return getOcrAndCapture("coc-lab-wNew", $x_start, $y_start, 86, 14, True)
 EndFunc   ;==>getLabUpgrdResourceWhtNew
 
 Func getLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons,  xxx,xxx for "laboratory.au3" when red text
-	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 80, 14, True)
+	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 86, 14, True)
 EndFunc   ;==>getLabUpgrdResourceRed
 
 Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir on the troop buttons,  xxx,xxx for "starlaboratory.au3" when red text
@@ -103,7 +103,7 @@ Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of 
 EndFunc   ;==>getStarLabUpgrdResourceRed
 
 Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18) ; "12d 19h"
+	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True) ; "12d 19h"
 EndFunc   ;==>getBldgUpgradeTime
 
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
@@ -115,11 +115,11 @@ Func getLabUpgradeTime2($x_start, $y_start) ; -> Gets complete remain lab upgrad
 EndFunc   ;==>getLabUpgradeTime2
 
 Func getPetUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V4 for Jun2023 update
-	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 166, 24) ; 166 is required to upgrades > 10 days
+	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 215, 24, True)
 EndFunc   ;==>getPetUpgradeTime
 
 Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 595, 490 + $g_iMidOffsetY
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18) ; 85 is required to days & hours for hero ; COC 15.352.22
+	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True) ; 85 is required to days & hours for hero ; COC 15.352.22
 EndFunc   ;==>getHeroUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
@@ -178,7 +178,7 @@ Func getSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army c
 EndFunc   ;==>getSiegeCampCap
 
 Func getCCSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
-	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 34, 16, True, False, $bNeedCapture)
+	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 28, 16, True, False, $bNeedCapture)
 EndFunc   ;==>getCCSiegeCampCap
 
 Func getCastleDonateCap($x_start, $y_start) ;  -> Gets clan castle capacity,  --> donatecc.au3
@@ -350,7 +350,7 @@ Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Defa
 EndFunc   ;==>getOcrRateCoc
 
 Func getRemainTLaboratory($x_start, $y_start) ; read actual time remaining in Lab for current upgrade (336,260), changed CoC v9.24 282,277
-	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 260, 26, True)
+	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 260, 28, True)
 EndFunc   ;==>getRemainTLaboratory
 
 Func getRemainTLaboratory2($x_start, $y_start) ; read actual time remaining in Lab for current upgrade (336,260), changed CoC v9.24 282,277
@@ -400,7 +400,7 @@ Func getArmyCapacityOnTrainTroops($x_start, $y_start) ;  -> Gets quantity of tro
 EndFunc   ;==>getArmyCapacityOnTrainTroops
 
 Func getQueueTroopsQuantity($x_start, $y_start) ;  -> Gets quantity of troops in Queue in Train Tab
-	Return StringReplace(getOcrAndCapture("coc-qqtroop", $x_start, $y_start, 71, 22, True), "b", "")
+	Return StringReplace(getOcrAndCapture("coc-qqtroop", $x_start, $y_start, 40, 13, True), "b", "")
 EndFunc   ;==>getQueueTroopsQuantity
 
 Func getChatStringChinese($x_start, $y_start) ; -> Get string chat request - Chinese - "DonateCC.au3"

@@ -57,8 +57,8 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 		WinGetAndroidHandle()
 
 		$bObstacleResult = checkObstacles($bBuilderBase)
-		;SetDebugLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
-		SetLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
+		SetDebugLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
+
 		;Arch: Arbitrary looping limit...
 		If $i > 24 Then
 			SetLog("Giving up and restarting everything.", $COLOR_ERROR)

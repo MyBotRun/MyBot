@@ -4998,9 +4998,9 @@ Func CheckEmuNewVersions()
 			$NewVersion = GetVersionNormalized("0.0.0.0")
 			SetLog("This " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ") is not supported!", $COLOR_ERROR)    ;Not Supported with v8.1+
 		Case "BlueStacks5"
-			$NewVersion = GetVersionNormalized("5.11.100.2102")
+			$NewVersion = GetVersionNormalized("5.13.215")
 		Case "MEmu"
-			$NewVersion = GetVersionNormalized("9.0.6.5")
+			$NewVersion = GetVersionNormalized("9.0.8.0")
 		Case "Nox"
 			$NewVersion = GetVersionNormalized("7.0.5.9")
 		Case Else

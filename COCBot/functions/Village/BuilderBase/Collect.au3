@@ -76,7 +76,7 @@ Func CollectElixirCart($bSwitchToBB = False, $bSwitchToNV = False)
 
 	Local $bRet, $aiElixirCart, $aiCollect
 
-	$aiElixirCart = decodeSingleCoord(FindImageInPlace2("ElixirCart", $g_sImgElixirCart, 470, 90 + $g_iMidOffsetY, 610, 190 + $g_iMidOffsetY))
+	$aiElixirCart = decodeSingleCoord(FindImageInPlace2("ElixirCart", $g_sImgElixirCart, 470, 90 + $g_iMidOffsetY, 620, 190 + $g_iMidOffsetY))
 	If IsArray($aiElixirCart) And UBound($aiElixirCart, 1) = 2 Then
 		SetLog("Found Filled Elixir Cart", $COLOR_SUCCESS)
 		PureClick($aiElixirCart[0], $aiElixirCart[1] + 16)

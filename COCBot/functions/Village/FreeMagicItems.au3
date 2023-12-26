@@ -52,7 +52,7 @@ Func CollectFreeMagicItems($bTest = False)
 					SetLog("Free Magic Item Collect Fail! Gem Window popped up!", $COLOR_ERROR)
 				EndIf
 				SetLog("Free Magic Item Detected On Slot #" & $ItemPosition & "", $COLOR_INFO)
-				If WaitforPixel($aOcrPositions[$i][0] + 25, $aOcrPositions[$i][1] - 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] - 25, "AD590D", 10, 1) Then
+				If WaitforPixel($aOcrPositions[$i][0] + 25, $aOcrPositions[$i][1] - 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] - 25, "AD590D", 15, 1) Then
 					SetLog("Free Magic Item Collected On Slot #" & $ItemPosition & "", $COLOR_SUCCESS)
 					$aGem[$i] = "Collected"
 					If _Sleep(1500) Then Return
@@ -92,7 +92,7 @@ Func GetFreeMagic()
 
 		Local $Read = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 60, 25, True)
 		If $Read = "FREE" Then
-			If WaitforPixel($aOcrPositions[$i][0] + 25, $aOcrPositions[$i][1] - 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] - 25, "AD590D", 10, 1) Then
+			If WaitforPixel($aOcrPositions[$i][0] + 25, $aOcrPositions[$i][1] - 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] - 25, "AD590D", 15, 1) Then
 				$Read = "SoldOut"
 			EndIf
 			If WaitforPixel($aOcrPositions[$i][0] + 33, $aOcrPositions[$i][1] + 30, $aOcrPositions[$i][0] + 35, $aOcrPositions[$i][1] + 31, "969696", 10, 1) Then
@@ -127,7 +127,14 @@ Func OpenTraderWindow()
 		SetLog("Bot will recheck next loop", $COLOR_OLIVE)
 		Return False
 	Else
-		Local $aIsWeekyDealsOpen[4] = [40, 0, 0x8BC11D, 20]
+		Local $aIsWeekyDealsOpen[4] = [40, 0, 0x8DC11D, 20]
+		If _CheckPixel($aReceivedTroopsWeeklyDeals, True) Then ; Found the "You have received" Message on Screen, wait till its gone.
+			SetDebugLog("Detected Clan Castle Message Blocking Raid Medals Button. Waiting until it's gone", $COLOR_INFO)
+			_CaptureRegion2()
+			While _CheckPixel($aReceivedTroopsWeeklyDeals, True)
+				If _Sleep($DELAYTRAIN1) Then Return
+			WEnd
+		EndIf
 		Local $aTabButton = findButton("WeeklyDeals", Default, 1, True)
 		If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
 			$aIsWeekyDealsOpen[1] = $aTabButton[1]

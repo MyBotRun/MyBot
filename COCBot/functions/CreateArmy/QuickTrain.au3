@@ -29,7 +29,7 @@ Func QuickTrain()
 
 	Local $iStep = 1
 	While 1
-		Local $avTroopCamp = GetCurrentArmy(60, 138 + $g_iMidOffsetY)
+		Local $avTroopCamp = GetCurrentArmy(95, 163 + $g_iMidOffsetY)
 		SetLog("Checking Troop tab: " & $avTroopCamp[0] & "/" & $avTroopCamp[1] * 2)
 		If $avTroopCamp[1] = 0 Then ExitLoop
 
@@ -81,7 +81,7 @@ Func QuickTrain()
 
 		Local $Step = 1, $iUnbalancedSpell = 0
 		While 1
-			Local $aiSpellCamp = GetCurrentArmy(59, 138 + $g_iMidOffsetY)
+			Local $aiSpellCamp = GetCurrentArmy(95, 163 + $g_iMidOffsetY)
 			SetLog("Checking Spell tab: " & $aiSpellCamp[0] & "/" & $aiSpellCamp[1] * 2)
 			If $aiSpellCamp[1] > $g_iTotalQuickSpells Then
 				SetLog("Unbalance total quick spell vs actual spell capacity: " & $g_iTotalQuickSpells & "/" & $aiSpellCamp[1])
@@ -411,7 +411,7 @@ Func CheckQuickTrainTroop()
 
 			; cross check with army camp
 			If _ArrayMax($g_aiArmyQuickTroops) > 0 Then
-				Local $TroopCamp = GetCurrentArmy(60, 138 + $g_iMidOffsetY)
+				Local $TroopCamp = GetCurrentArmy(95, 163 + $g_iMidOffsetY)
 				$iTroopCamp = $TroopCamp[1] * 2
 				If $TempTroopTotal <> $TroopCamp[0] Then
 					SetLog("Error reading troops in army setting (" & $TempTroopTotal & " vs " & $TroopCamp[0] & ")", $COLOR_ERROR)

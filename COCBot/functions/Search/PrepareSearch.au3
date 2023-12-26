@@ -70,7 +70,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	$g_bLeagueAttack = False
 	Do
 		Local $bSignedUpLegendLeague = False
-		Local $sSearchDiamond = GetDiamondFromRect("271,185,834,659")
+		Local $sSearchDiamond = GetDiamondFromRect("300,195,815,630")
 		Local $avAttackButton = findMultiple($g_sImgPrepareLegendLeagueSearch, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
 		If IsArray($avAttackButton) And UBound($avAttackButton, 1) > 0 Then
 			$g_bLeagueAttack = True

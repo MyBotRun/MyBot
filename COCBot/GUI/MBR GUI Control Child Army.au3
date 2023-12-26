@@ -22,7 +22,7 @@ Func radSelectTrainType()
 		Next
 		_GUI_Value_STATE("ENABLE", $grpTrainTroops & "#" & $grpCookSpell)
 		lblTotalCountTroop1()
-		TotalSpellCountClick()
+		lblTotalCountSpell()
 	Else
 		_GUICtrlTab_ClickTab($g_hGUI_TRAINARMY_ARMY_TAB, 1)
 		_GUI_Value_STATE("ENABLE", $g_ahChkArmy[0] & "#" & $g_ahChkArmy[1] & "#" & $g_ahChkArmy[2])
@@ -97,6 +97,7 @@ Func _chkUseInGameArmy($i)
 EndFunc   ;==>_chkUseInGameArmy
 
 Func SetComboTroopComp()
+	$g_iTotalCampSpace = $g_iTotalCampForcedValue
 	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "SetComboTroopComp")
 	Local $ArmyCampTemp = 0
 
@@ -109,6 +110,10 @@ Func SetComboTroopComp()
 	Local $TotalTroopsToTrain = 0
 
 	lblTotalCountTroop1()
+	HideSpellsFctTH()
+	lblTotalCountSpell()
+	HideSiegesFctTH()
+	lblTotalCountSiege()
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "SetComboTroopComp")
 EndFunc   ;==>SetComboTroopComp
 
@@ -127,16 +132,27 @@ Func lblTotalCountTroop1()
 		$ArmyCampTemp = Floor($g_iTotalCampSpace * GUICtrlRead($g_hTxtFullTroop) / 100)
 	EndIf
 
+	RemoveAllTmpTrain("Troop")
+	Local $iTmpTroops = 0
 	For $i = 0 To $eTroopCount - 1
 		Local $iCount = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$i])
 		If $iCount > 0 Then
 			$TotalTroopsToTrain += $iCount * $g_aiTroopSpace[$i]
-		Else
-			GUICtrlSetData($g_ahTxtTrainArmyTroopCount[$i], 0)
+			;Set Troop Train Info
+			If $iTmpTroops > UBound($g_ahPicTrainArmyTroopTmp) - 1 Then ContinueLoop
+			_GUICtrlSetImage($g_ahPicTrainArmyTroopTmp[$iTmpTroops], $g_sLibIconPath, $g_aTroopsIcon[$i])
+			GUICtrlSetState($g_ahPicTrainArmyTroopTmp[$iTmpTroops], $GUI_SHOW)
+			GUICtrlSetData($g_ahLblTrainArmyTroopTmp[$iTmpTroops], $iCount)
+			GUICtrlSetState($g_ahLblTrainArmyTroopTmp[$iTmpTroops], $GUI_SHOW)
+			$iTmpTroops += 1
 		EndIf
 	Next
 
 	GUICtrlSetData($g_hLblCountTotal, String($TotalTroopsToTrain))
+
+	For $i = 0 To $eTroopCount - 1
+		If $g_iTotalCampForcedValue > 0 Then GUICtrlSetBkColor($g_ahTxtTrainArmyTroopCount[$i], $TotalTroopsToTrain <= GUICtrlRead($g_hTxtTotalCampForced) ? $COLOR_WHITE : $COLOR_RED)
+	Next
 
 	If GUICtrlRead($g_hChkTotalCampForced) = $GUI_CHECKED And GUICtrlRead($g_hLblCountTotal) = GUICtrlRead($g_hTxtTotalCampForced) Then
 		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_GREEN)
@@ -145,7 +161,7 @@ Func lblTotalCountTroop1()
 	ElseIf GUICtrlRead($g_hLblCountTotal) > $ArmyCampTemp / 2 And GUICtrlRead($g_hLblCountTotal) < $ArmyCampTemp Then
 		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_OLIVE)
 	Else
-		GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_RED)
+		If $g_iTotalCampForcedValue > 0 Then GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_RED)
 	EndIf
 
 	Local $fPctOfForced = Floor((GUICtrlRead($g_hLblCountTotal) / GUICtrlRead($g_hTxtTotalCampForced)) * 100)
@@ -157,21 +173,26 @@ Func lblTotalCountTroop1()
 		GUICtrlSetData($g_hCalTotalTroops, $fPctOfCalculated < 1 ? (GUICtrlRead($g_hLblCountTotal) > 0 ? 1 : 0) : $fPctOfCalculated)
 	EndIf
 
-	If GUICtrlRead($g_hChkTotalCampForced) = $GUI_CHECKED And GUICtrlRead($g_hLblCountTotal) > GUICtrlRead($g_hTxtTotalCampForced) Then
-		GUICtrlSetState($g_hLblTotalProgress, $GUI_SHOW)
-	ElseIf GUICtrlRead($g_hLblCountTotal) > $ArmyCampTemp Then
-		GUICtrlSetState($g_hLblTotalProgress, $GUI_SHOW)
+	If GUICtrlRead($g_hChkTotalCampForced) = $GUI_CHECKED Then
+		If Number(GUICtrlRead($g_hLblCountTotal)) <= Number(GUICtrlRead($g_hTxtTotalCampForced)) Then
+			GUICtrlSetState($g_hCalTotalTroops, $GUI_SHOW)
+		Else
+			GUICtrlSetState($g_hCalTotalTroops, $GUI_HIDE)
+		EndIf
 	Else
-		GUICtrlSetState($g_hLblTotalProgress, $GUI_HIDE)
+		If Number(GUICtrlRead($g_hLblCountTotal)) >= $ArmyCampTemp Then
+			GUICtrlSetState($g_hCalTotalTroops, $GUI_SHOW)
+		Else
+			GUICtrlSetState($g_hCalTotalTroops, $GUI_HIDE)
+		EndIf
 	EndIf
-
 	lblTotalCountTroop2()
 EndFunc   ;==>lblTotalCountTroop1
 
 Func lblTotalCountTroop2()
 	; Calculate time for troops
 	Local $TotalTotalTimeTroop = 0
-	
+
 	For $i = 0 To $eTroopCount - 1
 		$TotalTotalTimeTroop += $g_aiArmyCustomTroops[$i] * $g_aiTroopTrainTime[$i]
 	Next
@@ -180,41 +201,100 @@ Func lblTotalCountTroop2()
 	GUICtrlSetData($g_hLblTotalTimeCamp, $TotalTotalTimeTroop)
 EndFunc   ;==>lblTotalCountTroop2
 
-Func lblTotalCountSpell2()
+Func lblTotalCountSpell()
 	; calculate total space and time for spell composition
 	Local $iTotalTotalTimeSpell = 0
 	$g_iTotalTrainSpaceSpell = 0
 
+	RemoveAllTmpTrain("Spell")
+	Local $iTmpSpells = 0
 	For $i = 0 To $eSpellCount - 1
-		$g_iTotalTrainSpaceSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellSpace[$i]
+		Local $iCount = GUICtrlRead($g_ahTxtTrainArmySpellCount[$i])
+		If $iCount > 0 Then
+			$g_iTotalTrainSpaceSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellSpace[$i]
+
+			;Set Spell Train Info
+			If $iTmpSpells > UBound($g_ahPicTrainArmySpellTmp) - 1 Then ContinueLoop
+			_GUICtrlSetImage($g_ahPicTrainArmySpellTmp[$iTmpSpells], $g_sLibIconPath, $g_aSpellsIcon[$i])
+			GUICtrlSetState($g_ahPicTrainArmySpellTmp[$iTmpSpells], $GUI_SHOW)
+			GUICtrlSetData($g_ahLblTrainArmySpellTmp[$iTmpSpells], $iCount)
+			GUICtrlSetState($g_ahLblTrainArmySpellTmp[$iTmpSpells], $GUI_SHOW)
+			$iTmpSpells += 1
+		EndIf
+	Next
+
+	For $i = 0 To $eSpellCount - 1
+		GUICtrlSetBkColor($g_ahTxtTrainArmySpellCount[$i], $g_iTotalTrainSpaceSpell <= Number(GUICtrlRead($g_hTxtTotalCountSpell)) ? $COLOR_WHITE : $COLOR_RED)
+	Next
+
+	GUICtrlSetBkColor($g_hLblCountTotalSpells, $g_iTotalTrainSpaceSpell <= Number(GUICtrlRead($g_hTxtTotalCountSpell)) ? $COLOR_GREEN : $COLOR_RED)
+
+	Local $iSpellProgress = Floor(($g_iTotalTrainSpaceSpell / Number(GUICtrlRead($g_hTxtTotalCountSpell))) * 100)
+	If $iSpellProgress <= 100 Then
+		GUICtrlSetData($g_hCalTotalSpells, $iSpellProgress)
+		GUICtrlSetState($g_hCalTotalSpells, $GUI_SHOW)
+	Else
+		GUICtrlSetState($g_hCalTotalSpells, $GUI_HIDE)
+	EndIf
+
+	If $g_iTotalSpellValue > 0 Then
+		If $g_iTotalTrainSpaceSpell = $g_iTotalSpellValue Then
+			GUICtrlSetBkColor($g_hLblCountTotalSpells, $COLOR_GREEN)
+		ElseIf $g_iTotalTrainSpaceSpell > $g_iTotalSpellValue / 2 Then
+			GUICtrlSetBkColor($g_hLblCountTotalSpells, $COLOR_OLIVE)
+		Else
+			GUICtrlSetBkColor($g_hLblCountTotalSpells, $COLOR_RED)
+		EndIf
+	EndIf
+
+	GUICtrlSetData($g_hLblCountTotalSpells, String($g_iTotalTrainSpaceSpell))
+	lblTotalCountSpell2()
+EndFunc   ;==>lblTotalCountSpell
+
+Func lblTotalCountSpell2()
+	; calculate total space and time for spell composition
+	Local $iTotalTotalTimeSpell = 0
+
+	For $i = 0 To $eSpellCount - 1
 		$iTotalTotalTimeSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellTrainTime[$i]
 	Next
 
-	For $i = 0 To $eSpellCount - 1
-		GUICtrlSetBkColor($g_ahTxtTrainArmySpellCount[$i], $g_iTotalTrainSpaceSpell <= GUICtrlRead($g_hTxtTotalCountSpell) ? $COLOR_WHITE : $COLOR_RED)
-	Next
-
-	GUICtrlSetData($g_hLblTotalTimeSpell, CalculTimeTo($iTotalTotalTimeSpell))
-
-	;CalCostSpell()
+	$iTotalTotalTimeSpell = CalculTimeTo($iTotalTotalTimeSpell)
+	GUICtrlSetData($g_hLblTotalTimeSpell, $iTotalTotalTimeSpell)
 EndFunc   ;==>lblTotalCountSpell2
 
-Func lblTotalCountSiege2()
+Func lblTotalCountSiege()
 	; calculate total space and time for Siege composition
 	Local $iTotalTotalTimeSiege = 0, $indexLevel = 0
 	$g_iTotalTrainSpaceSiege = 0
-
+	RemoveAllTmpTrain("Siege")
+	Local $iTmpSieges = 0
 	For $i = 0 To $eSiegeMachineCount - 1
-		$g_iTotalTrainSpaceSiege += $g_aiArmyCompSiegeMachines[$i] * $g_aiSiegeMachineSpace[$i]
-		$iTotalTotalTimeSiege = $iTotalTotalTimeSiege + $g_aiArmyCompSiegeMachines[$i] * 1200
+
+		Local $iCount = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$i])
+		If $iCount > 0 Then
+			$g_iTotalTrainSpaceSiege += $g_aiArmyCompSiegeMachines[$i] * $g_aiSiegeMachineSpace[$i]
+
+			;Set Siege Train Info
+			If $iTmpSieges > UBound($g_ahPicTrainArmySiegeTmp) - 1 Then ContinueLoop
+			_GUICtrlSetImage($g_ahPicTrainArmySiegeTmp[$iTmpSieges], $g_sLibIconPath, $g_aSiegesIcon[$i])
+			GUICtrlSetState($g_ahPicTrainArmySiegeTmp[$iTmpSieges], $GUI_SHOW)
+			GUICtrlSetData($g_ahLblTrainArmySiegeTmp[$iTmpSieges], $iCount)
+			GUICtrlSetState($g_ahLblTrainArmySiegeTmp[$iTmpSieges], $GUI_SHOW)
+			$iTmpSieges += 1
+		EndIf
 	Next
 
-	GUICtrlSetData($g_hLblTotalTimeSiege, CalculTimeTo($iTotalTotalTimeSiege))
-	GUICtrlSetData($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege)
-	GUICtrlSetBkColor($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege <= 3 ? $COLOR_GREEN : $COLOR_RED)
-EndFunc
+	For $i = 0 To $eSiegeMachineCount - 1
+		If ($g_iTotalTrainSpaceSiege <= 3) Then
+			GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_WHITE)
+		Else
+			GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_RED)
+		EndIf
+	Next
+EndFunc   ;==>lblTotalCountSiege
 
-Func lblTotalCountSiege()
+Func HideSiegesFctTH()
 	$g_iTownHallLevel = Int($g_iTownHallLevel)
 	$g_iTotalTrainSpaceSiege = 0
 	_GUI_Value_STATE("DISABLE", $groupListSieges)
@@ -252,11 +332,9 @@ Func lblTotalCountSiege()
 		GUICtrlSetData($g_aiArmyCompSiegeMachines[$i], GUICtrlRead($g_ahTxtTrainArmySiegeCount[$i]))
 	Next
 
-	lblTotalCountSiege2()
-EndFunc   ;==>lblTotalCountSiege
+EndFunc   ;==>HideSiegesFctTH
 
-Func TotalSpellCountClick()
-	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "TotalSpellCountClick")
+Func HideSpellsFctTH()
 	_GUI_Value_STATE("DISABLE", $groupListSpells)
 	$g_iTownHallLevel = Int($g_iTownHallLevel)
 
@@ -329,9 +407,7 @@ Func TotalSpellCountClick()
 		_GUI_Value_STATE("ENABLE", $groupRecall)
 	EndIf
 
-	lblTotalCountSpell2()
-	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "TotalSpellCountClick")
-EndFunc   ;==>TotalSpellCountClick
+EndFunc   ;==>HideSpellsFctTH
 
 Func chkBoostBarracksHoursE1()
 	If GUICtrlRead($g_hChkBoostBarracksHoursE1) = $GUI_CHECKED And GUICtrlRead($g_hChkBoostBarracksHours[0]) = $GUI_CHECKED Then
@@ -861,205 +937,6 @@ Func IsUseCustomTroopOrder()
 	Return True
 EndFunc   ;==>IsUseCustomTroopOrder
 
-#cs
-Func LevUpDownTroop($iTroopIndex, $NoChangeLev = True)
-	Local $MaxLev = $g_aiTroopCostPerLevel[$iTroopIndex][0]
-	Local $TempLev = 0
-
-	If $NoChangeLev Then
-		If _IsPressed("10") Or _IsPressed("02") Then
-			$TempLev = $g_aiTrainArmyTroopLevel[$iTroopIndex] - 1
-		Else
-			$TempLev = $g_aiTrainArmyTroopLevel[$iTroopIndex] + 1
-		EndIf
-	Else
-		$TempLev = $g_aiTrainArmyTroopLevel[$iTroopIndex]
-	EndIf
-
-	Local $hLevel = $g_ahLblTrainArmyTroopLevel[$iTroopIndex]
-
-	If $TempLev > $MaxLev Or $TempLev = 0 Then
-		$TempLev = 0
-		If $NoChangeLev Then lblTotalCountTroop1()
-	ElseIf $TempLev < 0 Then
-		$TempLev = $MaxLev
-	EndIf
-
-	$g_aiTrainArmyTroopLevel[$iTroopIndex] = $TempLev
-
-	Local $iColor = ($TempLev = $MaxLev ? $COLOR_YELLOW : $COLOR_WHITE)
-	GUICtrlSetData($hLevel, $TempLev)
-	If GUICtrlGetBkColor($hLevel) <> $iColor Then GUICtrlSetBkColor($hLevel, $iColor)
-EndFunc   ;==>LevUpDownTroop
-
-Func LevUpDownSiege($iSiege, $NoChangeLev = True)
-	Local $MaxLev = $g_aiSiegeMachineCostPerLevel[$iSiege][0]
-	Local $TempLev = 0
-
-	If $NoChangeLev Then
-		If _IsPressed("10") Or _IsPressed("02") Then
-			$TempLev = $g_aiTrainArmySiegeMachineLevel[$iSiege] - 1
-		Else
-			$TempLev = $g_aiTrainArmySiegeMachineLevel[$iSiege] + 1
-		EndIf
-	Else
-		$TempLev = $g_aiTrainArmySiegeMachineLevel[$iSiege]
-	EndIf
-
-	Local $hLevel = $g_ahLblTrainArmySiegeLevel[$iSiege]
-
-	If $TempLev > $MaxLev Or $TempLev = 0 Then
-		$TempLev = 0
-	ElseIf $TempLev < 0 Then
-		$TempLev = $MaxLev
-	EndIf
-
-	$g_aiTrainArmySiegeMachineLevel[$iSiege] = $TempLev
-
-	Local $iColor = ($TempLev = $MaxLev ? $COLOR_YELLOW : $COLOR_WHITE)
-	GUICtrlSetData($hLevel, $TempLev)
-	If GUICtrlGetBkColor($hLevel) <> $iColor Then GUICtrlSetBkColor($hLevel, $iColor)
-	lblTotalCountSiege()
-	CalCostSiege()
-EndFunc   ;==>LevUpDownSiege
-
-Func LevUpDownSpell($iSpellIndex, $NoChangeLev = True)
-	Local $MaxLev = $g_aiSpellCostPerLevel[$iSpellIndex][0]
-	Local $TempLev = 0
-
-	If $NoChangeLev Then
-		If _IsPressed("10") Or _IsPressed("02") Then
-			$TempLev = $g_aiTrainArmySpellLevel[$iSpellIndex] - 1
-		Else
-			$TempLev = $g_aiTrainArmySpellLevel[$iSpellIndex] + 1
-		EndIf
-	Else
-		$TempLev = $g_aiTrainArmySpellLevel[$iSpellIndex]
-	EndIf
-
-	Local $hLevel = $g_ahLblTrainArmySpellLevel[$iSpellIndex]
-
-	If $TempLev > $MaxLev Or $TempLev = 0 Then
-		$TempLev = 0
-		If $NoChangeLev Then lblTotalCountSpell2()
-	ElseIf $TempLev < 0 Then
-		$TempLev = $MaxLev
-	EndIf
-
-	$g_aiTrainArmySpellLevel[$iSpellIndex] = $TempLev
-
-	Local $iColor = ($TempLev = $MaxLev ? $COLOR_YELLOW : $COLOR_WHITE)
-	GUICtrlSetData($hLevel, $TempLev)
-	If GUICtrlGetBkColor($hLevel) <> $iColor Then GUICtrlSetBkColor($hLevel, $iColor)
-EndFunc   ;==>LevUpDownSpell
-
-Func TrainTroopLevelClick()
-	If $g_bRunState = True Then Return
-
-	Local $iTroop = -1
-	For $i = 0 To $eTroopCount - 1
-		If @GUI_CtrlId = $g_ahPicTrainArmyTroop[$i] Then
-			$iTroop = $i
-			ExitLoop
-		EndIf
-	Next
-
-	If $iTroop = -1 Then Return
-
-	While _IsPressed(01)
-		LevUpDownTroop($iTroop)
-		Sleep($DELAYLVUP)
-		lblTotalCountTroop2()
-	WEnd
-EndFunc   ;==>TrainTroopLevelClick
-
-Func TrainSiegeLevelClick()
-	If $g_bRunState = True Then Return
-
-	Local $iSiege = -1
-	For $i = 0 To $eSiegeMachineCount - 1
-		If @GUI_CtrlId = $g_ahPicTrainArmySiege[$i] Then
-			$iSiege = $i
-			ExitLoop
-		EndIf
-	Next
-
-	If $iSiege = -1 Then Return
-
-	While _IsPressed(01)
-		LevUpDownSiege($iSiege)
-		Sleep($DELAYLVUP)
-		lblTotalCountSiege()
-	WEnd
-EndFunc   ;==>TrainSiegeLevelClick
-
-Func TrainSpellLevelClick()
-	If $g_bRunState = True Then Return
-
-	Local $iSpell = -1
-	For $i = 0 To $eSpellCount - 1
-		If @GUI_CtrlId = $g_ahPicTrainArmySpell[$i] Then
-			$iSpell = $i
-			ExitLoop
-		EndIf
-	Next
-
-	If $iSpell = -1 Then Return
-
-	While _IsPressed(01)
-		LevUpDownSpell($iSpell)
-		Sleep($DELAYLVUP)
-		lblTotalCountSpell2()
-	WEnd
-EndFunc   ;==>TrainSpellLevelClick
-
-Func CalCostCamp()
-	Local $iElixirCostCamp = 0, $iDarkCostCamp = 0, $indexLevel = 0
-
-	For $i = $eTroopBarbarian To $eTroopDragonRider
-		$indexLevel = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
-		$iElixirCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
-	Next
-
-	For $i = $eTroopMinion To $eTroopHeadhunter
-		$indexLevel = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
-		$iDarkCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
-	Next
-
-	GUICtrlSetData($g_hLblElixirCostCamp, _NumberFormat($iElixirCostCamp, True))
-	GUICtrlSetData($g_hLblDarkCostCamp, _NumberFormat($iDarkCostCamp, True))
-EndFunc   ;==>CalCostCamp
-
-Func CalCostSpell()
-	Local $iElixirCostSpell = 0, $iDarkCostSpell = 0, $indexLevel = 0
-
-	For $i = $eSpellLightning To $eSpellInvisibility
-		$indexLevel = $g_aiTrainArmySpellLevel[$i] > 0 ? $g_aiTrainArmySpellLevel[$i] : $g_aiSpellCostPerLevel[$i][0]
-		$iElixirCostSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellCostPerLevel[$i][$indexLevel]
-	Next
-
-	For $i = $eSpellPoison To $eSpellBat
-		$indexLevel = $g_aiTrainArmySpellLevel[$i] > 0 ? $g_aiTrainArmySpellLevel[$i] : $g_aiSpellCostPerLevel[$i][0]
-		$iDarkCostSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellCostPerLevel[$i][$indexLevel]
-	Next
-
-	GUICtrlSetData($g_hLblElixirCostSpell, _NumberFormat($iElixirCostSpell, True))
-	GUICtrlSetData($g_hLblDarkCostSpell, _NumberFormat($iDarkCostSpell, True))
-EndFunc   ;==>CalCostSpell
-
-Func CalCostSiege()
-	Local $iGoldCostSiege = 0, $indexLevel = 0
-
-	For $i = 0 To $eSiegeMachineCount - 1
-		$indexLevel = $g_aiTrainArmySiegeMachineLevel[$i] > 0 ? $g_aiTrainArmySiegeMachineLevel[$i] : $g_aiSiegeMachineCostPerLevel[$i][0]
-		$iGoldCostSiege += $g_aiArmyCompSiegeMachines[$i] * $g_aiSiegeMachineCostPerLevel[$i][$indexLevel]
-	Next
-
-	GUICtrlSetData($g_hLblGoldCostSiege, _NumberFormat($iGoldCostSiege, True))
-EndFunc   ;==>CalCostSiege
-#ce
-
-
 Func CalculTimeTo($TotalTotalTime)
 	Local $HourToTrain = 0
 	Local $MinToTrain = 0
@@ -1084,24 +961,24 @@ EndFunc   ;==>CalculTimeTo
 Func Removecamp()
 	For $T = 0 To $eTroopCount - 1
 		$g_aiArmyCustomTroops[$T] = 0
-		;$g_aiTrainArmyTroopLevel[$T] = 0
 		GUICtrlSetData($g_ahTxtTrainArmyTroopCount[$T], $g_aiArmyCustomTroops[$T])
-		;GUICtrlSetData($g_ahLblTrainArmyTroopLevel[$T], $g_aiTrainArmyTroopLevel[$T])
+		GUICtrlSetBkColor($g_ahTxtTrainArmyTroopCount[$T], $COLOR_WHITE)
 	Next
 	For $S = 0 To $eSpellCount - 1
 		$g_aiArmyCustomSpells[$S] = 0
-		;$g_aiTrainArmySpellLevel[$S] = 0
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$S], $g_aiArmyCustomSpells[$S])
-		;GUICtrlSetData($g_ahLblTrainArmySpellLevel[$S], $g_aiTrainArmySpellLevel[$S])
+		GUICtrlSetBkColor($g_ahTxtTrainArmyTroopCount[$S], $COLOR_WHITE)
 	Next
 	For $S = 0 To $eSiegeMachineCount - 1
 		$g_aiArmyCompSiegeMachines[$S] = 0
-		;$g_aiTrainArmySiegeMachineLevel[$S] = 0
 		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], $g_aiArmyCompSiegeMachines[$S])
-		;GUICtrlSetData($g_ahLblTrainArmySiegeLevel[$S], $g_aiTrainArmySiegeMachineLevel[$S])
+		GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$S], $COLOR_WHITE)
 	Next
 
+	RemoveAllTmpTrain("All")
+
 	GUICtrlSetData($g_hCalTotalTroops, 0)
+	GUICtrlSetData($g_hCalTotalSpells, 0)
 	GUICtrlSetData($g_hLblTotalTimeCamp, " 0s")
 	GUICtrlSetData($g_hLblTotalTimeSpell, " 0s")
 	GUICtrlSetData($g_hLblElixirCostCamp, "0")
@@ -1109,14 +986,9 @@ Func Removecamp()
 	GUICtrlSetData($g_hLblElixirCostSpell, "0")
 	GUICtrlSetData($g_hLblDarkCostSpell, "0")
 	GUICtrlSetData($g_hLblCountTotal, 0)
-	GUICtrlSetData($g_hLblGoldCostSiege, "0")
-	GUICtrlSetData($g_hLblCountTotalSiege, 0)
-	GUICtrlSetData($g_hLblTotalTimeSiege, " 0s")
-	GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_GREEN)
-	For $i = 0 To $eSpellCount - 1
-		GUICtrlSetBkColor($g_ahTxtTrainArmySpellCount[$i], $COLOR_WHITE)
-	Next
-	GUICtrlSetBkColor($g_hLblCountTotalSiege, $COLOR_GREEN)
+	GUICtrlSetData($g_hLblCountTotalSpells, 0)
+	GUICtrlSetBkColor($g_hLblCountTotal, $COLOR_RED)
+	GUICtrlSetBkColor($g_hLblCountTotalSpells, $COLOR_RED)
 EndFunc   ;==>Removecamp
 
 Func TrainTroopCountEdit()
@@ -1133,7 +1005,7 @@ Func TrainSiegeCountEdit()
 	For $i = 0 To $eSiegeMachineCount - 1
 		If @GUI_CtrlId = $g_ahTxtTrainArmySiegeCount[$i] Then
 			$g_aiArmyCompSiegeMachines[$i] = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$i])
-			lblTotalCountSiege2()
+			lblTotalCountSiege()
 			Return
 		EndIf
 	Next
@@ -1143,7 +1015,7 @@ Func TrainSpellCountEdit()
 	For $i = 0 To $eSpellCount - 1
 		If @GUI_CtrlId = $g_ahTxtTrainArmySpellCount[$i] Then
 			$g_aiArmyCustomSpells[$i] = GUICtrlRead($g_ahTxtTrainArmySpellCount[$i])
-			lblTotalCountSpell2()
+			lblTotalCountSpell()
 			Return
 		EndIf
 	Next
@@ -1223,9 +1095,9 @@ Func SelectTroop_QTEdit()
 EndFunc   ;==>SelectTroop_QTEdit
 
 Func AddTroop_QTEdit($iTroop)
-	Local $bOverSpace = False, $bOverSlot = False, $iTotalCampSpace=0
+	Local $bOverSpace = False, $bOverSlot = False, $iTotalCampSpace = 0
 
-   $iTotalCampSpace=Number(GUICtrlRead($g_hTxtTotalCampForced))
+	$iTotalCampSpace = Number(GUICtrlRead($g_hTxtTotalCampForced))
 
 	If $g_iQTEdit_TotalTroop + $g_aiTroopSpace[$iTroop] > $iTotalCampSpace Then $bOverSpace = True
 
@@ -1341,9 +1213,9 @@ Func SelectSpell_QTEdit()
 EndFunc   ;==>SelectSpell_QTEdit
 
 Func AddSpell_QTEdit($iSpell)
-	Local $bOverSpace = False, $bOverSlot = False, $iTotalSpellSpace=0
+	Local $bOverSpace = False, $bOverSlot = False, $iTotalSpellSpace = 0
 
-	$iTotalSpellSpace=Number(GUICtrlRead($g_hTxtTotalCountSpell))
+	$iTotalSpellSpace = Number(GUICtrlRead($g_hTxtTotalCountSpell))
 
 	If $g_iQTEdit_TotalSpell + $g_aiSpellSpace[$iSpell] > $iTotalSpellSpace Then $bOverSpace = True
 
@@ -1510,11 +1382,11 @@ Func ApplyQuickTrainArmy($Army)
 EndFunc   ;==>ApplyQuickTrainArmy
 
 Func TxtQTEdit_Troop()
-	Local $iTroop, $iQty, $iSpace, $iSlot, $iTotalCampSpace=0
+	Local $iTroop, $iQty, $iSpace, $iSlot, $iTotalCampSpace = 0
 
-   $iTotalCampSpace=Number(GUICtrlRead($g_hTxtTotalCampForced))
+	$iTotalCampSpace = Number(GUICtrlRead($g_hTxtTotalCampForced))
 
-   For $j = 0 To 6
+	For $j = 0 To 6
 		If @GUI_CtrlId = $g_ahTxtQTEdit_Troop[$j] Then
 			$iTroop = $g_aiQTEdit_TroopType[$j]
 			$iQty = GUICtrlRead($g_ahTxtQTEdit_Troop[$j])
@@ -1530,7 +1402,7 @@ Func TxtQTEdit_Troop()
 	If $g_iQTEdit_TotalTroop > $iTotalCampSpace Then
 		Local $iSpaceLeft = $iTotalCampSpace - ($g_iQTEdit_TotalTroop - $iSpace)
 		Local $iMaxQtyLeft = Int($iSpaceLeft / $g_aiTroopSpace[$iTroop])
-	    ToolTip("Your input of " & $iQty & "x " & $g_asTroopNames[$iTroop] & " makes total troops to exceed possible camp capacity (" & $iTotalCampSpace & ")." & @CRLF & "Automatically changing to: " & $iMaxQtyLeft & "x " & $g_asTroopNames[$iTroop])
+		ToolTip("Your input of " & $iQty & "x " & $g_asTroopNames[$iTroop] & " makes total troops to exceed possible camp capacity (" & $iTotalCampSpace & ")." & @CRLF & "Automatically changing to: " & $iMaxQtyLeft & "x " & $g_asTroopNames[$iTroop])
 		Sleep(2000)
 		ToolTip('')
 		GUICtrlSetData($g_ahTxtQTEdit_Troop[$iSlot], $iMaxQtyLeft)
@@ -1539,9 +1411,9 @@ Func TxtQTEdit_Troop()
 EndFunc   ;==>TxtQTEdit_Troop
 
 Func TxtQTEdit_Spell()
-	Local $iSpell, $iQty, $iSpace, $iSlot, $iTotalSpellSpace=0
+	Local $iSpell, $iQty, $iSpace, $iSlot, $iTotalSpellSpace = 0
 
-	$iTotalSpellSpace=Number(GUICtrlRead($g_hTxtTotalCountSpell))
+	$iTotalSpellSpace = Number(GUICtrlRead($g_hTxtTotalCountSpell))
 
 	For $j = 0 To 6
 		If @GUI_CtrlId = $g_ahTxtQTEdit_Spell[$j] Then
@@ -1620,7 +1492,7 @@ Func chkSuperTroops()
 	Else
 		$g_bSuperTroopsBoostUsePotionFirst = False
 	EndIf
-EndFunc
+EndFunc   ;==>chkSuperTroops
 
 Func cmbSuperTroops()
 	For $i = 0 To $iMaxSupersTroop - 1
@@ -1634,4 +1506,143 @@ Func cmbSuperTroops()
 			EndIf
 		Next
 	Next
- EndFunc
+EndFunc   ;==>cmbSuperTroops
+
+Func ChkPreciseArmy()
+	If GUICtrlRead($g_hChkPreciseArmy) = $GUI_CHECKED Then
+		$g_bPreciseArmy = True
+	Else
+		$g_bPreciseArmy = False
+	EndIf
+EndFunc   ;==>ChkPreciseArmy
+
+Func RemoveAllTmpTrain($sWhat = "All")
+	If $sWhat = "All" Or $sWhat = "Troop" Then
+		For $i = 0 To UBound($g_ahPicTrainArmyTroopTmp) - 1
+			GUICtrlSetState($g_ahPicTrainArmyTroopTmp[$i], $GUI_HIDE)
+			GUICtrlSetState($g_ahLblTrainArmyTroopTmp[$i], $GUI_HIDE)
+		Next
+	EndIf
+
+	If $sWhat = "All" Or $sWhat = "Spell" Then
+		For $i = 0 To UBound($g_ahPicTrainArmySpellTmp) - 1
+			GUICtrlSetState($g_ahPicTrainArmySpellTmp[$i], $GUI_HIDE)
+			GUICtrlSetState($g_ahLblTrainArmySpellTmp[$i], $GUI_HIDE)
+		Next
+	EndIf
+
+	If $sWhat = "All" Or $sWhat = "Siege" Then
+		For $i = 0 To UBound($g_ahPicTrainArmySiegeTmp) - 1
+			GUICtrlSetState($g_ahPicTrainArmySiegeTmp[$i], $GUI_HIDE)
+			GUICtrlSetState($g_ahLblTrainArmySiegeTmp[$i], $GUI_HIDE)
+		Next
+	EndIf
+EndFunc   ;==>RemoveAllTmpTrain
+
+Func HideAllTroops()
+	For $i = $g_ahPicTrainArmyTroop[$eTroopMinion] To $g_ahPicTrainArmyTroop[$eTroopAppWard]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopMinion] To $g_ahTxtTrainArmyTroopCount[$eTroopAppWard]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahPicTrainArmyTroop[$eTroopBarbarian] To $g_ahPicTrainArmyTroop[$eTroopRootRider]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopRootRider]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahPicTrainArmyTroop[$eTroopSuperBarbarian] To $g_ahPicTrainArmyTroop[$eTroopSuperHogRider]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopSuperBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopSuperHogRider]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahPicTrainArmySpell[$eSpellLightning] To $g_ahPicTrainArmySpell[$eSpellBat]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahTxtTrainArmySpellCount[$eSpellLightning] To $g_ahTxtTrainArmySpellCount[$eSpellBat]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] To $g_ahPicTrainArmySiege[$eSiegeBattleDrill]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	For $i = $g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker] To $g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill]
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+EndFunc   ;==>HideAllTroops
+
+Func SetBtnSelector($sType = "All")
+	For $i = $g_hBtnElixirTroops To $g_hBtnSieges
+		GUICtrlSetBkColor($i, $COLOR_BLACK)
+		GUICtrlSetColor($i, $COLOR_WHITE)
+		GUICtrlSetFont($i, 11, $FW_BOLD, Default, "Segoe UI Semibold", $CLEARTYPE_QUALITY)
+	Next
+	Switch $sType
+		Case "ElixirTroops"
+			GUICtrlSetColor($g_hBtnElixirTroops, $COLOR_YELLOW)
+		Case "DarkElixirTroops"
+			GUICtrlSetColor($g_hBtnDarkElixirTroops, $COLOR_YELLOW)
+		Case "SuperTroops"
+			GUICtrlSetColor($g_hBtnSuperTroops, $COLOR_YELLOW)
+		Case "Spells"
+			GUICtrlSetColor($g_hBtnSpells, $COLOR_YELLOW)
+		Case "Sieges"
+			GUICtrlSetColor($g_hBtnSieges, $COLOR_YELLOW)
+	EndSwitch
+EndFunc   ;==>SetBtnSelector
+
+Func BtnElixirTroops()
+	HideAllTroops()
+	For $i = $g_ahPicTrainArmyTroop[$eTroopBarbarian] To $g_ahPicTrainArmyTroop[$eTroopRootRider]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopRootRider]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	SetBtnSelector("ElixirTroops")
+EndFunc   ;==>BtnElixirTroops
+
+Func BtnDarkElixirTroops()
+	HideAllTroops()
+	For $i = $g_ahPicTrainArmyTroop[$eTroopMinion] To $g_ahPicTrainArmyTroop[$eTroopAppWard]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopMinion] To $g_ahTxtTrainArmyTroopCount[$eTroopAppWard]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	SetBtnSelector("DarkElixirTroops")
+EndFunc   ;==>BtnDarkElixirTroops
+
+Func BtnSuperTroops()
+	HideAllTroops()
+	For $i = $g_ahPicTrainArmyTroop[$eTroopSuperBarbarian] To $g_ahPicTrainArmyTroop[$eTroopSuperHogRider]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopSuperBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopSuperHogRider]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	SetBtnSelector("SuperTroops")
+EndFunc   ;==>BtnSuperTroops
+
+Func BtnSpells()
+	HideAllTroops()
+	For $i = $g_ahPicTrainArmySpell[$eSpellLightning] To $g_ahPicTrainArmySpell[$eSpellBat]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	For $i = $g_ahTxtTrainArmySpellCount[$eSpellLightning] To $g_ahTxtTrainArmySpellCount[$eSpellBat]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	SetBtnSelector("Spells")
+EndFunc   ;==>BtnSpells
+
+Func BtnSieges()
+	HideAllTroops()
+	For $i = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] To $g_ahPicTrainArmySiege[$eSiegeBattleDrill]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	For $i = $g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker] To $g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill]
+		GUICtrlSetState($i, $GUI_SHOW)
+	Next
+	SetBtnSelector("Sieges")
+EndFunc   ;==>BtnSieges

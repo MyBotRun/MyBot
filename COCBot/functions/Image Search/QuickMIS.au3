@@ -13,15 +13,62 @@
 ; Example .......: ---
 ;================================================================================================================================
 
-Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME_WIDTH, $Bottom = $g_iGAME_HEIGHT, $bNeedCapture = True, $Debug = False)
-	If ($ValueReturned <> "BC1") And ($ValueReturned <> "CX") And ($ValueReturned <> "CXR") And ($ValueReturned <> "CNX") And ($ValueReturned <> "N1") And ($ValueReturned <> "NX") And ($ValueReturned <> "Q1") And ($ValueReturned <> "QX") Then
+Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME_WIDTH, $Bottom = $g_iGAME_HEIGHT, $bNeedCapture = True, $Debug = False, $OcrDecode = 3, $OcrSpace = 12)
+	Local $error, $extError
+	If ($ValueReturned <> "BC1") And ($ValueReturned <> "BFI") And ($ValueReturned <> "CX") And _
+			($ValueReturned <> "CXR") And ($ValueReturned <> "CNX") And ($ValueReturned <> "N1") And ($ValueReturned <> "NX") And _
+			($ValueReturned <> "Q1") And ($ValueReturned <> "QX") And ($ValueReturned <> "OCR") Then
 		SetLog("Bad parameters during QuickMIS call for MultiSearch...", $COLOR_RED)
 		Return
 	EndIf
 
-	If $bNeedCapture Then _CaptureRegion2($Left, $Top, $Right, $Bottom)
-	Local $Res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
-	If @error Then _logErrorDLLCall($g_sLibMyBotPath, @error)
+	Local $Res, $aCoords
+	Local $RectArea[4] = [$Left, $Top, $Right, $Bottom]
+	Local $sImageArea = GetDiamondFromArray($RectArea)
+	If $ValueReturned = "BFI" Then
+		Local $iPattern = StringInStr($directory, "*")
+		If $iPattern > 0 Then
+			Local $dir = ""
+			Local $pat = $directory
+			Local $iLastBS = StringInStr($directory, "\", 0, -1)
+			If $iLastBS > 0 Then
+				$dir = StringLeft($directory, $iLastBS)
+				$pat = StringMid($directory, $iLastBS + 1)
+			EndIf
+			Local $files = _FileListToArray($dir, $pat, $FLTA_FILES, True)
+			If @error Or UBound($files) < 2 Then
+				SetDebugLog("findImage files not found : " & $directory, $COLOR_ERROR)
+				SetError(1, 0, $aCoords) ; Set external error code = 1 for bad input values
+				Return
+			EndIf
+			For $i = 1 To $files[0]
+				$aCoords = ""
+				$aCoords = findImage($pat, $files[$i], $sImageArea, 1, True)
+				If $aCoords <> "" Then
+					Local $coord = StringSplit($aCoords, ",", $STR_NOCOUNT)
+					If UBound($coord) = 2 Then
+						$g_iQuickMISX = $coord[0]
+						$g_iQuickMISY = $coord[1]
+						$g_iQuickMISName = $files[$i]
+						If $g_bDebugSetlog Then SetDebugLog("BFI Found : " & $g_iQuickMISName & " [" & $g_iQuickMISX & "," & $g_iQuickMISY & "]")
+						Return True
+					EndIf
+				Else
+					If $g_bDebugSetlog Then SetDebugLog("BFI No result")
+				EndIf
+			Next
+		EndIf
+	Else
+		If $bNeedCapture Then _CaptureRegion2($Left, $Top, $Right, $Bottom)
+		$Res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
+	EndIf
+	$error = @error ; Store error values as they reset at next function call
+	$extError = @extended
+	If $error Then
+		_logErrorDLLCall($g_sLibMyBotPath, $error)
+		SetDebugLog(" QuickMIS DLL Error : " & $error & " --- " & $extError)
+		Return -1
+	EndIf
 	If $g_bDebugImageSave Then SaveDebugImage("QuickMIS_" & $ValueReturned, False)
 
 	If IsArray($Res) Then
@@ -47,6 +94,8 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 					Return 0
 				Case "QX"
 					Return 0
+				Case "OCR"
+					Return "none"
 			EndSwitch
 
 		ElseIf StringInStr($Res[0], "-1") <> 0 Then
@@ -65,6 +114,11 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
 					Local $aCords = decodeSingleCoord($Result)
+					If UBound($aCords) < 2 Then
+						SetDebugLog("Error: decodeSingleCoord failed, retcoord: " & UBound($aCords), $COLOR_ERROR)
+						Return False
+					EndIf
+
 					$g_iQuickMISX = $aCords[0] + $Left
 					$g_iQuickMISY = $aCords[1] + $Top
 
@@ -161,6 +215,44 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 					Local $MultiImageSearchResult = StringSplit($Res[0], "|", $STR_NOCOUNT)
 					Return UBound($MultiImageSearchResult)
 
+				Case "OCR" ; Names of all files found, put together as a string in accordance with their coordinates left - right
+
+					Local $sOCRString = ""
+					Local $aResults[1][2] = [[-1, ""]] ; X_Coord & Name
+
+					Local $KeyValue = StringSplit($Res[0], "|", $STR_NOCOUNT)
+					For $i = 0 To UBound($KeyValue) - 1
+						Local $DLLRes = DllCallMyBot("GetProperty", "str", $KeyValue[$i], "str", "objectpoints")
+						Local $Name = RetrieveImglocProperty($KeyValue[$i], "objectname")
+
+						Local $aCoords = StringSplit($DLLRes[0], "|", $STR_NOCOUNT)
+
+						For $j = 0 To UBound($aCoords) - 1 ; In case found 1 char multiple times, $j > 0
+							Local $aXY = StringSplit($aCoords[$j], ",", $STR_NOCOUNT)
+							ReDim $aResults[UBound($aResults) + 1][2]
+							$aResults[UBound($aResults) - 2][0] = Number($aXY[0])
+							$aResults[UBound($aResults) - 2][1] = $Name
+						Next
+					Next
+
+					_ArrayDelete($aResults, UBound($aResults) - 1)
+					_ArraySort($aResults)
+
+					For $i = 0 To UBound($aResults) - 1
+						SetDebugLog($i & ". $Name = " & $aResults[$i][1] & ", Coord = " & $aResults[$i][0])
+						If $i >= 1 Then
+							If $aResults[$i][1] = $aResults[$i - 1][1] And Abs($aResults[$i][0] - $aResults[$i - 1][0]) <= $OcrDecode Then ContinueLoop
+							If Abs($aResults[$i][0] - $aResults[$i - 1][0]) > $OcrSpace Then $sOCRString &= " "
+						EndIf
+						$sOCRString &= $aResults[$i][1]
+					Next
+					SetDebugLog("QuickMIS " & $ValueReturned & ", $sOCRString: " & $sOCRString)
+
+					Return $sOCRString
+
+				Case Else
+					SetLog("Bad parameters during QuickMIS call for MultiSearch...", $COLOR_RED)
+					Return
 			EndSwitch
 		EndIf
 	EndIf

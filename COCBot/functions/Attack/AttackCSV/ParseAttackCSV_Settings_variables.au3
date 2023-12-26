@@ -50,6 +50,9 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 						Return
 					EndIf
 					Switch $g_iTotalCampSpace
+						Case $g_iMaxCapTroopTH[15] + 5 To $g_iMaxCapTroopTH[16]    ; TH16
+							$iTHCol = $iTHBeginCol + 10
+							$iTH = 16
 						Case $g_iMaxCapTroopTH[14] + 5 To $g_iMaxCapTroopTH[15]    ; TH15
 							$iTHCol = $iTHBeginCol + 9
 							$iTH = 15

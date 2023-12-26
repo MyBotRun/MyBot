@@ -30,8 +30,8 @@ Func GetAttackBarBB($bRemaining = False, $bSecondAttack = False)
 		$g_aBomberOnAttackBar = $aEmpty
 	EndIf
 
-	Local $iMaxSlot = 9, $iSlotOffset = 75
-	Local $aSlotX[$iMaxSlot], $iStartSlot = 103
+	Local $iMaxSlot = 9, $iSlotOffset = 76
+	Local $aSlotX[$iMaxSlot], $iStartSlot = 100
 
 	Local $aBMPosInit = GetMachinePos()
 	If $aBMPosInit = 0 Then
@@ -40,7 +40,7 @@ Func GetAttackBarBB($bRemaining = False, $bSecondAttack = False)
 			$BMFound += 1
 		Else
 			SetDebugLog("Machine Unavailable", $COLOR_DEBUG)
-			$iStartSlot = 18
+			$iStartSlot = 16
 		EndIf
 		For $i = 0 To UBound($aSlotX) - 1
 			$aSlotX[$i] = $iStartSlot + ($i * $iSlotOffset)
@@ -75,7 +75,7 @@ Func GetAttackBarBB($bRemaining = False, $bSecondAttack = False)
 		$ColorPickBannerX = $aSlotX[$k] + 35 ; location to pick color from TroopSlot banner
 
 		If $bRemaining Then
-			If QuickMIS("BC1", $g_sImgDirBBTroops, $Troopx, $iTroopBanners, $Troopx + 75, 670 + $g_iBottomOffsetY) Then
+			If QuickMIS("BC1", $g_sImgDirBBTroops, $Troopx, $iTroopBanners, $Troopx + 70, 670 + $g_iBottomOffsetY) Then
 				If $g_bDebugSetLog Then SetLog("Slot [" & $k + $BMFound & "]: TroopBanner ColorpickX=" & $ColorPickBannerX, $COLOR_DEBUG2)
 				$isGreyBanner = _ColorCheck(_GetPixelColor($ColorPickBannerX, $iTroopBanners, True), Hex(0x7B7B7B, 6), 10, Default) ;Grey Banner on TroopSlot = Troop Die
 				If $isGreyBanner Then
@@ -108,7 +108,7 @@ Func GetAttackBarBB($bRemaining = False, $bSecondAttack = False)
 				EndIf
 			EndIf
 		Else
-			If QuickMIS("BC1", $g_sImgDirBBTroops, $Troopx, $iTroopBanners, $Troopx + 73, 670 + $g_iBottomOffsetY) Then
+			If QuickMIS("BC1", $g_sImgDirBBTroops, $Troopx, $iTroopBanners, $Troopx + 70, 670 + $g_iBottomOffsetY) Then
 				If $g_bDebugSetLog Then SetLog("Slot [" & $k + $BMFound & "]: TroopBanner ColorpickX=" & $ColorPickBannerX, $COLOR_DEBUG2)
 				$isVioletBanner = _ColorCheck(_GetPixelColor($ColorPickBannerX, $iTroopBanners, True), Hex(0xCA4AFF, 6), 30, Default) ; Violet Banner on TroopSlot = TroopSlot Quantity = 1
 				$isBlueBanner = _ColorCheck(_GetPixelColor($ColorPickBannerX, $iTroopBanners, True), Hex(0x3E7BFF, 6), 30, Default) ; Blue Banner on TroopSlot = TroopSlot Quantity > 1

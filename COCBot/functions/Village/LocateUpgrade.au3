@@ -265,6 +265,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					$g_avBuildingUpgrades[$inum][4] = "Giga Inferno"
 				Case 15
 					$g_avBuildingUpgrades[$inum][4] = "Giga Inferno"
+				Case 16
+					$g_avBuildingUpgrades[$inum][4] = "Giga Inferno"
 			EndSwitch
 			GUICtrlSetData($g_hTxtUpgradeName[$inum], $g_avBuildingUpgrades[$inum][4])
 			$aUpgradeButton = $aTmpUpgradeButton

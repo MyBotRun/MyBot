@@ -144,6 +144,9 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 	Else
 		Local $aControlSize = ControlGetPos(GetCurrentAndroidHWnD(), $g_sAppPaneName, GetAndroidControlClass(True))
 	EndIf
+	If IsArray($aControlSize) Then
+		If $aControlSize[2] = 859 Then $aControlSize[2] = 860
+	EndIf
 	Local $aControlSizeInitial = $aControlSize
 
 	;If Not $g_bRunState Or $FastCheck Then Return $aControlSize

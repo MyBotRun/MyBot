@@ -382,6 +382,7 @@ Func ReferenceGlobals()
 	$a1 = $eHdV13
 	$a1 = $eHdV14
 	$a1 = $eHdV15
+	$a1 = $eHdV16
 	$a1 = $eUnranked
 	$a1 = $eBronze
 	$a1 = $eSilver
@@ -404,6 +405,7 @@ Func ReferenceGlobals()
 	$a1 = $eWall14
 	$a1 = $eWall15
 	$a1 = $eWall16
+	$a1 = $eWall17
 	$a1 = $eIcnPBNotify
 	$a1 = $eIcnCCTroops
 	$a1 = $eIcnCCSpells
@@ -445,6 +447,9 @@ Func ReferenceGlobals()
 	$a1 = $eTroopElectroDragon
 	$a1 = $eTroopYeti
 	$a1 = $eTroopDragonRider
+	$a1 = $eTroopDragonRider
+	$a1 = $eTroopElectroTitan
+	$a1 = $eTroopRootRider
 
 	$a1 = $eTroopMinion
 	$a1 = $eTroopHogRider
@@ -490,7 +495,9 @@ Func ReferenceGlobals()
 	$a1 = $eYeti
 	$a1 = $eRDrag
 	$a1 = $eMine
-
+	$a1 = $eSMine
+	$a1 = $eETitan
+	$a1 = $eRootR
 	$a1 = $eMini
 	$a1 = $eHogs
 	$a1 = $eSHogs

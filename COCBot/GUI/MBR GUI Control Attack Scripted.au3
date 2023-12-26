@@ -268,7 +268,7 @@ Func ApplyScriptDB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
 	Local $iSlot = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
@@ -304,8 +304,8 @@ Func ApplyScriptDB()
 		$g_aiArmyCompSiegeMachines = $aiCSVSieges
 		ApplyConfig_600_52_2("Read")
 		SetComboTroopComp() ; GUI refresh
-		lblTotalCountSpell2()
-		lblTotalCountSiege2()
+		lblTotalCountSpell()
+		lblTotalCountSiege()
 		SetLog("CSV Train settings applied", $COLOR_SUCCESS)
 	EndIf
 			
@@ -422,7 +422,7 @@ Func ApplyScriptAB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
 	Local $iSlot = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0]
 	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0]
 	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
@@ -458,11 +458,11 @@ Func ApplyScriptAB()
 		$g_aiArmyCompSiegeMachines = $aiCSVSieges
 		ApplyConfig_600_52_2("Read")
 		SetComboTroopComp() ; GUI refresh
-		lblTotalCountSpell2()
-		lblTotalCountSiege2()
+		lblTotalCountSpell()
+		lblTotalCountSiege()
 		SetLog("CSV Train settings applied", $COLOR_SUCCESS)
 	EndIf
-	
+
 	If IsArray($aiCSVSieges) And $iApplySieges > 0 Then
 		Local $aMachine = _ArrayMaxIndex($aiCSVSieges, 0, 1)
 		_GUICtrlComboBox_SetCurSel($g_hCmbABSiege, $aMachine + 1)

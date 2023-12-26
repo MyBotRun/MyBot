@@ -180,10 +180,10 @@ EndFunc   ;==>getArmyHeroCount
 
 Func ArmyHeroStatus($i)
 	Local $sResult = ""
-	Local Const $aHeroesRect[$eHeroCount][4] = [[543, 315 + $g_iMidOffsetY, 610, 375 + $g_iMidOffsetY], _
-			[615, 315 + $g_iMidOffsetY, 682, 375 + $g_iMidOffsetY], _
-			[686, 315 + $g_iMidOffsetY, 755, 375 + $g_iMidOffsetY], _
-			[758, 315 + $g_iMidOffsetY, 825, 375 + $g_iMidOffsetY]]                                     ; Review
+	Local Const $aHeroesRect[$eHeroCount][4] = [[525, 315 + $g_iMidOffsetY, 587, 375 + $g_iMidOffsetY], _
+			[590, 315 + $g_iMidOffsetY, 650, 375 + $g_iMidOffsetY], _
+			[652, 315 + $g_iMidOffsetY, 713, 375 + $g_iMidOffsetY], _
+			[716, 315 + $g_iMidOffsetY, 778, 375 + $g_iMidOffsetY]]                                     ; Review
 
 	; Perform the search
 	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])

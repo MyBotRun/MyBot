@@ -209,13 +209,13 @@ Func ReturnHomeDropTrophyBB($bOnlySurender = False)
 			Case IsBBAttackPage() = True
 				Click(65, 540 + $g_iMidOffsetY) ;click surrender
 				If _Sleep(1000) Then Return
-			Case QuickMIS("BC1", $g_sImgBBReturnHome, 390, 515 + $g_iMidOffsetY, 470, 560 + $g_iMidOffsetY) = True
+			Case QuickMIS("BC1", $g_sImgBBReturnHome, 380, 510 + $g_iMidOffsetY, 480, 570 + $g_iMidOffsetY) = True
 				If $bOnlySurender Then
 					Return True
 				EndIf
 				Click($g_iQuickMISX, $g_iQuickMISY)
 				If _Sleep(3000) Then Return
-			Case QuickMIS("BC1", $g_sImgBBAttackBonus, 410, 460 + $g_iMidOffsetY, 454, 490 + $g_iMidOffsetY) = True
+			Case QuickMIS("BC1", $g_sImgBBAttackBonus, 360, 450 + $g_iMidOffsetY, 500, 510 + $g_iMidOffsetY) = True
 				SetLog("Congrats Chief, Stars Bonus Awarded", $COLOR_INFO)
 				Click($g_iQuickMISX, $g_iQuickMISY)
 				If _Sleep(2000) Then Return
