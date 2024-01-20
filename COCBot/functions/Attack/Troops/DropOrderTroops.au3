@@ -3,7 +3,7 @@
 ; Description ...: This file contains the Sequence that runs all MBR Bot
 ; Author ........: Kychera (05-2017)
 ; Modified ......: NguyenAnhHD (12-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

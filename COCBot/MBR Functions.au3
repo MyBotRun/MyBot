@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -274,6 +274,8 @@
 #include "functions\Village\LocatePetHouse.au3"
 #include "functions\Village\PetHouse.au3"
 #include "functions\Village\ClanCapital.au3"
+#include "functions\Village\LocateBlacksmith.au3"
+#include "functions\Village\Blacksmith.au3"
 
 #include "functions\Village\BuilderBase\Collect.au3"
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"

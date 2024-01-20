@@ -4,7 +4,7 @@
 ; Syntax ........: $g_sImgxxx = @ScriptDir & "\imgxml\xxx\"
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -64,6 +64,10 @@ Global Const $g_sImgUpgradeWhiteZero = @ScriptDir & "\imgxml\Main Village\Upgrad
 Global Const $g_sImgDonateCC = @ScriptDir & "\imgxml\DonateCC\"
 Global Const $g_sImgLabResearch = @ScriptDir & "\imgxml\Research\Laboratory\"
 Global $g_sImgElixirDrop = @ScriptDir & "\imgxml\Research\Laboratory\ElixirDrop\"
+Global $g_sImgHeroEquipement = @ScriptDir & "\imgxml\Research\Blacksmith\"
+Global $g_sImgEquipmentResearch = @ScriptDir & "\imgxml\Research\Blacksmith\Equipment\"
+Global $g_sImgEquipmentNew = @ScriptDir & "\imgxml\Research\Blacksmith\New\New*"
+Global $g_sImgRedZero = @ScriptDir & "\imgxml\Research\Blacksmith\RedZero\RedZero*"
 #EndRegion Main Village
 
 #Region Clan Capital
@@ -145,7 +149,6 @@ Global $g_sImgUpgradeBtn2Wall = @ScriptDir & "\imgxml\imglocbuttons\Upgrade*"
 
 #Region Auto Upgrade Builder Base
 Global $g_sImgAutoUpgradeBB = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\Resources"
-Global $g_sImgAutoUpgradeWindow = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\Window"
 Global $g_sImgAutoUpgradeNew = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\New"
 Global $g_sImgAutoUpgradeNoRes = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\NoResources"
 Global $g_sImgAutoUpgradeBtnElixir = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\ButtonUpg\Elixir"
@@ -174,6 +177,10 @@ Global $g_sImgAttackBarDir = @ScriptDir & "\imgxml\AttackBar"
 Global $g_sImgSwitchSiegeMachine = @ScriptDir & "\imgxml\SwitchSiegeMachines\"
 Global $g_sImgSwitchWardenMode = @ScriptDir & "\imgxml\SwitchWardenMode"
 Global $g_sImgIsMultiplayerTab = @ScriptDir & "\imgxml\Attack\Search\MultiplayerTab*"
+Global $g_sImgQueenBar = @ScriptDir & "\imgxml\AttackBar\Queen*"
+Global $g_sImgKingBar = @ScriptDir & "\imgxml\AttackBar\King*"
+Global $g_sImgWardenBar = @ScriptDir & "\imgxml\AttackBar\Warden*"
+Global $g_sImgChampionBar = @ScriptDir & "\imgxml\AttackBar\Champion*"
 #EndRegion Attack
 
 #Region Search

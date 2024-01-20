@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack(07-2015), MonkeyHunter (05-2016), ProMac (01-2018), CodeSlinger69 (01-2018), Moebius14 (06-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: GetTrainPos, GetFullName, GetGemName
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -246,19 +246,55 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 	If $sTroopType = "Normal" Then
 
 		If $iTroop > $g_iNextPageTroop Then ; Normal Troops in second page
-			Switch $iTrainPos[0]
-				Case 96 To 178 ; 1 Column
-					$iSlotH = 161
-				Case 181 To 262 ; 2 Column
-					$iSlotH = 245
-				Case 266 To 346 ; 3 Column
-					$iSlotH = 329
-				Case Else
-					If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
-						SetLog("GetFullNameSlot(): It seems that there is no Slot for an Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
-					EndIf
-			EndSwitch
-		Else
+			If $g_iNextPageTroop > $eMine Then ; Classic position
+				Switch $iTrainPos[0]
+					Case 98 To 178 ; 1 Column
+						$iSlotH = 162
+					Case 182 To 262 ; 2 Column
+						$iSlotH = 246
+					Case 270 To 350 ; 3 Column
+						$iSlotH = 330
+					Case Else
+						If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
+							SetLog("GetFullNameSlot(): It seems that there is no Slot for an Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
+						EndIf
+				EndSwitch
+			Else
+				If $iTroop >= $eEDrag Or $iTroop <= $eRootR Then ; Case Moved 4 slots or more at first page And $iTroop = Edrag Or Yeti
+					Switch $iTrainPos[0]
+						Case 91 To 171 ; 1 Column
+							$iSlotH = 155
+						Case 177 To 257 ; 2 Column
+							$iSlotH = 241
+						Case 262 To 342 ; 3 Column
+							$iSlotH = 326
+						Case 346 To 426 ; 4 Column
+							$iSlotH = 410
+						Case 432 To 512 ; 5 Column
+							$iSlotH = 496
+						Case Else
+							If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
+								SetLog("GetFullNameSlot(): It seems that there is no Slot for an Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
+							EndIf
+					EndSwitch
+				Else ; Case Moved 4 slots or more at first page And $iTroop <> Edrag Or Yeti
+					Switch $iTrainPos[0]
+						Case 98 To 178 ; 1 Column
+							$iSlotH = 162
+						Case 182 To 262 ; 2 Column
+							$iSlotH = 246
+						Case 266 To 346 ; 3 Column
+							$iSlotH = 331
+						Case 350 To 430 ; 4 Column
+							$iSlotH = 415
+						Case Else
+							If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
+								SetLog("GetFullNameSlot(): It seems that there is no Slot for an Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
+							EndIf
+					EndSwitch
+				EndIf
+			EndIf
+		Else ; First Page
 			Switch $iTrainPos[0]
 				Case 78 To 160 ; 1 Column
 					$iSlotH = 143
@@ -297,25 +333,85 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 	EndIf
 
 	If $sTroopType = "Dark" Then
-		Switch $iTrainPos[0]
-			Case 157 To 252 ; When 2 Dark Super Troops (Do Do again)
-				$iSlotH = 230
-			Case 268 To 349
-				$iSlotH = 333
-			Case 354 To 434
-				$iSlotH = 418
-			Case 438 To 518
-				$iSlotH = 502
-			Case 522 To 604
-				$iSlotH = 586
-			Case 608 To 688
-				$iSlotH = 671
-			Case 697 To 774
-				$iSlotH = 755
-			Case Else
-				If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
-					SetLog("GetFullNameSlot(): It seems that there is no Slot for a Dark Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
-				EndIf
+		Switch $g_iNextPageTroop
+			Case $eETitan, $eRDrag ; No Move And Moved 1 slot
+				Switch $iTrainPos[0]
+					Case 182 To 262 ; When 2 Dark Super Troops
+						$iSlotH = 246
+					Case 268 To 349
+						$iSlotH = 333
+					Case 354 To 434
+						$iSlotH = 418
+					Case 438 To 518
+						$iSlotH = 502
+					Case 522 To 604
+						$iSlotH = 586
+					Case 608 To 688
+						$iSlotH = 671
+					Case 697 To 774
+						$iSlotH = 755
+					Case Else
+						If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
+							SetLog("GetFullNameSlot(): It seems that there is no Slot for a Dark Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
+						EndIf
+				EndSwitch
+			Case $eYeti, $eEDrag ; Moved 2 or 3 slots
+				Switch $iTrainPos[0]
+					Case 186 To 266
+						$iSlotH = 250
+					Case 271 To 351
+						$iSlotH = 335
+					Case 356 To 436
+						$iSlotH = 419
+					Case 440 To 520
+						$iSlotH = 504
+					Case 525 To 605
+						$iSlotH = 588
+					Case 609 To 689
+						$iSlotH = 673
+					Case 694 To 773
+						$iSlotH = 758
+					Case Else
+						If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
+							SetLog("GetFullNameSlot(): It seems that there is no Slot for a Dark Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
+						EndIf
+				EndSwitch
+			Case $eMine, $eSMine, $eBabyD ; Moved 4 or 5 slots
+				Switch $iTrainPos[0]
+					Case 268 To 349
+						$iSlotH = 333
+					Case 354 To 434
+						$iSlotH = 418
+					Case 438 To 518
+						$iSlotH = 502
+					Case 522 To 604
+						$iSlotH = 586
+					Case 608 To 688
+						$iSlotH = 671
+					Case 697 To 774
+						$iSlotH = 755
+					Case Else
+						If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
+							SetLog("GetFullNameSlot(): It seems that there is no Slot for a Dark Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
+						EndIf
+				EndSwitch
+			Case $ePekk ; Moved 6 slots
+				Switch $iTrainPos[0]
+					Case 354 To 434
+						$iSlotH = 418
+					Case 438 To 518
+						$iSlotH = 502
+					Case 522 To 604
+						$iSlotH = 586
+					Case 608 To 688
+						$iSlotH = 671
+					Case 697 To 774
+						$iSlotH = 755
+					Case Else
+						If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
+							SetLog("GetFullNameSlot(): It seems that there is no Slot for a Dark Elixir Troop on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)
+						EndIf
+				EndSwitch
 		EndSwitch
 
 		Switch $iTrainPos[1]

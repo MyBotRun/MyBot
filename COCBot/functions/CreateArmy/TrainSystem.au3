@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Mr.Viper(10-2016), ProMac(10-2016), CodeSlinger69 (01-2018)
 ; Modified ......: ProMac (11-2016), Boju (11-2016), MR.ViPER (12-2016), CodeSlinger69 (01-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -333,18 +333,29 @@ Func DragIfNeeded($Troop)
 	If Not $g_bRunState Then Return
 	Local $bCheckPixel = False
 	Local $iIndex = TroopIndexLookup($Troop, "DragIfNeeded")
-	Local $bDrag = False
+	Local $bDrag = False, $ExtendedTroops4 = False, $ExtendedDragTroops4 = 0
 
 	If $iIndex > $g_iNextPageTroop Then $bDrag = True ;Drag if Troops is on Right side from $g_iNextPageTroop
+	If $g_iNextPageTroop <= $eMine Then  ; MicroDragLeft if Moved 4+ slots to find Edrag and Yeti.
+		$ExtendedTroops4 = True
+		$ExtendedDragTroops4 = 70 ; Drag more to the right before.
+	EndIf
 
 	If $bDrag Then
-		If _ColorCheck(_GetPixelColor(777, 380 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
+		If _ColorCheck(_GetPixelColor(776, 380 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
 		If $g_bDebugSetlogTrain Then SetLog("DragIfNeeded : to the right")
-		For $i = 1 To 3
+		For $i = 1 To 4
 			If Not $bCheckPixel Then
-				ClickDrag(770, 433 + $g_iMidOffsetY, 80, 433 + $g_iMidOffsetY)
+				ClickDrag(715, 433 + $g_iMidOffsetY, 300 - $ExtendedDragTroops4, 433 + $g_iMidOffsetY)
 				If _Sleep(2000) Then Return
-				If _ColorCheck(_GetPixelColor(777, 380 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
+				If _ColorCheck(_GetPixelColor(776, 380 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then
+					$bCheckPixel = True
+					If $ExtendedTroops4 And $iIndex >= $eEDrag And $iIndex <= $eRootR Then
+						If $g_bDebugSetlogTrain Then SetLog("DragIfNeeded : MicroDrag to the left")
+						ClickDrag(250, 433 + $g_iMidOffsetY, 435, 433 + $g_iMidOffsetY)
+						If _Sleep(2000) Then Return
+					EndIf
+				EndIf
 			Else
 				Return True
 			EndIf
@@ -352,9 +363,9 @@ Func DragIfNeeded($Troop)
 	Else
 		If _ColorCheck(_GetPixelColor(75, 380 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
 		If $g_bDebugSetlogTrain Then SetLog("DragIfNeeded : to the left")
-		For $i = 1 To 3
+		For $i = 1 To 4
 			If Not $bCheckPixel Then
-				ClickDrag(80, 433 + $g_iMidOffsetY, 770, 433 + $g_iMidOffsetY)
+				ClickDrag(200, 433 + $g_iMidOffsetY, 615 + $ExtendedDragTroops4, 433 + $g_iMidOffsetY)
 				If _Sleep(2000) Then Return
 				If _ColorCheck(_GetPixelColor(75, 380 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
 			Else
@@ -568,12 +579,12 @@ EndFunc   ;==>DeleteInvalidTroopInArray
 Func RemoveExtraTroopsQueue() ; Will remove All Extra troops in queue If there's a Low Opacity red color on them
 	FuncEnter(RemoveExtraTroopsQueue, $g_bDebugSetlogTrain)
 	;Local Const $DecreaseByStep = 69 ; spacing between troop icons
-	;Local $x = 777  ; right most position moved Dec 2023 update window size change
+	;Local $x = 775  ; right most position moved Dec 2023 update window size change
 	Local Const $y = 185 + $g_iMidOffsetY ; Pink pixel check Y location
 	Local Const $yRemoveBtn = 198 + $g_iMidOffsetY ; Troop remove button Y location
-	Local Const $xDecreaseRemoveBtn = 11 ; offset to remove button location
+	Local Const $xDecreaseRemoveBtn = 9 ; offset to remove button location
 	Local $bColorCheck = False, $bGotRemoved = False
-	For $x = 777 To 73 Step -61
+	For $x = 775 To 73 Step -61
 		If Not $g_bRunState Then Return FuncReturn(False, $g_bDebugSetlogTrain)
 		$bColorCheck = _ColorCheck(_GetPixelColor($x, $y, True, $g_bDebugSetlogTrain ? "RemoveExtraTroopsQueue_ExtraTroops:D7AFA9" : Default), Hex(0xD7AFA9, 6), 20)  ;check for pink right of troop icon
 		If $bColorCheck Then
@@ -620,17 +631,16 @@ Func IsQueueEmpty($sType = "Troops", $bSkipTabCheck = False, $removeExtraTroopsQ
 		WEnd
 	EndIf
 
-	If Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True, $g_bDebugSetlogTrain ? $sType & " GreenArrow:0xAFDC87" : Default), Hex(0xAFDC87, 6), 30) And _
-			Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 3, True, $g_bDebugSetlogTrain ? $sType & " GreenArrow:0x79BF30" : Default), Hex(0x79BF30, 6), 30) Then
+	If Not IsArray(_PixelSearch($iArrowX, $iArrowY, $iArrowX + 4, $iArrowY, Hex(0xAFDC87, 6), 30, True)) And _
+			Not IsArray(_PixelSearch($iArrowX, $iArrowY + 3, $iArrowX + 4, $iArrowY + 3, Hex(0x79BF30, 6), 30, True)) Then
 
 		If $g_bDebugSetlogTrain Then SetLog($sType & " Queue empty", $COLOR_DEBUG)
 		Return True ; Check Green Arrows at top first, if not there -> Return
 
-	ElseIf _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True, $g_bDebugSetlogTrain ? $sType & " GreenArrow:0xAFDC87" : Default), Hex(0xAFDC87, 6), 30) And _
-			_ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 3, True, $g_bDebugSetlogTrain ? $sType & " GreenArrow:0x79BF30" : Default), Hex(0x79BF30, 6), 30) And _
-			Not $removeExtraTroopsQueue Then
+	ElseIf IsArray(_PixelSearch($iArrowX, $iArrowY, $iArrowX + 4, $iArrowY, Hex(0xAFDC87, 6), 30, True)) And _
+			IsArray(_PixelSearch($iArrowX, $iArrowY + 3, $iArrowX + 4, $iArrowY + 3, Hex(0x79BF30, 6), 30, True)) And Not $removeExtraTroopsQueue Then
 
-		If Not WaitforPixel($iArrowX - 11, $iArrowY - 1, $iArrowX - 9, $iArrowY + 1, Hex(0xAFDC87, 6), 30, 2) Then Return False  ; check if boost arrow
+		If Not WaitforPixel($iArrowX - 12, $iArrowY - 1, $iArrowX - 7, $iArrowY + 1, Hex(0xAFDC87, 6), 30, 2) Then Return False  ; check if boost arrow
 
 	EndIf
 	If _Sleep($DELAYRESPOND) Then Return
@@ -1054,8 +1064,8 @@ Func SearchArmy($sImageDir = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0, $sArmyType = 
 	If $sArmyType = "Quick Train" Then
 		Local $xSlot
 		For $i = 0 To UBound($aResult) - 1
-			$xSlot = Int((Number($aResult[$i][1]) - 25) / 60.5)
-			$aResult[$i][3] = Number(getQueueTroopsQuantity(25 + $xSlot * 60.5, 189 + $g_iMidOffsetY))
+			$xSlot = Int((Number($aResult[$i][1]) - 80) / 60.5)
+			$aResult[$i][3] = Number(getQuickTroopsQuantity(80 + $xSlot * 60.5, 189 + $g_iMidOffsetY))
 			SetDebugLog($aResult[$i][0] & " (" & $xSlot & ") x" & $aResult[$i][3])
 		Next
 	EndIf
@@ -1107,8 +1117,8 @@ Func ResetVariables($sArmyType = "")
 EndFunc   ;==>ResetVariables
 
 Func TrainArmyNumber($abQuickTrainArmy)
-	Local $iDistanceBetweenArmies = 115
-	Local $aiTrainButton, $aiSearchArea[4] = [740, 250 + $g_iMidOffsetY, 805, 360 + $g_iMidOffsetY]
+	Local $iDistanceBetweenArmies = 93
+	Local $aiTrainButton, $aiSearchArea[4] = [680, 263 + $g_iMidOffsetY, 780, 356 + $g_iMidOffsetY]
 
 	For $iArmyNumber = 0 To 2
 		If $abQuickTrainArmy[$iArmyNumber] Then
@@ -1116,7 +1126,13 @@ Func TrainArmyNumber($abQuickTrainArmy)
 			If UBound($aiTrainButton, 1) = 2 Then
 				ClickP($aiTrainButton)
 				SetLog(" - Making the Army " & $iArmyNumber + 1, $COLOR_INFO)
-				If _Sleep(500) Then Return
+				If _Sleep(1500) Then Return
+				Local $aiOkayButton = findButton("Okay", Default, 1, True)
+				If IsArray($aiOkayButton) And UBound($aiOkayButton, 1) = 2 Then
+					SetLog("Confirm partial army training", $COLOR_INFO)
+					PureClick($aiOkayButton[0], $aiOkayButton[1], 2, 50, "#0117") ; Click Okay Button
+					If _Sleep(500) Then Return
+				EndIf
 			Else
 				SetLog(" - Army: " & $iArmyNumber + 1 & " is already trained.")
 			EndIf

@@ -6,7 +6,7 @@
 ; Return values .: True or False
 ; Author ........: Code Monkey #57 (send more bananas please!)
 ; Modified ......: MonkeyHunter (2015-12)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,8 +17,9 @@ Func isDarkElixirFull()
 
 	If Not _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then Return ; check if the village have a Dark Elixir Storage
 
-	If _CheckPixel($aIsDarkElixirFull, $g_bCapturePixel) Then ;Check for black/purple pixel in full bar
-		If _CheckPixel($aIsDarkElixirFull2, $g_bCapturePixel) Then ;Second check for black/purple pixel in full bar
+	Local $aDarkElixirFull = _FullResPixelSearch($aIsDarkElixirFull[0], $aIsDarkElixirFull[0] + 4, $aIsDarkElixirFull[1], 1, Hex(0x0D0D0D, 6), $aIsDarkElixirFull[2], $aIsDarkElixirFull[3])
+	If IsArray($aDarkElixirFull) Then
+		If _ColorCheck(_GetPixelColor($aDarkElixirFull[0] + 1, $aIsDarkElixirFull[1], $g_bCapturePixel), Hex($aIsDarkElixirFull[2], 6), $aIsDarkElixirFull[3]) Then
 			SetLog("Dark Elixir Storage is full!", $COLOR_SUCCESS)
 			$g_abFullStorage[$eLootDarkElixir] = True
 		EndIf

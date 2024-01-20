@@ -3,7 +3,7 @@
 ; Description ...: Upgrade Battle Machine - based on UpgradeHeroes
 ; Author ........: GrumpyHog (2022-01)
 ; Modified ......: Moebius14 (2023-07)
-; Remarks .......: This file is part of MyBot Copyright 2015-2023
+; Remarks .......: This file is part of MyBot Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

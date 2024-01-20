@@ -6,7 +6,7 @@
 ; Return values .: True or False
 ; Author ........: Code Monkey #57 (send more bananas please!)
 ; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,7 +14,8 @@
 ; ===============================================================================================================================
 
 Func isGoldFull()
-	If _CheckPixel($aIsGoldFull, $g_bCapturePixel) Then ;Hex if color of gold (orange)
+	Local $aGoldFull = _FullResPixelSearch($aIsGoldFull[0], $aIsGoldFull[0] + 4, $aIsGoldFull[1], 1, Hex(0x0D0D0D, 6), $aIsGoldFull[2], $aIsGoldFull[3])
+	If IsArray($aGoldFull) Then
 		SetLog("Gold Storages are full!", $COLOR_SUCCESS)
 		$g_abFullStorage[$eLootGold] = True
 	ElseIf $g_abFullStorage[$eLootGold] Then

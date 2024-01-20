@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Trlopes (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -276,7 +276,7 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("100,200,840,540")
 		Case "EventFailed"
 			$btnDiamond = GetDiamondFromRect("230,130,777,560")
-		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon", "MagicItems" ; Full size of object buttons at the bottom
+		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon", "MagicItems", "Equipment" ; Full size of object buttons at the bottom
 			$btnDiamond = GetDiamondFromRect2(140, 500 + $g_iBottomOffsetY, 720, 590 + $g_iBottomOffsetY)
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			$btnDiamond = GetDiamondFromRect2(340, 370 + $g_iMidOffsetY, 525, 495 + $g_iMidOffsetY)

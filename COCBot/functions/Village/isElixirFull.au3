@@ -6,7 +6,7 @@
 ; Return values .: True or False
 ; Author ........: Code Monkey #34 (yes, the good looking one!)
 ; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,7 +14,8 @@
 ; ===============================================================================================================================
 
 Func isElixirFull()
-	If _CheckPixel($aIsElixirFull, $g_bCapturePixel) Then ;Hex if color of elixir (purple)
+	Local $aElixirFull = _FullResPixelSearch($aIsElixirFull[0], $aIsElixirFull[0] + 4, $aIsElixirFull[1], 1, Hex(0x0D0D0D, 6), $aIsElixirFull[2], $aIsElixirFull[3])
+	If IsArray($aElixirFull) Then
 		SetLog("Elixir Storages are full!", $COLOR_SUCCESS)
 		$g_abFullStorage[$eLootElixir] = True
 	ElseIf $g_abFullStorage[$eLootElixir] Then

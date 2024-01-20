@@ -6,7 +6,7 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -190,6 +190,9 @@ Func SaveBuildingConfig()
 
 	_Ini_Add("upgrade", "PetHousePosX", $g_aiPetHousePos[0])
 	_Ini_Add("upgrade", "PetHousePosY", $g_aiPetHousePos[1])
+
+	_Ini_Add("upgrade", "BlacksmithPosX", $g_aiBlacksmithPos[0])
+	_Ini_Add("upgrade", "BlacksmithPosY", $g_aiBlacksmithPos[1])
 
 	_Ini_Add("upgrade", "StarLabPosX", $g_aiStarLaboratoryPos[0])
 	_Ini_Add("upgrade", "StarLabPosY", $g_aiStarLaboratoryPos[1])
@@ -681,6 +684,13 @@ Func SaveConfig_600_15()
 	_Ini_Add("upgrade", "UpgradeChampion", $g_bUpgradeChampionEnable ? 1 : 0)
 	_Ini_Add("upgrade", "HeroReservedBuilder", $g_iHeroReservedBuilder)
 
+	; Equipment Order
+	_Ini_Add("upgrade", "ChkUpgradeEquipment", $g_bChkCustomEquipmentOrderEnable ? 1 : 0)
+	For $z = 0 To UBound($g_aiCmbCustomEquipmentOrder) - 1
+		_Ini_Add("upgrade", "ChkEquipment" & $z, $g_bChkCustomEquipmentOrder[$z] ? 1 : 0)
+		_Ini_Add("upgrade", "cmbEquipmentOrder" & $z, $g_aiCmbCustomEquipmentOrder[$z])
+	Next
+
 	For $i = 0 To $ePetCount - 1
 		_Ini_Add("upgrade", "UpgradePet[" & $g_asPetShortNames[$i] & "]", $g_bUpgradePetsEnable[$i] ? 1 : 0)
 	Next
@@ -981,6 +991,7 @@ Func SaveConfig_600_29_DB()
 	_Ini_Add("attack", "DBHasteSpell", $g_abAttackUseHasteSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBCloneSpell", $g_abAttackUseCloneSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBInvisibilitySpell", $g_abAttackUseInvisibilitySpell[$DB] ? 1 : 0)
+	_Ini_Add("attack", "DBRecallSpell", $g_abAttackUseRecallSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBSkeletonSpell", $g_abAttackUseSkeletonSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBBatSpell", $g_abAttackUseBatSpell[$DB] ? 1 : 0)
 
@@ -1038,6 +1049,7 @@ Func SaveConfig_600_29_LB()
 	_Ini_Add("attack", "ABFreezeSpell", $g_abAttackUseFreezeSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABCloneSpell", $g_abAttackUseCloneSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABInvisibilitySpell", $g_abAttackUseInvisibilitySpell[$LB] ? 1 : 0)
+	_Ini_Add("attack", "ABRecallSpell", $g_abAttackUseRecallSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABPoisonSpell", $g_abAttackUsePoisonSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABEarthquakeSpell", $g_abAttackUseEarthquakeSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABHasteSpell", $g_abAttackUseHasteSpell[$LB] ? 1 : 0)

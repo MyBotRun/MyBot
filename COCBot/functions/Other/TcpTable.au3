@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: http://autoit-script.ru/index.php?topic=4741.5;wap2, https://www.autoitscript.com/forum/topic/157358-getting-tcp-connections-of-a-process/
 ; Modified ......: Cosote (01/2019)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

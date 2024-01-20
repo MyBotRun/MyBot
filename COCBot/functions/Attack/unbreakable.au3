@@ -6,7 +6,7 @@
 ; Return values .: False if regular farming is needed to refill storage
 ; Author ........: KnowJack (07-2015)
 ; Modified ......: Sardo (08-2015), MonkeyHunter (12-2015)(6-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

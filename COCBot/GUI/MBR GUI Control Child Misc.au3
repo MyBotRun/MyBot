@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run team
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -446,6 +446,15 @@ Func btnPet()
 	$g_bRunState = $wasRunState
 	AndroidShield("btnPet") ; Update shield status due to manual $g_bRunState
 EndFunc   ;==>btnPet
+
+Func btnBsmith()
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
+	ZoomOut()
+	LocateBlacksmith()
+	$g_bRunState = $wasRunState
+	AndroidShield("btnBsmith") ; Update shield status due to manual $g_bRunState
+EndFunc   ;==>btnBsmith
 
 Func chkTrophyAtkDead()
 	If GUICtrlRead($g_hChkTrophyAtkDead) = $GUI_CHECKED Then

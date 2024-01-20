@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (12-2015)
 ; Modified ......: CodeSlinger69 (01-2017), TFKNazgul (08-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -57,7 +57,7 @@ Global $g_bUpdateSharedPrefsZoomLevel = True ; Reset ZoomLevel when pushing shar
 Global $g_bUpdateSharedPrefsGoogleDisconnected = True  ; Reset GoogleDisconnected when pushing shared_prefs (not used, doesn't work!)
 Global $g_bUpdateSharedPrefsRated = True  ; Reset Rated when pushing shared_prefs
 Global $g_bAndroidZoomoutModeFallback = False ; If shared_prefs zoomout mode is used, shared_prefs pushed, then fallback to normal zoomout if still not zoomed out
-
+Global $g_iAdroidProcNotRunning ; HArchH Count to restart after too many errors.
 
 Func InitAndroidConfig($bRestart = False)
 	FuncEnter(InitAndroidConfig)
@@ -1050,6 +1050,8 @@ Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
 				SetLog("Shared Folder doesn't exist and was now created:", $COLOR_ERROR)
 				SetLog($g_sAndroidPicturesHostPath, $COLOR_ERROR)
 				SetLog("Please restart " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
+				If _sleep(5000) Return False ;HArch Time for the logging to complete.
+				RestartBOT() ;HArchH Try ourselves.  Worse case is we go into a restart loop.
 			Else
 				SetLog("Shared Folder doesn't exist, please fix:", $COLOR_ERROR)
 				SetLog($g_sAndroidPicturesHostPath, $COLOR_ERROR)
@@ -2008,7 +2010,7 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 				SetDebugLog("Android Version 7.0")
 			Case $g_iAndroidPie
 				SetDebugLog("Android Version 9.0")
-				If $g_sAndroidEmulator = "Memu" Then 
+				If $g_sAndroidEmulator = "Memu" Then
 					; minitouch binary is usually placed in the same shared folder as the screencap but Andriod Pie om Memu has this folder mounted with noexec flag
 					; will push minitounch binary to /data/local/tmp the same place as the minitouch README example
 					Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " push """ & $g_sAdbScriptsPath & "\minitouch"" /data/local/tmp/" , $process_killed)
@@ -4233,6 +4235,13 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 
 	SetLog("Android process " & $sPackage & " not running")
 	SaveDebugImage("GetAndroidProcessPID")
+	$g_iAdroidProcNotRunning += 1
+	if $g_iAdroidProcNotRunning = 10 Then ; HArchH arbitrary limit
+		SetLog("Too many not running errors.  Restarting emulator.", $COLOR_INFO)
+		$g_iAdroidProcNotRunning = 0
+		if _sleep(2000) then Return False
+		RestartBOT()
+	EndIf
 	Return SetError($error, 0, 0)
 EndFunc   ;==>GetAndroidProcessPID
 

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Demen
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -97,6 +97,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	$g_hCoolDownTimer = 0
 	$g_bIsCGCoolDownTime = False
 
+	;StarBonus
+	Static $SStarBonusReceived = $aiZero
+
 	; First time switch account
 	Switch $sType
 		Case "Reset"
@@ -170,6 +173,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiPetStatus = $aiZero
 			$asiMinDark4PetUpgrade = $asEmpty
 			$asStarLabUpgradeTime = $asEmpty
+
+			;StarBonus
+			$SStarBonusReceived = $aiZero
 
 			; Hero State
 			$aiHeroAvailable = $aiZero
@@ -308,6 +314,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 			$asStarLabUpgradeTime[$iAccount] = $g_sStarLabUpgradeTime
 
+			;StarBonus
+			$SStarBonusReceived[$iAccount] = $StarBonusReceived
+
 			; Hero State
 			$aiHeroAvailable[$iAccount] = $g_iHeroAvailable
 			$aiHeroUpgradingBit[$iAccount] = $g_iHeroUpgradingBit
@@ -445,6 +454,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$g_bClanGamesCompleted = $gSbClanGamesCompleted[$iAccount]
 			$g_bIsBBevent = $gSbIsBBevent[$iAccount]
 			$IsCGEventRunning = $SIsCGEventRunning[$iAccount]
+
+			;StarBonus
+			$StarBonusReceived = $SStarBonusReceived[$iAccount]
 
 			; Hero State
 			$g_iHeroAvailable = $aiHeroAvailable[$iAccount]

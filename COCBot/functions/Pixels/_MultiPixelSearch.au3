@@ -16,7 +16,7 @@
 ; Return values .: None
 ; Author ........: Your Name
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -77,13 +77,13 @@ Func _MultiPixelSearchDebug($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $f
 	For $x = 0 To $xRange Step $xSkip
 		For $y = 0 To $yRange Step $ySkip
 			$sPixelColor = _GetPixelColor($x, $y, $g_bNoCapturePixel)
-			If _ColorCheck($sPixelColor , $firstColor, $iColorVariation) Then
-				SetDebugLog("Search At Loc: " & $x+$iLeft & " , " & $y+$iTop & ", MPSDebug Pix#1: " & $sPixelColor)
+			If _ColorCheck($sPixelColor, $firstColor, $iColorVariation) Then
+				SetDebugLog("Search At Loc: " & $x + $iLeft & " , " & $y + $iTop & ", MPSDebug Pix#1: " & $sPixelColor)
 				Local $allchecked = True
 				Local $iCV = $iColorVariation
 				For $i = 0 To UBound($offColor) - 1
 					If $offColorVariation = True Then $iCV = $offColor[$i][3]
-					If _ColorCheck(_GetPixelColor($x + $offColor[$i][1], $y + $offColor[$i][2], $g_bNoCapturePixel, ">>> MPSDebug Pix#" & $i+2), Hex($offColor[$i][0], 6), $iCV) = False Then
+					If _ColorCheck(_GetPixelColor($x + $offColor[$i][1], $y + $offColor[$i][2], $g_bNoCapturePixel, ">>> MPSDebug Pix#" & $i + 2), Hex($offColor[$i][0], 6), $iCV) = False Then
 						$allchecked = False
 						ExitLoop
 					EndIf
@@ -107,3 +107,14 @@ Func WaitforPixel($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariatio
 	Next
 	Return False
 EndFunc   ;==>WaitforPixel
+
+Func _FullResPixelSearch($iLeft, $iRight, $iY, $xSkip, $firstColor, $FullColor, $iColorVariation)
+	For $x = $iLeft To $iRight
+		If _ColorCheck(_GetPixelColor($x, $iY, $g_bCapturePixel), $firstColor, $iColorVariation) Then
+			If Not _ColorCheck(_GetPixelColor($x + $xSkip, $iY, $g_bCapturePixel), Hex($FullColor, 6), $iColorVariation) Then ContinueLoop
+			Local $Pos[2] = [$x + $xSkip, $iY]
+			Return $Pos
+		EndIf
+	Next
+	Return 0
+EndFunc   ;==>_FullResPixelSearch

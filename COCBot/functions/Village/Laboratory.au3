@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: summoner
 ; Modified ......: KnowJack (06/2015), Sardo (08/2015), Monkeyhunter(04/2016), MMHK(06/2018), Chilly-Chill (12/2019)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -35,8 +35,6 @@ EndFunc   ;==>TestLaboratory
 
 Func Laboratory($debug = False)
 
-	;SetLog("$g_bSilentSetDebugLog is " & $g_bSilentSetDebugLog) ;HarchH
-	;SetLog("$g_bDebugSetlog is " & $g_bDebugSetlog) ;HarchH
 	If Not $g_bAutoLabUpgradeEnable Then Return ; Lab upgrade not enabled.
 
 	If $g_iTownHallLevel < 3 Then
@@ -79,6 +77,7 @@ Func Laboratory($debug = False)
 	; Lab upgrade is not in progress and not upgreading, so we need to start an upgrade.
 	Local $iCurPage = 1
 	Local $sCostResult
+	Global $bUserChoice = False
 
 	; user made a specific choice of lab upgrade
 	If $g_iCmbLaboratory <> 0 Then
@@ -100,6 +99,7 @@ Func Laboratory($debug = False)
 				If $aTempTroopArray[0] = $g_avLabTroops[$g_iCmbLaboratory][2] Then ; if this is the file we want
 					$aCoords = decodeSingleCoord($aTempTroopArray[1])
 					$bUpgradeFound = True
+					$bUserChoice = True
 					ExitLoop
 				EndIf
 				If _Sleep($DELAYLABORATORY2) Then Return
@@ -185,6 +185,16 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 		If isGemOpen(True) = False Then ; check for gem window
 			; success
 			SetLog("Upgrade " & $name & " in your laboratory started with success...", $COLOR_SUCCESS)
+			;If doing a user specific upgrade, set to "any" for next time.
+			;Bad if user wanted to upgrade it multiple levels.
+			If $bUserChoice Then
+				SetLog("Clearing user's upgrade choice.", $COLOR_INFO)
+				;HArchH Set the global that gets saved to building.ini
+				$g_iCmbLaboratory = 0 ;Set global
+				_GUICtrlComboBox_SetCurSel($g_hCmbLaboratory, $g_iCmbLaboratory) ;Apply to the GUI in case it gets saved again.
+				_GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[$g_iCmbLaboratory][1]) ; Set the corresponding image.
+				SaveBuildingConfig() ;Try to save for the future.
+			EndIf
 			If _Sleep(350) Then Return
 			ClickAway()
 			If _Sleep(1000) Then Return

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac (05-2017)
 ; Modified ......: Moebius14 (12-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -193,15 +193,15 @@ EndFunc   ;==>MainSuggestedUpgradeCode
 ; This fucntion will Open the Suggested Window and check if is OK
 Func ClickOnBuilder()
 
+	If _Sleep(250) Then Return
 	Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("MasterBuilderHead", $g_sImgMasterBuilderHead, 445, 0, 500, 54, True))
 	; Debug Stuff
 	Local $sDebugText = ""
-	Local Const $Debug = False
-	Local Const $Screencap = True
-
-	If QuickMIS("BC1", $g_sImgAutoUpgradeWindow, $asSearchResult[0] - 23, 50, $asSearchResult[0] + 107, 100) Then Return True
 
 	If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
+
+		If IsArray(_PixelSearch($asSearchResult[0] - 1, $asSearchResult[1] + 53, $asSearchResult[0] + 1, $asSearchResult[1] + 55, Hex(0xFFFFFF, 6), 15, True)) Then Return True
+
 		; Master Builder Check pixel [i] icon
 		Local Const $aMasterBuilder[4] = [$asSearchResult[0] - 15, $asSearchResult[1] - 9, 0x7ABDE3, 10]
 
@@ -216,7 +216,7 @@ Func ClickOnBuilder()
 				Click($aMasterBuilder[0], $aMasterBuilder[1], 1)
 				If _Sleep(2000) Then Return
 				; Let's verify if the Suggested Window open
-				If QuickMIS("BC1", $g_sImgAutoUpgradeWindow, $asSearchResult[0] - 23, 50, $asSearchResult[0] + 107, 100, $Screencap, $Debug) Then
+				If IsArray(_PixelSearch($asSearchResult[0] - 1, $asSearchResult[1] + 53, $asSearchResult[0] + 1, $asSearchResult[1] + 55, Hex(0xFFFFFF, 6), 15, True)) Then
 					Return True
 				Else
 					$sDebugText = "Window didn't opened"

@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: KnowJack
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -55,7 +55,7 @@ Func BuildingInfo($iXstart, $iYstart)
 	EndIf
 	If $aResult[1] <> "" Then $aResult[0] = 1
 	If $aResult[2] <> "" Then $aResult[0] += 1
-	If $aResult[2] > 90 Then
+	If $aResult[2] > 95 Then
 		If $aResult[2] = 200 Then
 			$aResult[2] = "Broken" ; Broken Clan Castle (not rebuild yet): report 'Broken' as Level
 		Else

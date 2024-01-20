@@ -1,3 +1,58 @@
+* v8.1.5
+* Improved OCR Army Capacity.
+* Fixed Quick Train.
+* Improved Donate window detection and OCR.
+* Improved Clan Games Reward detection.
+* Improved Weak Bases detection.
+* Improved Quick Train (Partial Army Training support).
+* Improved BattleCopter detection.
+* Improved donate slot detection in some cases.
+* Added Wall level 17 templates.
+* Changed Lib for BB Troop upgrade time.
+* Changed ClickDrag amplitude for troop training.
+* Improved 1x red detection in queued troops.
+* Improved Super Archer detection in queued troops.
+* Added Blacksmith/Equipment Auto upgrade.
+* Added special temporary save debug image to catch "Big guy" error.
+* Fixed CC remaining time OCR.
+* Updated request image for Flame flinger.
+* Fixed Sneaky Goblin training.
+* Updated wizard detection in queued troop.
+* Fixed Super Dragon detection in attack bar.
+* Improved queue troop OCR.
+* Clean OCR code and libs.
+* Improved Wing detection [SwitchWarden Mode].
+* Improved Star Bonus detection.
+* Updated coc-build library.
+* Improved Balloon detection for training.
+* Improved BB cost OCR in StarLab.
+* Changed ClickOnBuilder().
+* Change lab upgrade to "Any" after starting user specified upgrade.
+* Change StarLab upgrade to "Any" after starting user specified upgrade.
+* Improved Full Storage Detection.
+* Fixed Heroes level 90+ auto upgrade.
+* Fixed Grand Warden max level.
+* Fixed ChangeLanguage().
+* Remove incomplete translations from language files for Spells, SuperTroops, Troops, and Sieges; creating translated GUI errors.
+* Improved Battle Drill and Flame Flinger detection in laboratory sieges upgrade.
+* Changed TH max level for "Attack up!" CG Event.
+* Added support for "new" logo on hero equipment.
+* Improved Heroes health detection [red zone].
+* Auto restart emulator on 10 "Android process $sPackage not running" errors.
+* Improved Wall Breaker detection in queue.
+* Improved OCR troops count in army tab.
+* Fixed Rocket Balloon and Dragon Rider detection in army tab.
+* Added missing recall spell selection save to attack tab.
+* Changed : Bot won't check CC treasury in the beginning of Locate Upgrades routine.
+* Fixed couple of troop detection in laboratory.
+* Fixed uncheck hero auto upgrade when his level is max.
+* Improved Star Laboratory red cost OCR.
+* Added Reduce reserved builders for hero upgrade when a hero reaches max level.
+* Added Of The North Scenery support (Attack Only).
+* Update Telegram shield info command for new button and window location.
+* Improved Troops Count and Spells detection in army and train troops tabs.
+* Improved Star Lab remaining time OCR.
+
 * v8.1.4 **
 * Fixed Legend League Sign-up.
 * Improved LatinA OCR.

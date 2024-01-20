@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: MonkeyHunter(2016-1)
 ; Modified ......: MonkeyHunter (05-2017), Moebius14 (12-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -30,6 +30,7 @@ Func StarBonus()
 		If IsArray($aiOkayButton) And UBound($aiOkayButton, 1) = 2 Then
 			PureClick($aiOkayButton[0], $aiOkayButton[1], 2, 50, "#0117") ; Click Okay Button
 			If _Sleep($DELAYSTARBONUS500) Then Return
+			$StarBonusReceived = 1
 			Return True
 		Else
 			SetDebugLog("Cannot Find Okay Button", $COLOR_ERROR)

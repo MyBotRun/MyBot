@@ -5,8 +5,8 @@
 ; Parameters ....: ---
 ; Return values .: ---
 ; Author ........: ViperZ And Uncle Xbenk 01-2018
-; Modified ......: ProMac 02/2018 [v2 and v3] , ProMac 08/2018 v4 , GrumpyHog 08/2020, Moebius 09/2023
-; Remarks .......: This file is part of MyBotRun. Copyright 2018
+; Modified ......: ProMac 02/2018 [v2 and v3] , ProMac 08/2018 v4 , GrumpyHog 08/2020, Moebius14 01/2024
+; Remarks .......: This file is part of MyBotRun. Copyright 2015-2024
 ;                  MyBotRun is distributed under the terms of the GNU GPL
 ; Related .......: ---
 ; Link ..........: https://www.mybot.run
@@ -16,27 +16,23 @@
 Func _ClanGames($test = False, $HaltMode = False)
 	ClearTempCGFiles()
 
-	If Not $g_bChkClanGamesEnabled Then Return
-
-	$IsCGEventRunning = 0 ;just to be sure, reset to false
+	$IsCGEventRunning = 0 ;just to be sure, reset to false @PriapusCranium
 	$g_bIsBBevent = 0 ;just to be sure, reset to false
+
+	If Not $g_bChkClanGamesEnabled Then Return
 
 	Local $currentDate = Number(@MDAY)
 
 	;Prevent checking clangames before date 20 (clangames should start on 22 and end on 28 or 29) depends on how many tiers/maxpoint
-	If $currentDate < 22 Then
+	If $currentDate < 21 Then
 		SetDebugLog("Current date : " & $currentDate & " --> Skip Clan Games", $COLOR_INFO)
 		Return
 	EndIf
 
-	If $currentDate = 22 Then
+	If $currentDate = 21 Or $currentDate = 22 Then
 		If Not UTCTimeCG() Then
-			Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
-			If $iLastTimeChecked[$g_iCurAccount] = @MDAY Then
-				SetDebugLog("Exit CG due to UTC Check.", $COLOR_INFO)
-				Return
-			EndIf
-			$iLastTimeChecked[$g_iCurAccount] = @MDAY
+			SetLog("Clan Games have not started yet")
+			Return
 		EndIf
 	EndIf
 
@@ -308,8 +304,8 @@ Func _ClanGames($test = False, $HaltMode = False)
 								; Verify your TH level and Challenge
 								If $g_iTownHallLevel < $BattleChallenges[$j][2] Then ExitLoop
 
-								; If you are a TH15 , doesn't exist the TH16 yet
-								If $BattleChallenges[$j][1] = "Attack Up" And $g_iTownHallLevel = 15 Then ExitLoop
+								; If you are a TH16 , doesn't exist the TH17 yet
+								If $BattleChallenges[$j][1] = "Attack Up" And $g_iTownHallLevel = 16 Then ExitLoop
 
 								; Check your Trophy Range
 								If $BattleChallenges[$j][1] = "Slaying The Titans" And (Int($g_aiCurrentLoot[$eLootTrophy]) < 4100 Or Int($g_aiCurrentLoot[$eLootTrophy]) > 5000) Then ExitLoop
@@ -896,7 +892,7 @@ Func IsClanGamesWindow()
 		If _Sleep(1000) Then Return
 	Next
 
-	If $Found = False And $currentDate = 22 Then
+	If $Found = False And ($currentDate = 21 Or $currentDate = 22) Then
 		SetLog("Caravan not available", $COLOR_WARNING)
 		SetLog("Clan Games is preparing")
 		$sState = "Prepare"
@@ -1189,6 +1185,7 @@ Func IsEventRunning($bOpenWindow = False)
 		EndIf
 	Else
 		SetLog("No challenge under progress", $COLOR_INFO)
+		$IsCGEventRunning = 0
 		Return False
 	EndIf
 	Return False

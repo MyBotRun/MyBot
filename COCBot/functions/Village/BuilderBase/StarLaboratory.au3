@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: TripleM
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -262,8 +262,18 @@ Func StarLabUpgrade($iSelectedUpgrade, $bTestRun = False)
 					Return False
 				EndIf
 
-				If Not $bTestRun Then Click(695, 580 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
-				If _Sleep($DELAYLABUPGRADE1) Then Return
+				If Not $bTestRun Then
+					Click(695, 580 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
+					If $iSelectedUpgrade = $g_iCmbStarLaboratory Then
+						;HArchH When upgraded user's choice, reset to "Any" for the next time.
+						$g_iCmbStarLaboratory = 0 ; Reset user choice to "Any".
+						_GUICtrlComboBox_SetCurSel($g_hCmbStarLaboratory, $g_iCmbStarLaboratory)
+						_GUICtrlSetImage($g_hPicStarLabUpgrade, $g_sLibIconPath, $g_avStarLabTroops[$g_iCmbStarLaboratory][4]) ; Set the corresponding image.
+						SetLog("Upgraded user's choice.  Resttting to Any.", $COLOR_INFO)
+						SaveBuildingConfig() ;Preserve the "Any" value.
+						If _Sleep($DELAYLABUPGRADE1) Then Return
+					EndIf
+				EndIf
 			EndIf
 
 			If isGemOpen(True) = False Then ; check for gem window

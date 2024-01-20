@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #17
 ; Modified ......: MonkeyHunter (2016-2), CodeSlinger69 (2017), MonkeyHunter (2017-3)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -104,13 +104,13 @@ Func BotCommand()
 		If $g_bMeetCondStop Then
 			Switch $iCmbBotCommand
 				Case 0
-					If $iCmbBotCond <= 14 And $g_bCollectStarBonus And WaitforPixel(84, 630, 97, 635, "AF5725", 20, 0.2) Then
+					If $iCmbBotCond <= 14 And $g_bCollectStarBonus And StarBonusSearch() Then
 						SetLog("Star bonus available. Continue attacking to collect them.")
 						Return False
 					EndIf
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames()
-						If $IsCGEventRunning Then
+						If $IsCGEventRunning And Not $g_bIsBBevent Then
 							SetLog("Clan Games Challenge Running, Don't Halt Attack.", $COLOR_SUCCESS)
 							Return False
 						EndIf
@@ -125,7 +125,7 @@ Func BotCommand()
 					$g_iCommandStop = 0 ; Halt Attack
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 				Case 1
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames(False, True)
 						If $IsCGEventRunning Then
 							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
@@ -136,7 +136,7 @@ Func BotCommand()
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Return True
 				Case 2
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames(False, True)
 						If $IsCGEventRunning Then
 							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
@@ -148,7 +148,7 @@ Func BotCommand()
 					BotClose()
 					Return True ; HaHa - No Return possible!
 				Case 3
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames(False, True)
 						If $IsCGEventRunning Then
 							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
@@ -161,7 +161,7 @@ Func BotCommand()
 					BotClose()
 					Return True ; HaHa - No Return possible!
 				Case 4
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames(False, True)
 						If $IsCGEventRunning Then
 							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
@@ -173,7 +173,7 @@ Func BotCommand()
 					Shutdown(BitOR($SD_SHUTDOWN, $SD_FORCE)) ; Force Shutdown
 					Return True ; HaHa - No Return possible!
 				Case 5
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames(False, True)
 						If $IsCGEventRunning Then
 							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
@@ -185,7 +185,7 @@ Func BotCommand()
 					Shutdown($SD_STANDBY) ; Sleep / Stand by
 					Return True ; HaHa - No Return possible!
 				Case 6
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames(False, True)
 						If $IsCGEventRunning Then
 							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
@@ -197,7 +197,7 @@ Func BotCommand()
 					Shutdown(BitOR($SD_REBOOT, $SD_FORCE)) ; Reboot
 					Return True ; HaHa - No Return possible!
 				Case 7
-					If $g_bChkForceAttackOnClanGamesWhenHalt Then
+					If $g_bChkForceAttackOnClanGamesWhenHalt And Not $g_bClanGamesCompleted Then
 						_ClanGames(False, True)
 						If $IsCGEventRunning Then
 							SetLog("Clan Games Challenge Running, Finish it First.", $COLOR_ACTION)
@@ -232,7 +232,7 @@ EndFunc   ;==>BotCommand
 ; Return values .: None
 ; Author ........: MonkeyHunter (2017-3)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -287,3 +287,16 @@ Func StopAndResumeTimer($bResume = False)
 	SetDebugLog("@HOUR: " & @HOUR & ", $bCurrentStatus: " & $bCurrentStatus & ", $abStop[$g_iCurAccount]: " & $abStop[$g_iCurAccount])
 	Return $abStop[$g_iCurAccount]
 EndFunc   ;==>StopAndResumeTimer
+
+Func StarBonusSearch()
+	Local $bRet = False
+	For $i = 1 To 10
+		If WaitforPixel(84, 570 + $g_iBottomOffsetY, 97, 575 + $g_iBottomOffsetY, "AF5725", 20, 0.2) Then
+			$bRet = True
+			ExitLoop
+		EndIf
+		If _Sleep(400) Then Return
+		If Not $g_bRunState Then Return
+	Next
+	Return $bRet
+EndFunc   ;==>StarBonusSearch

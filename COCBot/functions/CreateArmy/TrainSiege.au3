@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac(07-2018)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -115,10 +115,7 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 
 	; OCR to get remain time - coc-siegeremain
 	Local $sSiegeTime = getRemainTrainTimer(700, 162 + $g_iMidOffsetY) ; Get time via OCR.
-	If $sSiegeTime <> "" Then
-		$g_aiTimeTrain[3] = ConvertOCRTime("Siege", $sSiegeTime, False) ; Update global array
-		SetLog("Remaining Siege build time: " & StringFormat("%.2f", $g_aiTimeTrain[3]), $COLOR_INFO)
-	EndIf
+	If $sSiegeTime <> "" Then $g_aiTimeTrain[3] = ConvertOCRTime("Remaining Siege build", $sSiegeTime, True) ; Update global array
 EndFunc   ;==>TrainSiege
 
 Func DragSiegeIfNeeded($iSiegeIndex, ByRef $iPage)

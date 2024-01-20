@@ -7,7 +7,7 @@
 ; Author ........: Zax (2015)
 ; Modified ......: Safar46 (2015), Hervidero (2015-04), HungLe (2015-04), Sardo (2015-08), Promac (2015-12), Hervidero (2016-01), MonkeyHunter (2016-07),
 ;				   CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -94,7 +94,7 @@ Func IsDonateQueueOnly(ByRef $abDonateQueueOnly)
 			For $j = 0 To (UBound($aSearchResult) - 1)
 				Local $TroopIndex = TroopIndexLookup($aSearchResult[$j][0], "IsDonateQueueOnly()")
 				If $TroopIndex < 0 Then ContinueLoop
-				If _ColorCheck(_GetPixelColor(($xQueue - 10) - $j * 60.5, 234 + $g_iMidOffsetY, True), Hex(0x96A724, 6), 20) Then ; the green check symbol
+				If IsArray(_PixelSearch(($xQueue - 9) - $j * 60.5, 234 + $g_iMidOffsetY, ($xQueue - 5) - $j * 60.5, 234 + $g_iMidOffsetY, Hex(0x96A724, 6), 20, True)) Then ; the green check symbol
 					If $i = 0 Then
 						If _ArrayIndexValid($g_aiAvailQueuedTroop, $TroopIndex) Then
 							$g_aiAvailQueuedTroop[$TroopIndex] += $aSearchResult[$j][1]
@@ -750,6 +750,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 	Local $YComp = 0, $donaterow = -1
 	Local $donateposinrow = -1
 	Local $sTextToAll = ""
+	Local $XWindowOffset = 0
 
 	If $g_iTotalDonateTroopCapacity = 0 Then Return
 	If $g_bDebugSetlog Then SetDebugLog("$DonateTroopType Start: " & $g_asTroopNames[$iTroopIndex], $COLOR_DEBUG)
@@ -762,6 +763,10 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 	EndIf
 
 	Local $g_iDonTroopsLimitClan = getOcrAndCapture("coc-t-lim", 470, $g_iDonationWindowY + 15, 16, 14, True)
+	If $g_iDonTroopsLimitClan = "" Then
+		$XWindowOffset = 37
+		getOcrAndCapture("coc-t-lim", 470 + $XWindowOffset, $g_iDonationWindowY + 15, 16, 14, True)
+	EndIf
 	If $g_iDonTroopsLimitClan <> "" And Number($g_iDonTroopsLimitClan) <> Number($g_iDonTroopsLimit) Then $g_iDonTroopsLimit = $g_iDonTroopsLimitClan
 
 	If $Quant = 0 Or $Quant > _Min(Number($g_iDonTroopsQuantityAv), Number($g_iDonTroopsLimit)) Then $Quant = _Min(Number($g_iDonTroopsQuantityAv), Number($g_iDonTroopsLimit))
@@ -781,7 +786,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 		$g_bDebugOcr = True
 	EndIf
 
-	$Slot = DetectSlotTroop($iTroopIndex)
+	$Slot = DetectSlotTroop($iTroopIndex, $XWindowOffset)
 	$detectedSlot = $Slot
 	If $g_bDebugOCRdonate Then $g_bDebugOcr = $oldDebugOcr
 
@@ -802,14 +807,14 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 
 	; Verify if the type of troop to donate exists
 	SetLog("Troops Condition Matched", $COLOR_OLIVE)
-	If _ColorCheck(_GetPixelColor(370 + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
-			_ColorCheck(_GetPixelColor(375 + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
-			_ColorCheck(_GetPixelColor(380 + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x4079B8, 6), 20) Or _ ; check for 'blue'
-			_ColorCheck(_GetPixelColor(370 + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
-			_ColorCheck(_GetPixelColor(375 + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
-			_ColorCheck(_GetPixelColor(380 + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x810D0E, 6), 20) Then ; check for 'STroups Red'
+	If _ColorCheck(_GetPixelColor(370 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
+			_ColorCheck(_GetPixelColor(375 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
+			_ColorCheck(_GetPixelColor(380 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x4079B8, 6), 20) Or _ ; check for 'blue'
+			_ColorCheck(_GetPixelColor(370 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
+			_ColorCheck(_GetPixelColor(375 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
+			_ColorCheck(_GetPixelColor(380 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x810D0E, 6), 20) Then ; check for 'STroups Red'
 
-		Local $RemainingTroopsToDonate = getOcrAndCapture("coc-t-d", 381 + ($Slot * 68), $g_iDonationWindowY + 98 + $YComp, 35, 14, True)
+		Local $RemainingTroopsToDonate = getOcrAndCapture("coc-t-d", 381 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 98 + $YComp, 35, 14, True)
 		If Number($RemainingTroopsToDonate) < $Quant Then $Quant = Number($RemainingTroopsToDonate)
 
 		If $bDonateAll Then $sTextToAll = " (to all requests)"
@@ -819,17 +824,17 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 			SetLog("donate", $COLOR_ERROR)
 			SetLog("row: " & $donaterow, $COLOR_ERROR)
 			SetLog("pos in row: " & $donateposinrow, $COLOR_ERROR)
-			SetLog("coordinate: " & 385 + ($Slot * 68) & "," & $g_iDonationWindowY + 70 + $YComp, $COLOR_ERROR)
+			SetLog("coordinate: " & 385 + $XWindowOffset + ($Slot * 68) & "," & $g_iDonationWindowY + 70 + $YComp, $COLOR_ERROR)
 			SaveDebugImage("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asTroopNames[$iTroopIndex] & "_")
 		EndIf
 
-		If _ColorCheck(_GetPixelColor(370 + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
-				_ColorCheck(_GetPixelColor(375 + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
-				_ColorCheck(_GetPixelColor(380 + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x4079B8, 6), 20) Or _ ; check for 'blue'
-				_ColorCheck(_GetPixelColor(370 + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
-				_ColorCheck(_GetPixelColor(375 + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
-				_ColorCheck(_GetPixelColor(380 + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x810D0E, 6), 20) Then ; check for 'STroups Red'
-			Click(398 + ($Slot * 68), $g_iDonationWindowY + 70 + $YComp, $Quant, $DELAYDONATECC1, "#0175")
+		If _ColorCheck(_GetPixelColor(370 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
+				_ColorCheck(_GetPixelColor(375 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x4079B8, 6), 20) Or _
+				_ColorCheck(_GetPixelColor(380 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x4079B8, 6), 20) Or _ ; check for 'blue'
+				_ColorCheck(_GetPixelColor(370 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
+				_ColorCheck(_GetPixelColor(375 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 106 + $YComp, True), Hex(0x810D0E, 6), 20) Or _
+				_ColorCheck(_GetPixelColor(380 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 107 + $YComp, True), Hex(0x810D0E, 6), 20) Then ; check for 'STroups Red'
+			Click(398 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 70 + $YComp, $Quant, $DELAYDONATECC1, "#0175")
 			$DonatedTroopCount += 1
 			$g_aiDonateStatsTroops[$iTroopIndex][0] += $Quant
 			If $g_iCommandStop = 3 Then
@@ -853,8 +858,8 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 		If $bDonateQueueOnly Then $g_aiAvailQueuedTroop[$iTroopIndex] -= $Quant
 	Else
 		Local $Text = "Unable to donate " & ($g_iDonTroopsQuantity > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]) & ".Donate screen not visible, will retry next run.", $LocalColor = $COLOR_ERROR
-		If _ColorCheck(_GetPixelColor(372 + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x6F6F6F, 6), 10) Or _       ; Dark Gray from Queued Spells
-				_ColorCheck(_GetPixelColor(372 + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0xDADAD5, 6), 10) Then ; Light Gray from Empty Slots
+		If _ColorCheck(_GetPixelColor(372 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0x6F6F6F, 6), 10) Or _       ; Dark Gray from Queued Spells
+				_ColorCheck(_GetPixelColor(372 + $XWindowOffset + ($Slot * 68), $g_iDonationWindowY + 105 + $YComp, True), Hex(0xDADAD5, 6), 10) Then ; Light Gray from Empty Slots
 			$Text = "No " & ($g_iDonTroopsQuantity > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]) & " available to donate.."
 			$LocalColor = $COLOR_INFO
 		EndIf
@@ -1084,9 +1089,23 @@ Func DonateWindowCap(ByRef $g_bSkipDonTroops, ByRef $g_bSkipDonSpells)
 				;SetLog("Donate Troops: " & $g_iDonTroopsAv & "/" & $g_iDonTroopsLimit)
 			EndIf
 		Else
-			SetLog("Error reading the Castle Troop Capacity", $COLOR_ERROR) ; log if there is read error
-			$g_iDonTroopsAv = 0
-			$g_iDonTroopsLimit = 0
+			Local $sReadCCTroopsCap = getCastleDonateCap(492, $g_iDonationWindowY + 15) ; use OCR to get donated/total capacity -> No spell to donate in window
+			SetDebugLog("$sReadCCTroopsCap: " & $sReadCCTroopsCap, $COLOR_DEBUG)
+
+			Local $aTempReadCCTroopsCap = StringSplit($sReadCCTroopsCap, "#")
+			If $aTempReadCCTroopsCap[0] >= 2 Then
+				;  Note - stringsplit always returns an array even if no values split!
+				SetDebugLog("$aTempReadCCTroopsCap splitted :" & $aTempReadCCTroopsCap[1] & "/" & $aTempReadCCTroopsCap[2], $COLOR_DEBUG)
+				If $aTempReadCCTroopsCap[2] > 0 Then
+					$g_iDonTroopsAv = $aTempReadCCTroopsCap[1]
+					$g_iDonTroopsLimit = $aTempReadCCTroopsCap[2]
+					;SetLog("Donate Troops: " & $g_iDonTroopsAv & "/" & $g_iDonTroopsLimit)
+				EndIf
+			Else
+				SetLog("Error reading the Castle Troop Capacity", $COLOR_ERROR) ; log if there is read error
+				$g_iDonTroopsAv = 0
+				$g_iDonTroopsLimit = 0
+			EndIf
 		EndIf
 	EndIf
 
@@ -1267,11 +1286,11 @@ Func RemainingCCcapacity($aiDonateButton)
 	Return "OK"
 EndFunc   ;==>RemainingCCcapacity
 
-Func DetectSlotTroop(Const $iTroopIndex)
+Func DetectSlotTroop(Const $iTroopIndex, $XWindowOffset = 0)
 	Local $FullTemp
 
 	For $Slot = 0 To 6
-		Local $x = 367 + (68 * $Slot)
+		Local $x = 367 + $XWindowOffset + (68 * $Slot)
 		Local $y = $g_iDonationWindowY + 37
 		Local $x1 = $x + 63
 		Local $y1 = $y + 62
@@ -1297,7 +1316,7 @@ Func DetectSlotTroop(Const $iTroopIndex)
 	Next
 
 	For $Slot = 7 To 13
-		Local $x = 367 + (68 * ($Slot - 7))
+		Local $x = 367 + $XWindowOffset + (68 * ($Slot - 7))
 		Local $y = $g_iDonationWindowY + 124
 		Local $x1 = $x + 63
 		Local $y1 = $y + 62

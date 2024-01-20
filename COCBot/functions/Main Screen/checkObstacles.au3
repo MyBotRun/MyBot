@@ -6,7 +6,7 @@
 ; Return values .: Returns True when there is something blocking
 ; Author ........: Hungle (2014)
 ; Modified ......: KnowJack (2015), Sardo (08-2015), TheMaster1st(10-2015), MonkeyHunter (08-2016), MMHK (12-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -151,6 +151,24 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	If Not $bHasTopBlackBar And _CheckPixel($aIsMainGrayed, $g_bCapturePixel) Then
 		SetDebugLog("checkObstacles: Found gray Window to close")
 		PureClickP($aAway, 1, 0, "#0133") ;Click away If things are open
+		If _Sleep(1000) Then Return
+		If _CheckPixel($aIsMain, $g_bCapturePixel) Then
+			$g_bMinorObstacle = True
+			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
+			Return False
+		Else
+			If _CheckPixel($aIsMainGrayed, $g_bCapturePixel) Then
+				SetDebugLog("checkObstacles: Still found gray Window to close, trying to close again")
+				Local $bLoop = 0
+				While 1
+					PureClickP($aAway, 1, 0, "#0133") ;Click away If things are open
+					If _Sleep(1500) Then ExitLoop
+					If _CheckPixel($aIsMain, $g_bCapturePixel) Then ExitLoop
+					$bLoop += 1
+					If $bLoop = 10 Then ExitLoop
+				WEnd
+			EndIf
+		EndIf
 		$g_bMinorObstacle = True
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		Return False

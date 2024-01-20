@@ -4,7 +4,7 @@
 ; Description ...: Verify if you are in the correct window...
 ; Author ........: Sardo (2015)
 ; Modified ......: ProMac (2015), MonkeyHunter (12-2015)
-; Remarks .......: This file is part of MyBot Copyright 2015-2023
+; Remarks .......: This file is part of MyBot Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -261,7 +261,7 @@ Func IsPetHousePage($bSetLog = True, $iLoop = 30)
 
 	If IsPageLoop($aIsPetHousePage, $iLoop) Then
 		If ($g_bDebugSetlog Or $g_bDebugClick) And $bSetLog Then SetLog("**Pet House Window OK**", $COLOR_ACTION)
-		SetLog("**Pet House Window OK**", $COLOR_ACTION)
+		SetDebugLog("**Pet House Window OK**", $COLOR_ACTION)
 		Return True
 	EndIf
 
@@ -270,3 +270,18 @@ Func IsPetHousePage($bSetLog = True, $iLoop = 30)
 	If $iLoop > 1 Then AndroidPageError("IsPetHousePage")
 	Return False
 EndFunc   ;==>IsPetHousePage
+
+Func IsBlacksmithPage($bSetLog = True, $iLoop = 30)
+	Local $aIsBlacksmithPage[4] = [807, 75, 0xFF8D95, 20] ; Pink red top of close button
+
+	If IsPageLoop($aIsBlacksmithPage, $iLoop) Then
+		If ($g_bDebugSetlog Or $g_bDebugClick) And $bSetLog Then SetLog("**Blacksmith Window OK**", $COLOR_ACTION)
+		SetDebugLog("**Blacksmith Window OK**", $COLOR_ACTION)
+		Return True
+	EndIf
+
+	If $bSetLog Then SetLog("Cannot find Blacksmith Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
+	If $g_bDebugImageSave Then SaveDebugImage("IsBlacksmithPage")
+	If $iLoop > 1 Then AndroidPageError("IsBlacksmithPage")
+	Return False
+EndFunc   ;==>IsBlacksmithPage

@@ -6,7 +6,7 @@
 ; Return values .: True if is on Builder Base
 ; Author ........: Fliegerfaust (05-2017)
 ; Modified ......: Moebius14 (07-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

@@ -22,7 +22,7 @@
 ;                      9 = tree image file name
 ; Author ........: Cosote (Oct 17th 2016)
 ; Modified ......: GrumpyHog (05-2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

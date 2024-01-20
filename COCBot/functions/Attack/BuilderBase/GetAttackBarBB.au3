@@ -6,7 +6,7 @@
 ; Return values .: array attackBar
 ; Author ........: xbebenk
 ; Modified ......: Moebius14 (09/2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -30,7 +30,7 @@ Func GetAttackBarBB($bRemaining = False, $bSecondAttack = False)
 		$g_aBomberOnAttackBar = $aEmpty
 	EndIf
 
-	Local $iMaxSlot = 9, $iSlotOffset = 76
+	Local $iMaxSlot = 9, $iSlotOffset = 75.5
 	Local $aSlotX[$iMaxSlot], $iStartSlot = 100
 
 	Local $aBMPosInit = GetMachinePos()
@@ -72,7 +72,7 @@ Func GetAttackBarBB($bRemaining = False, $bSecondAttack = False)
 		If Not $g_bRunState Then Return
 
 		$Troopx = $aSlotX[$k]
-		$ColorPickBannerX = $aSlotX[$k] + 35 ; location to pick color from TroopSlot banner
+		$ColorPickBannerX = $aSlotX[$k] + 34 ; location to pick color from TroopSlot banner
 
 		If $bRemaining Then
 			If QuickMIS("BC1", $g_sImgDirBBTroops, $Troopx, $iTroopBanners, $Troopx + 70, 670 + $g_iBottomOffsetY) Then

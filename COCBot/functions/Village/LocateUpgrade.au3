@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (Jun/Aug-2015),Sardo 2015-08,Monkeyhunter(2106-2)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -49,9 +49,9 @@ Func LocateUpgrades()
 		_CaptureRegion(0, 0, $g_iDEFAULT_WIDTH, 2)
 		If _GetPixelColor(1, 1) <> Hex(0x000000, 6) Or _GetPixelColor(850, 1) <> Hex(0x000000, 6) Then ; Check for zoomout in case user tried to zoom in.
 			ZoomOut()
-			Collect()
+			Collect(False)
 		EndIf
-		Collect() ; must collect or clicking on collectors will fail 1st time
+		Collect(False) ; must collect or clicking on collectors will fail 1st time
 
 		If $bInitGraphics Then
 			$bInitGraphics = False

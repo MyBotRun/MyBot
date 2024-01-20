@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: z0mbie (2015)
 ; Modified ......: Master1st (09/2015), ProMac (10/2015), MonkeyHunter (06/2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2023
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -142,6 +142,10 @@ Func QueenUpgrade()
 				If $g_iQueenLevel = $g_iMaxQueenLevel Then ; max hero
 					SetLog("Your Archer Queen is at max level, cannot upgrade anymore!", $COLOR_INFO)
 					$g_bUpgradeQueenEnable = False ; turn Off the Queens upgrade
+					GUICtrlSetState($g_hChkUpgradeQueen, $GUI_UNCHECKED)
+					chkUpgradeQueen()
+					ReducecmbHeroReservedBuilder()
+					ClickAway()
 					Return
 				EndIf
 			Else
@@ -244,6 +248,10 @@ Func KingUpgrade()
 				If $g_iKingLevel = $g_iMaxKingLevel Then ; max hero
 					SetLog("Your Babarian King is at max level, cannot upgrade anymore!", $COLOR_INFO)
 					$g_bUpgradeKingEnable = False ; Turn Off the King's Upgrade
+					GUICtrlSetState($g_hChkUpgradeKing, $GUI_UNCHECKED)
+					chkUpgradeKing()
+					ReducecmbHeroReservedBuilder()
+					ClickAway()
 					Return
 				EndIf
 			Else
@@ -355,6 +363,10 @@ Func WardenUpgrade()
 				If $g_iWardenLevel = $g_iMaxWardenLevel Then ; max hero
 					SetLog("Your Grand Warden is at max level, cannot upgrade anymore!", $COLOR_INFO)
 					$g_bUpgradeWardenEnable = False ; turn OFF the Wardn's Upgrade
+					GUICtrlSetState($g_hChkUpgradeWarden, $GUI_UNCHECKED)
+					chkUpgradeWarden()
+					ReducecmbHeroReservedBuilder()
+					CloseWindow()
 					Return
 				EndIf
 			Else
@@ -467,6 +479,10 @@ Func ChampionUpgrade()
 				If $g_iChampionLevel = $g_iMaxChampionLevel Then ; max hero
 					SetLog("Your Royal Champion is at max level, cannot upgrade anymore!", $COLOR_INFO)
 					$g_bUpgradeChampionEnable = False ; turn Off the Champions upgrade
+					GUICtrlSetState($g_hChkUpgradeChampion, $GUI_UNCHECKED)
+					chkUpgradeChampion()
+					ReducecmbHeroReservedBuilder()
+					ClickAway()
 					Return
 				EndIf
 			Else
