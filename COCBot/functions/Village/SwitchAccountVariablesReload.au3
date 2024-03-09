@@ -21,7 +21,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Local $aiZero84[8][4] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 	Local $asEmpty[8] = ["", "", "", "", "", "", "", ""]
 	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 	; FirstRun
 	Static $abFirstStart = $aiTrue
@@ -93,9 +93,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Static $gSbClanGamesCompleted = $aiZero
 	Static $gSbIsBBevent = $aiZero
 	Static $SIsCGEventRunning = $aiZero
-
-	$g_hCoolDownTimer = 0
-	$g_bIsCGCoolDownTime = False
+	Static $Sg_hCoolDownTimer = $aiZero
 
 	;StarBonus
 	Static $SStarBonusReceived = $aiZero
@@ -186,6 +184,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$gSbClanGamesCompleted = $aiZero
 			$gSbIsBBevent = $aiZero
 			$SIsCGEventRunning = $aiZero
+			$Sg_hCoolDownTimer = $aiZero
 
 			; QuickTrain comp
 			For $i = 0 To 7
@@ -339,6 +338,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$gSbClanGamesCompleted[$iAccount] = $g_bClanGamesCompleted
 			$gSbIsBBevent[$iAccount] = $g_bIsBBevent
 			$SIsCGEventRunning[$iAccount] = $IsCGEventRunning
+			$Sg_hCoolDownTimer[$iAccount] = $g_hCoolDownTimer
 
 			For $i = 0 To 3
 				$abFullStorage[$iAccount][$i] = $g_abFullStorage[$i]
@@ -454,6 +454,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$g_bClanGamesCompleted = $gSbClanGamesCompleted[$iAccount]
 			$g_bIsBBevent = $gSbIsBBevent[$iAccount]
 			$IsCGEventRunning = $SIsCGEventRunning[$iAccount]
+			$g_hCoolDownTimer = $Sg_hCoolDownTimer[$iAccount]
 
 			;StarBonus
 			$StarBonusReceived = $SStarBonusReceived[$iAccount]

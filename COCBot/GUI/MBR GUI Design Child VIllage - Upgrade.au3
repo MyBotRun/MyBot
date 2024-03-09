@@ -111,6 +111,7 @@ Func CreateLaboratorySubTab()
 			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHasteSpells", "Haste Spell") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtSkeletonSpells", "Skeleton Spell") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtBatSpells", "Bat Spell") & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtOvergrowthSpells", "Overgrowth Spell") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMinions", "Minions") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHogRiders", "Hog Riders") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtValkyries", "Valkyries") & "|" & _
@@ -371,7 +372,7 @@ EndFunc   ;==>CreateHeroesSubTab
 
 Func CreateHeroEquipment()
 	Local $x = 25, $y = 5
-	$g_hGUI_HeroEquipment = _GUICreate("Hero Equipment", $_GUI_MAIN_WIDTH  + 50, $_GUI_MAIN_HEIGHT - 107, $g_iFrmBotPosX - 25, $g_iFrmBotPosY + 40, $WS_DLGFRAME, -1, $g_hFrmBot)
+	$g_hGUI_HeroEquipment = _GUICreate("Hero Equipment", $_GUI_MAIN_WIDTH  + 50, $_GUI_MAIN_HEIGHT - 67, $g_iFrmBotPosX - 25, $g_iFrmBotPosY + 40, $WS_DLGFRAME, -1, $g_hFrmBot)
 
 	GUICtrlCreateIcon($g_sLibIconPath, $eIcnBlacksmith, $x + 15, $y + 15, 48, 48)
 	$g_hChkCustomEquipmentOrderEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkCustomEquipmentEnable", "Auto Equipment Upgrades"), $x + 75, $y + 30, -1, -1)
@@ -391,7 +392,7 @@ Func CreateHeroEquipment()
 	$y = 90
 	Local $2DigitsOffset = 3
 	For $z = 0 To UBound($g_ahCmbEquipmentOrder) - 1
-		If $z < 8 Then
+		If $z < 9 Then
 			$g_EquipmentOrderLabel[$z] = GUICtrlCreateLabel($z + 1 & ":", $x - 36, $y + 3, -1, 25)
 			$g_hChkCustomEquipmentOrder[$z] = GUICtrlCreateCheckbox("", $x - 20, $y - 2, -1, 25)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
@@ -403,8 +404,8 @@ Func CreateHeroEquipment()
 			$g_ahImgEquipmentOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 123, $y - 2, 24, 24)
 			$g_ahImgEquipmentOrder2[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 155, $y - 2, 24, 24)
 			$y += 40 ; move down to next combobox location
-		ElseIf $z = 8 Then
-			If $z = 8 Then
+		ElseIf $z = 9 Then
+			If $z = 9 Then
 				$x += 250
 				$y = 90
 			EndIf
@@ -419,8 +420,8 @@ Func CreateHeroEquipment()
 			$g_ahImgEquipmentOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 123, $y - 2, 24, 24)
 			$g_ahImgEquipmentOrder2[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 155, $y - 2, 24, 24)
 			$y += 40 ; move down to next combobox location
-		ElseIf $z > 8 Then
-			If $z = 8 Then
+		ElseIf $z > 9 Then
+			If $z = 9 Then
 				$x += 250
 			EndIf
 			$g_EquipmentOrderLabel[$z] = GUICtrlCreateLabel($z + 1 & ":", $x - 40, $y + 3, -1, 25)
@@ -438,13 +439,13 @@ Func CreateHeroEquipment()
 	Next
 
 	$x = 125
-	$y = 425
+	$y = 465
 	$g_hBtnRegularOrder = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRegularOrder", "Sort in Original Order"), $x + 70, $y, 130, 20)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRegularOrder_Info_01", "Push button to sort equipment in original order"))
 	GUICtrlSetOnEvent(-1, "btnRegularOrder")
 
 	$x = 125
-	$y = 470
+	$y = 510
 	$g_hBtnRemoveEquipment = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRemoveEquipment", "Empty Equipment List"), $x - 6, $y, 130, 20)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRemoveEquipment_Info_01", "Push button to remove all equipment from list and start over"))
 	GUICtrlSetOnEvent(-1, "btnRemoveEquipment")
@@ -457,7 +458,7 @@ Func CreateHeroEquipment()
 	GUICtrlSetOnEvent(-1, "btnEquipmentOrderSet")
 	$g_ahImgEquipmentOrderSet = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSilverStar, $x + 119, $y, 18, 18)
 
-	$y = 510
+	$y = 550
 	$g_hBtnHeroEquipmentClose = GUICtrlCreateButton("Close", 410, $y, 85, 25)
 	GUICtrlSetOnEvent(-1, "CloseHeroEquipment")
 EndFunc   ;==>CreateHeroEquipment

@@ -429,7 +429,7 @@ Func IsCoordSafe($x, $y)
 	If $x < 82 And $y > 427 + $g_iBottomOffsetY And $bIsOnMainBase Then ; coordinates where the game will click on the War Button (safe margin)
 		If $g_bDebugSetlog Then SetDebugLog("Too close to War Button")
 		$bResult = False
-	ElseIf $x < 68 And $y > 246 + $g_iMidOffsetY Then ; coordinates where the game will click on the CHAT tab (safe margin)
+	ElseIf $x < 72 And ($y > 270 + $g_iMidOffsetY And $y < 345 + $g_iMidOffsetY) Then ; coordinates where the game will click on the CHAT tab (safe margin)
 		If $g_bDebugSetlog Then SetDebugLog("Too close to CHAT Tab")
 		$bResult = False
 	ElseIf $y < 63 Then ; coordinates where the game will click on the BUILDER button or SHIELD button (safe margin)

@@ -1,4 +1,73 @@
-* v8.1.5
+* v8.1.6
+* Added "Before you upgrade" window support.
+* Improved Blacksmith equipement upgrade.
+* Fixed BB Repair Building.
+* Improved Ores report OCR.
+* Improved CG "Stop before completing your limit" (Challenge points check).
+* Improved CG challenges detection.
+* Improved Clan Capital upgrade exclusion detection.
+* Improved Clan Capital opened builder menu detection.
+* Improved CG Event Purge.
+* Improved BOB Buildings, Battle Copter and Battle Machine upgrade window detection.
+* Improved Electro Dragon detection in attack bar.
+* Improved Wall breaker detection in troops queue.
+* Improved BattleMachine and BattleCopter location.
+* Fixed troops deployment in BB attacks.
+* Improved Invisibility spell detection.
+* Improved some buildings detection for weak bases.
+* Improved Healing Tome detection.
+* Added max level equipment support.
+* Fixed Discount Perks coordinates and OCR.
+* Updated couple of libraries.
+* Fixed Free Magic Items Collect.
+* Added Frozen Arrow equipment Support.
+* Improved Equipment detection.
+* Updated couple of libraries 2.
+* Added Dragon Palace Scenery support (Attack only).
+* Improved loot cart collect (clan chat detection).
+* Improved Time Check for Clan Games Start.
+* Fixed SmartFarm custom order deployment.
+* Improved Remain Train OCR (8/3).
+* Improved Red Building Cost OCR (2).
+* Improved CG event type detection.
+* Improved Frozen Arrow detection.
+* Improved Bat Spell detection.
+* Improved Spooky Scenery detection (Attack Only).
+* Improved CG remaining time OCR.
+* Fixed IsCGCoolDownTime function.
+** Added support for COC 16.137.6.
+* Updated Chat button detection.
+* Updated donation and request system.
+* Updated Bonus window detection.
+* Updated Pets cost and level.
+* Added hog puppet and haste vial equipment support.
+* Improved needed level for equipment.
+* Updated upgrade walls, buildings and heroes cost detection.
+* Improved Queen detection when dropped (Attack bar).
+* Fixed CC Troops, spells and sieges remove function.
+* Improved Builders count (Despite Goblin Builder display).
+* Added Overgrowth Spell upgrade support in laboratory.
+* Improved some libraries and changed few tolerances.
+* Added Guard warning window support in legend league.
+* Typo.
+* Added full Overgrowth spell support (OgSpell).
+* Reworked Donation GUI.
+* Improved Attack bar drag for 11+ slots.
+* Improved hero status detection (heal).
+* Improved hero heal time OCR.
+* Updated Siege machines level.
+* Updated Dark Elixir drill values (smartzap).
+* Improved Blacksmith opening when new equipment.
+* Updated SafeCoord to match with new chat button.
+* Added Mine and Collector level 16 template.
+* Improved Custom and Order Lists Display.
+* Added couple of ScatterShot level 5 and Inferno Tower level 10 templates.
+* Updated Weak base filters for new levels.
+* Updated DE Drill, Collector and Gold mine max level.
+* Updated Persian-bundle and Donate OCR for Persian/Arabic.
+* Added conditional Telegram message: All Legends attacks made today.
+
+* v8.1.5 **
 * Improved OCR Army Capacity.
 * Fixed Quick Train.
 * Improved Donate window detection and OCR.

@@ -415,13 +415,13 @@ EndFunc   ;==>IsElixirSpell
 
 Func IsDarkSpell($Spell)
 	Local $iIndex = TroopIndexLookup($Spell, "IsDarkSpell")
-	If $iIndex >= $ePSpell And $iIndex <= $eBtSpell Then Return True
+	If $iIndex >= $ePSpell And $iIndex <= $eOgSpell Then Return True
 	Return False
 EndFunc   ;==>IsDarkSpell
 
 Func IsSpellToBrew($sName)
 	Local $iIndex = TroopIndexLookup($sName, "IsSpellToBrew")
-	If $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then Return True
+	If $iIndex >= $eLSpell And $iIndex <= $eOgSpell Then Return True
 	Return False
 EndFunc   ;==>IsSpellToBrew
 
@@ -729,7 +729,7 @@ Func GetSlotNumber($bSpells = False)
 		Case $bSpells = True
 
 			; Set Order of Spells display in Army Tab
-			Local Const $SpellsOrders = [$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
+			Local Const $SpellsOrders = [$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell, $eOgSpell]
 
 			Local $allCurSpells[UBound($SpellsOrders)]
 
@@ -1038,13 +1038,13 @@ Func SearchArmy($sImageDir = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0, $sArmyType = 
 	If $sArmyType = "Heroes" Then ; CheckThis
 		For $i = 0 To UBound($aResult) - 1
 			If StringInStr($aResult[$i][0], "Kingqueued") Then
-				$aResult[$i][3] = getRemainTHero(550, 384 + $g_iMidOffsetY)
+				$aResult[$i][3] = getRemainTHero(530, 382 + $g_iMidOffsetY)
 			ElseIf StringInStr($aResult[$i][0], "Queenqueued") Then
-				$aResult[$i][3] = getRemainTHero(620, 384 + $g_iMidOffsetY)
+				$aResult[$i][3] = getRemainTHero(590, 382 + $g_iMidOffsetY)
 			ElseIf StringInStr($aResult[$i][0], "Wardenqueued") Then
-				$aResult[$i][3] = getRemainTHero(695, 384 + $g_iMidOffsetY)
+				$aResult[$i][3] = getRemainTHero(655, 382 + $g_iMidOffsetY)
 			ElseIf StringInStr($aResult[$i][0], "Championqueued") Then
-				$aResult[$i][3] = getRemainTHero(765, 384 + $g_iMidOffsetY)
+				$aResult[$i][3] = getRemainTHero(720, 382 + $g_iMidOffsetY)
 			Else
 				$aResult[$i][3] = 0
 			EndIf

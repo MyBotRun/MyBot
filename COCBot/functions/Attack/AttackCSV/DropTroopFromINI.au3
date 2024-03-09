@@ -98,7 +98,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 
 	; Slot11+
 	debugAttackCSV("Troop position / Total slots: " & $troopSlotConst & " / " & $g_iTotalAttackSlot)
-	If $troopSlotConst >= 0 And $troopSlotConst < $g_iTotalAttackSlot - 10 Then ; can only be selected when in 1st page of troopbar
+	If $troopSlotConst >= 0 And $troopSlotConst < 11 Then ; can only be selected when in 1st page of troopbar
 		If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
 	ElseIf $troopSlotConst > 10 Then ; can only be selected when in 2nd page of troopbar
 		If $g_bDraggedAttackBar = False Then DragAttackBar($g_iTotalAttackSlot, False) ; drag forward
@@ -138,6 +138,8 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			If Not $g_abAttackUseSkeletonSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eBtSpell
 			If Not $g_abAttackUseBatSpell[$g_iMatchMode] Then $bUseSpell = False
+		Case $eOgSpell
+			If Not $g_abAttackUseOvergrowthSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF, $eBattleD
 			$bSelectTroop = False ; avoid double select
 	EndSwitch
@@ -237,7 +239,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 							Else
 								dropCC($pixel[0], $pixel[1], $troopPosition)
 							EndIf
-						Case $eLSpell To $eBtSpell
+						Case $eLSpell To $eOgSpell
 							If $bDebug Then
 								SetLog("Drop Spell AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else

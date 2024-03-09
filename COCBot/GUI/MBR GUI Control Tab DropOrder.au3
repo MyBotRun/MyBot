@@ -71,10 +71,10 @@ Func GUIDropOrder()
 	Next
 	If $bDuplicate Then
 		GUICtrlSetState($g_hBtnDropOrderSet, $GUI_ENABLE) ; enable button to apply new order
+		_GUICtrlSetImage($g_ahImgDropOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 		Return
 	Else
 		GUICtrlSetState($g_hBtnDropOrderSet, $GUI_ENABLE) ; enable button to apply new order
-		_GUICtrlSetImage($g_ahImgDropOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 	EndIf
 EndFunc   ;==>GUIDropOrder
 

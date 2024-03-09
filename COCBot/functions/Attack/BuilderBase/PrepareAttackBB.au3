@@ -33,7 +33,7 @@ Func CheckBBElixirStorageFull($SetLog = True)
 	Return False
 EndFunc   ;==>CheckBBElixirStorageFull
 
-Func PrepareAttackBB()
+Func PrepareAttackBB($AttackCount = 0)
 
 	If $g_bChkForceBBAttackOnClanGames And $g_bIsBBevent Then
 		Setlog("Running Challenge is BB Challenge : " & $CurrentActiveChallenge, $COLOR_ACTION)
@@ -42,6 +42,7 @@ Func PrepareAttackBB()
 		CheckLootAvail()
 		CheckBBGoldStorageFull()
 		CheckBBElixirStorageFull()
+		If $AttackCount = 0 Then CheckForSlots()
 		If Not ClickAttack() Then Return False
 		If _Sleep(1500) Then Return
 		CheckArmyReady()
@@ -81,6 +82,8 @@ Func PrepareAttackBB()
 			Return False
 		EndIf
 	EndIf
+
+	If $AttackCount = 0 Then CheckForSlots()
 
 	If Not ClickAttack() Then Return False
 	If _Sleep(1000) Then Return
@@ -183,6 +186,35 @@ Func CheckArmyReady()
 	EndIf
 	Return $bReady
 EndFunc   ;==>CheckArmyReady
+
+Func CheckForSlots()
+	ClickP($aArmyTrainButton, 1, 0, "BB Train Button")
+	If _Sleep(1000) Then Return
+	Local $aDetectedSlots = QuickMIS("CNX", $g_sImgDirBBTroops, 45, 220 + $g_iMidOffsetY, 608, 310 + $g_iMidOffsetY)
+	If IsArray($aDetectedSlots) And UBound($aDetectedSlots) > 0 Then
+		If UBound($aDetectedSlots) < 5 Then
+			$iStartSlotMem = 27
+		Else
+			$iStartSlotMem = 21
+		EndIf
+	Else
+		$iStartSlotMem = 21
+	EndIf
+	Local $aDetectedSlotsR = QuickMIS("CNX", $g_sImgDirBBTroops, 608, 220 + $g_iMidOffsetY, 815, 310 + $g_iMidOffsetY)
+	If IsArray($aDetectedSlotsR) And UBound($aDetectedSlotsR) > 0 Then
+		If UBound($aDetectedSlots) + UBound($aDetectedSlotsR) < 5 Then
+			$iStartSlotMem2 = 27
+		Else
+			$iStartSlotMem2 = 21
+		EndIf
+	Else
+		$iStartSlotMem2 = $iStartSlotMem
+	EndIf
+	SetDebugLog("Total Troop Slots Detected : " & UBound($aDetectedSlots) + UBound($aDetectedSlotsR), $COLOR_DEBUG2)
+	If _Sleep(1000) Then Return
+	ClickAway("Left")
+	If _Sleep(1000) Then Return ; wait for window close
+EndFunc   ;==>CheckForSlots
 
 Func ClickAttack()
 	Local $sSearchDiamond = GetDiamondFromRect2(10, 560 + $g_iBottomOffsetY, 115, 660 + $g_iBottomOffsetY)

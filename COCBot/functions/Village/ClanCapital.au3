@@ -210,7 +210,7 @@ Func ForgeClanCapitalGold($bTest = False)
 	If Not $g_bRunState Then Return
 
 	SetLog("Checking for Forge ClanCapital Gold", $COLOR_INFO)
-	ClickAway("Right")
+	ClickAway()
 	ZoomOut()
 	getBuilderCount(True) ;check if we have available builder
 
@@ -906,29 +906,14 @@ EndFunc   ;==>AutoForgeSlot
 
 Func IsCCBuilderMenuOpen()
 	Local $bRet = False
-	Local $aBorder0[4] = [400, 73, 0x8C9CB6, 20]
-	Local $aBorder1[4] = [400, 73, 0xC0C9D3, 20]
-	Local $aBorder2[4] = [400, 73, 0xBEBFBC, 20]
-	Local $aBorder3[4] = [400, 73, 0xFFFFFF, 20]
-	Local $aBorder4[4] = [400, 73, 0xF7F8F5, 20]
-	Local $aBorder5[4] = [400, 73, 0xC3CBD9, 20]
-	Local $sTriangle
-
-	For $i = 0 To 10
-		If _CheckPixel($aBorder0, True) Or _CheckPixel($aBorder1, True) Or _CheckPixel($aBorder2, True) Or _CheckPixel($aBorder3, True) Or _CheckPixel($aBorder4, True) Or _CheckPixel($aBorder5, True) Then
-			SetDebugLog("Found Border Color: " & _GetPixelColor($aBorder0[0], $aBorder0[1], True), $COLOR_ACTION)
+	For $i = 0 To 3
+		If IsArray(_PixelSearch(399, 72, 401, 74, Hex(0xFFFFFF, 6), 15, True)) Then
+			SetDebugLog("Found White Border Color", $COLOR_ACTION)
 			$bRet = True ;got correct color for border
 			ExitLoop
 		EndIf
-		If _Sleep(250) Then Return
+		If _Sleep(350) Then Return
 	Next
-
-	If Not $bRet Then ;lets re check if border color check not success
-		$sTriangle = getOcrAndCapture("coc-buildermenu-cc", 350, 55, 200, 25)
-		SetDebugLog("$sTriangle: " & $sTriangle)
-		If $sTriangle = "^" Or $sTriangle = "~" Or $sTriangle = "@" Or $sTriangle = "#" Or $sTriangle = "%" Or $sTriangle = "$" Or $sTriangle = "&" Then $bRet = True
-	EndIf
-	SetDebugLog("IsCCBuilderMenuOpen : " & String($bRet))
 	Return $bRet
 EndFunc   ;==>IsCCBuilderMenuOpen
 
@@ -1012,7 +997,7 @@ Func FindCCSuggestedUpgrade()
 			$name = getCCBuildingNameSuggested($aUpgrade[$i][1] - 235, $aUpgrade[$i][2] - 12)
 
 			If QuickMIS("BC1", $g_sImgDecoration, $aUpgrade[$i][1] - 260, $aUpgrade[$i][2] - 20, $aUpgrade[$i][1] - 160, $aUpgrade[$i][2] + 10) Then
-				$name = getCCBuildingNameBlue($aUpgrade[$i][1] - 230, $aUpgrade[$i][2] - 12)
+				$name = getCCBuildingNameBlue($aUpgrade[$i][1] - 230, $aUpgrade[$i][2] - 14)
 			EndIf
 
 			If $g_bChkAutoUpgradeCCPriorArmy Then
@@ -1035,7 +1020,7 @@ Func FindCCSuggestedUpgrade()
 			$name = getCCBuildingNameSuggested($aUpgrade[$i][1] - 235, $aUpgrade[$i][2] - 12)
 
 			If QuickMIS("BC1", $g_sImgDecoration, $aUpgrade[$i][1] - 260, $aUpgrade[$i][2] - 20, $aUpgrade[$i][1] - 160, $aUpgrade[$i][2] + 10) Then
-				$name = getCCBuildingNameBlue($aUpgrade[$i][1] - 230, $aUpgrade[$i][2] - 12)
+				$name = getCCBuildingNameBlue($aUpgrade[$i][1] - 230, $aUpgrade[$i][2] - 14)
 			EndIf
 
 			If $g_bChkAutoUpgradeCCIgnore Then
@@ -1244,7 +1229,7 @@ Func AutoUpgradeCC()
 		EndIf
 		If _Sleep(500) Then Return
 		Local $aUpgrade = FindCCExistingUpgrade() ;Find on Capital Map, should only find currently on progress building
-		If IsArray($aUpgrade) And UBound($aUpgrade) > 0 Then
+		If IsArray($aUpgrade) And UBound($aUpgrade) > 0 And UBound($aUpgrade, $UBOUND_COLUMNS) > 1 Then
 			If Not CapitalMainUpgradeLoop($aUpgrade) Then
 				$Failed = True
 				ExitLoop
@@ -1296,7 +1281,7 @@ Func AutoUpgradeCC()
 			EndIf
 			If _Sleep(1000) Then Return
 			Local $aUpgrade = FindCCSuggestedUpgrade() ;Find on Distric Map, Will Read Blue Font (Ruins.. etc)
-			If IsArray($aUpgrade) And UBound($aUpgrade) > 0 Then
+			If IsArray($aUpgrade) And UBound($aUpgrade) > 0 And UBound($aUpgrade, $UBOUND_COLUMNS) > 1 Then
 				DistrictUpgrade($aUpgrade)
 				If Number($g_iLootCCGold) = 0 Then
 					ExitLoop
@@ -1304,16 +1289,14 @@ Func AutoUpgradeCC()
 			Else
 				Local $Text = getOcrAndCapture("coc-buildermenu", 300, 81, 230, 25)
 				Local $aDone[2] = ["All possible", "done"]
-				Local $bAllDone = False
 				For $z In $aDone
 					If StringInStr($Text, $z) Then
 						SetDebugLog("Match with: " & $z)
 						SetLog("All Possible Upgrades Done In This District", $COLOR_INFO)
-						$bAllDone = True
 					EndIf
 				Next
-				If $bAllDone Then SwitchToCapitalMain()
 			EndIf
+			SwitchToCapitalMain()
 			If Not $g_bRunState Then Return
 		Next
 	EndIf
@@ -1450,7 +1433,7 @@ EndFunc   ;==>WaitForMap
 
 Func IsUpgradeCCIgnore()
 	Local $bRet = False
-	Local $UpgradeName = getOcrAndCapture("coc-build", 200, 490 + $g_iBottomOffsetY, 460, 30)
+	Local $UpgradeName = getOcrAndCapture("coc-build", 180, 512 + $g_iBottomOffsetY, 510, 25)
 	If $g_bChkAutoUpgradeCCWallIgnore Then ; Filter for wall
 		If StringInStr($UpgradeName, "Wall") Then
 			SetDebugLog($UpgradeName & " Match with: Wall")

@@ -39,7 +39,7 @@ Global $g_hLblNbrOfDetectedMines[$g_iModeCount] = [0, 0, 0], $g_hLblNbrOfDetecte
 
 ; Donations
 Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_hLblDonSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblDonSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hLblDonSiegel[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 Global $g_hLblTotalTroopsQ = 0, $g_hLblTotalTroopsXP = 0, $g_hLblTotalSiegesQ = 0, $g_hLblTotalSiegesXP = 0, $g_hLblTotalSpellsQ = 0, $g_hLblTotalSpellsXP = 0
 
@@ -1694,6 +1694,16 @@ Func CreateDonationsSubTab()
 	GUICtrlSetColor(-1, $COLOR_BLACK)
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnOvergrowthSpell, $x + 104, $y, 24, 24)
+	$sTxtTip = ""
+	_GUICtrlSetTip(-1, $sTxtTip)
+	GUICtrlCreateLabel(":", $x + 132, $y + 4, -1, 17)
+	GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+	$g_hLblDonSpell[$eSpellOvergrowth] = GUICtrlCreateLabel("0", $x + 117, $y + 4, 40, 17, $SS_RIGHT)
+	GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+	GUICtrlSetColor(-1, $COLOR_BLACK)
+	_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x = $xStart
 	$y = $yStart + 378

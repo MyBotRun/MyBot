@@ -226,7 +226,7 @@ Func CheckQuickTrainTroop()
 
 	; reset troops/spells in quick army
 	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	$g_aiArmyQuickTroops = $aEmptyTroop
 	$g_aiArmyQuickSpells = $aEmptySpell
 	$g_iTotalQuickTroops = 0
@@ -301,7 +301,7 @@ Func CheckQuickTrainTroop()
 					If $iTroopIndex >= 0 And $iTroopIndex < $eTroopCount Then
 						SetLog("  - " & $g_asTroopNames[$iTroopIndex] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
 						$aiInGameTroop[$iTroopIndex] = $aSearchResult[$j][3]
-					ElseIf $iTroopIndex >= $eLSpell And $iTroopIndex <= $eBtSpell Then
+					ElseIf $iTroopIndex >= $eLSpell And $iTroopIndex <= $eOgSpell Then
 						SetLog("  - " & $g_asSpellNames[$iTroopIndex - $eLSpell] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
 						$aiInGameSpell[$iTroopIndex - $eLSpell] = $aSearchResult[$j][3]
 					ElseIf $iTroopIndex >= $eWallW And $iTroopIndex <= $eBattleD Then

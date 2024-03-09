@@ -217,6 +217,7 @@ Func CheckCCArmy()
 	Local $bSkipTroop = Not $g_abRequestType[0] Or _ArrayMin($g_aiClanCastleTroopWaitType) = 0 ; All 3 troop comboboxes are set = "any"
 	Local $bSkipSpell = Not $g_abRequestType[1] Or _ArrayMin($g_aiClanCastleSpellWaitType) = 0 ; All 3 spell comboboxes are set = "any"
 	Local $bSkipSiege = Not $g_abRequestType[2] Or _ArrayMin($g_aiClanCastleSiegeWaitType) = 0 ; All 2 siege comboboxes are set = "any"
+	Local $bOneSlotSpell = False
 
 	If $bSkipTroop And $bSkipSpell And $bSkipSiege Then Return
 
@@ -260,6 +261,11 @@ Func CheckCCArmy()
 
 	; CC spells
 	If IsArray($aSpellWSlot) Then
+		Local $sCCSpells = getOcrAndCapture("coc-camps", 465, 428 + $g_iMidOffsetY, 60, 16, True, False, True)
+		Local $aCCSpells = StringSplit($sCCSpells, "#", $STR_NOCOUNT)
+		If IsArray($aCCSpells) Then
+			If Number($aCCSpells[1]) = 1 Then $bOneSlotSpell = True
+		EndIf
 		For $i = 0 To $eSpellCount - 1
 			Local $iUnwanted = $g_aiCurrentCCSpells[$i] - $g_aiCCSpellsExpected[$i]
 			If $g_aiCurrentCCSpells[$i] > 0 Then SetDebugLog("Expecting " & $g_asSpellNames[$i] & ": " & $g_aiCCSpellsExpected[$i] & "x. Received: " & $g_aiCurrentCCSpells[$i])
@@ -299,12 +305,12 @@ Func CheckCCArmy()
 
 	; Removing CC Troops, Spells & Siege Machine
 	If $bNeedRemove Then
-		RemoveCastleArmy($aToRemove)
+		RemoveCastleArmy($aToRemove, $bOneSlotSpell)
 		If _Sleep(1000) Then Return
 	EndIf
 EndFunc   ;==>CheckCCArmy
 
-Func RemoveCastleArmy($aToRemove)
+Func RemoveCastleArmy($aToRemove, $bOneSlotSpell = False)
 
 	If _ArrayMax($aToRemove, 0, -1, -1, 1) = 0 Then Return
 
@@ -320,11 +326,20 @@ Func RemoveCastleArmy($aToRemove)
 	If _Sleep(500) Then Return
 
 	; Click remove Troops & Spells
-	Local $aPos[2] = [79, 518 + $g_iMidOffsetY]
+	Local $aPos[2] = [129, 518 + $g_iMidOffsetY]
 	For $i = 0 To UBound($aToRemove) - 1
 		If $aToRemove[$i][1] > 0 Then
-			$aPos[0] = $aToRemove[$i][0] + 48
-			If $i = 7 Then $aPos[0] = 647 ; x-coordinate of Siege machine slot
+			Switch $i
+				Case 0 To 4
+					$aPos[0] = $aToRemove[$i][0] + 44
+				Case 5
+					$aPos[0] = 499 ; x-coordinate of first Spell slot
+					If $bOneSlotSpell Then $aPos[0] = 533 ; x-coordinate of Single Spell slot
+				Case 6
+					$aPos[0] = 563 ; x-coordinate of second Spell slot
+				Case 7
+					$aPos[0] = 649 ; x-coordinate of Siege machine slot
+			EndSwitch
 			SetDebugLog(" - Click at slot " & $i & ". (" & $aPos[0] & ") x " & $aToRemove[$i][1])
 			ClickRemoveTroop($aPos, $aToRemove[$i][1], $g_iTrainClickDelay) ; Click on Remove button as much as needed
 		EndIf

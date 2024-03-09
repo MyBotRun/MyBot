@@ -673,7 +673,7 @@ Func ReadConfig_600_11()
 		EndIf
 
 		$g_aiClanCastleSpellWaitType[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleSpell" & $i, "0"))
-		If $g_aiClanCastleSpellWaitType[$i] > 0 Then ; LSpell - BtSpell
+		If $g_aiClanCastleSpellWaitType[$i] > 0 Then ; LSpell - OgSpell
 			$g_aiCCSpellsExpected[$g_aiClanCastleSpellWaitType[$i] - 1] += 1
 		EndIf
 
@@ -1094,6 +1094,7 @@ Func ReadConfig_600_29_DB()
 	IniReadS($g_abAttackUseRecallSpell[$DB], $g_sProfileConfigPath, "attack", "DBRecallSpell", False, "Bool")
 	IniReadS($g_abAttackUseSkeletonSpell[$DB], $g_sProfileConfigPath, "attack", "DBSkeletonSpell", False, "Bool")
 	IniReadS($g_abAttackUseBatSpell[$DB], $g_sProfileConfigPath, "attack", "DBBatSpell", False, "Bool")
+	IniReadS($g_abAttackUseOvergrowthSpell[$DB], $g_sProfileConfigPath, "attack", "DBOgSpell", False, "Bool")
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Attack / Standard <><><><>
 	IniReadS($g_aiAttackStdDropOrder[$DB], $g_sProfileConfigPath, "attack", "DBStandardAlgorithm", 0, "int")
 	IniReadS($g_aiAttackStdDropSides[$DB], $g_sProfileConfigPath, "attack", "DBDeploy", 3, "int")
@@ -1141,6 +1142,7 @@ Func ReadConfig_600_29_LB()
 	IniReadS($g_abAttackUseRecallSpell[$LB], $g_sProfileConfigPath, "attack", "ABRecallSpell", False, "Bool")
 	IniReadS($g_abAttackUseSkeletonSpell[$LB], $g_sProfileConfigPath, "attack", "ABSkeletonSpell", False, "Bool")
 	IniReadS($g_abAttackUseBatSpell[$LB], $g_sProfileConfigPath, "attack", "ABBatSpell", False, "Bool")
+	IniReadS($g_abAttackUseOvergrowthSpell[$LB], $g_sProfileConfigPath, "attack", "ABOgSpell", False, "Bool")
 	; <><><><> Attack Plan / Search & Attack / Activebase / Attack / Standard <><><><>
 	IniReadS($g_aiAttackStdDropOrder[$LB], $g_sProfileConfigPath, "attack", "LBStandardAlgorithm", 0, "int")
 	IniReadS($g_aiAttackStdDropSides[$LB], $g_sProfileConfigPath, "attack", "ABDeploy", 0, "int")

@@ -697,7 +697,7 @@ Func btnEquipmentOrderSet()
 		Else
 			SetLog("Equipment upgrade order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eEquipmentCount - 1
-				$sNewEquipmentList &= $g_asEquipmenthortNames[$aiUsedEquipment[$i]] & ", "
+				$sNewEquipmentList &= $g_asEquipmentShortNames[$aiUsedEquipment[$i]] & ", "
 			Next
 			$sNewEquipmentList = StringTrimRight($sNewEquipmentList, 2)
 			SetLog("Equipment order= " & $sNewEquipmentList, $COLOR_INFO)

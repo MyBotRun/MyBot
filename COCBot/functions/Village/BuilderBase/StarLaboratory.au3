@@ -269,7 +269,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $bTestRun = False)
 						$g_iCmbStarLaboratory = 0 ; Reset user choice to "Any".
 						_GUICtrlComboBox_SetCurSel($g_hCmbStarLaboratory, $g_iCmbStarLaboratory)
 						_GUICtrlSetImage($g_hPicStarLabUpgrade, $g_sLibIconPath, $g_avStarLabTroops[$g_iCmbStarLaboratory][4]) ; Set the corresponding image.
-						SetLog("Upgraded user's choice.  Resttting to Any.", $COLOR_INFO)
+						SetLog("Upgraded user's choice. Resetting to Any.", $COLOR_INFO)
 						SaveBuildingConfig() ;Preserve the "Any" value.
 						If _Sleep($DELAYLABUPGRADE1) Then Return
 					EndIf

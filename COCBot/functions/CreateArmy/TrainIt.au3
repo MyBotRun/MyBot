@@ -97,7 +97,7 @@ Func GetTrainPos(Const $iIndex)
 		EndIf
 	EndIf
 
-	If $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then
+	If $iIndex >= $eLSpell And $iIndex <= $eOgSpell Then
 		Local $sFilter = String($g_asSpellShortNames[$iIndex - $eLSpell]) & "*"
 		Local $asImageToUse = _FileListToArray($g_sImgTrainSpells, $sFilter, $FLTA_FILES, True)
 		If Not @error Then
@@ -119,7 +119,7 @@ Func GetFullName(Const $iIndex, Const $aTrainPos)
 		Return GetFullNameSlot($aTrainPos, $sTroopType, $iIndex)
 	EndIf
 
-	If $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then
+	If $iIndex >= $eLSpell And $iIndex <= $eOgSpell Then
 		Return GetFullNameSlot($aTrainPos, "Spell")
 	EndIf
 
@@ -211,20 +211,20 @@ Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType, $iTroop = $eBarb)
 
 	If $sTroopType = "Spell" Then
 		Switch $iTrainPos[0]
-			Case 78 To 160 ; 1 Column
-				$iSlotH = 143
-			Case 164 To 245     ; 2 Column
-				$iSlotH = 228
-			Case 248 To 328     ; 3 Column
-				$iSlotH = 312
-			Case 334 To 414     ; 4 Column
-				$iSlotH = 397
-			Case 417 To 498     ; 5 Column
-				$iSlotH = 481
-			Case 502 To 583     ; 6 Column
-				$iSlotH = 565
-			Case 585 To 667     ; 7 Column
-				$iSlotH = 650
+			Case 78 To 162 ; 1 Column
+				$iSlotH = 144
+			Case 163 To 246     ; 2 Column
+				$iSlotH = 229
+			Case 247 To 331     ; 3 Column
+				$iSlotH = 313
+			Case 332 To 419     ; 4 Column
+				$iSlotH = 398
+			Case 420 To 507     ; 5 Column
+				$iSlotH = 489
+			Case 508 To 592     ; 6 Column
+				$iSlotH = 574
+			Case 593 To 677     ; 7 Column
+				$iSlotH = 658
 			Case Else
 				If _ColorCheck(_GetPixelColor($iTrainPos[0], $iTrainPos[1], True), Hex(0xD3D3CB, 6), 5) Then
 					SetLog("GetFullNameSlot(): It seems that there is no Slot for an Spell on: " & $iTrainPos[0] & "," & $iTrainPos[1] & "!", $COLOR_ERROR)

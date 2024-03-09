@@ -350,7 +350,7 @@ Func HideSpellsFctTH()
 	If $g_iTownHallLevel > 5 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupHeal)
 	Else
-		For $i = $eSpellRage To $eSpellBat
+		For $i = $eSpellRage To $eSpellOvergrowth
 			GUICtrlSetData($g_ahTxtTrainArmySpellCount[$i], 0)
 		Next
 	EndIf
@@ -358,7 +358,7 @@ Func HideSpellsFctTH()
 	If $g_iTownHallLevel > 6 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupRage)
 	Else
-		For $i = $eSpellJump To $eSpellBat
+		For $i = $eSpellJump To $eSpellOvergrowth
 			GUICtrlSetData($g_ahTxtTrainArmySpellCount[$i], 0)
 		Next
 	EndIf
@@ -375,6 +375,7 @@ Func HideSpellsFctTH()
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellHaste], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellSkeleton], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellBat], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellOvergrowth], 0)
 	EndIf
 
 	If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then
@@ -387,6 +388,7 @@ Func HideSpellsFctTH()
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellBat], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellInvisibility], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellOvergrowth], 0)
 	EndIf
 
 	If $g_iTownHallLevel > 9 Or $g_iTownHallLevel = 0 Then
@@ -395,10 +397,18 @@ Func HideSpellsFctTH()
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellInvisibility], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellOvergrowth], 0)
 	EndIf
 
 	If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupInvisibility)
+	Else
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellOvergrowth], 0)
+	EndIf
+
+	If $g_iTownHallLevel > 11 Or $g_iTownHallLevel = 0 Then
+		_GUI_Value_STATE("ENABLE", $groupOvergrowth)
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
 	EndIf
@@ -580,11 +590,11 @@ Func GUISpellsOrder()
 	Next
 
 	If $bDuplicate Then
-		GUICtrlSetState($g_hBtnSpellsOrderSet, $GUI_DISABLE) ; enable button to apply new order
+		GUICtrlSetState($g_hBtnSpellsOrderSet, $GUI_ENABLE) ; enable button to apply new order
+		_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 		Return
 	Else
 		GUICtrlSetState($g_hBtnSpellsOrderSet, $GUI_ENABLE) ; enable button to apply new order
-		_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 	EndIf
 EndFunc   ;==>GUISpellsOrder
 
@@ -623,11 +633,11 @@ Func GUITrainOrder()
 		EndIf
 	Next
 	If $bDuplicate Then
-		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE) ; enable button to apply new order
+		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_ENABLE) ; enable button to apply new order
+		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 		Return
 	Else
 		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_ENABLE) ; enable button to apply new order
-		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 	EndIf
 EndFunc   ;==>GUITrainOrder
 
@@ -657,7 +667,7 @@ Func BtnSpellsOrderSet()
 	Local $bMissingTroop = False ; flag for when troops are not assigned by user
 	Local $aiBrewOrder[$eSpellCount] = [ _
 			$eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, _
-			$eSpellInvisibility, $eSpellRecall, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellBat]
+			$eSpellInvisibility, $eSpellRecall, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellBat, $eSpellOvergrowth]
 
 	; check for duplicate combobox index and take action
 	For $i = 0 To UBound($g_ahCmbSpellsOrder) - 1
@@ -740,59 +750,34 @@ Func BtnTroopOrderSet()
 	Local $bReady = True ; Initialize ready to record troop order flag
 	Local $sNewTrainList = ""
 
-	Local $bMissingTroop = False ; flag for when troops are not assigned by user
-	Local $aiUsedTroop[$eTroopCount] = [ _
-			$eTroopBarbarian, $eTroopSuperBarbarian, $eTroopArcher, $eTroopSuperArcher, $eTroopGiant, $eTroopSuperGiant, $eTroopGoblin, $eTroopSneakyGoblin, $eTroopWallBreaker, _
-			$eTroopSuperWallBreaker, $eTroopBalloon, $eTroopRocketBalloon, $eTroopWizard, $eTroopSuperWizard, $eTroopHealer, $eTroopDragon, $eTroopSuperDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopInfernoDragon, _
-			$eTroopMiner, $eTroopSuperMiner, $eTroopElectroDragon, $eTroopYeti, $eTroopDragonRider, $eTroopElectroTitan, _
-			$eTroopMinion, $eTroopSuperMinion, $eTroopHogRider, $eTroopValkyrie, $eTroopSuperValkyrie, $eTroopGolem, $eTroopWitch, $eTroopSuperWitch, _
-			$eTroopLavaHound, $eTroopIceHound, $eTroopBowler, $eTroopSuperBowler, $eTroopIceGolem, $eTroopHeadhunter]
+	Local $aiUsedTroop = $g_aiTrainOrder
+	Local $aTmpTrainOrder[0], $iStartShuffle = 0
 
-	; check for duplicate combobox index and take action
 	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
-		For $j = 0 To UBound($g_ahCmbTroopOrder) - 1
-			If $i = $j Then ContinueLoop ; skip if index are same
-			If _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) <> -1 And _
-					_GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$j]) Then
-				_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$j], -1)
-				_GUICtrlSetImage($g_ahImgTroopOrder[$j], $g_sLibIconPath, $eIcnOptions)
-				$bReady = False
-			Else
-				GUICtrlSetColor($g_ahCmbTroopOrder[$j], $COLOR_BLACK)
-			EndIf
-		Next
-		; update combo array variable with new value
-		$g_aiCmbCustomTrainOrder[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i])
-		If $g_aiCmbCustomTrainOrder[$i] = -1 Then $bMissingTroop = True ; check if combo box slot that is not assigned a troop
+		Local $iValue = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i])
+		If $iValue <> -1 Then
+			_ArrayAdd($aTmpTrainOrder, $iValue)
+			Local $iEmpty = _ArraySearch($aiUsedTroop, $iValue)
+			If $iEmpty > -1 Then $aiUsedTroop[$iEmpty] = -1
+		EndIf
 	Next
 
-	; Automatic random fill missing troops
-	If $bReady And $bMissingTroop Then
-		; 1st update $aiUsedTroop array with troops not used in $g_aiCmbCustomTrainOrder
-		For $i = 0 To UBound($g_aiCmbCustomTrainOrder) - 1
-			For $j = 0 To UBound($aiUsedTroop) - 1
-				If $g_aiCmbCustomTrainOrder[$i] = $j Then
-					$aiUsedTroop[$j] = -1 ; if troop is used, replace enum value with -1
-					ExitLoop
-				EndIf
-			Next
-		Next
-		_ArrayShuffle($aiUsedTroop) ; make missing training order assignment random
-		For $i = 0 To UBound($g_aiCmbCustomTrainOrder) - 1
-			If $g_aiCmbCustomTrainOrder[$i] = -1 Then ; check if custom order index is not set
-				For $j = 0 To UBound($aiUsedTroop) - 1
-					If $aiUsedTroop[$j] <> -1 Then ; loop till find a valid troop enum
-						$g_aiCmbCustomTrainOrder[$i] = $aiUsedTroop[$j] ; assign unused troop
-						_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$i], $aiUsedTroop[$j])
-						_GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $g_aiTroopOrderIcon[$g_aiCmbCustomTrainOrder[$i] + 1])
-						$aiUsedTroop[$j] = -1 ; remove unused troop from array
-						ExitLoop
-					EndIf
-				Next
-			EndIf
-		Next
-	EndIf
+	$iStartShuffle = UBound($aTmpTrainOrder)
 
+	_ArraySort($aiUsedTroop)
+
+	For $i = 0 To UBound($aTmpTrainOrder) - 1
+		If $aiUsedTroop[$i] = -1 Then $aiUsedTroop[$i] = $aTmpTrainOrder[$i]
+	Next
+
+	_ArrayShuffle($aiUsedTroop, $iStartShuffle)
+
+	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
+		_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$i], $aiUsedTroop[$i])
+		_GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $g_aiTroopOrderIcon[$aiUsedTroop[$i] + 1])
+	Next
+
+	$g_aiCmbCustomTrainOrder = $aiUsedTroop
 	If $bReady Then
 		ChangeTroopTrainOrder() ; code function to record new training order
 		If @error Then
@@ -810,7 +795,8 @@ Func BtnTroopOrderSet()
 		Else
 			SetLog("Troop training order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eTroopCount - 1
-				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
+				If $g_bDebugSetlogTrain Then SetLog("i = " & $i & " g_aiTrainOrder = " & $aiUsedTroop[$i])
+				$sNewTrainList &= $g_asTroopShortNames[$aiUsedTroop[$i]] & ", "
 			Next
 			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
 			SetLog("Troop train order= " & $sNewTrainList, $COLOR_INFO)
@@ -819,7 +805,6 @@ Func BtnTroopOrderSet()
 		SetLog("Must use all troops and No duplicate troop names!", $COLOR_ERROR)
 		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
-	;	GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE)
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "BtnTroopOrderSet")
 EndFunc   ;==>BtnTroopOrderSet
 
@@ -1558,10 +1543,10 @@ Func HideAllTroops()
 	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopSuperBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopSuperHogRider]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
-	For $i = $g_ahPicTrainArmySpell[$eSpellLightning] To $g_ahPicTrainArmySpell[$eSpellBat]
+	For $i = $g_ahPicTrainArmySpell[$eSpellLightning] To $g_ahPicTrainArmySpell[$eSpellOvergrowth]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
-	For $i = $g_ahTxtTrainArmySpellCount[$eSpellLightning] To $g_ahTxtTrainArmySpellCount[$eSpellBat]
+	For $i = $g_ahTxtTrainArmySpellCount[$eSpellLightning] To $g_ahTxtTrainArmySpellCount[$eSpellOvergrowth]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
 	For $i = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] To $g_ahPicTrainArmySiege[$eSiegeBattleDrill]
@@ -1627,10 +1612,10 @@ EndFunc   ;==>BtnSuperTroops
 
 Func BtnSpells()
 	HideAllTroops()
-	For $i = $g_ahPicTrainArmySpell[$eSpellLightning] To $g_ahPicTrainArmySpell[$eSpellBat]
+	For $i = $g_ahPicTrainArmySpell[$eSpellLightning] To $g_ahPicTrainArmySpell[$eSpellOvergrowth]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
-	For $i = $g_ahTxtTrainArmySpellCount[$eSpellLightning] To $g_ahTxtTrainArmySpellCount[$eSpellBat]
+	For $i = $g_ahTxtTrainArmySpellCount[$eSpellLightning] To $g_ahTxtTrainArmySpellCount[$eSpellOvergrowth]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
 	SetBtnSelector("Spells")

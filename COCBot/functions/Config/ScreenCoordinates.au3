@@ -44,12 +44,12 @@ Global $aEndFightSceneBtn[4] = [429, 529 + $g_iMidOffsetY, 0xE1F989, 20] ; Victo
 Global $aEndFightSceneAvl[4] = [241, 196 + $g_iMidOffsetY, 0xFFF098, 20] ; Victory or defeat scene left side ribbon = light gold
 Global $aEndFightSceneReportGold = $aEndFightSceneAvl ; Missing... TripleM ???
 Global $aReturnHomeButton[4] = [430, 566 + $g_iMidOffsetY, 0x6CBB1F, 15] ; Return Home Button, End Battle Screen
-Global $aChatTab[4] = [388, 280 + $g_iMidOffsetY, 0xFFAA22, 20] ; Chat Window Open, Main Screen
-Global $aChatTab2[4] = [388, 290 + $g_iMidOffsetY, 0xFDA32B, 20] ; Chat Window Open, Main Screen
-Global $aChatTab3[4] = [388, 335 + $g_iMidOffsetY, 0xCB5517, 20] ; Chat Window Open, Main Screen
-Global $aOpenChat[2] = [19, 309 + $g_iMidOffsetY] ; Open Chat Windows, Main Screen
-Global $aClanTab[2] = [189, 24] ; Clan Tab, Chat Window, Main Screen
-Global $aClanInfo[2] = [282, 55] ; Clan Info Icon
+Global $aChatTab[4] = [412, 290 + $g_iMidOffsetY, 0xF3AA28, 20] ; Chat Window Open, Main Screen
+Global $aChatTab2[4] = [412, 305 + $g_iMidOffsetY, 0xF3AA28, 20] ; Chat Window Open, Main Screen
+Global $aChatTab3[4] = [412, 325 + $g_iMidOffsetY, 0xEA8A3B, 20] ; Chat Window Open, Main Screen
+;Global $aOpenChat[2] = [19, 309 + $g_iMidOffsetY] ; Open Chat Windows, Main Screen
+;Global $aClanTab[2] = [189, 24] ; Clan Tab, Chat Window, Main Screen
+;Global $aClanInfo[2] = [282, 55] ; Clan Info Icon
 Global $aArmyCampSize[2] = [153, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
 Global $aSiegeMachineSize[2] = [707, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Number/Total Number
 Global $aArmySpellSize[2] = [143, 296 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
@@ -98,7 +98,7 @@ Global $aReceivedTroopsDoubleOCR[4] = [400, 170 + $g_iMidOffsetY, 0xFFFFFF, 20] 
 Global $aReceivedTroopsDouble[4] = [380, 220 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
 Global $aReceivedTroopsTab[4] = [207, 140 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
 Global $aReceivedTroopsTreasury[4] = [660, 140 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsWeeklyDeals[4] = [175, 195 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsWeeklyDeals[4] = [50, 195 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
 
 ; King Health Bar, check at the middle of the bar, index - 10 is x-offset added to middle of health bar
 Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 10]
@@ -175,7 +175,7 @@ Global Const $aPersonalChallengeOpenButton3[4] = [164, 606 + $g_iBottomOffsetY, 
 Global Const $aPersonalChallengeCloseButton[4] = [827, 100 + $g_iMidOffsetY, 0xEE1F23, 20] ; Personal Challenge Window Close Button - Jun23 Update
 Global Const $aPersonalChallengeRewardsAvail[4] = [450, 61 + $g_iMidOffsetY, 0xFD0B0C, 20] ; Personal Challenge - Red symbol showing available rewards - Jun23 Update
 Global Const $aPersonalChallengeRewardsTab[4] = [385, 105 + $g_iMidOffsetY, 0x698293, 20] ; Personal Challenge - Rewards tab unchecked with Gold Pass - Jun23 Update
-Global Const $aPersonalChallengePerksTab[4] = [545, 105 + $g_iMidOffsetY, 0xA9D0EC, 20] ; Personal Challenge - Perks tab Checked - Jun23 Update
+Global Const $aPersonalChallengePerksTab[4] = [545, 105 + $g_iMidOffsetY, 0xEDB905, 20] ; Personal Challenge - Perks tab Checked - Dec23 Update
 Global Const $aPersonalChallengeLeftEdge[4] = [30, 385 + $g_iMidOffsetY, 0x29231F, 20] ; Personal Challenge Window - Rewards tab - Black left edge
 Global Const $aPersonalChallengeCancelBtn[4] = [288, 391 + $g_iMidOffsetY, 0xFDC875, 20] ; Personal Challenge Window - Cancel button at Storage Full msg
 Global Const $aPersonalChallengeOkBtn[4] = [500, 391 + $g_iMidOffsetY, 0xDFF887, 20] ; Personal Challenge Window - Okay button at Storage Full msg

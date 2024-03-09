@@ -171,7 +171,8 @@ Func OpenBarrel($bTest = False)
 		Local $iSTCount = 0, $bOpenBarrel = True, $bRet = False
 		Local $aiSearchNoBoost[4] = [$g_iQuickMISX - 10, $g_iQuickMISY - 10, $g_iQuickMISX + 25, $g_iQuickMISY + 35]
 		Local $aiSearchArrayLower[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 25, $g_iQuickMISX + 20, $g_iQuickMISY - 18]
-		Local $aiSearchArrayUpper[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 39, $g_iQuickMISX + 20, $g_iQuickMISY - 29]
+		Local $aiSearchArrayUpper[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 39, $g_iQuickMISX + 20, $g_iQuickMISY - 32]
+		Local $aiSearchArrayThird[4] = [$g_iQuickMISX - 7, $g_iQuickMISY - 53, $g_iQuickMISX + 20, $g_iQuickMISY - 46]
 		Local $BarrelStoppedLoop = 0
 
 		For $i = 0 To 5 ; To Detect Stopped Barrel even with animation.
@@ -183,8 +184,9 @@ Func OpenBarrel($bTest = False)
 		If $BarrelStoppedLoop > 0 Then
 			SetLog("No Troop Currently Boosted", $COLOR_INFO)
 		Else
-			If WaitforPixel($aiSearchArrayLower[0], $aiSearchArrayLower[1], $aiSearchArrayLower[2], $aiSearchArrayLower[3], "E2E3D8", 20, 2) Then $aSearchForProgress = 1
-			If WaitforPixel($aiSearchArrayUpper[0], $aiSearchArrayUpper[1], $aiSearchArrayUpper[2], $aiSearchArrayUpper[3], "E2E3D8", 20, 2) Then $aSearchForProgress = 2
+			If WaitforPixel($aiSearchArrayLower[0], $aiSearchArrayLower[1], $aiSearchArrayLower[2], $aiSearchArrayLower[3], "E6E8DD", 25, 2) Then $aSearchForProgress += 1
+			If WaitforPixel($aiSearchArrayUpper[0], $aiSearchArrayUpper[1], $aiSearchArrayUpper[2], $aiSearchArrayUpper[3], "E6E8DD", 25, 2) Then $aSearchForProgress += 1
+			If WaitforPixel($aiSearchArrayThird[0], $aiSearchArrayThird[1], $aiSearchArrayThird[2], $aiSearchArrayThird[3], "E6E8DD", 25, 2) Then $aSearchForProgress += 1
 		EndIf
 
 		SetDebugLog("Progress Bar Found : " & $aSearchForProgress, $COLOR_DEBUG)
@@ -192,7 +194,7 @@ Func OpenBarrel($bTest = False)
 
 		If Number($aSearchForProgress) > 0 Then
 
-			If Number($aSearchForProgress) = $iMaxSupersTroop Then ;When 2 troops already boosted.
+			If Number($aSearchForProgress) >= $iMaxSupersTroop Then ;When 2 troops already boosted. (3 while an event ?)
 				SetLog("Max Number Of Troops Already Boosted", $COLOR_INFO)
 				If Not $bTest Then Return False
 			EndIf

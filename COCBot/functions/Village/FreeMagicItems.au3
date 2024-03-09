@@ -129,10 +129,13 @@ Func OpenTraderWindow()
 	Else
 		Local $aIsWeekyDealsOpen[4] = [40, 0, 0x8DC11D, 20]
 		If _CheckPixel($aReceivedTroopsWeeklyDeals, True) Then ; Found the "You have received" Message on Screen, wait till its gone.
-			SetDebugLog("Detected Clan Castle Message Blocking Raid Medals Button. Waiting until it's gone", $COLOR_INFO)
+			SetDebugLog("Detected Clan Castle Message Blocking Gems Button. Waiting until it's gone", $COLOR_INFO)
 			_CaptureRegion2()
+			Local $Safetyexit = 0
 			While _CheckPixel($aReceivedTroopsWeeklyDeals, True)
 				If _Sleep($DELAYTRAIN1) Then Return
+				$Safetyexit += 1
+				If $Safetyexit > 60 Then ExitLoop  ;If waiting longer than 1 min, something is wrong
 			WEnd
 		EndIf
 		Local $aTabButton = findButton("WeeklyDeals", Default, 1, True)

@@ -169,9 +169,9 @@ Func _AutoUpgrade()
 
 		$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 670, 535 + $g_iMidOffsetY, 700, 565 + $g_iMidOffsetY) ; get resource
 		$g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(552, 541 + $g_iMidOffsetY) ; get cost
-		$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(730, 544 + $g_iMidOffsetY) ; get duration
-
-		Local $g_ReadCorrect = StringRight($g_aUpgradeResourceCostDuration[1], 1)
+		If $g_aUpgradeResourceCostDuration[1] = "" Then $g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(552, 532 + $g_iMidOffsetY) ; Try to read yellow text (Discount).
+		$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(717, 544 + $g_iMidOffsetY) ; get duration
+		If $g_aUpgradeResourceCostDuration[2] = "" Then $g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(717, 532 + $g_iMidOffsetY) ; Try to read yellow text (Discount).
 
 		; if one of the value is empty, there is an error, we must exit Auto Upgrade
 		For $i = 0 To 2
@@ -227,6 +227,16 @@ Func _AutoUpgrade()
 
 		;Check for 'End Boost?' pop-up
 		If _Sleep(1000) Then Return
+		If $g_aUpgradeNameLevel[1] = "Town Hall" Then
+			Local $aiCancelButton = findButton("Cancel", Default, 1, True)
+			If IsArray($aiCancelButton) And UBound($aiCancelButton, 1) = 2 Then
+				SetLog("MBR is not designed to rush a TH upgrade", $COLOR_ERROR)
+				PureClick($aiCancelButton[0], $aiCancelButton[1], 2, 50, "#0117") ; Click Cancel Button
+				If _Sleep(1500) Then Return
+				CloseWindow()
+				ContinueLoop
+			EndIf
+		EndIf
 		Local $aImgAUpgradeEndBoost = decodeSingleCoord(findImage("EndBoost", $g_sImgAUpgradeEndBoost, GetDiamondFromRect2(350, 280 + $g_iMidOffsetY, 570, 200 + $g_iMidOffsetY), 1, True))
 		If UBound($aImgAUpgradeEndBoost) > 1 Then
 			SetLog("End Boost? pop-up found", $COLOR_INFO)

@@ -280,7 +280,7 @@ EndFunc   ;==>IsWallDetected
 
 Func GetUpgradeButton($sUpgButton = "", $Debug = False, $bDebugImage = $g_bDebugImageSave, $bWallUpgrade = False)
 	Local $sIconBarDiamond = GetDiamondFromRect2(140, 500 + $g_iBottomOffsetY, 720, 590 + $g_iBottomOffsetY)
-	Local $sUpgradeButtonDiamond = GetDiamondFromRect2(350, 500 + $g_iMidOffsetY, 805, 600 + $g_iMidOffsetY)
+	Local $sUpgradeButtonDiamond = GetDiamondFromRect2(350, 470 + $g_iMidOffsetY, 805, 600 + $g_iMidOffsetY)
 
 	If $sUpgButton = "" Then Return
 

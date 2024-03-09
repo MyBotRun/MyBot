@@ -30,7 +30,7 @@ Global $g_aGroupEndBattleDB = "", $groupEndBattkeAB = "", $groupKingSleeping = "
 Global $groupLightning = "", $groupHeal = "", $groupRage = "", $groupJump = "", $groupFreeze = "", $groupClone = "", $groupInvisibility = "", $groupRecall = ""
 
 ;Dark Spell
-Global $groupPoison = "", $groupEarthquake = "", $groupHaste = "", $groupSkeleton = "", $groupBat = ""
+Global $groupPoison = "", $groupEarthquake = "", $groupHaste = "", $groupSkeleton = "", $groupBat = "", $groupOvergrowth = ""
 
 ;All Spells
 Global $groupListSpells = ""
@@ -91,25 +91,33 @@ Func InitializeControlVariables()
 	;Attack
 	$g_aGroupAttackDB = $g_hCmbDBAlgorithm & "#" & $g_hCmbDBSelectTroop & "#" & $g_hChkDBKingAttack & "#" & $g_hChkDBQueenAttack & "#" & $g_hChkDBWardenAttack & "#" & $g_hChkDBChampionAttack & "#" & $g_hChkDBDropCC & "#" & _
 			$g_hChkDBLightSpell & "#" & $g_hChkDBHealSpell & "#" & $g_hChkDBRageSpell & "#" & $g_hChkDBJumpSpell & "#" & $g_hChkDBFreezeSpell & "#" & $g_hChkDBCloneSpell & "#" & _
-			$g_hChkDBInvisibilitySpell & "#" & $g_hChkDBRecallSpell & "#" & $g_hChkDBPoisonSpell & "#" & $g_hChkDBEarthquakeSpell & "#" & $g_hChkDBHasteSpell & "#" & $g_hChkDBSkeletonSpell & "#" & $g_hChkDBBatSpell
+			$g_hChkDBInvisibilitySpell & "#" & $g_hChkDBRecallSpell & "#" & $g_hChkDBPoisonSpell & "#" & $g_hChkDBEarthquakeSpell & "#" & $g_hChkDBHasteSpell & "#" & $g_hChkDBSkeletonSpell & "#" & $g_hChkDBBatSpell & "#" & _
+			$g_hChkDBOvergrowthSpell
 	$g_aGroupAttackDBSpell = $g_hChkDBLightSpell & "#" & $g_hChkDBHealSpell & "#" & $g_hChkDBRageSpell & "#" & $g_hChkDBJumpSpell & "#" & $g_hChkDBFreezeSpell & "#" & $g_hChkDBCloneSpell & "#" & _
-			$g_hChkDBInvisibilitySpell & "#" & $g_hChkDBRecallSpell & "#" & $g_hChkDBPoisonSpell & "#" & $g_hChkDBEarthquakeSpell & "#" & $g_hChkDBHasteSpell & "#" & $g_hChkDBSkeletonSpell & "#" & $g_hChkDBBatSpell
+			$g_hChkDBInvisibilitySpell & "#" & $g_hChkDBRecallSpell & "#" & $g_hChkDBPoisonSpell & "#" & $g_hChkDBEarthquakeSpell & "#" & $g_hChkDBHasteSpell & "#" & $g_hChkDBSkeletonSpell & "#" & $g_hChkDBBatSpell & "#" & _
+			$g_hChkDBOvergrowthSpell
 	$groupIMGAttackDB = $g_hPicDBKingAttack & "#" & $g_hPicDBQueenAttack & "#" & $g_hPicDBWardenAttack & "#" & $g_hPicDBChampionAttack & "#" & $g_hPicDBDropCC & "#" & _
 			$g_hPicDBLightSpell & "#" & $g_hPicDBHealSpell & "#" & $g_hPicDBRageSpell & "#" & $g_hPicDBJumpSpell & "#" & $g_hPicDBFreezeSpell & "#" & $g_hPicDBCloneSpell & "#" & _
-			$g_hPicDBInvisibilitySpell & "#" & $g_hPicDBRecallSpell & "#" & $g_hPicDBPoisonSpell & "#" & $g_hPicDBEarthquakeSpell & "#" & $g_hPicDBHasteSpell & "#" & $g_hPicDBSkeletonSpell & "#" & $g_hPicDBBatSpell
+			$g_hPicDBInvisibilitySpell & "#" & $g_hPicDBRecallSpell & "#" & $g_hPicDBPoisonSpell & "#" & $g_hPicDBEarthquakeSpell & "#" & $g_hPicDBHasteSpell & "#" & $g_hPicDBSkeletonSpell & "#" & $g_hPicDBBatSpell & "#" & _
+			$g_hPicDBOvergrowthSpell
 	$groupIMGAttackDBSpell = $g_hPicDBLightSpell & "#" & $g_hPicDBHealSpell & "#" & $g_hPicDBRageSpell & "#" & $g_hPicDBJumpSpell & "#" & $g_hPicDBFreezeSpell & "#" & $g_hPicDBCloneSpell & "#" & _
-			$g_hPicDBInvisibilitySpell & "#" & $g_hPicDBRecallSpell & "#" & $g_hPicDBPoisonSpell & "#" & $g_hPicDBEarthquakeSpell & "#" & $g_hPicDBHasteSpell & "#" & $g_hPicDBSkeletonSpell & "#" & $g_hPicDBBatSpell
+			$g_hPicDBInvisibilitySpell & "#" & $g_hPicDBRecallSpell & "#" & $g_hPicDBPoisonSpell & "#" & $g_hPicDBEarthquakeSpell & "#" & $g_hPicDBHasteSpell & "#" & $g_hPicDBSkeletonSpell & "#" & $g_hPicDBBatSpell & "#" & _
+			$g_hPicDBOvergrowthSpell
 
 	$groupAttackAB = $g_hCmbDBAlgorithm & "#" & $g_hCmbABSelectTroop & "#" & $g_hChkABKingAttack & "#" & $g_hChkABQueenAttack & "#" & $g_hChkABWardenAttack & "#" & $g_hChkABChampionAttack & "#" & $g_hChkABDropCC & "#" & _
 			$g_hChkABLightSpell & "#" & $g_hChkABHealSpell & "#" & $g_hChkABRageSpell & "#" & $g_hChkABJumpSpell & "#" & $g_hChkABFreezeSpell & "#" & $g_hChkABCloneSpell & "#" & _
-			$g_hChkABInvisibilitySpell & "#" & $g_hChkABRecallSpell & "#" & $g_hChkABPoisonSpell & "#" & $g_hChkABEarthquakeSpell & "#" & $g_hChkABHasteSpell & "#" & $g_hChkABSkeletonSpell & "#" & $g_hChkABBatSpell
+			$g_hChkABInvisibilitySpell & "#" & $g_hChkABRecallSpell & "#" & $g_hChkABPoisonSpell & "#" & $g_hChkABEarthquakeSpell & "#" & $g_hChkABHasteSpell & "#" & $g_hChkABSkeletonSpell & "#" & $g_hChkABBatSpell & "#" & _
+			$g_hChkABOvergrowthSpell
 	$groupAttackABSpell = $g_hChkABLightSpell & "#" & $g_hChkABHealSpell & "#" & $g_hChkABRageSpell & "#" & $g_hChkABJumpSpell & "#" & $g_hChkABFreezeSpell & "#" & $g_hChkABCloneSpell & "#" & _
-			$g_hChkABInvisibilitySpell & "#" & $g_hChkABRecallSpell & "#" & $g_hChkABPoisonSpell & "#" & $g_hChkABEarthquakeSpell & "#" & $g_hChkABHasteSpell & "#" & $g_hChkABSkeletonSpell & "#" & $g_hChkABBatSpell
+			$g_hChkABInvisibilitySpell & "#" & $g_hChkABRecallSpell & "#" & $g_hChkABPoisonSpell & "#" & $g_hChkABEarthquakeSpell & "#" & $g_hChkABHasteSpell & "#" & $g_hChkABSkeletonSpell & "#" & $g_hChkABBatSpell & "#" & _
+			$g_hChkABOvergrowthSpell
 	$groupIMGAttackAB = $g_hPicABKingAttack & "#" & $g_hPicABQueenAttack & "#" & $g_hPicABWardenAttack & "#" & $g_hPicABChampionAttack & "#" & $g_hPicABDropCC & "#" & _
 			$g_hPicABLightSpell & "#" & $g_hPicABHealSpell & "#" & $g_hPicABRageSpell & "#" & $g_hPicABJumpSpell & "#" & $g_hPicABFreezeSpell & "#" & $g_hPicABCloneSpell & "#" & _
-			$g_hPicABInvisibilitySpell & "#" & $g_hPicABRecallSpell & "#" & $g_hPicABPoisonSpell & "#" & $g_hPicABEarthquakeSpell & "#" & $g_hPicABHasteSpell & "#" & $g_hPicABSkeletonSpell & "#" & $g_hPicABBatSpell
+			$g_hPicABInvisibilitySpell & "#" & $g_hPicABRecallSpell & "#" & $g_hPicABPoisonSpell & "#" & $g_hPicABEarthquakeSpell & "#" & $g_hPicABHasteSpell & "#" & $g_hPicABSkeletonSpell & "#" & $g_hPicABBatSpell & "#" & _
+			$g_hPicABOvergrowthSpell
 	$groupIMGAttackABSpell = $g_hPicABLightSpell & "#" & $g_hPicABHealSpell & "#" & $g_hPicABRageSpell & "#" & $g_hPicABJumpSpell & "#" & $g_hPicABFreezeSpell & "#" & $g_hPicABCloneSpell & "#" & _
-			$g_hPicABInvisibilitySpell & "#" & $g_hPicABRecallSpell & "#" & $g_hPicABPoisonSpell & "#" & $g_hPicABEarthquakeSpell & "#" & $g_hPicABHasteSpell & "#" & $g_hPicABSkeletonSpell & "#" & $g_hPicABBatSpell
+			$g_hPicABInvisibilitySpell & "#" & $g_hPicABRecallSpell & "#" & $g_hPicABPoisonSpell & "#" & $g_hPicABEarthquakeSpell & "#" & $g_hPicABHasteSpell & "#" & $g_hPicABSkeletonSpell & "#" & $g_hPicABBatSpell & "#" & _
+			$g_hPicABOvergrowthSpell
 
 
 	$g_aGroupListPicMinTrophy = $g_hPicMinTrophies[$eLeagueUnranked] & "#" & $g_hPicMinTrophies[$eLeagueBronze] & "#" & $g_hPicMinTrophies[$eLeagueSilver] & "#" & $g_hPicMinTrophies[$eLeagueGold] & "#" & _
@@ -172,9 +180,10 @@ Func InitializeControlVariables()
 	$groupHaste = $g_ahPicTrainArmySpell[$eSpellHaste] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellHaste]
 	$groupSkeleton = $g_ahPicTrainArmySpell[$eSpellSkeleton] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellSkeleton]
 	$groupBat = $g_ahPicTrainArmySpell[$eSpellBat] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellBat]
+	$groupOvergrowth = $g_ahPicTrainArmySpell[$eSpellOvergrowth] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellOvergrowth]
 
 	$groupListSpells = $groupLightning & "#" & $groupHeal & "#" & $groupRage & "#" & $groupJump & "#" & $groupFreeze & "#" & $groupClone & "#" & $groupInvisibility & "#" & $groupRecall & "#" & $groupPoison & "#" & _
-			$groupEarthquake & "#" & $groupHaste & "#" & $groupSkeleton & "#" & $groupBat
+			$groupEarthquake & "#" & $groupHaste & "#" & $groupSkeleton & "#" & $groupBat & "#" & $groupOvergrowth
 
 	; Sieges
 	$groupWallWrecker = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] & "#" & $g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker]

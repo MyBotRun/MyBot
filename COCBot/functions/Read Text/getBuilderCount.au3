@@ -27,6 +27,8 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 	If $bIsMainPage Then ; check for proper window location
 
 		If Not $bBuilderBase Then
+			Local $ExtraBuilderCount = 0
+			If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilder, 360, 0, 450, 60, True))) > 1 Then $ExtraBuilderCount = 1
 			$sBuilderInfo = getBuilders($aBuildersDigits[0], $aBuildersDigits[1]) ; get builder string with OCR
 		Else
 			Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("MasterBuilderHead", $g_sImgMasterBuilderHead, 445, 0, 500, 54, True))
@@ -40,9 +42,9 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 		If StringInStr($sBuilderInfo, "#") > 0 Then ; check for valid OCR read
 			$aGetBuilders = StringSplit($sBuilderInfo, "#", $STR_NOCOUNT) ; Split into free and total builder strings
 			If Not $bBuilderBase Then
-				$g_iFreeBuilderCount = Int($aGetBuilders[0]) ; update global values
+				$g_iFreeBuilderCount = Int($aGetBuilders[0] - $ExtraBuilderCount) ; update global values
 				If $g_iTestFreeBuilderCount <> -1 Then $g_iFreeBuilderCount = $g_iTestFreeBuilderCount ; used for test cases
-				$g_iTotalBuilderCount = Int($aGetBuilders[1])
+				$g_iTotalBuilderCount = Int($aGetBuilders[1] - $ExtraBuilderCount)
 				If $g_bDebugSetlog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCount & "/" & $g_iTotalBuilderCount, $COLOR_DEBUG)
 			Else
 				$g_iFreeBuilderCountBB = Int($aGetBuilders[0]) ; update global values

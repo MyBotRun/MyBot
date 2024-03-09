@@ -9,10 +9,13 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-
 Func getOresValues($x_start, $y_start, $bNeedCapture = True) ;  -> Get least upgradetime on builder menu
-	Return getOcrAndCapture("coc-ores", $x_start, $y_start, 160, 16, $bNeedCapture)
-EndFunc   ;==>getBuilderLeastUpgradeTime
+	Return getOcrAndCapture("coc-ores", $x_start, $y_start, 149, 16, $bNeedCapture)
+EndFunc   ;==>getOresValues
+
+Func getOresValues2($x_start, $y_start, $bNeedCapture = True) ;  -> Get least upgradetime on builder menu
+	Return getOcrAndCapture("coc-ores2", $x_start, $y_start, 149, 16, $bNeedCapture)
+EndFunc   ;==>getOresValues2
 
 Func getNameBuilding($x_start, $y_start) ; getNameBuilding(242,520) -> Gets complete name and level of the buildings, bottom of screen
 	Return getOcrAndCapture("coc-build", $x_start, $y_start, 420, 27)
@@ -67,11 +70,13 @@ Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elix
 EndFunc   ;==>getResourcesBonus
 
 Func getCostsUpgrade($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
-	Return getOcrAndCapture("coc-CostsUpgrades", $x_start, $y_start, 120, 18, True)
+	Local $Result = StringReplace(getOcrAndCapture("coc-CostsUpgrades", $x_start, $y_start, 120, 18, True), "b", "")
+	Return $Result
 EndFunc   ;==>getCostsUpgrade
 
 Func getCostsUpgradeRed($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
-	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 120, 18, True)
+	Local $Result = StringReplace(getOcrAndCapture("coc-u-r", $x_start, $y_start, 120, 18, True), "b", "")
+	Return $Result
 EndFunc   ;==>getCostsUpgradeRed
 
 Func getResourcesBonusPerc($x_start, $y_start) ; -> Gets complete value of Bonus % in "AttackReport.au3"
@@ -95,7 +100,8 @@ Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of 
 EndFunc   ;==>getStarLabUpgrdResourceRed
 
 Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True) ; "12d 19h"
+	Local $Result = StringReplace(getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True), "b", "")
+	Return $Result
 EndFunc   ;==>getBldgUpgradeTime
 
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
@@ -111,11 +117,12 @@ Func getPetUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade
 EndFunc   ;==>getPetUpgradeTime
 
 Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 595, 490 + $g_iMidOffsetY
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True) ; 85 is required to days & hours for hero ; COC 15.352.22
+	Local $Result = StringReplace(getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True), "b", "")
+	Return $Result
 EndFunc   ;==>getHeroUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
-	Return getOcrAndCapture($language, $x_start, $y_start, 325, 16)
+	Return getOcrAndCapture($language, $x_start, $y_start, 320, 16)
 EndFunc   ;==>getChatString
 
 Func getBuilders($x_start, $y_start) ;  -> Gets Builders number - main screen --> getBuilders(324,23)  coc-profile
@@ -324,6 +331,10 @@ Func getOcrEventTime($x_start, $y_start) ; -> Gets CheckValuesCost on Train Wind
 	Return getOcrAndCapture("coc-events", $x_start, $y_start, 35, 16, True)
 EndFunc   ;==>getOcrEventTime
 
+Func getOcrEventPoints($x_start, $y_start) ; -> Gets CheckValuesCost on Train Window
+	Return getOcrAndCapture("coc-events", $x_start, $y_start, 50, 17, True)
+EndFunc   ;==>getOcrEventPoints
+
 Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	;  -> Get the Text with time till maintenance is over from reload msg(228, 402)
 	Local $Result = getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 28, True)
@@ -354,7 +365,8 @@ Func getRemainTLaboratoryGob($x_start, $y_start) ; read actual time remaining in
 EndFunc   ;==>getRemainTLaboratoryGob
 
 Func getRemainTHero($x_start, $y_start, $bNeedCapture = True) ; Get time remaining for hero to be ready for attack from train window, BK:443,504 AQ:504,504 GW:565:504
-	Return getOcrAndCapture("coc-remainhero", $x_start, $y_start, 55, 12, True, False, $bNeedCapture)
+	Local $Result = StringReplace(getOcrAndCapture("coc-remainhero", $x_start, $y_start, 55, 12, True, False, $bNeedCapture), "b", "")
+	Return $Result
 EndFunc   ;==>getRemainTHero
 
 Func getRequestRemainTime($x_start, $y_start, $bNeedCapture = True) ; Get Remain Time To request Troops
@@ -397,7 +409,7 @@ EndFunc   ;==>getQueueTroopsQuantity
 
 Func getQuickTroopsQuantity($x_start, $y_start) ;  -> Gets quantity of troops in Queue in Train Tab
 	Return StringReplace(getOcrAndCapture("coc-qqtroop", $x_start, $y_start, 35, 13, True), "b", "")
-EndFunc   ;==>getQueueTroopsQuantity
+EndFunc   ;==>getQuickTroopsQuantity
 
 Func getChatStringChinese($x_start, $y_start) ; -> Get string chat request - Chinese - "DonateCC.au3"
 	Local $bUseOcrImgLoc = True
@@ -411,41 +423,84 @@ EndFunc   ;==>getChatStringKorean
 
 Func getChatStringPersian($x_start, $y_start, $bConvert = True) ; -> Get string chat request - Persian - "DonateCC.au3"
 	Local $bUseOcrImgLoc = True
-	Local $OCRString = getOcrAndCapture("persian-bundle", $x_start, $y_start, 240, 20, Default, $bUseOcrImgLoc, True)
+	Local $OCRString = getOcrAndCapture("persian-bundle", $x_start, $y_start, 325, 23, Default, $bUseOcrImgLoc, True)
 	If $bConvert = True Then
 		$OCRString = StringReverse($OCRString)
+
 		$OCRString = StringReplace($OCRString, "A", "ا")
 		$OCRString = StringReplace($OCRString, "B", "ب")
 		$OCRString = StringReplace($OCRString, "C", "چ")
 		$OCRString = StringReplace($OCRString, "D", "د")
+		$OCRString = StringReplace($OCRString, "E", "ص")
 		$OCRString = StringReplace($OCRString, "F", "ف")
 		$OCRString = StringReplace($OCRString, "G", "گ")
-		$OCRString = StringReplace($OCRString, "J", "ج")
 		$OCRString = StringReplace($OCRString, "H", "ه")
-		$OCRString = StringReplace($OCRString, "R", "ر")
+		$OCRString = StringReplace($OCRString, "I", "ط")
+		$OCRString = StringReplace($OCRString, "J", "ج")
 		$OCRString = StringReplace($OCRString, "K", "ک")
-		$OCRString = StringReplace($OCRString, "K", "ل")
+		$OCRString = StringReplace($OCRString, "L", "ل")
 		$OCRString = StringReplace($OCRString, "M", "م")
 		$OCRString = StringReplace($OCRString, "N", "ن")
+		$OCRString = StringReplace($OCRString, "O", "ئ")
 		$OCRString = StringReplace($OCRString, "P", "پ")
+		$OCRString = StringReplace($OCRString, "Q", "ق")
+		$OCRString = StringReplace($OCRString, "R", "ر")
 		$OCRString = StringReplace($OCRString, "S", "س")
 		$OCRString = StringReplace($OCRString, "T", "ت")
+		$OCRString = StringReplace($OCRString, "U", "ى")
 		$OCRString = StringReplace($OCRString, "V", "و")
-		$OCRString = StringReplace($OCRString, "Y", "ی")
-		$OCRString = StringReplace($OCRString, "L", "ل")
-		$OCRString = StringReplace($OCRString, "Z", "ز")
+		$OCRString = StringReplace($OCRString, "W", "لا")
 		$OCRString = StringReplace($OCRString, "X", "خ")
-		$OCRString = StringReplace($OCRString, "Q", "ق")
-		$OCRString = StringReplace($OCRString, ",", ",")
-		$OCRString = StringReplace($OCRString, "0", " ")
-		$OCRString = StringReplace($OCRString, "1", ".")
-		$OCRString = StringReplace($OCRString, "22", "ع")
-		$OCRString = StringReplace($OCRString, "44", "ش")
-		$OCRString = StringReplace($OCRString, "55", "ح")
-		$OCRString = StringReplace($OCRString, "66", "ض")
-		$OCRString = StringReplace($OCRString, "77", "ط")
-		$OCRString = StringReplace($OCRString, "88", "لا")
-		$OCRString = StringReplace($OCRString, "99", "ث")
+		$OCRString = StringReplace($OCRString, "Y", "ی")
+		$OCRString = StringReplace($OCRString, "Z", "ز")
+
+		$OCRString = StringReplace($OCRString, "Ä", "ء")
+		$OCRString = StringReplace($OCRString, "Â", "ع")
+		$OCRString = StringReplace($OCRString, "À", "غ")
+		$OCRString = StringReplace($OCRString, "Ç", "ذ")
+		$OCRString = StringReplace($OCRString, "Ë", "ض")
+		$OCRString = StringReplace($OCRString, "Ê", "ڤ")
+		$OCRString = StringReplace($OCRString, "È", "ة")
+		$OCRString = StringReplace($OCRString, "É", "ظ")
+		$OCRString = StringReplace($OCRString, "Ï", "ك")
+		$OCRString = StringReplace($OCRString, "Î", "ش")
+		$OCRString = StringReplace($OCRString, "Ö", "ث")
+		$OCRString = StringReplace($OCRString, "Ô", "ح")
+		$OCRString = StringReplace($OCRString, "Ü", "ي")
+		$OCRString = StringReplace($OCRString, "Û", "ژ")
+		$OCRString = StringReplace($OCRString, "Ù", "،")
+
+		$OCRString = StringReplace($OCRString, "Ẅ", "*")
+		$OCRString = StringReplace($OCRString, "Ÿ", ":")
+		$OCRString = StringReplace($OCRString, "Ì", "/")
+		$OCRString = StringReplace($OCRString, "Ò", ".")
+
+		;$OCRString = StringReplace($OCRString, "Á", "")
+		;$OCRString = StringReplace($OCRString, "Í", "")
+		;$OCRString = StringReplace($OCRString, "Ó", "")
+		;$OCRString = StringReplace($OCRString, "Ú", "")
+		;$OCRString = StringReplace($OCRString, "Ş", "")
+		;$OCRString = StringReplace($OCRString, "Ž", "")
+
+		$OCRString = StringReplace($OCRString, "Œ", "۴")
+		$OCRString = StringReplace($OCRString, "~", "۵")
+		$OCRString = StringReplace($OCRString, "ß", "۶")
+		$OCRString = StringReplace($OCRString, "´", "?")
+		$OCRString = StringReplace($OCRString, "¯", "؟")
+		$OCRString = StringReplace($OCRString, "`", "٪")
+		$OCRString = StringReplace($OCRString, "Ø", " ")
+
+		$OCRString = StringReplace($OCRString, "⁰", "۰")
+		$OCRString = StringReplace($OCRString, "¹", "۱")
+		$OCRString = StringReplace($OCRString, "²", "۲")
+		$OCRString = StringReplace($OCRString, "³", "۳")
+		$OCRString = StringReplace($OCRString, "⁴", "٤")
+		$OCRString = StringReplace($OCRString, "⁵", "٥")
+		$OCRString = StringReplace($OCRString, "⁶", "٦")
+		$OCRString = StringReplace($OCRString, "⁷", "٧")
+		$OCRString = StringReplace($OCRString, "⁸", "٨")
+		$OCRString = StringReplace($OCRString, "⁹", "٩")
+
 		$OCRString = StringStripWS($OCRString, 1 + 2)
 	EndIf
 	Return $OCRString

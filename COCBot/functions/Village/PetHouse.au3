@@ -62,8 +62,8 @@ Func PetHouse($test = False)
 	VillageReport()
 
 	; not enought Dark Elixir to upgrade lowest Pet
-	If $g_aiCurrentLoot[$eLootDarkElixir] < $g_iMinDark4PetUpgrade Then
-		If $g_iMinDark4PetUpgrade <> 999999 Then
+	If Number($g_aiCurrentLoot[$eLootDarkElixir]) < Number($g_iMinDark4PetUpgrade) Then
+		If Number($g_iMinDark4PetUpgrade) <> 999999 Then
 			SetLog("Current DE Storage: " & _NumberFormat($g_aiCurrentLoot[$eLootDarkElixir], True))
 			SetLog("Minimum DE for Pet upgrade: " & _NumberFormat($g_iMinDark4PetUpgrade, True))
 		Else
@@ -97,9 +97,12 @@ Func PetHouse($test = False)
 
 		; check if pet upgrade unlocked
 		If _ColorCheck(_GetPixelColor($iPetLevelxCoord[$i], 380 + $g_iMidOffsetY, True), Hex(0xC6BCAA, 6), 15) Then
-			If $g_iTownHallLevel = 14 Then
-				If $i = 0 Or $i = 2 Then $g_ePetLevels[$i] = 10 ; Max level 10 for TH14
-			EndIf
+			Switch $g_iTownHallLevel
+				Case 14
+					If $i <= 2 Then $g_ePetLevels[$i] = 10
+				Case 15
+					If $i = 1 Then $g_ePetLevels[$i] = 10
+			EndSwitch
 			; get the Pet Level
 			Local $iPetLevel = getPetsLevel($iPetLevelxCoord[$i], 544 + $g_iMidOffsetY)
 			If Not ($iPetLevel > 0 And $iPetLevel <= $g_ePetLevels[$i]) Then ;If detected level is not between 1 and 10 Or 15, To Prevent Crash
@@ -269,8 +272,8 @@ Func PetGuiDisplay()
 	EndIf
 
 	; not enough Dark Elixir for upgrade -
-	If $g_aiCurrentLoot[$eLootDarkElixir] < $g_iMinDark4PetUpgrade Then
-		If $g_iMinDark4PetUpgrade <> 999999 Then
+	If Number($g_aiCurrentLoot[$eLootDarkElixir]) < Number($g_iMinDark4PetUpgrade) Then
+		If Number($g_iMinDark4PetUpgrade) <> 999999 Then
 			SetLog("Current DE Storage: " & _NumberFormat($g_aiCurrentLoot[$eLootDarkElixir], True))
 			SetLog("Minimum DE for Pet upgrade: " & _NumberFormat($g_iMinDark4PetUpgrade, True))
 		Else
@@ -403,9 +406,12 @@ Func GetMinDark4PetUpgrade()
 
 		DragPetHouse($i, $iPage)
 
-		If $g_iTownHallLevel = 14 Then
-			If $i = 0 Or $i = 2 Then $g_ePetLevels[$i] = 10 ; Max level 10 for TH14
-		EndIf
+		Switch $g_iTownHallLevel
+			Case 14
+				If $i <= 2 Then $g_ePetLevels[$i] = 10
+			Case 15
+				If $i = 1 Then $g_ePetLevels[$i] = 10
+		EndSwitch
 
 		; check if pet upgrade enabled and unlocked
 		If _ColorCheck(_GetPixelColor($iPetLevelxCoord[$i], 380 + $g_iMidOffsetY, True), Hex(0xC6BCAA, 6), 15) Then

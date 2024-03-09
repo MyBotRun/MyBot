@@ -40,7 +40,11 @@ Func GetAttackBarBB($bRemaining = False, $bSecondAttack = False)
 			$BMFound += 1
 		Else
 			SetDebugLog("Machine Unavailable", $COLOR_DEBUG)
-			$iStartSlot = 16
+			If Not $bSecondAttack Then
+				$iStartSlot = $iStartSlotMem
+			Else
+				$iStartSlot = $iStartSlotMem2
+			EndIf
 		EndIf
 		For $i = 0 To UBound($aSlotX) - 1
 			$aSlotX[$i] = $iStartSlot + ($i * $iSlotOffset)

@@ -154,7 +154,7 @@ Func CheckDiscountPerks()
 	If _Sleep(500) Then Return
 
 	; find builder boost rate %
-	Local $sDiscount = getOcrAndCapture("coc-builderboost", 370, 305 + $g_iMidOffsetY, 110, 40)
+	Local $sDiscount = getOcrAndCapture("coc-builderboost", 110, 277 + $g_iMidOffsetY, 100, 40, True)
 	SetDebugLog("Builder boost OCR: " & $sDiscount)
 	If StringInStr($sDiscount, "%") Then
 		Local $aDiscount = StringSplit($sDiscount, "%", $STR_NOCOUNT)

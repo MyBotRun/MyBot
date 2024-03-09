@@ -51,9 +51,11 @@ Func DoAttackBB()
 	$IsChallengeCompleted = False
 	$b_AbortedAttack = False
 	Local $AttackCount = 0
+	$iStartSlotMem = 0
+	$iStartSlotMem2 = 0
 
 	If $g_iBBAttackCount = 0 Then
-		While PrepareAttackBB()
+		While PrepareAttackBB($AttackCount)
 			If Not $g_bRunState Then Return
 			SetDebugLog("PrepareAttackBB(): Success.", $COLOR_SUCCESS)
 			SetLog("Attacking For Stars", $COLOR_OLIVE)
@@ -80,7 +82,7 @@ Func DoAttackBB()
 		EndIf
 		For $i = 1 To $g_iBBAttackCountFinal
 			If Not $g_bRunState Then ExitLoop
-			If PrepareAttackBB() Then
+			If PrepareAttackBB($AttackCount) Then
 				If $AttackNbDisplay = 0 Then
 					If $g_iBBAttackCount = 1 Then
 						SetLog("Random Number Of Attacks : " & $g_iBBAttackCountFinal, $COLOR_OLIVE)
@@ -124,6 +126,8 @@ Func DoAttackBB()
 	If $AttackCount > 0 Then SetLog("BB Attack Cycle Done", $COLOR_SUCCESS1)
 	ClickAway()
 	ZoomOut()
+	$iStartSlotMem = 0
+	$iStartSlotMem2 = 0
 EndFunc   ;==>DoAttackBB
 
 Func ClickFindNowButton()

@@ -30,7 +30,7 @@ Global $g_hBtnElixirTroops = 0, $g_hBtnDarkElixirTroops = 0, $g_hBtnSuperTroops 
 ; Troops/Spells sub-tab
 Global $g_hRadCustomTrain = 0, $g_hRadQuickTrain = 0, $g_ahChkArmy[3] = [0, 0, 0]
 Global $g_ahTxtTrainArmyTroopCount[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahTxtTrainArmySpellCount[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahTxtTrainArmySpellCount[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_ahTxtTrainArmySiegeCount[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 Global $g_hTxtFullTroop = 0, $g_hChkTotalCampForced = 0, $g_hTxtTotalCampForced = 0
 Global $g_hChkDoubleTrain = 0, $g_hChkPreciseArmy = 0
@@ -39,7 +39,7 @@ Global $g_hGrpTrainTroops = 0
 Global $g_ahPicTrainArmyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_ahPicTrainArmyTroopTmp[7] = [0, 0, 0, 0, 0, 0, 0]
 Global $g_ahLblTrainArmyTroopTmp[7] = [0, 0, 0, 0, 0, 0, 0]
-Global $g_ahPicTrainArmySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahPicTrainArmySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_ahPicTrainArmySpellTmp[7] = [0, 0, 0, 0, 0, 0, 0]
 Global $g_ahLblTrainArmySpellTmp[7] = [0, 0, 0, 0, 0, 0, 0]
 Global $g_ahPicTrainArmySiege[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0]
@@ -54,7 +54,8 @@ Global $g_aQuickTroopIcon[$eTroopCount] = [$eIcnBarbarian, $eIcnSuperBarbarian, 
 		$eIcnSuperDragon, $eIcnPekka, $eIcnBabyDragon, $eIcnInfernoDragon, $eIcnMiner, $eIcnSuperMiner, $eIcnElectroDragon, $eIcnYeti, $eIcnDragonRider, _
 		$eIcnElectroTitan, $eIcnRootRider, $eIcnMinion, $eIcnSuperMinion, $eIcnHogRider, $eIcnSuperHogRider, $eIcnValkyrie, $eIcnSuperValkyrie, $eIcnGolem, $eIcnWitch, $eIcnSuperWitch, _
 		$eIcnLavaHound, $eIcnIceHound, $eIcnBowler, $eIcnSuperBowler, $eIcnIceGolem, $eIcnHeadhunter, $eIcnAppWard]
-Global $g_aQuickSpellIcon[$eSpellCount] = [$eIcnLightSpell, $eIcnHealSpell, $eIcnRageSpell, $eIcnJumpSpell, $eIcnFreezeSpell, $eIcnCloneSpell, $eIcnInvisibilitySpell, $eIcnRecallSpell, $eIcnPoisonSpell, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnSkeletonSpell, $eIcnBatSpell]
+Global $g_aQuickSpellIcon[$eSpellCount] = [$eIcnLightSpell, $eIcnHealSpell, $eIcnRageSpell, $eIcnJumpSpell, $eIcnFreezeSpell, $eIcnCloneSpell, $eIcnInvisibilitySpell, $eIcnRecallSpell, $eIcnPoisonSpell, _
+		$eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnSkeletonSpell, $eIcnBatSpell, $eIcnOvergrowthSpell]
 Global $g_ahChkUseInGameArmy[3], $g_ahPicTotalQTroop[3], $g_ahPicTotalQSpell[3], $g_ahLblTotalQTroop[3], $g_ahLblTotalQSpell[3]
 Global $g_ahBtnEditArmy[3], $g_ahLblEditArmy[3], $g_ahPicQuickTroop[3][22], $g_ahLblQuickTroop[3][22], $g_ahPicQuickSpell[3][11], $g_ahLblQuickSpell[3][11]
 Global $g_ahLblQuickTrainNote[3], $g_ahLblUseInGameArmyNote[3]
@@ -145,12 +146,13 @@ Func LoadTranslatedBrewSpellsOrderList()
 			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortEarthquakeSpells", "EarthQuake"), _
 			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortHasteSpells", "Haste"), _
 			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortSkeletonSpells", "Skeleton"), _
-			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortBatSpells", "Bat")]
+			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortBatSpells", "Bat"), _
+			GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortOvergrowthSpells", "Overgrowth")]
 EndFunc   ;==>LoadTranslatedBrewSpellsOrderList
 
 Global $g_hChkCustomBrewOrderEnable = 0
-Global $g_ahCmbSpellsOrder[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahImgSpellsOrder[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahCmbSpellsOrder[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahImgSpellsOrder[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hBtnSpellsOrderSet = 0, $g_ahImgSpellsOrderSet = 0
 Global $g_hBtnRemoveSpells
 
@@ -235,7 +237,7 @@ Func CreateTrainArmy()
 			GetTranslatedFileIni("MBR Global GUI Design", "DoubleTrainTip1", "Make sure to enter exactly the 'Total Camp',") & @CRLF & _
 			GetTranslatedFileIni("MBR Global GUI Design", "DoubleTrainTip2", "'Total Spell' and number of Troops/Spells in your Setting") & @CRLF & _
 			GetTranslatedFileIni("MBR Global GUI Design", "DoubleTrainTip3", "Note: Donations + Double Train can produce an unbalanced army!"))
-	
+
 	$g_hGUI_TRAINARMY_ARMY_TAB = GUICtrlCreateTab(0, 30, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3 - 30, BitOR($TCS_FORCELABELLEFT, $TCS_FIXEDWIDTH))
 	_GUICtrlTab_SetItemSize($g_hGUI_TRAINARMY_ARMY_TAB, 90, 20)
 	CreateCustomTrainSubTab()
@@ -302,15 +304,15 @@ EndFunc   ;==>CreateQuickTrainSubTab
 
 Func CreateQuickTrainEdit()
 
-	$g_hGUI_QuickTrainEdit = _GUICreate(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "GUI_QuickTrainEdit", "Edit troops and spells for quick train"), 485, 410, -1, -1, $WS_BORDER, $WS_EX_CONTROLPARENT)
+	$g_hGUI_QuickTrainEdit = _GUICreate(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "GUI_QuickTrainEdit", "Edit troops and spells for quick train"), 475, 445, -1, -1, $WS_BORDER, $WS_EX_CONTROLPARENT)
 
 	Local $x = 7
 	Local $y = 5
-	$g_hGrp_QTEdit = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "GUI_QuickTrainEdit", "Edit troops and spells for quick train"), $x, $y, 454, 320)
+	$g_hGrp_QTEdit = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "GUI_QuickTrainEdit", "Edit troops and spells for quick train"), $x, $y, 454, 405)
 
 	$x = 12
 	$y = 20
-	GUICtrlCreateGroup("", $x, $y - 3, 444, 165)
+	GUICtrlCreateGroup("", $x, $y - 3, 444, 130)
 
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnResetButton, $x + 10, $y + 15, 22, 22)
 	GUICtrlSetOnEvent(-1, "RemoveArmy_QTEdit")
@@ -371,10 +373,19 @@ Func CreateQuickTrainEdit()
 	$x = 14
 	$y = 330
 	For $i = 0 To $eSpellCount - 1
+		If $i <= 12 Then
+			If $i > 0 Then $x += 34
+		Else
+			If $i = 13 Then
+				$x = 14
+			Else
+				$x += 34
+			EndIf
+			$y = 370
+		EndIf
 		$g_ahPicSpell_QTEdit[$i] = _GUICtrlCreateIcon($g_sLibIconPath, $g_aQuickSpellIcon[$i], $x, $y, 32, 32)
 		GUICtrlSetTip(-1, $g_asSpellNames[$i])
 		GUICtrlSetOnEvent(-1, "SelectSpell_QTEdit")
-		$x += 34
 	Next
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -977,6 +988,15 @@ Func CreateCustomTrainSubTab()
 	GUICtrlSetLimit(-1, 2)
 	GUICtrlSetOnEvent(-1, "TrainSpellCountEdit")
 
+	$x += $xsplit
+	; Overgrowth
+	Local $sSpellName = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtOvergrowthSpells", "Overgrowth Spell")
+	$g_ahPicTrainArmySpell[$eSpellOvergrowth] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOvergrowthSpell, $x + 3, $y, 36, 36)
+	$g_ahTxtTrainArmySpellCount[$eSpellOvergrowth] = GUICtrlCreateInput("0", $x + 1, $y + 39, 40, 17, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	_GUICtrlSetTip(-1, $sTxtSetPerc & " " & $sSpellName & " " & $sTxtSetPerc2)
+	GUICtrlSetLimit(-1, 2)
+	GUICtrlSetOnEvent(-1, "TrainSpellCountEdit")
+
 	$x = $iStartX
 	$y = $iStartY
 	; Wall Wrecker
@@ -1290,54 +1310,47 @@ Func CreateOrderTroopsSubTab()
 	Local $txtTroopOrder = GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "TxtTroopOrder", "Enter sequence order for training of troop #")
 
 	; Create ComboBox(es) for selection of troop training order
-	$y += 23
-	For $z = 0 To $eTroopCount - 1
-		If $z < 13 Then
-			GUICtrlCreateLabel($z + 1 & ":", $x - 16, $y + 2, -1, 18)
-			$g_ahCmbTroopOrder[$z] = GUICtrlCreateCombo("", $x, $y, 94, 18, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
+	$x += 50
+	$y += 30
+	For $z = 0 To UBound($g_ahCmbTroopOrder) - 1
+		If $z < 5 Then
+			GUICtrlCreateLabel($z + 1 & ":", $x - 16, $y + 2, -1, 25)
+			$g_ahCmbTroopOrder[$z] = GUICtrlCreateCombo("", $x, $y, 94, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
 			GUICtrlSetOnEvent(-1, "GUITrainOrder")
 			GUICtrlSetData(-1, $sComboData, "")
 			_GUICtrlSetTip(-1, $txtTroopOrder & $z + 1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			$g_ahImgTroopOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 96, $y + 1, 18, 18)
-			$y += 22 ; move down to next combobox location
-		ElseIf $z > 12 And $z < 27 Then
-			If $z = 13 Then
-				$x += 141
-				$y = 37
+			$g_ahImgTroopOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 97, $y - 2, 24, 24)
+			$y += 35 ; move down to next combobox location
+		ElseIf $z > 4 And $z < 10 Then
+			If $z = 5 Then
+				$x += 161
+				$y = 60
 			EndIf
-			GUICtrlCreateLabel($z + 1 & ":", $x - 13, $y + 2, -1, 18)
-			$g_ahCmbTroopOrder[$z] = GUICtrlCreateCombo("", $x + 4, $y, 94, 18, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
+			GUICtrlCreateLabel($z + 1 & ":", $x - 13, $y + 2, -1, 25)
+			$g_ahCmbTroopOrder[$z] = GUICtrlCreateCombo("", $x + 4, $y, 94, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
 			GUICtrlSetOnEvent(-1, "GUITrainOrder")
 			GUICtrlSetData(-1, $sComboData, "")
 			_GUICtrlSetTip(-1, $txtTroopOrder & $z + 1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			$g_ahImgTroopOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 100, $y + 1, 18, 18)
-			$y += 22 ; move down to next combobox location
+			$g_ahImgTroopOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 101, $y - 2, 24, 24)
+			$y += 35 ; move down to next combobox location
 		Else
-			If $z = 27 Then
-				$x += 145
-				$y = 37
-			EndIf
-			GUICtrlCreateLabel($z + 1 & ":", $x - 13, $y + 2, -1, 18)
-			$g_ahCmbTroopOrder[$z] = GUICtrlCreateCombo("", $x + 4, $y, 94, 18, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
+			$g_ahCmbTroopOrder[$z] = GUICtrlCreateCombo("", $x + 4, $y, 94, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
 			GUICtrlSetOnEvent(-1, "GUITrainOrder")
 			GUICtrlSetData(-1, $sComboData, "")
-			_GUICtrlSetTip(-1, $txtTroopOrder & $z + 1)
-			GUICtrlSetState(-1, $GUI_DISABLE)
-			$g_ahImgTroopOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 100, $y + 1, 18, 18)
-			$y += 22 ; move down to next combobox location
+			GUICtrlSetState(-1, $GUI_HIDE)
 		EndIf
 	Next
 
-	$x = 25
-	$y = 350
+	$x = 85
+	$y = 280
 	$g_hBtnRemoveTroops = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnRemoveTroops", "Empty Troop List"), $x - 6, $y, 96, 20)
 	GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnRemoveTroops_Info_01", "Push button to remove all troops from list and start over"))
 	GUICtrlSetOnEvent(-1, "btnRemoveTroops")
 
-	$x += 115
+	$x += 145
 	$g_hBtnTroopOrderSet = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnTroopOrderSet", "Apply New Order"), $x - 6, $y, 96, 20)
 	GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnTroopOrderSet_Info_01", "Push button when finished selecting custom troop training order") & @CRLF & _
@@ -1371,22 +1384,40 @@ Func CreateOrderSpellsSubTab()
 	Local $txtSpellsOrder = GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "txtSpellsOrder", "Enter sequence order for brew Spells #")
 
 	; Create ComboBox(es) for selection of Spells brew order
-	$y += 23
+	$x += 50
+	$y += 30
 	For $z = 0 To $eSpellCount - 1
-		GUICtrlCreateLabel($z + 1 & ":", $x - 16, $y + 2, -1, 18)
-		$g_ahCmbSpellsOrder[$z] = GUICtrlCreateCombo("", $x, $y, 94, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-		GUICtrlSetOnEvent(-1, "GUISpellsOrder")
-		GUICtrlSetData(-1, $sComboData, "")
-		_GUICtrlSetTip(-1, $txtSpellsOrder & $z + 1)
-		GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahImgSpellsOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 96, $y + 1, 18, 18)
-		$y += 22 ; move down to next combobox location
+		If $z < 7 Then
+			GUICtrlCreateLabel($z + 1 & ":", $x - 16, $y + 2, -1, 18)
+			$g_ahCmbSpellsOrder[$z] = GUICtrlCreateCombo("", $x, $y, 94, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			GUICtrlSetOnEvent(-1, "GUISpellsOrder")
+			GUICtrlSetData(-1, $sComboData, "")
+			_GUICtrlSetTip(-1, $txtSpellsOrder & $z + 1)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+			$g_ahImgSpellsOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 97, $y - 2, 24, 24)
+			$y += 35 ; move down to next combobox location
+		Else
+			If $z = 7 Then
+				$x += 161
+				$y = 60
+			EndIf
+			GUICtrlCreateLabel($z + 1 & ":", $x - 13, $y + 2, -1, 18)
+			$g_ahCmbSpellsOrder[$z] = GUICtrlCreateCombo("", $x + 4, $y, 94, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			GUICtrlSetOnEvent(-1, "GUISpellsOrder")
+			GUICtrlSetData(-1, $sComboData, "")
+			_GUICtrlSetTip(-1, $txtSpellsOrder & $z + 1)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+			$g_ahImgSpellsOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 101, $y - 2, 24, 24)
+			$y += 35 ; move down to next combobox location
+		EndIf
 	Next
-	$y += 8
+	$x = 85
+	$y = 320
 	$g_hBtnRemoveSpells = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnRemoveSpells", "Empty Spell list"), $x, $y, 94, 22)
 	GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnRemoveSpells_Info_01", "Push button to remove all spells from list and start over"))
 	GUICtrlSetOnEvent(-1, "BtnRemoveSpells")
+
 	$x += 145
 	$g_hBtnSpellsOrderSet = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnSpellsOrderSet", "Apply New Order"), $x, $y, 94, 22)
 	GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
@@ -1394,7 +1425,7 @@ Func CreateOrderSpellsSubTab()
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnSpellsOrderSet_Info_02", "Icon changes color based on status: Red= Not Set, Green = Order Set") & @CRLF & _
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_TrainingOrder", "BtnSpellsOrderSet_Info_03", "When not all spells slots are filled, will use random spell order in empty slots!"))
 	GUICtrlSetOnEvent(-1, "BtnSpellsOrderSet")
-	$g_ahImgSpellsOrderSet = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSilverStar, $x + 139, $y + 2, 18, 18)
+	$g_ahImgSpellsOrderSet = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSilverStar, $x + 119, $y + 2, 18, 18)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc   ;==>CreateOrderSpellsSubTab
 

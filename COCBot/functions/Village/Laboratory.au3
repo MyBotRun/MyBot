@@ -56,11 +56,12 @@ Func Laboratory($debug = False)
 	; Get updated village elixir and dark elixir values
 	VillageReport()
 
-	$GobBuilderPresent = False
-	$GobBuilderOffsetRunning = 0
-	If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilder, 275, 45, 430, 70, True))) > 1 Then
+	If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilder, 240, 0, 450, 60, True))) > 1 Then
 		$GobBuilderPresent = True
 		$GobBuilderOffsetRunning = 355
+	Else
+		$GobBuilderPresent = False
+		$GobBuilderOffsetRunning = 0
 	EndIf
 
 	;Click Laboratory

@@ -478,6 +478,7 @@ Func ReferenceGlobals()
 	$a1 = $eSpellHaste
 	$a1 = $eSpellSkeleton
 	$a1 = $eSpellBat
+	$a1 = $eSpellOvergrowth
 	$a1 = $eSpellCount
 	$a1 = $eBarb
 	$a1 = $eArch
@@ -528,6 +529,7 @@ Func ReferenceGlobals()
 	$a1 = $eHaSpell
 	$a1 = $eSkSpell
 	$a1 = $eBtSpell
+	$a1 = $eOgSpell
 
 	$a1 = $eIcnChampion
 	$a1 = $eIcnChampionBoostLocate

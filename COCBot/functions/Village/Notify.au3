@@ -381,6 +381,9 @@ Func NotifyRemoteControlProc()
 						$txtStats &= "%0A%0A" & GetTranslatedFileIni("MBR Func_Notify", "Free-Builders_Info_01", "No. of Free Builders") & ": " & $g_iFreeBuilderCount & "%0A[" & GetTranslatedFileIni("MBR Func_Notify", "Wall-Up_Info_01", "No. of Wall Up") & "]: [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: "
 						$txtStats &= $g_iNbrOfWallsUppedGold & "/ [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & $g_iNbrOfWallsUppedElixir & "%0A%0A" & GetTranslatedFileIni("MBR Func_Notify", "Attack_Info_01", "Attacked") & ": "
 						$txtStats &= $g_aiAttackedCount & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Skip_Info_02", "Skipped") & ": " & $g_iSkippedVillageCount
+						if ($g_bLegendsAllMade = True) Then
+							$txtStats &= "%0A" & GetTranslatedFileIni("LegendsAllMade", "LegendsAllMade", "All Legends attacks made today.")
+						EndIf
 						Local $day = 0, $hour = 0, $min = 0, $sec = 0
 						_TicksToDay(Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed), $day, $hour, $min, $sec)
 						GUICtrlSetData($g_hLblResultRuntime, $day > 0 ? StringFormat("%2u Day(s) %02i:%02i:%02i", $day, $hour, $min, $sec) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))

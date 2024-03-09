@@ -180,10 +180,10 @@ EndFunc   ;==>getArmyHeroCount
 
 Func ArmyHeroStatus($i)
 	Local $sResult = ""
-	Local Const $aHeroesRect[$eHeroCount][4] = [[525, 315 + $g_iMidOffsetY, 587, 375 + $g_iMidOffsetY], _
-			[590, 315 + $g_iMidOffsetY, 650, 375 + $g_iMidOffsetY], _
-			[652, 315 + $g_iMidOffsetY, 713, 375 + $g_iMidOffsetY], _
-			[716, 315 + $g_iMidOffsetY, 778, 375 + $g_iMidOffsetY]]                                     ; Review
+	Local Const $aHeroesRect[$eHeroCount][4] = [[525, 315 + $g_iMidOffsetY, 589, 375 + $g_iMidOffsetY], _
+			[590, 315 + $g_iMidOffsetY, 653, 375 + $g_iMidOffsetY], _
+			[654, 315 + $g_iMidOffsetY, 717, 375 + $g_iMidOffsetY], _
+			[718, 315 + $g_iMidOffsetY, 780, 375 + $g_iMidOffsetY]]                                     ; Review
 
 	; Perform the search
 	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
@@ -352,11 +352,12 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		Return
 	EndIf
 
-	$GobBuilderPresent = False
-	$GobBuilderOffsetRunning = 0
-	If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilder, 275, 45, 430, 70, True))) > 1 Then
+	If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilder, 240, 0, 450, 60, True))) > 1 Then
 		$GobBuilderPresent = True
 		$GobBuilderOffsetRunning = 355
+	Else
+		$GobBuilderPresent = False
+		$GobBuilderOffsetRunning = 0
 	EndIf
 
 	BuildingClickP($g_aiLaboratoryPos, "#0197") ;Click Laboratory

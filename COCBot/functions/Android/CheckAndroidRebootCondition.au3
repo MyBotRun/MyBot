@@ -31,6 +31,7 @@ Func CheckAndroidRebootCondition($bRebootAndroid = True, $bLogOnly = False)
 	Select
 		Case $g_bGfxError
 			$g_bGfxError = False
+			$g_iGfxErrorCount = 0
 			SetLog("Reboot " & $g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") due to detected Gfx Errors")
 			Return True
 		Case $g_bNetworkError

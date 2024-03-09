@@ -223,8 +223,8 @@ Func LocateBattleCopter()
 					; Test the coordinates
 					Local $tempObbj = StringSplit($tempObbjs[$j], ",", $STR_NOCOUNT) ;  will be a string : 708,360
 					If UBound($tempObbj) = 2 Then
-						$g_aiBattleCopterPos[0] = Number($tempObbj[0]) ;+ 9
-						$g_aiBattleCopterPos[1] = Number($tempObbj[1]) ;+ 15
+						$g_aiBattleCopterPos[0] = Number($tempObbj[0]) + 9
+						$g_aiBattleCopterPos[1] = Number($tempObbj[1]) + 15
 						ConvertFromVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 						ExitLoop 2
 					EndIf
@@ -233,8 +233,8 @@ Func LocateBattleCopter()
 				; Test the coordinate
 				Local $tempObbj = StringSplit($aObjectpoints, ",", $STR_NOCOUNT) ;  will be a string : 708,360
 				If UBound($tempObbj) = 2 Then
-					$g_aiBattleCopterPos[0] = Number($tempObbj[0]) ;+ 9
-					$g_aiBattleCopterPos[1] = Number($tempObbj[1]) ;+ 15
+					$g_aiBattleCopterPos[0] = Number($tempObbj[0]) + 9
+					$g_aiBattleCopterPos[1] = Number($tempObbj[1]) + 15
 					ConvertFromVillagePos($g_aiBattleCopterPos[0], $g_aiBattleCopterPos[1])
 					ExitLoop
 				EndIf

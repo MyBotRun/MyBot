@@ -18,8 +18,8 @@ Func StarBonus()
 	; Verify is Star bonus window open?
 	If Not _CheckPixel($aIsMainGrayed, $g_bCapturePixel, Default, "IsMainGrayed") Then Return ; Star bonus window opens on main base view, and grays page.
 
-	Local $aWindowChk1[4] = [615, 155 + $g_iMidOffsetY, 0x33A2F9, 20] ; Top Blue Sky
-	Local $aWindowChk2[4] = [540, 215 + $g_iMidOffsetY, 0xC6C9C4, 20] ; Grey star
+	Local $aWindowChk1[4] = [630, 100 + $g_iMidOffsetY, 0x32A1F7, 20] ; Top Blue Sky
+	Local $aWindowChk2[4] = [570, 180 + $g_iMidOffsetY, 0xC8CAC6, 20] ; Grey star
 
 	If _Sleep($DELAYSTARBONUS100) Then Return
 

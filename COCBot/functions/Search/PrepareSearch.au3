@@ -84,6 +84,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 				Return
 			ElseIf StringInStr($sButtonState, "Made", 0) > 0 Then
 				SetLog("All Attacks already made! Returning home", $COLOR_INFO)
+				$g_bLegendsAllMade = True
 				$g_bRestart = True
 				CloseWindow()
 				$g_bForceSwitch = True     ; set this switch accounts next check
@@ -119,9 +120,14 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 				SetLog("Sign-up to Legend League", $COLOR_INFO)
 				Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 				ClickP($aCoordinates, 1, 0, "#0000")
-				If _Sleep(1000) Then Return
-				SetLog("Sign-up to Legend League done", $COLOR_INFO)
 				If _Sleep(2000) Then Return
+				$aCoordinates = findButton("Okay", Default, 1, True)
+				If IsArray($aCoordinates) And UBound($aCoordinates) > 1 Then
+					ClickP($aCoordinates, 1, 0, "#0000")
+					If _Sleep(2000) Then Return
+				EndIf
+				SetLog("Sign-up to Legend League done", $COLOR_INFO)
+				If _Sleep(1000) Then Return
 				SetLog("Finding opponents! Waiting 5 minutes and then try again to find a match", $COLOR_INFO)
 				If _Sleep(300000) Then Return     ; Wait 5mins before searching again
 				$bSignedUpLegendLeague = True

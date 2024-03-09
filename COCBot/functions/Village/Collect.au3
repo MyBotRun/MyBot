@@ -85,10 +85,10 @@ Func CollectLootCart()
 		If IsMainPage() Then ClickP($aLootCart, 1, 0, "#0330")
 		If _Sleep(1000) Then Return
 
-		If _ColorCheck(_GetPixelColor(330, 338  + $g_iMidOffsetY, True), Hex(0xC55115, 6), 20) Then ; close chat
+		If _ColorCheck(_GetPixelColor(385, 340 + $g_iMidOffsetY, True), Hex(0xC55115, 6), 20) Then     ; close chat
 			If Not ClickB("ClanChat") Then
 				SetLog("Error finding the Clan Tab Button", $COLOR_ERROR)
-				Click(332, 312 + $g_iMidOffsetY)
+				Click(392, 312 + $g_iMidOffsetY)
 				Return
 			EndIf
 			If _Sleep(500) Then Return
