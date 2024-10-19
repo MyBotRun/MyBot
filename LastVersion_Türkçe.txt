@@ -1,4 +1,4 @@
 ﻿[general]
-version = "v8.1.6"
-messagenew = "Clash of Clans Şubat 2024 Güncellemesi APP v16.137.13+ artık destekleniyor!\n Oyun Uygulamasının güncellenmesi gerekiyor!\n https://github.com/MyBotRun/MyBot/wiki/ChangeLog\n\nArtı yeni özellikler ve düzeltmeler"
+version = "v8.1.7"
+messagenew = "Clash of Clans Ekim 2024 Güncellemesi APP v16.517.17++ artık destekleniyor!\n Oyun Uygulamasının güncellenmesi gerekiyor!\n https://github.com/MyBotRun/MyBot/wiki/ChangeLog\n\nArtı yeni özellikler ve düzeltmeler"
 messageold = "MyBot'un yeni bir sürümü çıktı!\nLütfen yeni sürümü web sayfamızdan indirin:\nhttps://mybot.run"
