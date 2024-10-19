@@ -29,14 +29,14 @@ Global $g_ahCmbClanCastleSpell[3], $g_ahCmbClanCastleSiege[2]
 
 ; Donate
 Global $g_hChkExtraAlphabets = 0, $g_hChkExtraChinese = 0, $g_hChkExtraKorean = 0, $g_hChkExtraPersian = 0
-Global $g_ahChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahGrpDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahGrpDonateTroop2[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahLblDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahBtnDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahGrpDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahGrpDonateTroop2[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahLblDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahBtnDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Global $g_ahChkDonateSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_ahChkDonateAllSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -374,7 +374,8 @@ Func CreateDonateSubTab()
 	Local $sTxtSuperValkyries = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtSuperValkyries", "Super Valkyries")
 	Local $sTxtSuperWitches = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtSuperWitches", "Super Witches")
 	Local $sTxtIceHounds = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtIceHounds", "Ice Hounds")
-	Local $sTxtAppWards = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtAppWard", "App. Warden")
+	Local $sTxtAppWards = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtAppWards", "App. Wardens")
+	Local $sTxtDruids = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtDruids", "Druids")
 
 	Local $sTxtLightningSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortLightningSpells", "Lightning")
 	Local $sTxtHealSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortHealSpells", "Heal")
@@ -617,6 +618,14 @@ Func CreateDonateSubTab()
 	$g_ahBtnDonateTroop[$eTroopHeadhunter] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnHeadhunter, 1)
 	GUICtrlSetOnEvent(-1, "btnDonateTroop")
+	; Druid
+	$x += $Offx
+	$g_ahLblDonateTroop[$eTroopDruid] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetState(-1, $GUI_DISABLE)
+	$g_ahBtnDonateTroop[$eTroopDruid] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnDruid, 1)
+	GUICtrlSetOnEvent(-1, "btnDonateTroop")
 	; Lightening
 	$x += $Offx
 	$g_ahLblDonateSpell[$eSpellLightning] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
@@ -705,19 +714,19 @@ Func CreateDonateSubTab()
 	$g_ahBtnDonateSpell[$eSpellHaste] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnHasteSpell, 1)
 	GUICtrlSetOnEvent(-1, "btnDonateSpell")
+
+	; 4 Row
+	$x = $xStart - 20
+	$y += 36
 	; Skeleton
-	$x += $Offx
 	$g_ahLblDonateSpell[$eSpellSkeleton] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$g_ahBtnDonateSpell[$eSpellSkeleton] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnSkeletonSpell, 1)
 	GUICtrlSetOnEvent(-1, "btnDonateSpell")
-
-	; 4 Row
-	$x = $xStart - 20
-	$y += 36
 	; Bat
+	$x += $Offx
 	$g_ahLblDonateSpell[$eSpellBat] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetState(-1, $GUI_DISABLE)
@@ -812,19 +821,19 @@ Func CreateDonateSubTab()
 	$g_ahBtnDonateTroop[$eTroopSuperMiner] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnSuperMiner, 1)
 	GUICtrlSetOnEvent(-1, "btnDonateTroop")
+
+	; 5 Row
+	$x = $xStart - 20
+	$y += 36
 	; Super Minion
-	$x += $Offx
 	$g_ahLblDonateTroop[$eTroopSuperMinion] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$g_ahBtnDonateTroop[$eTroopSuperMinion] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnSuperMinion, 1)
 	GUICtrlSetOnEvent(-1, "btnDonateTroop")
-
-	; 5 Row
-	$x = $xStart - 20
-	$y += 36
 	; Super Valkyrie
+	$x += $Offx
 	$g_ahLblDonateTroop[$eTroopSuperValkyrie] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetState(-1, $GUI_DISABLE)
@@ -919,19 +928,19 @@ Func CreateDonateSubTab()
 	$g_ahBtnDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeLogLauncher] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnLogL, 1)
 	GUICtrlSetOnEvent(-1, "btnDonateTroop")
+
+	; 6 Row
+	$x = $xStart - 20
+	$y += 36
 	; Flame Flinger
-	$x += $Offx
 	$g_ahLblDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeFlameFlinger] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$g_ahBtnDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeFlameFlinger] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 	_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnFlameF, 1)
 	GUICtrlSetOnEvent(-1, "btnDonateTroop")
-
-	; 6 Row
-	$x = $xStart - 20
-	$y += 36
 	; Battle Drill
+	$x += $Offx
 	$g_ahLblDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleDrill] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetState(-1, $GUI_DISABLE)
@@ -1873,7 +1882,7 @@ Func CreateDonateSubTab()
 	GUICtrlSetState(-1, $GUI_HIDE)
 	$g_ahTxtDonateTroop[$eTroopAppWard] = GUICtrlCreateEdit("", $x - 5, $y + 20, 205, 90, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
 	GUICtrlSetState(-1, $GUI_HIDE)
-	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtDonateTroop_Item_65", "Apprentice Warden\r\nAppWard")))
+	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtDonateTroop_Item_65", "apprentice warden\r\nappward")))
 	_GUICtrlSetTip(-1, $sTxtKeywords & " " & $sTxtAppWards)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 	$g_ahGrpDonateTroop2[$eTroopAppWard] = GUICtrlCreateGroup("", $x + 208, $y - 43, 212, 166)
@@ -1894,8 +1903,43 @@ Func CreateDonateSubTab()
 	GUICtrlSetState(-1, $GUI_HIDE)
 	GUICtrlSetBkColor(-1, 0x505050)
 	GUICtrlSetColor(-1, $COLOR_WHITE)
-	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_65", "no Apprentice Warden\r\nno AppWard")))
+	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_65", "no apprentice warden\r\nno appward")))
 	_GUICtrlSetTip(-1, $sTxtKeywordsNoTip & " " & $sTxtAppWards)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$x = $xStart
+	$y = $Offy
+	$g_ahGrpDonateTroop[$eTroopDruid] = GUICtrlCreateGroup($sTxtDruids, $x - 20, $y + 15, 216, 134)
+	$x -= 10
+	$y += 26
+	GUICtrlSetState(-1, $GUI_HIDE)
+	GUICtrlCreateLabel($sTxtKeywords & " " & $sTxtDruids & ":", $x - 5, $y + 5, -1, -1)
+	GUICtrlSetState(-1, $GUI_HIDE)
+	$g_ahTxtDonateTroop[$eTroopDruid] = GUICtrlCreateEdit("", $x - 5, $y + 20, 205, 90, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
+	GUICtrlSetState(-1, $GUI_HIDE)
+	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtDonateTroop_Item_69", "druid")))
+	_GUICtrlSetTip(-1, $sTxtKeywords & " " & $sTxtDruids)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+	$g_ahGrpDonateTroop2[$eTroopDruid] = GUICtrlCreateGroup("", $x + 208, $y - 43, 212, 166)
+	GUICtrlSetState(-1, $GUI_HIDE)
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDruid, $x + 215, $y - 30, 64, 64, $BS_ICON)
+	GUICtrlSetState(-1, $GUI_HIDE)
+	$g_ahChkDonateTroop[$eTroopDruid] = GUICtrlCreateCheckbox($sTxtDonate & " " & $sTxtDruids, $x + 285, $y - 30, -1, -1)
+	GUICtrlSetState(-1, $GUI_HIDE)
+	_GUICtrlSetTip(-1, $sTxtDonateTip & " " & $sTxtDruids & " " & $sTxtDonateTipTroop)
+	GUICtrlSetOnEvent(-1, "chkDonateTroop")
+	$g_ahChkDonateAllTroop[$eTroopDruid] = GUICtrlCreateCheckbox($sTxtDonateAll, $x + 285, $y - 10, -1, -1)
+	GUICtrlSetState(-1, $GUI_HIDE)
+	_GUICtrlSetTip(-1, $sTxtDonateTip & " " & $sTxtDruids & " " & $sTxtDonateTipAll & @CRLF & $sTxtIgnoreAll)
+	GUICtrlSetOnEvent(-1, "chkDonateAllTroop")
+	GUICtrlCreateLabel($sTxtKeywordsNo & ":", $x + 215, $y + 40, -1, -1)
+	GUICtrlSetState(-1, $GUI_HIDE)
+	$g_ahTxtBlacklistTroop[$eTroopDruid] = GUICtrlCreateEdit("", $x + 215, $y + 55, 200, 55, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
+	GUICtrlSetState(-1, $GUI_HIDE)
+	GUICtrlSetBkColor(-1, 0x505050)
+	GUICtrlSetColor(-1, $COLOR_WHITE)
+	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_69", "no druid\r\ndruid no")))
+	_GUICtrlSetTip(-1, $sTxtKeywordsNoTip & " " & $sTxtDruids)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	;Super Troops
@@ -2927,7 +2971,7 @@ Func CreateDonateSubTab()
 	GUICtrlSetState(-1, $GUI_HIDE)
 	$g_ahTxtDonateSpell[$eSpellOvergrowth] = GUICtrlCreateEdit("", $x - 5, $y + 20, 205, 90, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
 	GUICtrlSetState(-1, $GUI_HIDE)
-	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtDonateTroop_Item_34", "overgrowth")))
+	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtDonateTroop_Item_68", "overgrowth")))
 	_GUICtrlSetTip(-1, $sTxtKeywords & " " & $sTxtOvergrowthSpells)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 	$g_ahGrpDonateTroop2[$eSpellOvergrowth] = GUICtrlCreateGroup("", $x + 208, $y - 43, 212, 166)
@@ -2948,7 +2992,7 @@ Func CreateDonateSubTab()
 	GUICtrlSetState(-1, $GUI_HIDE)
 	GUICtrlSetBkColor(-1, 0x505050)
 	GUICtrlSetColor(-1, $COLOR_WHITE)
-	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_34", "no overgrowth\r\novergrowth no")))
+	GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_68", "no overgrowth\r\novergrowth no")))
 	_GUICtrlSetTip(-1, $sTxtKeywordsNoTip & " " & $sTxtOvergrowthSpells)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -2957,7 +3001,7 @@ Func CreateDonateSubTab()
 	$y = $Offy
 	;;; Custom Combination Donate #1 by ChiefM3, edit by Hervidero
 
-	Local $aTroopList = $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtSuperDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtSuperMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtElectroTitans & "|" & $sTxtRootRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtSuperHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtSuperBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtAppWards & "|" & $sTxtNothing
+	Local $aTroopList = $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtSuperDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtSuperMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtElectroTitans & "|" & $sTxtRootRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtSuperHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtSuperBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtAppWards & "|" & $sTxtDruids & "|" & $sTxtNothing
 
 	$g_ahGrpDonateTroop[$eCustomA] = GUICtrlCreateGroup($sDonateTxtCustomA, $x - 20, $y + 15, 216, 134)
 	$x -= 10

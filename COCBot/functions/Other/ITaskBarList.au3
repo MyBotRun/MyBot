@@ -141,11 +141,11 @@ EndFunc   ;==>_ITaskBar_Init
 			If $iRet Then Return SetError($iRet, 0, 0)
 		EndIf
 
-		Local $time = TimerInit()
+		Local $time = __TimerInit()
 		;The Tab should be created by now.
 		While Not $g_ITBL_bTaskBarReady
 			Sleep(10)
-			If TimerDiff($time) > 5000 Then Return SetError(2, 0, 0)
+			If __TimerDiff($time) > 5000 Then Return SetError(2, 0, 0)
 		WEnd
 
 		Return SetError(0, 0, $g_ITBL_oTaskBar)

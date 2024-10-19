@@ -18,7 +18,7 @@ Func isNoUpgradeLoot($bNeedCaptureRegion = False)
 	Local $OrangeSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFF7A0D, 6), 20, $bNeedCaptureRegion)
 	If IsArray($RedSearch) Or IsArray($OrangeSearch) Then
 		If $g_bDebugSetlog Then SetDebugLog("isNoUpgradeLoot Red Zero found", $COLOR_DEBUG)
-		PureClickP($aAway, 1, 0, "#0142") ; click away to close upgrade window
+		PureClickP($aAway, 1, 120, "#0142") ; click away to close upgrade window
 		Return True
 	EndIf
 	Return False

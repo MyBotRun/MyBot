@@ -32,8 +32,7 @@ Func _AutoUpgrade()
 		$iLoopAmount += 1
 		If $iLoopAmount >= $iLoopMax Or $iLoopAmount >= 12 Then ExitLoop ; 8 loops max, to avoid infinite loop
 
-		ClickAway()
-		If _sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
+		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 		VillageReport(True, True)
 
 		;Check if there is a free builder for Auto Upgrade
@@ -50,13 +49,13 @@ Func _AutoUpgrade()
 		EndIf
 
 		; open the builders menu
-		Click(435, 30)
+		If Not IsBuilderMenuOpen() Then ClickMainBuilder()
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
 		; search for ressource images in builders menu, if found, a possible upgrade is available
 		Local $aTmpCoord
 		Local $IsElix = False
-		$aTmpCoord = QuickMIS("CNX", $g_sImgResourceIcon, 410, $g_iNextLineOffset, 550, 370 + $g_iMidOffsetY)
+		$aTmpCoord = QuickMIS("CNX", $g_sImgResourceIcon, 410, $g_iNextLineOffset, 565, 370 + $g_iMidOffsetY)
 		_ArraySort($aTmpCoord, 0, 0, 0, 2) ;sort by Y coord
 		If IsArray($aTmpCoord) And UBound($aTmpCoord) > 0 Then
 			$g_iNextLineOffset = $aTmpCoord[0][2] + 14
@@ -82,7 +81,7 @@ Func _AutoUpgrade()
 		Click($aTmpCoord[0][1] + 20, $aTmpCoord[0][2])
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
-		$g_aUpgradeNameLevel = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		$g_aUpgradeNameLevel = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 		Local $aUpgradeButton, $aTmpUpgradeButton
 
 		; check if any wrong click by verifying the presence of the Upgrade button (the hammer)
@@ -166,6 +165,7 @@ Func _AutoUpgrade()
 		; if upgrade don't have to be ignored, click on the Upgrade button to open Upgrade window
 		ClickP($aUpgradeButton)
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
+		CloseSuperchargeWindow()
 
 		$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 670, 535 + $g_iMidOffsetY, 700, 565 + $g_iMidOffsetY) ; get resource
 		$g_aUpgradeResourceCostDuration[1] = getCostsUpgrade(552, 541 + $g_iMidOffsetY) ; get cost
@@ -179,7 +179,7 @@ Func _AutoUpgrade()
 			If $g_aUpgradeResourceCostDuration[$i] = "" Then
 				SaveDebugImage("UpgradeReadError_")
 				SetLog("Error when trying to get upgrade details, looking next...", $COLOR_ERROR)
-				ClickAway()
+				CloseWindow2()
 				ContinueLoop 2
 			EndIf
 		Next
@@ -200,7 +200,7 @@ Func _AutoUpgrade()
 		; check if the resource of the upgrade must be ignored
 		If $bMustIgnoreResource = True Then
 			SetLog("This resource must be ignored, looking next...", $COLOR_WARNING)
-			ClickAway()
+			CloseWindow2()
 			ContinueLoop
 		EndIf
 
@@ -218,7 +218,7 @@ Func _AutoUpgrade()
 		; if boolean still False, we can't launch upgrade, exiting...
 		If Not $bSufficentResourceToUpgrade Then
 			SetLog("Insufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
-			ClickAway()
+			CloseWindow2()
 			ContinueLoop
 		EndIf
 
@@ -231,7 +231,7 @@ Func _AutoUpgrade()
 			Local $aiCancelButton = findButton("Cancel", Default, 1, True)
 			If IsArray($aiCancelButton) And UBound($aiCancelButton, 1) = 2 Then
 				SetLog("MBR is not designed to rush a TH upgrade", $COLOR_ERROR)
-				PureClick($aiCancelButton[0], $aiCancelButton[1], 2, 50, "#0117") ; Click Cancel Button
+				PureClick($aiCancelButton[0], $aiCancelButton[1], 2, 120, "#0117") ; Click Cancel Button
 				If _Sleep(1500) Then Return
 				CloseWindow()
 				ContinueLoop
@@ -328,13 +328,24 @@ Func _AutoUpgrade()
 				" " & $g_aUpgradeResourceCostDuration[0] & _
 				" - Duration : " & $g_aUpgradeResourceCostDuration[2])
 
+		ClearScreen()
+
 	WEnd
+
+	If IsBuilderMenuOpen() Then
+		Click(435, 30)
+		If _Sleep(500) Then Return
+	EndIf
+	ClearScreen()
+	If _Sleep(500) Then Return
 
 	; resetting the offset of the lines
 	$g_iNextLineOffset = 75
 
 	SetLog("Auto Upgrade finished", $COLOR_INFO)
-	ClickAway()
+	If _Sleep($DELAYUPGRADEBUILDING2) Then Return
+	VillageReport(True, True)
+	UpdateStats()
 	ZoomOut() ; re-center village
 
 EndFunc   ;==>_AutoUpgrade
@@ -346,3 +357,60 @@ Func AutoWallsStatsMAJ($CurrentWallLevel = 10)
 	GUICtrlSetData($g_ahWallsCurrentCount[$CurrentWallLevel], $g_aiWallsCurrentCount[$CurrentWallLevel])
 	SaveConfig()
 EndFunc   ;==>AutoWallsStatsMAJ
+
+Func ClickMainBuilder($bTest = False, $Counter = 3)
+	Local $b_WindowOpened = False
+	If Not $g_bRunState Then Return
+	; open the builders menu
+	Click(435, 30)
+	If _Sleep(1000) Then Return
+
+	If IsBuilderMenuOpen() Then
+		SetDebugLog("Open Upgrade Window, Success", $COLOR_SUCCESS)
+		$b_WindowOpened = True
+	Else
+		For $i = 1 To $Counter
+			SetLog("Upgrade Window didn't open, trying again!", $COLOR_DEBUG)
+			Click(435, 30)
+			If _Sleep(1000) Then Return
+			If IsBuilderMenuOpen() Then
+				$b_WindowOpened = True
+				ExitLoop
+			EndIf
+		Next
+		If Not $b_WindowOpened Then
+			SetLog("Something is wrong with upgrade window, already tried 3 times!", $COLOR_DEBUG)
+		EndIf
+	EndIf
+	Return $b_WindowOpened
+EndFunc   ;==>ClickMainBuilder
+
+Func IsBuilderMenuOpen()
+	Local $bRet = False
+	Local $aBorder0[4] = [400, 73, 0x8C9CB6, 20]
+	Local $aBorder1[4] = [400, 73, 0xC0C9D3, 20]
+	Local $aBorder2[4] = [400, 73, 0xBEBFBC, 20]
+	Local $aBorder3[4] = [400, 73, 0xFFFFFF, 20]
+	Local $aBorder4[4] = [400, 73, 0xF7F8F5, 20]
+	Local $aBorder5[4] = [400, 73, 0xC3CBD9, 20]
+	Local $aBorder6[4] = [400, 73, 0xF4F4F5, 20]
+	Local $sTriangle
+
+	For $i = 0 To 5
+		If _CheckPixel($aBorder0, True) Or _CheckPixel($aBorder1, True) Or _CheckPixel($aBorder2, True) Or _CheckPixel($aBorder3, True) Or _CheckPixel($aBorder4, True) Or _
+				_CheckPixel($aBorder5, True) Or _CheckPixel($aBorder6, True) Then
+			SetDebugLog("Found Border Color: " & _GetPixelColor($aBorder0[0], $aBorder0[1], True), $COLOR_ACTION)
+			$bRet = True ;got correct color for border
+			ExitLoop
+		EndIf
+		_Sleep(500)
+	Next
+
+	If Not $bRet Then ;lets re check if border color check not success
+		$sTriangle = getOcrAndCapture("coc-buildermenu-main", 420, 60, 445, 73)
+		SetDebugLog("$sTriangle: " & $sTriangle)
+		If $sTriangle = "^" Then $bRet = True
+	EndIf
+
+	Return $bRet
+EndFunc   ;==>IsBuilderMenuOpen

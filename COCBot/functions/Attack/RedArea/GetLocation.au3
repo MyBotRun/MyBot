@@ -455,7 +455,7 @@ Func ConvertImgloc2MBR($aArray, $iMaxPositions, $bLevel = False)
 						If $bLevel Then $sStringConverted &= $aArray[$i][2] & "#" & $aCoord[$t][0] & "-" & $aCoord[$t][1] & "~"
 						If Not $bLevel Then $sStringConverted &= $aCoord[$t][0] & "-" & $aCoord[$t][1] & "|"
 						$iMax += 1
-						If $iMax = $iMaxPositions Then ExitLoop (2)
+						If $iMax = $iMaxPositions Then ExitLoop 2
 					EndIf
 				Next
 			EndIf

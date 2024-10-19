@@ -59,6 +59,20 @@ Func _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstC
 	Return 0
 EndFunc   ;==>_MultiPixelSearch
 
+Func _MultiPixelSearch2($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $iColorVariation)
+	Local $xRange = $iRight - $iLeft
+	Local $yRange = $iBottom - $iTop
+	For $x = 0 To $xRange Step $xSkip
+		For $y = 0 To $yRange Step $ySkip
+			If _ColorCheck(_GetPixelColor($iLeft + $x, $iTop + $y, $g_bCapturePixel), $firstColor, $iColorVariation) Then
+				Local $Pos[2] = [$iLeft + $x, $iTop + $y]
+				Return $Pos
+			EndIf
+		Next
+	Next
+	Return 0
+EndFunc   ;==>_MultiPixelSearch2
+
 ; rotate y first, x second: search in columns WITH Debug log when first point is found to help debug searching
 Func _MultiPixelSearchDebug($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)

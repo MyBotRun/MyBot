@@ -61,7 +61,7 @@ Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave)
 	If Not $g_iChkBBSuggestedUpgrades Then Return
 	Local $bDebug = $g_bDebugSetlog
 	Local $bScreencap = True
-	Local $y = 102, $x = 510, $x1 = 630
+	Local $y = 102, $x = 490, $x1 = 630
 
 	BuilderBaseReport(True, True)
 
@@ -170,8 +170,14 @@ Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave)
 		WEnd
 
 		SetLog("Exiting Auto Upgrade...", $COLOR_INFO)
-		If _Sleep(1500) Then Return
-		ClickAway("Right")
+
+		If _Sleep(250) Then Return
+		Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("MasterBuilderHead", $g_sImgMasterBuilderHead, 445, 0, 500, 54, True))
+		If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
+			If IsArray(_PixelSearch($asSearchResult[0] - 1, $asSearchResult[1] + 53, $asSearchResult[0] + 1, $asSearchResult[1] + 55, Hex(0xFFFFFF, 6), 15, True)) Then ClickP($asSearchResult)
+		EndIf
+		If _Sleep(1000) Then Return
+		ClearScreen("Right", False)
 		If _Sleep(500) Then Return
 		If Not $g_bRunState Then Return
 	EndIf
@@ -187,10 +193,10 @@ Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave)
 
 	If _Sleep(2000) Then Return
 
-	Zoomout()
+	ZoomOut()
 EndFunc   ;==>MainSuggestedUpgradeCode
 
-; This fucntion will Open the Suggested Window and check if is OK
+; This function will Open the Suggested Window and check if is OK
 Func ClickOnBuilder()
 
 	If _Sleep(250) Then Return
@@ -273,7 +279,7 @@ Func GetIconPosition($x, $y, $x1, $y1, $directory, $Screencap = True, $Debug = F
 EndFunc   ;==>GetIconPosition
 
 Func IsWallDetected()
-	Local $aBuildingName = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+	Local $aBuildingName = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 	If StringInStr($aBuildingName[1], "Wall") And Not $g_iChkBBSuggestedUpgradesIgnoreWall Then Return True
 	Return False
 EndFunc   ;==>IsWallDetected
@@ -306,18 +312,18 @@ Func GetUpgradeButton($sUpgButton = "", $Debug = False, $bDebugImage = $g_bDebug
 	; search icon bar for 'upgrade' icon
 	Local $aUpgradeIcon = decodeSingleCoord(findImage("GetUpgradeButon", $g_sImgAutoUpgradeBtnDir & "\*", $sIconBarDiamond, 1, True))
 	If IsArray($aUpgradeIcon) And UBound($aUpgradeIcon) = 2 Then
-		Local $aBuildingName = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; read building text
+		Local $aBuildingName = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; read building text
 		SetDebugLog("BuildingName 0 : " & $aBuildingName[0])
 		If $aBuildingName[0] >= 1 Then
 			SetLog("Building: " & $aBuildingName[1], $COLOR_INFO)
 			; Verify if is Builder Hall and If is to Upgrade
 			If StringInStr($aBuildingName[1], "Hall") And $g_iChkBBSuggestedUpgradesIgnoreHall Then
-				SetLog("Ups! Builder Hall is not to Upgrade!", $COLOR_ERROR)
+				SetLog("Oops! Builder Hall is not to Upgrade!", $COLOR_ERROR)
 				If _Sleep(1000) Then Return
 				Return False
 			EndIf
 			If StringInStr($aBuildingName[1], "Wall") And $g_iChkBBSuggestedUpgradesIgnoreWall Then
-				SetLog("Ups! Wall is not to Upgrade!", $COLOR_ERROR)
+				SetLog("Oops! Wall is not to Upgrade!", $COLOR_ERROR)
 				If _Sleep(1000) Then Return
 				Return False
 			EndIf

@@ -50,6 +50,7 @@ Global $g_ahPicWallsLevel[18] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 ; Auto Upgrade
 Global $g_hChkAutoUpgrade = 0, $g_hLblAutoUpgrade = 0, $g_hTxtAutoUpgradeLog = 0
+Global $g_hChkAppBuilderLabel = 0, $g_hChkAppBuilder = 0
 Global $g_hTxtSmartMinGold = 0, $g_hTxtSmartMinElixir = 0, $g_hTxtSmartMinDark = 0
 Global $g_hChkResourcesToIgnore[3] = [0, 0, 0]
 Global $g_hChkUpgradesToIgnore[16] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -121,7 +122,7 @@ Func CreateLaboratorySubTab()
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBowlers", "Bowlers") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtIceGolems", "Ice Golems") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHeadhunters", "Headhunters") & "|" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtAppWards", "App. Warden") & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtAppWards", "App. Wardens") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallWreckers", "Wall Wreckers") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleBlimps", "Battle Blimps") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtStoneSlammers", "Stone Slammers") & "|" & _
@@ -284,9 +285,9 @@ Func CreateHeroesSubTab()
 	GUICtrlSetOnEvent(-1, "BtnHeroEquipment")
 
 	; Pets
-	Local $x = 25, $y = 230
+	Local $x = 20, $y = 230
 	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Pets", "LblAutoUpgrading_02", "Auto upgrading of your Pets"), $x - 10, $y, -1, -1)
-	$x += 20
+
 	$y += 15
 	$g_hChkUpgradePets[$ePetLassi] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeLassi_Info_01", "Enable upgrading of your Pet, Lassi, when you have enough Dark Elixir")
@@ -295,7 +296,7 @@ Func CreateHeroesSubTab()
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetLassi, $x + 23, $y + 5, 48, 48)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x += 95
+	$x += 85
 	$g_hChkUpgradePets[$ePetElectroOwl] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeElectroOwl_Info_01", "Enable upgrading of your Pet, Electro Owl, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -303,7 +304,7 @@ Func CreateHeroesSubTab()
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetElectroOwl, $x + 23, $y + 5, 64, 64)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x += 95
+	$x += 85
 	$g_hChkUpgradePets[$ePetMightyYak] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeMightyYak_Info_01", "Enable upgrading of your Pet, Mighty Yak, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -312,25 +313,25 @@ Func CreateHeroesSubTab()
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetMightyYak, $x + 23, $y - 1, 60, 60)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x += 95
+	$x += 85
 	$g_hChkUpgradePets[$ePetUnicorn] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeUnicorn_Info_01", "Enable upgrading of your Pet, Unicorn, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlSetOnEvent(-1, "chkUpgradePets")
 	GUICtrlSetColor(-1, $COLOR_ERROR)
-	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetUnicorn, $x + 23, $y - 4, 64, 64)
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetUnicorn, $x + 18, $y - 4, 64, 64)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x = 25
-	$y += 65
+	$x += 85
 	$g_hChkUpgradePets[$ePetFrosty] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeFrosty_Info_01", "Enable upgrading of your Pet, Frosty, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlSetOnEvent(-1, "chkUpgradePets")
-	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetFrosty, $x + 18, $y, 64, 64)
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetFrosty, $x + 15, $y - 3, 64, 64)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x += 85
+	$x = 20
+	$y += 65
 	$g_hChkUpgradePets[$ePetDiggy] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeDiggy_Info_01", "Enable upgrading of your Pet, Diggy, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -339,7 +340,7 @@ Func CreateHeroesSubTab()
 	_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 85
-	$g_hChkUpgradePets[$ePetPoisonLizard] = GUICtrlCreateCheckbox("", $x + 5, $y + 25, 17, 17)
+	$g_hChkUpgradePets[$ePetPoisonLizard] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradePoisonLizard_Info_01", "Enable upgrading of your Pet, Poison Lizard, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlSetOnEvent(-1, "chkUpgradePets")
@@ -356,13 +357,22 @@ Func CreateHeroesSubTab()
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetPhoenix, $x + 13, $y, 64, 64)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x += 80
+	$x += 85
 	$g_hChkUpgradePets[$ePetSpiritFox] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeSpiritFox_Info_01", "Enable upgrading of your Pet, Spirit Fox, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlSetOnEvent(-1, "chkUpgradePets")
 	GUICtrlSetColor(-1, $COLOR_ERROR)
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSpiritFox, $x + 8, $y, 64, 64)
+	_GUICtrlSetTip(-1, $sTxtTip)
+
+	$x += 85
+	$g_hChkUpgradePets[$ePetAngryJelly] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeAngryJelly_Info_01", "Enable upgrading of your Pet, Angry Jelly, when you have enough Dark Elixir")
+	_GUICtrlSetTip(-1, $sTxtTip)
+	GUICtrlSetOnEvent(-1, "chkUpgradePets")
+	GUICtrlSetColor(-1, $COLOR_ERROR)
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnAngryJelly, $x + 18, $y + 6, 55, 55)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
 	;--------------------------------------------------
@@ -372,13 +382,20 @@ EndFunc   ;==>CreateHeroesSubTab
 
 Func CreateHeroEquipment()
 	Local $x = 25, $y = 5
-	$g_hGUI_HeroEquipment = _GUICreate("Hero Equipment", $_GUI_MAIN_WIDTH  + 50, $_GUI_MAIN_HEIGHT - 67, $g_iFrmBotPosX - 25, $g_iFrmBotPosY + 40, $WS_DLGFRAME, -1, $g_hFrmBot)
+	$g_hGUI_HeroEquipment = _GUICreate("Hero Equipment", $_GUI_MAIN_WIDTH + 50, $_GUI_MAIN_HEIGHT - 247, $g_iFrmBotPosX - 25, $g_iFrmBotPosY + 40, $WS_DLGFRAME, -1, $g_hFrmBot)
 
-	GUICtrlCreateIcon($g_sLibIconPath, $eIcnBlacksmith, $x + 15, $y + 15, 48, 48)
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBlacksmith, $x + 15, $y + 15, 48, 48)
 	$g_hChkCustomEquipmentOrderEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkCustomEquipmentEnable", "Auto Equipment Upgrades"), $x + 75, $y + 30, -1, -1)
 	GUICtrlSetState(-1, $GUI_UNCHECKED)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkCustomEquipmentEnable_Info_01", "Enable to select a custom equipment upgrade order"))
 	GUICtrlSetOnEvent(-1, "chkEquipmentOrder")
+
+	$g_hChkFinishCurrentEquipmentFirst = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkFinishCurrentEquipmentFirst", "Finish Current Equipment First"), $x + 75, $y + 60, -1, -1)
+	GUICtrlSetState(-1, $GUI_CHECKED)
+	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkFinishCurrentEquipmentFirst_Info_01", "Finish current equipment first before trying to upgrade next one.") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkFinishCurrentEquipmentFirst_Info_02", "Note : Bot will try to upgrade next when :") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkFinishCurrentEquipmentFirst_Info_03", "- Current equipment will be maxed.") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "ChkFinishCurrentEquipmentFirst_Info_04", "- TH/Blacksmith upgrade will be required to upgrade current equipment."))
 
 	Local $sComboData = ""
 	For $t = 0 To UBound($g_asEquipmentOrderList) - 1
@@ -389,10 +406,10 @@ Func CreateHeroEquipment()
 
 	; Create ComboBox(es) for selection of troop training order
 	$x += 40
-	$y = 90
-	Local $2DigitsOffset = 3
+	$y = 110
+
 	For $z = 0 To UBound($g_ahCmbEquipmentOrder) - 1
-		If $z < 9 Then
+		If $z < 5 Then
 			$g_EquipmentOrderLabel[$z] = GUICtrlCreateLabel($z + 1 & ":", $x - 36, $y + 3, -1, 25)
 			$g_hChkCustomEquipmentOrder[$z] = GUICtrlCreateCheckbox("", $x - 20, $y - 2, -1, 25)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
@@ -404,10 +421,10 @@ Func CreateHeroEquipment()
 			$g_ahImgEquipmentOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 123, $y - 2, 24, 24)
 			$g_ahImgEquipmentOrder2[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 155, $y - 2, 24, 24)
 			$y += 40 ; move down to next combobox location
-		ElseIf $z = 9 Then
-			If $z = 9 Then
+		ElseIf $z = 5 Then
+			If $z = 5 Then
 				$x += 250
-				$y = 90
+				$y = 110
 			EndIf
 			$g_EquipmentOrderLabel[$z] = GUICtrlCreateLabel($z + 1 & ":", $x - 36, $y + 3, -1, 25)
 			$g_hChkCustomEquipmentOrder[$z] = GUICtrlCreateCheckbox("", $x - 20, $y - 2, -1, 25)
@@ -420,8 +437,8 @@ Func CreateHeroEquipment()
 			$g_ahImgEquipmentOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 123, $y - 2, 24, 24)
 			$g_ahImgEquipmentOrder2[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 155, $y - 2, 24, 24)
 			$y += 40 ; move down to next combobox location
-		ElseIf $z > 9 Then
-			If $z = 9 Then
+		ElseIf $z > 5 And $z < 10 Then
+			If $z = 5 Then
 				$x += 250
 			EndIf
 			$g_EquipmentOrderLabel[$z] = GUICtrlCreateLabel($z + 1 & ":", $x - 40, $y + 3, -1, 25)
@@ -435,17 +452,21 @@ Func CreateHeroEquipment()
 			$g_ahImgEquipmentOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 123, $y - 2, 24, 24)
 			$g_ahImgEquipmentOrder2[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 155, $y - 2, 24, 24)
 			$y += 40 ; move down to next combobox location
+		Else
+			$g_hChkCustomEquipmentOrder[$z] = GUICtrlCreateCheckbox("", $x - 20, $y - 2, -1, 25)
+			GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_HIDE)
+			$g_ahCmbEquipmentOrder[$z] = GUICtrlCreateCombo("", $x, $y, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
+			GUICtrlSetData(-1, $sComboData, "")
+			GUICtrlSetState(-1, $GUI_HIDE)
+			$g_ahImgEquipmentOrder[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 123, $y - 2, 24, 24)
+			GUICtrlSetState(-1, $GUI_HIDE)
+			$g_ahImgEquipmentOrder2[$z] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 155, $y - 2, 24, 24)
+			GUICtrlSetState(-1, $GUI_HIDE)
 		EndIf
 	Next
 
 	$x = 125
-	$y = 465
-	$g_hBtnRegularOrder = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRegularOrder", "Sort in Original Order"), $x + 70, $y, 130, 20)
-	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRegularOrder_Info_01", "Push button to sort equipment in original order"))
-	GUICtrlSetOnEvent(-1, "btnRegularOrder")
-
-	$x = 125
-	$y = 510
+	$y = 330
 	$g_hBtnRemoveEquipment = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRemoveEquipment", "Empty Equipment List"), $x - 6, $y, 130, 20)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Equipment", "BtnRemoveEquipment_Info_01", "Push button to remove all equipment from list and start over"))
 	GUICtrlSetOnEvent(-1, "btnRemoveEquipment")
@@ -458,7 +479,7 @@ Func CreateHeroEquipment()
 	GUICtrlSetOnEvent(-1, "btnEquipmentOrderSet")
 	$g_ahImgEquipmentOrderSet = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSilverStar, $x + 119, $y, 18, 18)
 
-	$y = 550
+	$y = 370
 	$g_hBtnHeroEquipmentClose = GUICtrlCreateButton("Close", 410, $y, 85, 25)
 	GUICtrlSetOnEvent(-1, "CloseHeroEquipment")
 EndFunc   ;==>CreateHeroEquipment
@@ -708,6 +729,13 @@ Func CreateAutoUpgradeSubTab()
 	$g_hChkAutoUpgrade = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "ChkAutoUpgrade", "Enable Auto Upgrade"), $x - 5, $y, -1, -1)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "ChkAutoUpgrade_Info_01", "Check box to enable automatically starting Upgrades from builders menu"))
 	GUICtrlSetOnEvent(-1, "chkAutoUpgrade")
+
+	$g_hChkAppBuilderLabel = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "AppBuilder", "Builder's App."), $x + 250, $y , 70, 17)
+	$g_hChkAppBuilder = GUICtrlCreateCombo("", $x + 325, $y - 4, 70, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+	GUICtrlSetData(-1, "Don't Use|Longest|Shortest", "Don't Use")
+	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "AppBuilder_Info01", "Auto-Assign Builder's Apprentice") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "AppBuilder_Info02", "Longest : Assign Builder's Apprentice To The Longest Upgrade.") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "AppBuilder_Info03", "Shortest : Assign Builder's Apprentice To The Shortest Upgrade."))
 
 	$g_hLblAutoUpgrade = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Label_01", "Save"), $x, $y + 32, -1, -1)
 	$g_hTxtSmartMinGold = GUICtrlCreateInput("150000", $x + 33, $y + 29, 60, 21, BitOR($ES_CENTER, $ES_NUMBER))

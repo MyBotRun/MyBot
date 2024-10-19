@@ -37,9 +37,16 @@ Func _ClanGames($test = False, $HaltMode = False)
 	EndIf
 
 	Local $sFound = False
+	Local $Area[4] = [180, 55, 300, 120 + $g_iMidOffsetY]
+	If $g_iTree = $eTreeMS Or $g_iTree = $eTreeEG Then
+		$Area[0] = 200
+		$Area[1] = 85 + $g_iMidOffsetY
+		$Area[2] = 320
+		$Area[3] = 190 + $g_iMidOffsetY
+	EndIf
 	If $currentDate >= 28 Then
 		For $i = 1 To 10
-			If QuickMIS("BC1", $g_sImgCaravan, 180, 55, 300, 120 + $g_iMidOffsetY) Then
+			If QuickMIS("BC1", $g_sImgCaravan, $Area[0], $Area[1], $Area[2], $Area[3]) Then
 				$sFound = True
 				ExitLoop
 			EndIf
@@ -56,7 +63,7 @@ Func _ClanGames($test = False, $HaltMode = False)
 		$sFound = False
 		SetLog("Clan Games has already been completed")
 		For $i = 1 To 10
-			If QuickMIS("BC1", $g_sImgCaravan, 180, 55, 300, 120 + $g_iMidOffsetY) Then
+			If QuickMIS("BC1", $g_sImgCaravan, $Area[0], $Area[1], $Area[2], $Area[3]) Then
 				$sFound = True
 				ExitLoop
 			EndIf
@@ -67,8 +74,30 @@ Func _ClanGames($test = False, $HaltMode = False)
 
 	If IsCGCoolDownTime() Then Return
 
+	If $g_bChkClanGamesEquipment Then
+		Local $bCheckHeroes = False
+		For $i = 0 To UBound($g_abCGEquipmentItem) - 1
+			If $g_abCGEquipmentItem[$i] > 0 Then
+				$bCheckHeroes = True
+				ExitLoop
+			EndIf
+		Next
+		If $bCheckHeroes Then
+			If $CheckHeroTimer = 0 Then
+				getArmyHeroCount(True, True, True)
+				$CheckHeroTimer = _NowCalc()
+			ElseIf _DateIsValid($CheckHeroTimer) Then
+				Local $CheckHeroTimerDiff = _DateDiff('s', $CheckHeroTimer, _NowCalc())
+				If $CheckHeroTimerDiff > $CheckHeroDelay then
+					getArmyHeroCount(True, True, True)
+					$CheckHeroTimer = _NowCalc()
+				EndIf
+			EndIf
+		EndIf
+	EndIf
+
 	; A user Log and a Click away just in case
-	ClickAway()
+	ClearScreen()
 	SetLog("Entering Clan Games", $COLOR_INFO)
 	If _Sleep(1000) Then Return
 
@@ -78,10 +107,18 @@ Func _ClanGames($test = False, $HaltMode = False)
 	Local Static $YourAccScore[8][2] = [[-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True]]
 
 	; Initial Timer
-	Local $hTimer = TimerInit()
+	Local $hTimer = __TimerInit()
 
 	; Enter on Clan Games window
 	If IsClanGamesWindow() Then
+
+		;check cooldown purge
+		If CooldownTime() Then
+			ClearTempCGFiles()
+			Return
+		EndIf
+		If Not $g_bRunState Then Return ;trap pause or stop bot
+
 		; Let's selected only the necessary images
 		Local $sImagePath = @ScriptDir & "\imgxml\Resources\ClanGamesImages\Challenges"
 		Local $sTempChallengePath = @TempDir & "\" & $g_sProfileCurrentName & "\Challenges\"
@@ -94,6 +131,7 @@ Func _ClanGames($test = False, $HaltMode = False)
 		If $g_bChkClanGamesDes Then ClanGameImageCopy($sImagePath, $sTempChallengePath, "D") ;D for Destruction
 		If $g_bChkClanGamesAirTroop Then ClanGameImageCopy($sImagePath, $sTempChallengePath, "A") ;A for AirTroops
 		If $g_bChkClanGamesGroundTroop Then ClanGameImageCopy($sImagePath, $sTempChallengePath, "G") ;G for GroundTroops
+		If $g_bChkClanGamesEquipment Then ClanGameImageCopy($sImagePath, $sTempChallengePath, "E") ;E for Equipment
 
 		If $g_bChkClanGamesMiscellaneous Then ClanGameImageCopy($sImagePath, $sTempChallengePath, "M") ;M for Misc
 		If $g_bChkClanGamesSpell Then ClanGameImageCopy($sImagePath, $sTempChallengePath, "S") ;S for GroundTroops
@@ -102,6 +140,7 @@ Func _ClanGames($test = False, $HaltMode = False)
 		If $g_bChkClanGamesBBTroops Then ClanGameImageCopy($sImagePath, $sTempChallengePath, "BBT") ;BBT for BB Troops
 		;now we need to copy selected challenge before checking current running event is not wrong event selected
 
+		WaitForClanMessage("ClanGames")
 		; Let's get some information , like Remain Timer, Score and limit
 		If Not _ColorCheck(_GetPixelColor(295, 280 + $g_iMidOffsetY, True), Hex(0x53DE50, 6), 10) Then ;no greenbar = there is active event or completed event
 			If _Sleep(3000) Then Return ; just wait few second, as completed event will need sometime to animate on score
@@ -128,7 +167,7 @@ Func _ClanGames($test = False, $HaltMode = False)
 				$sTimeCG = ConvertOCRTime("ClanGames()", $g_sClanGamesTimeRemaining, False)
 				SetDebuglog("Clan Games Minute Remain: " & $sTimeCG)
 				If $g_bChkClanGamesStopBeforeReachAndPurge And $sTimeCG > 1440 Then ; purge, but not purge on last day of clangames
-					If CooldownTime() Or IsEventRunning() Then Return
+					If IsEventRunning() Then Return
 					SetLog("Stop before completing your limit and only Purge")
 					SetLog("Lets only purge 1 random challenge", $COLOR_WARNING)
 					PurgeEvent(False, True)
@@ -143,11 +182,6 @@ Func _ClanGames($test = False, $HaltMode = False)
 		Return
 	EndIf
 
-	;check cooldown purge
-	If CooldownTime() Then
-		ClearTempCGFiles()
-		Return
-	EndIf
 	If Not $g_bRunState Then Return ;trap pause or stop bot
 	If IsEventRunning() Then
 		ClearTempCGFiles()
@@ -174,7 +208,7 @@ Func _ClanGames($test = False, $HaltMode = False)
 	While $EventLoopOut
 
 		$EventLoopOut = False
-		If $IsLooped > 0 Then $hTimer = TimerInit()
+		If $IsLooped > 0 Then $hTimer = __TimerInit()
 
 		Local $HowManyImages = _FileListToArray($sTempChallengePath, "*", $FLTA_FILES)
 		If IsArray($HowManyImages) Then
@@ -198,6 +232,10 @@ Func _ClanGames($test = False, $HaltMode = False)
 			For $i = 0 To UBound($g_abCGMainGroundItem) - 1
 				If Not $g_bChkClanGamesGroundTroop Then ExitLoop
 				If $g_abCGMainGroundItem[$i] > 0 Then $HowManyEvents += 1
+			Next
+			For $i = 0 To UBound($g_abCGEquipmentItem) - 1
+				If Not $g_bChkClanGamesEquipment Then ExitLoop
+				If $g_abCGEquipmentItem[$i] > 0 Then $HowManyEvents += 1
 			Next
 			For $i = 0 To UBound($g_abCGMainMiscItem) - 1
 				If Not $g_bChkClanGamesMiscellaneous Then ExitLoop
@@ -230,7 +268,8 @@ Func _ClanGames($test = False, $HaltMode = False)
 				SetDebuglog($HowManyImages[0] & " Images to detect")
 			EndIf
 		Else
-			Setlog("ClanGames-Error on $HowManyImages: " & @error)
+			Setlog("ClanGames-Error, no event category selected", $COLOR_ERROR)
+			Setlog("Please check your events settings!", $COLOR_DEBUG2)
 			Return
 		EndIf
 
@@ -345,6 +384,46 @@ Func _ClanGames($test = False, $HaltMode = False)
 								Local $aArray[6] = [$DestructionChallenges[$j][1], $aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3], $DestructionChallenges[$j][3], $aAllDetectionsOnScreen[$i][4], $aAllDetectionsOnScreen[$i][6]]
 							EndIf
 						Next
+					Case "E"
+						If Not $g_bChkClanGamesEquipment Then ContinueLoop
+						Local $EquipmentChallenges = ClanGamesChallenges("$EquipmentChallenges")
+						For $j = 0 To UBound($EquipmentChallenges) - 1
+							; Match the names
+							If $aAllDetectionsOnScreen[$i][1] = $EquipmentChallenges[$j][0] Then
+								; Equipment available depending on TH level
+								If $g_iTownHallLevel < $EquipmentChallenges[$j][2] Then ExitLoop
+								; King Upgrading
+								If $g_iHeroUpgrading[0] = 1 Then
+									Local $KingEquipment[5] = ["Barbarian Puppet", "Rage Vial", "Earth Quake Boots", "Vampstache", "Giant Gauntlet"]
+									For $t = 0 To UBound($KingEquipment) - 1
+										If $EquipmentChallenges[$j][1] = $KingEquipment[$t] Then ExitLoop
+									Next
+								EndIf
+								; Queen Upgrading
+								If $g_iHeroUpgrading[1] = 1 Then
+									Local $QueenEquipment[5] = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow"]
+									For $t = 0 To UBound($QueenEquipment) - 1
+										If $EquipmentChallenges[$j][1] = $QueenEquipment[$t] Then ExitLoop
+									Next
+								EndIf
+								; Warden Upgrading
+								If $g_iHeroUpgrading[2] = 1 Then
+									Local $WardenEquipment[5] = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball"]
+									For $t = 0 To UBound($WardenEquipment) - 1
+										If $EquipmentChallenges[$j][1] = $WardenEquipment[$t] Then ExitLoop
+									Next
+								EndIf
+								; Champion Upgrading
+								If $g_iHeroUpgrading[3] = 1 Then
+									Local $ChampionEquipment[4] = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"]
+									For $t = 0 To UBound($ChampionEquipment) - 1
+										If $EquipmentChallenges[$j][1] = $ChampionEquipment[$t] Then ExitLoop
+									Next
+								EndIf
+								; [0] Event Name Full Name  , [1] Xaxis ,  [2] Yaxis , [3] Difficulty, [4] CGMAIN/CGBB
+								Local $aArray[6] = [$EquipmentChallenges[$j][1], $aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3], $EquipmentChallenges[$j][3], $aAllDetectionsOnScreen[$i][4], $aAllDetectionsOnScreen[$i][6]]
+							EndIf
+						Next
 					Case "M"
 						If Not $g_bChkClanGamesMiscellaneous Then ContinueLoop
 						Local $MiscChallenges = ClanGamesChallenges("$MiscChallenges")
@@ -419,8 +498,8 @@ Func _ClanGames($test = False, $HaltMode = False)
 			Next
 		EndIf
 
-		If $g_bChkClanGamesDebug Then Setlog("_ClanGames aAllDetectionsOnScreen (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
-		$hTimer = TimerInit()
+		If $g_bChkClanGamesDebug Then Setlog("_ClanGames aAllDetectionsOnScreen (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+		$hTimer = __TimerInit()
 
 		; Sort by Yaxis
 		_ArraySort($aSelectChallenges, 1, 0, 0, 2)
@@ -544,7 +623,7 @@ Func _ClanGames($test = False, $HaltMode = False)
 			EndIf
 
 			; Drop to top again , because coordinates Xaxis and Yaxis
-			ClickP($TabChallengesPosition, 2, 0, "#Tab")
+			ClickP($TabChallengesPosition, 2, 120, "#Tab")
 			If _Sleep(2000) Then Return
 		EndIf
 
@@ -567,7 +646,16 @@ Func _ClanGames($test = False, $HaltMode = False)
 				For $i = 0 To UBound($aTempSelectChallenges) - 1
 					If Not $g_bRunState Then Return
 					SetDebugLog("$aTempSelectChallenges: " & _ArrayToString($aTempSelectChallenges))
-					Setlog("Next Challenge will be " & $aTempSelectChallenges[$i][0] & " to do in " & $aTempSelectChallenges[$i][4] & " min.")
+					If Number($aTempSelectChallenges[$i][4]) > 0 Then
+						Setlog("Next Challenge will be " & $aTempSelectChallenges[$i][0] & " to do in " & $aTempSelectChallenges[$i][4] & " min.")
+					Else
+						$sTimeCG = ConvertOCRTime("ClanGames()", $g_sClanGamesTimeRemaining, False)
+						If $sTimeCG > 0 Then
+							Setlog("Next Challenge will be " & $aTempSelectChallenges[$i][0] & " to do in " & $g_sClanGamesTimeRemaining)
+						Else
+							Setlog("Next Challenge will be " & $aTempSelectChallenges[$i][0])
+						EndIf
+					EndIf
 					; Select and Start EVENT
 					ChallengeNextPage($aTempSelectChallenges[$i][6], $iRow)
 					$sEventName = $aTempSelectChallenges[$i][0]
@@ -695,6 +783,16 @@ Func ClanGameImageCopy($sImagePath, $sTempChallengePath, $sImageType = Default, 
 					FileCopy($sImagePath & "\" & $sImageType & "-" & $CGMainGround[$i][0] & "_*", $sTempChallengePath & "\Purge\", $FC_OVERWRITE + $FC_CREATEPATH)
 				EndIf
 			Next
+		Case "E"
+			Local $CGEquipment = ClanGamesChallenges("$EquipmentChallenges")
+			For $i = 0 To UBound($g_abCGEquipmentItem) - 1
+				If $g_abCGEquipmentItem[$i] > 0 Then
+					If $g_bChkClanGamesDebug Then SetLog("[" & $i & "]" & "EquipmentChallenges: " & $CGEquipment[$i][1], $COLOR_DEBUG)
+					FileCopy($sImagePath & "\" & $sImageType & "-" & $CGEquipment[$i][0] & "_*", $sTempChallengePath, $FC_OVERWRITE + $FC_CREATEPATH)
+				Else
+					FileCopy($sImagePath & "\" & $sImageType & "-" & $CGEquipment[$i][0] & "_*", $sTempChallengePath & "\Purge\", $FC_OVERWRITE + $FC_CREATEPATH)
+				EndIf
+			Next
 		Case "M"
 			Local $CGMainMisc = ClanGamesChallenges("$MiscChallenges")
 			For $i = 0 To UBound($g_abCGMainMiscItem) - 1
@@ -791,6 +889,8 @@ Func FindEvent()
 	Local $aX[4] = [284, 418, 550, 685]
 	Local $aY[3] = [155 + $g_iMidOffsetY, 325 + $g_iMidOffsetY, 305 + $g_iMidOffsetY]
 
+	WaitForClanMessage("ClanGames")
+
 	For $y = 0 To UBound($aY) - 1
 		If $y = UBound($aY) - 1 Then
 			ChallengeNextPage(2, $iRow)
@@ -847,10 +947,23 @@ Func FindEvent()
 				EndIf
 
 				If $ChallengeEvent[0] = "BBT" And $IsBBEvent = "CGMain" Then
-					If $aEvent[0][0] = "BBT-BabyD" Then
-						$ChallengeEvent[0] = "A"
-						$ChallengeEvent[1] = "BabyD"
-						$aEvent[0][0] = "A-BabyD"
+					Switch $aEvent[0][0]
+						Case "BBT-BabyD"
+							$ChallengeEvent[0] = "A"
+							$ChallengeEvent[1] = "BabyD"
+							$aEvent[0][0] = "A-BabyD"
+						Case "BBT-HGlider"
+							$ChallengeEvent[0] = "G"
+							$ChallengeEvent[1] = "Hogs"
+							$aEvent[0][0] = "G-Hogs"
+					EndSwitch
+				EndIf
+
+				If $ChallengeEvent[0] = "G" And $IsBBEvent = "CGBB" Then
+					If $aEvent[0][0] = "G-Hogs" Then
+						$ChallengeEvent[0] = "BBT"
+						$ChallengeEvent[1] = "HGlider"
+						$aEvent[0][0] = "BBT-HGlider"
 					EndIf
 				EndIf
 
@@ -867,6 +980,10 @@ Func FindEvent()
 				EndIf
 				If $ChallengeEvent[0] = "BBT" And $IsBBEvent = "CGBB" Then
 					If $aEvent[0][0] = "BBT-BabyD" And $g_abCGBBTroopsItem[5] < 1 Then ContinueLoop
+					If $aEvent[0][0] = "BBT-HGlider" And $g_abCGBBTroopsItem[10] < 1 Then ContinueLoop
+				EndIf
+				If $ChallengeEvent[0] = "G" And $IsBBEvent = "CGMain" Then
+					If $aEvent[0][0] = "G-Hogs" And $g_abCGMainGroundItem[7] < 1 Then ContinueLoop
 				EndIf
 
 				ClanGameImageCopy($sImagePath, $sTempChallengePath, "Selected", $aEvent[0][0])
@@ -883,9 +1000,16 @@ Func IsClanGamesWindow()
 	Local $sState, $bRet = False
 	Local $Found = False
 	Local $currentDate = Number(@MDAY)
+	Local $Area[4] = [180, 55, 300, 120 + $g_iMidOffsetY]
+	If $g_iTree = $eTreeMS Or $g_iTree = $eTreeEG Then
+		$Area[0] = 200
+		$Area[1] = 85 + $g_iMidOffsetY
+		$Area[2] = 320
+		$Area[3] = 190 + $g_iMidOffsetY
+	EndIf
 
 	For $i = 1 To 10
-		If QuickMIS("BC1", $g_sImgCaravan, 180, 55, 300, 120 + $g_iMidOffsetY) Then
+		If QuickMIS("BC1", $g_sImgCaravan, $Area[0], $Area[1], $Area[2], $Area[3]) Then
 			$Found = True
 			SetLog("Caravan available! Entering Clan Games", $COLOR_SUCCESS)
 			Click($g_iQuickMISX, $g_iQuickMISY)
@@ -902,7 +1026,7 @@ Func IsClanGamesWindow()
 			EndSwitch
 			ExitLoop
 		EndIf
-		If $currentDate >= 28 And Not QuickMIS("BC1", $g_sImgCaravan, 180, 55, 300, 120 + $g_iMidOffsetY) Then
+		If $currentDate >= 28 And Not QuickMIS("BC1", $g_sImgCaravan, $Area[0], $Area[1], $Area[2], $Area[3]) Then
 			$g_bClanGamesCompleted = 1
 			$Found = False
 			$bRet = False
@@ -930,7 +1054,7 @@ Func IsClanGamesWindow()
 EndFunc   ;==>IsClanGamesWindow
 
 Func IsClanGamesRunning() ;to check whether clangames current state, return string of the state "prepare" "running" "end"
-	Local $aGameTime[4] = [384, 428 + $g_iMidOffsetY, 0xFFFFFF, 10]
+	Local $aGameTime[4] = [384, 388 + $g_iMidOffsetY, 0xFFFFFF, 10]
 	Local $sState = "Running"
 	If QuickMIS("BC1", $g_sImgWindow, 80, 70 + $g_iMidOffsetY, 160, 220 + $g_iMidOffsetY) Then
 		SetLog("Window Opened", $COLOR_DEBUG)
@@ -942,8 +1066,8 @@ Func IsClanGamesRunning() ;to check whether clangames current state, return stri
 		EndIf
 	Else
 		If _CheckPixel($aGameTime, True) Then
-			Local $sTimeRemain = getOcrTimeGameTime(370, 471 + $g_iMidOffsetY) ; read Clan Games waiting time
-			SetLog("Clan Games will start in " & $sTimeRemain, $COLOR_INFO)
+			Local $sTimeRemain = getOcrTimeGameTime(370, 461 + $g_iMidOffsetY) ; read Clan Games waiting time
+			If $sTimeRemain <> "" Then SetLog("Clan Games will start in " & $sTimeRemain, $COLOR_INFO)
 			$g_sClanGamesTimeRemaining = $sTimeRemain
 			$sState = "Prepare"
 		Else
@@ -994,15 +1118,16 @@ EndFunc   ;==>GetTimesAndScores
 
 Func IsEventRunning($bOpenWindow = False)
 	Local $aEventFailed[4] = [295, 265 + $g_iMidOffsetY, 0xEA2B24, 20]
-	Local $aEventPurged[4] = [295, 280 + $g_iMidOffsetY, 0x58C790, 20]
+	Local $aEventPurged[4] = [295, 285 + $g_iMidOffsetY, 0x58C890, 20]
 	Local $sTempChallengePath = @TempDir & "\" & $g_sProfileCurrentName & "\Challenges\"
 
 	If $bOpenWindow Then
-		ClickAway()
+		ClearScreen()
 		SetLog("Entering Clan Games", $COLOR_INFO)
 		If Not IsClanGamesWindow() Then Return
 	EndIf
 
+	WaitForClanMessage("ClanGames")
 	; Check if any event is running or not
 	If Not _ColorCheck(_GetPixelColor(295, 280 + $g_iMidOffsetY, True), Hex(0x53DE50, 6), 10) Then ; Green Bar from First Position
 		;Check if Event failed
@@ -1080,6 +1205,14 @@ Func IsEventRunning($bOpenWindow = False)
 								$CurrentActiveChallenge = $DestructionChallenges[$j][1]
 							EndIf
 						Next
+					Case "E"
+						Local $EquipmentChallenges = ClanGamesChallenges("$EquipmentChallenges")
+						For $j = 0 To UBound($EquipmentChallenges) - 1
+							; Match the names
+							If $ActiveChallengeFullName[1] = $EquipmentChallenges[$j][0] Then
+								$CurrentActiveChallenge = $EquipmentChallenges[$j][1]
+							EndIf
+						Next
 					Case "M"
 						Local $MiscChallenges = ClanGamesChallenges("$MiscChallenges")
 						For $j = 0 To UBound($MiscChallenges) - 1
@@ -1120,6 +1253,7 @@ Func IsEventRunning($bOpenWindow = False)
 
 				Click(340, 210 + $g_iMidOffsetY)
 				If _Sleep(2000) Then Return
+				WaitForClanMessage("ClanGames")
 				SetLog("Re-Check Event Type", $COLOR_DEBUG1)
 				If QuickMIS("BC1", $g_sImgVersus, 425, 180 + $g_iMidOffsetY, 700, 245 + $g_iMidOffsetY) And $CurrentActiveChallenge <> "Builder Hut" Then
 					If $aActiveEvent[0][0] = "D-BBreakdown" Or $aActiveEvent[0][0] = "BBD-BuildingDes" Then
@@ -1144,6 +1278,14 @@ Func IsEventRunning($bOpenWindow = False)
 							$bNeedPurge = True ;BabyDrag
 						Else
 							$CurrentActiveChallenge = "Baby Dragon"
+						EndIf
+					EndIf
+					If $aActiveEvent[0][0] = "G-Hogs" Or $aActiveEvent[0][0] = "BBT-HGlider" Then
+						SetDebugLog("Challenge with shared Image", $COLOR_DEBUG2)
+						If $g_abCGBBTroopsItem[10] = 0 Or $g_bChkClanGamesBBTroops = 0 Then
+							$bNeedPurge = True ;Hog Glider
+						Else
+							$CurrentActiveChallenge = "Hog Glider"
 						EndIf
 					EndIf
 					Setlog("Running Challenge is BB Challenge : " & $CurrentActiveChallenge, $COLOR_ACTION)
@@ -1192,6 +1334,14 @@ Func IsEventRunning($bOpenWindow = False)
 							$bNeedPurge = True ;BabyDrag
 						Else
 							$CurrentActiveChallenge = "Baby Dragon"
+						EndIf
+					EndIf
+					If $aActiveEvent[0][0] = "BBT-HGlider" Or $aActiveEvent[0][0] = "G-Hogs" Then
+						SetDebugLog("Challenge with shared Image", $COLOR_DEBUG2)
+						If $g_abCGMainGroundItem[2] = 0 Or $g_bChkClanGamesGroundTroop = 0 Then
+							$bNeedPurge = True ;HogRider
+						Else
+							$CurrentActiveChallenge = "HogRider"
 						EndIf
 					EndIf
 					Setlog("Running Challenge is MainVillage Challenge : " & $CurrentActiveChallenge, $COLOR_ACTION)
@@ -1289,6 +1439,7 @@ Func StartsEvent($sEventName, $getCapture = True, $g_bChkClanGamesDebug = False)
 		Click(340, 210 + $g_iMidOffsetY) ;Click Active Challenge
 		If _Sleep(1000) Then Return
 		SetLog("Re-Check Event Type", $COLOR_DEBUG1)
+		WaitForClanMessage("ClanGames")
 		If QuickMIS("BC1", $g_sImgVersus, 425, 180 + $g_iMidOffsetY, 700, 245 + $g_iMidOffsetY, True, False) Then
 			If $sEventName = "Builder Hut" Then
 				Setlog("Running Challenge is MainVillage Challenge : " & $sEventName, $COLOR_ACTION)
@@ -1323,23 +1474,24 @@ Func PurgeUncheckedEvent($iRow = 1)
 	If _Sleep(2000) Then Return
 
 	; Initial Timer
-	Local $hTimer = TimerInit()
+	Local $hTimer = __TimerInit()
 	Local $sImagePath = @ScriptDir & "\imgxml\Resources\ClanGamesImages\Challenges"
 	Local $sTempChallengePath = @TempDir & "\" & $g_sProfileCurrentName & "\Challenges\"
 	Local $EventLoopOut = True
 	Local $IsLooped = 0
 	Local $IsSomethingWrong = False
 
-	If ($g_bChkClanGamesLoot Or $g_bChkClanGamesBattle Or $g_bChkClanGamesDes Or $g_bChkClanGamesAirTroop Or $g_bChkClanGamesGroundTroop Or $g_bChkClanGamesMiscellaneous Or $g_bChkClanGamesSpell) And _
+	If ($g_bChkClanGamesLoot Or $g_bChkClanGamesBattle Or $g_bChkClanGamesDes Or $g_bChkClanGamesAirTroop Or $g_bChkClanGamesGroundTroop Or $g_bChkClanGamesEquipment Or $g_bChkClanGamesMiscellaneous Or $g_bChkClanGamesSpell) And _
 			Not $g_bChkClanGamesBBBattle And Not $g_bChkClanGamesBBDes And Not $g_bChkClanGamesBBTroops Then
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "L") ;L for Loot
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "B") ;B for Battle
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "D") ;D for Destruction
-		ClanGameImageCopy($sImagePath, $sTempChallengePath, "A")  ;A for AirTroops
+		ClanGameImageCopy($sImagePath, $sTempChallengePath, "A") ;A for AirTroops
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "G") ;G for GroundTroops
+		ClanGameImageCopy($sImagePath, $sTempChallengePath, "E") ;E for Equipment
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "M") ;M for Misc
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "S") ;S for GroundTroops
-	ElseIf Not $g_bChkClanGamesLoot And Not $g_bChkClanGamesBattle And Not $g_bChkClanGamesDes And Not $g_bChkClanGamesAirTroop And Not $g_bChkClanGamesGroundTroop And Not $g_bChkClanGamesMiscellaneous And Not $g_bChkClanGamesSpell And _
+	ElseIf Not $g_bChkClanGamesLoot And Not $g_bChkClanGamesBattle And Not $g_bChkClanGamesDes And Not $g_bChkClanGamesAirTroop And Not $g_bChkClanGamesGroundTroop And Not $g_bChkClanGamesEquipment And Not $g_bChkClanGamesMiscellaneous And Not $g_bChkClanGamesSpell And _
 			($g_bChkClanGamesBBBattle Or $g_bChkClanGamesBBDes Or $g_bChkClanGamesBBTroops) Then
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "BBB") ;BBB for BB Battle
 		ClanGameImageCopy($sImagePath, $sTempChallengePath, "BBD")  ;BBD for BB Destruction
@@ -1351,7 +1503,7 @@ Func PurgeUncheckedEvent($iRow = 1)
 	While $EventLoopOut
 
 		$EventLoopOut = False
-		If $IsLooped > 0 Then $hTimer = TimerInit()
+		If $IsLooped > 0 Then $hTimer = __TimerInit()
 
 		Local $aAllDetectionsOnScreen2 = FindEventToPurge()
 		$iRow = 2
@@ -1416,6 +1568,15 @@ Func PurgeUncheckedEvent($iRow = 1)
 								Local $aArray[6] = [$DestructionChallenges[$j][1], $aAllDetectionsOnScreen2[$i][2], $aAllDetectionsOnScreen2[$i][3], $DestructionChallenges[$j][3], $aAllDetectionsOnScreen2[$i][4], $aAllDetectionsOnScreen2[$i][6]]
 							EndIf
 						Next
+					Case "E"
+						Local $EquipmentChallenges = ClanGamesChallenges("$EquipmentChallenges")
+						For $j = 0 To UBound($EquipmentChallenges) - 1
+							; Match the names
+							If $aAllDetectionsOnScreen2[$i][1] = $EquipmentChallenges[$j][0] Then
+								; [0] Event Name Full Name  , [1] Xaxis ,  [2] Yaxis , [3] Difficulty, [4] CGMAIN/CGBB
+								Local $aArray[6] = [$EquipmentChallenges[$j][1], $aAllDetectionsOnScreen2[$i][2], $aAllDetectionsOnScreen2[$i][3], $EquipmentChallenges[$j][3], $aAllDetectionsOnScreen2[$i][4], $aAllDetectionsOnScreen2[$i][6]]
+							EndIf
+						Next
 					Case "M"
 						Local $MiscChallenges = ClanGamesChallenges("$MiscChallenges")
 						For $j = 0 To UBound($MiscChallenges) - 1
@@ -1470,8 +1631,8 @@ Func PurgeUncheckedEvent($iRow = 1)
 			Return False
 		EndIf
 
-		If $g_bChkClanGamesDebug Then Setlog("_ClanGames aAllDetectionsOnScreen2 (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
-		$hTimer = TimerInit()
+		If $g_bChkClanGamesDebug Then Setlog("_ClanGames aAllDetectionsOnScreen2 (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+		$hTimer = __TimerInit()
 
 		; Sort by Yaxis
 		_ArraySort($aSelectChallenges, 1, 0, 0, 2)
@@ -1534,6 +1695,8 @@ Func FindEventToPurge()
 	Local $aX[4] = [284, 418, 550, 685]
 	Local $aY[3] = [155 + $g_iMidOffsetY, 325 + $g_iMidOffsetY, 305 + $g_iMidOffsetY]
 
+	WaitForClanMessage("ClanGames")
+
 	For $y = 0 To UBound($aY) - 1
 		If $y = UBound($aY) - 1 Then
 			ChallengeNextPage(2, $iRow)
@@ -1590,10 +1753,23 @@ Func FindEventToPurge()
 				EndIf
 
 				If $ChallengeEvent[0] = "BBT" And $IsBBEvent = "CGMain" Then
-					If $aEvent[0][0] = "BBT-BabyD" Then
-						$ChallengeEvent[0] = "A"
-						$ChallengeEvent[1] = "BabyD"
-						$aEvent[0][0] = "A-BabyD"
+					Switch $aEvent[0][0]
+						Case "BBT-BabyD"
+							$ChallengeEvent[0] = "A"
+							$ChallengeEvent[1] = "BabyD"
+							$aEvent[0][0] = "A-BabyD"
+						Case "BBT-HGlider"
+							$ChallengeEvent[0] = "G"
+							$ChallengeEvent[1] = "Hogs"
+							$aEvent[0][0] = "G-Hogs"
+					EndSwitch
+				EndIf
+
+				If $ChallengeEvent[0] = "G" And $IsBBEvent = "CGBB" Then
+					If $aEvent[0][0] = "G-Hogs" Then
+						$ChallengeEvent[0] = "BBT"
+						$ChallengeEvent[1] = "HGlider"
+						$aEvent[0][0] = "BBT-HGlider"
 					EndIf
 				EndIf
 
@@ -1610,6 +1786,10 @@ Func FindEventToPurge()
 				EndIf
 				If $ChallengeEvent[0] = "BBT" And $IsBBEvent = "CGBB" Then
 					If $aEvent[0][0] = "BBT-BabyD" And $g_abCGBBTroopsItem[5] = 1 Then ContinueLoop
+					If $aEvent[0][0] = "BBT-HGlider" And $g_abCGBBTroopsItem[10] = 1 Then ContinueLoop
+				EndIf
+				If $ChallengeEvent[0] = "G" And $IsBBEvent = "CGMain" Then
+					If $aEvent[0][0] = "G-Hogs" And $g_abCGMainGroundItem[7] = 1 Then ContinueLoop
 				EndIf
 
 				ClanGameImageCopy($sImagePath, $sTempChallengePath, "UnSelected", $aEvent[0][0])
@@ -1670,9 +1850,10 @@ Func PurgeEvent($bTest = False, $startFirst = True, $NoMistake = True, $iRow = 1
 		EndIf
 	Else
 		SetLog("Purge a Wrong Challenge", $COLOR_INFO)
+		WaitForClanMessage("ClanGames")
 		If QuickMIS("BC1", $g_sImgTrashPurge, 235, 140 + $g_iMidOffsetY, 825, 540 + $g_iMidOffsetY, True, False) Then
 			Click($g_iQuickMISX, $g_iQuickMISY)
-			If _Sleep(1200) Then Return
+			If _Sleep(1500) Then Return
 			SetLog("Click Trash", $COLOR_INFO)
 			If QuickMIS("BC1", $g_sImgOkayPurge, 480, 370 + $g_iMidOffsetY, 600, 455 + $g_iMidOffsetY, True, False) Then
 				SetLog("Click OK", $COLOR_INFO)
@@ -1709,7 +1890,7 @@ Func StartAndPurgeEvent($bTest = False)
 				SetLog("Click OK", $COLOR_INFO)
 				If $bTest Then Return
 				Click($g_iQuickMISX, $g_iQuickMISY)
-				SetLog("Start And Purge Any Challenge!", $COLOR_SUCCESS)
+				SetLog("Purge Challenge!", $COLOR_SUCCESS)
 				GUICtrlSetData($g_hTxtClanGamesLog, @CRLF & _NowTime() & " [" & $g_sProfileCurrentName & "] - Start And Purge Any Challenge", 1)
 				_FileWriteLog($g_sProfileLogsPath & "\ClanGames.log", " [" & $g_sProfileCurrentName & "] - Start And Purge Any Challenge")
 			Else
@@ -1960,6 +2141,28 @@ Func ClanGamesChallenges($sReturnArray)
 			["SiegeB", "Siege Barrack", 10, 1, "Earn 1-5 Stars from Multiplayer Battles using a Siege Barracks"], _
 			["LogL", "Log Launcher", 10, 1, "Earn 1-5 Stars from Multiplayer Battles using a Log Launcher"]]
 
+	Local $EquipmentChallenges[20][5] = [ _
+			["BarbPuppet", "Barbarian Puppet", 8, 1, "Earn 1-5 Stars from Multiplayer Battles using Barbarian Puppet"], _
+			["RageVial", "Rage Vial", 8, 1, "Earn 1-5 Stars from Multiplayer Battles using Rage Vial"], _
+			["EQBoots", "Earth Quake Boots", 8, 1, "Earn 1-5 Stars from Multiplayer Battles using Earth Quake Boots"], _
+			["Vampstache", "Vampstache", 10, 1, "Earn 1-5 Stars from Multiplayer Battles using Vampstache"], _
+			["Gauntlet", "Giant Gauntlet", 8, 1, "Earn 1-5 Stars from Multiplayer Battles using Giant Gauntlet"], _
+			["SpikyBall", "Spiky Ball", 8, 1, "Earn 1-5 Stars from Multiplayer Battles using Spiky Ball"], _
+			["ArchPuppet", "Archer Puppet", 9, 1, "Earn 1-5 Stars from Multiplayer Battles using Archer Puppet"], _
+			["InvVial", "Invisibility Vial", 9, 1, "Earn 1-5 Stars from Multiplayer Battles using Invisibility Vial"], _
+			["GArrow", "Giant Arrow", 9, 1, "Earn 1-5 Stars from Multiplayer Battles using Giant Arrow"], _
+			["HealPuppet", "Healer Puppet", 12, 1, "Earn 1-5 Stars from Multiplayer Battles using Healer Puppet"], _
+			["FArrow", "Frozen Arrow", 9, 1, "Earn 1-5 Stars from Multiplayer Battles using Frozen Arrow"], _
+			["ETome", "Eternal Tome", 11, 1, "Earn 1-5 Stars from Multiplayer Battles using Eternal Tome"], _
+			["LifeGem", "Life Gem", 11, 1, "Earn 1-5 Stars from Multiplayer Battles using Life Gem"], _
+			["RageGem", "Rage Gem", 11, 1, "Earn 1-5 Stars from Multiplayer Battles using Rage Gem"], _
+			["HealTome", "Healing Tome", 13, 1, "Earn 1-5 Stars from Multiplayer Battles using Healing Tome"], _
+			["Fireball", "Fireball", 11, 1, "Earn 1-5 Stars from Multiplayer Battles using Fireball"], _
+			["RoyalGem", "Royal Gem", 13, 1, "Earn 1-5 Stars from Multiplayer Battles using Royal Gem"], _
+			["SeekShield", "Seeking Shield", 13, 1, "Earn 1-5 Stars from Multiplayer Battles using Seeking Shield"], _
+			["HogPuppet", "Hog Rider Puppet", 14, 1, "Earn 1-5 Stars from Multiplayer Battles using Hog Rider Puppet"], _
+			["HasteVial", "Haste Vial", 15, 1, "Earn 1-5 Stars from Multiplayer Battles using Haste Vial"]]
+
 	Local $MiscChallenges[3][5] = [ _
 			["Gard", "Gardening Exercise", 6, 8, "Clear 5 obstacles from your Home Village or Builder Base"], _
 			["DonateSpell", "Donate Spells", 9, 8, "Donate a total of 3 spells"], _
@@ -2033,6 +2236,8 @@ Func ClanGamesChallenges($sReturnArray)
 			Return $AirTroopChallenges
 		Case "$GroundTroopChallenges"
 			Return $GroundTroopChallenges
+		Case "$EquipmentChallenges"
+			Return $EquipmentChallenges
 		Case "$MiscChallenges"
 			Return $MiscChallenges
 		Case "$SpellChallenges"
@@ -2096,12 +2301,13 @@ Func CollectClanGamesRewards($bTest = False)
 			["FullPotPower", 90], _        ; 10 gems
 			["FullPotSuper", 90]]          ; 10 gems
 
-	Local $aiColumn[4] = [276, 246, 348, 453]
-	Local $aColWinOffColors[1][3] = [[0xD2D259, 2, 0]]
-	Local $aFirstColumn = _MultiPixelSearch(260, 205 + $g_iMidOffsetY, 290, 205 + $g_iMidOffsetY, 1, 1, Hex(0xD2D259, 6), $aColWinOffColors, 10)
-	If IsArray($aFirstColumn) And $aFirstColumn[0] < 270 Then
-		$aiColumn[0] = $aFirstColumn[0] - 2
-		$aiColumn[2] = $aiColumn[0] + 73
+	Local $aiColumn[4] = [276, 216 + $g_iMidOffsetY, 348, 423 + $g_iMidOffsetY]
+	Local $aFirstColumn = _MultiPixelSearch2(260, 205 + $g_iMidOffsetY, 290, 205 + $g_iMidOffsetY, 1, 1, Hex(0xD2D259, 6), 15)
+	If IsArray($aFirstColumn) Then
+		If $aFirstColumn[0] < 270 Then
+			$aiColumn[0] = $aFirstColumn[0] - 1
+			$aiColumn[2] = $aiColumn[0] + 72
+		EndIf
 	EndIf
 	Local $iColumnWidth = 92
 	Local $sImgClanGamesReceivedWindow = @ScriptDir & "\imgxml\Windows\ClanGamesReceivedWindow*"
@@ -2123,7 +2329,7 @@ Func CollectClanGamesRewards($bTest = False)
 	If Not FileExists($sIniPath) Then
 		; Write INI File
 		Local $File = FileOpen($sIniPath, $FO_APPEND)
-		Local $HelpText = "; - MyBotRun - Clan Games Rewards Priority List 2023 - " & @CRLF & _
+		Local $HelpText = "; - MyBotRun - Clan Games Rewards Priority List 2024 - " & @CRLF & _
 				"; - 'Reward' = 'Priority' [1 to 99][highest to lowest] , if grouped then random from group" & @CRLF & _
 				"; - Do not change any Reward name" & @CRLF & _
 				"; - Deleting this file will restore the default values." & @CRLF & @CRLF
@@ -2146,10 +2352,9 @@ Func CollectClanGamesRewards($bTest = False)
 	EndIf
 
 	Local $i = 0
-	Local $bLoop = True
 	Local $aCollectRewardsButton
 
-	While $bLoop
+	While 1
 		SetLog("Column :" & $i)
 
 		DragRewardColumnIfNeeded($i)
@@ -2231,19 +2436,17 @@ Func CollectClanGamesRewards($bTest = False)
 
 		EndIf
 
+		If ($i = 5 And _ColorCheck(_GetPixelColor(823, 200 + $g_iMidOffsetY, True), Hex(0xE8E8E0, 6), 20)) Or $i = 6 Then ExitLoop
+
+		$i += 1
+
 		If $i < 6 Then
 			$aiColumn[0] = ($aiColumn[0] + $iColumnWidth)
 			$aiColumn[2] = ($aiColumn[2] + $iColumnWidth)
 		Else
 			$aiColumn[0] = 745
-			$aiColumn[1] = 246
 			$aiColumn[2] = 818
-			$aiColumn[3] = 453
 		EndIf
-
-		If ($i = 5 And _ColorCheck(_GetPixelColor(823, 200 + $g_iMidOffsetY, True), Hex(0xE8E8E0, 6), 20)) Or $i = 6 Then $bLoop = False
-
-		$i += 1
 
 		If $g_bDebugImageSave Then SaveDebugImage("ClanGamesRewardsWindow", False)
 	WEnd
@@ -2291,7 +2494,6 @@ Func SearchColumn($aiColumn, $aRewardsList)
 		Next
 
 		If IsDeclared("aArray") And $aArray[0] <> "" Then
-			;SetLog("Added!")
 			ReDim $aSelectReward[UBound($aSelectReward) + 1][4]
 			$aSelectReward[UBound($aSelectReward) - 1][0] = $aArray[0] ; Reward
 			$aSelectReward[UBound($aSelectReward) - 1][1] = $aArray[1] ; Xaxis
@@ -2345,18 +2547,21 @@ EndFunc   ;==>DebugClanGamesRewards
 Func DragRewardColumnIfNeeded($iColumn = 0)
 
 	If $iColumn < 6 Then Return
-	If $iColumn = 6 Then ClickDrag(755, 220, 755 - 108, 220, 200)
-	If _Sleep(100) Then Return
+	If $iColumn = 6 Then ClickDrag(755, 190 + $g_iMidOffsetY, 755 - 108, 190 + $g_iMidOffsetY, 200)
+	If _Sleep(Random(2000, 2500, 1)) Then Return
 
 	Return
 EndFunc   ;==>DragRewardColumnIfNeeded
 
-Func CooldownTime($getCapture = True)
+Func CooldownTime()
 	;check cooldown purge
-	Local $aiCoolDown = decodeSingleCoord(findImage("Cooldown", $g_sImgCoolPurge & "\*.xml", GetDiamondFromRect("480,370,570,420"), 1, True, Default))
-	If IsArray($aiCoolDown) And UBound($aiCoolDown, 1) >= 2 Then
+	Local $aiCoolDown = decodeSingleCoord(FindImageInPlace2("Cooldown", $g_sImgCoolPurge, 480, 330 + $g_iMidOffsetY, 570, 385 + $g_iMidOffsetY, True))
+	If IsArray($aiCoolDown) And UBound($aiCoolDown) = 2 Then
 		SetLog("Cooldown Purge Detected", $COLOR_INFO)
-		If _Sleep(1500) Then Return
+		Local $sPurgeTimeRemain = getOcrTimeGameTime(500, 262 + $g_iMidOffsetY) ; read CoolDown time
+		Local $sPurgeTimeCG = ConvertOCRTime("SetCGCoolDownTime()", $sPurgeTimeRemain, False, "sec")
+		SetDebugLog("$sPurgeTimeCG : " & $sPurgeTimeCG & " Seconds", $COLOR_DEBUG2)
+		$g_hCoolDownTimer = _DateAdd('s', $sPurgeTimeCG - 600, _NowCalc()) ; Date of purge
 		CloseWindow()
 		Return True
 	EndIf
@@ -2364,43 +2569,47 @@ Func CooldownTime($getCapture = True)
 EndFunc   ;==>CooldownTime
 
 Func SetCGCoolDownTime($bTest = False)
-	SetDebugLog("$g_hCoolDownTimer before: " & $g_hCoolDownTimer, $COLOR_DEBUG2)
-	$g_hCoolDownTimer = TimerInit()
+	$g_hCoolDownTimer = _DateAdd('s', 0, _NowCalc()) ; Set Date Now!
 	If _Sleep(1500) Then Return
 
-	SetDebugLog("$g_hCoolDownTimer after 1500 ms : " & Round(TimerDiff($g_hCoolDownTimer) / 1000 / 60, 2) & " Minutes", $COLOR_DEBUG2)
+	Local $sPurgeTimeRemain = getOcrTimeGameTime(500, 262 + $g_iMidOffsetY) ; read CoolDown time
+	Local $sPurgeTimeCG = ConvertOCRTime("SetCGCoolDownTime()", $sPurgeTimeRemain, False, "sec")
+	SetDebugLog("$sPurgeTimeCG : " & $sPurgeTimeCG & " Seconds", $COLOR_DEBUG2)
+	SetDebugLog("$g_hCoolDownTimer after 1500 ms : " & _DateDiff('s', $g_hCoolDownTimer, _NowCalc()) * 1000 & " ms", $COLOR_DEBUG2)
 
 	If $bTest Then
 		If _Sleep(1500) Then Return
-		SetLog("Timer after 3000 ms : " & Round(TimerDiff($g_hCoolDownTimer) / 1000 / 60, 2) & " Minutes", $COLOR_DEBUG2)
+		SetLog("Timer after 3000 ms : " & _DateDiff('s', $g_hCoolDownTimer, _NowCalc()) * 1000 & " ms", $COLOR_DEBUG2)
 		$g_hCoolDownTimer = 0
 	EndIf
 EndFunc   ;==>SetCGCoolDownTime
 
-Func IsCGCoolDownTime($Setlog = True)
-	If $g_hCoolDownTimer = 0 Then Return False
+Func IsCGCoolDownTime($SetLog = True)
+	If Not _DateIsValid($g_hCoolDownTimer) Or $g_hCoolDownTimer = 0 Then Return False
 
-	Local $iTimer = Round(TimerDiff($g_hCoolDownTimer) / 1000 / 60, 2)
-	Local $iSec = Round(TimerDiff($g_hCoolDownTimer) / 1000)
-	SetDebugLog("CG Cooldown Timer : " & $iTimer)
-
-	If $iTimer > 10 Then
-		$g_hCoolDownTimer = 0
-		Return False
-	Else
-		Local $sWaitTime = "", $iMin
-		$iMin = Floor($iTimer)
-		If $iTimer < 1 Then
-			$iSec = Round($iTimer * 60)
+	Local $iTimer = 0, $iSec = 0
+	If _DateIsValid($g_hCoolDownTimer) Then
+		If _DateDiff('s', $g_hCoolDownTimer, _NowCalc()) >= 600 Then
+			$g_hCoolDownTimer = 0
+			Return False
 		Else
-			$iSec = $iSec - ($iMin * 60)
+			$iTimer = _DateDiff('n', $g_hCoolDownTimer, _NowCalc())
+			$iSec = _DateDiff('s', $g_hCoolDownTimer, _NowCalc())
 		EndIf
-		If $iMin = 1 Then $sWaitTime &= $iMin & " minute "
-		If $iMin > 1 Then $sWaitTime &= $iMin & " minutes "
-		If $iSec > 1 Then $sWaitTime &= $iSec & " seconds"
-		If $SetLog Then SetLog("Cooldown Time Detected: " & $sWaitTime, $COLOR_DEBUG2)
-		Return True
+	Else
+		Return False
 	EndIf
+
+	Local $sWaitTime = ""
+	Local $iMin = $iTimer
+	If $iMin >= 1 Then
+		$iSec = $iSec - ($iMin * 60)
+		$sWaitTime &= $iMin & " minute" & ($iMin > 1 ? "s " : " ")
+	EndIf
+	If $iSec > 1 Then $sWaitTime &= $iSec & " seconds"
+	If $SetLog Then SetLog("Cooldown Time Detected: " & $sWaitTime, $COLOR_DEBUG2)
+	Return True
+
 EndFunc   ;==>IsCGCoolDownTime
 
 Func UTCTimeCG()
@@ -2456,3 +2665,69 @@ Func SwitchForCGEvent()
 	EndIf
 	Return True
 EndFunc   ;==>SwitchForCGEvent
+
+Func CreateCGRewardsFile()
+	Local $aRewardsList[41][2] = [ _  ; books-1, gems-2, runes-3, shovel-4,  50gems-5, wall rings-6, full wall - 7, all other Pots - 8, 10gems - 9
+			["BookOfEverything", 10], _
+			["BookOfHero", 10], _
+			["BookOfFighting", 10], _
+			["BookOfBuilding", 10], _
+			["BookOfSpell", 10], _
+			["Gems", 20], _
+			["RuneOfGold", 30], _
+			["RuneOfElixir", 30], _
+			["RuneOfDarkElixir", 30], _
+			["RuneOfBuilderGold", 30], _
+			["RuneOfBuilderElixir", 30], _
+			["Shovel", 40], _
+			["FullBookOfEverything", 50], _ ; 50 gems
+			["FullBookOfHero", 50], _        ; 50 gems
+			["FullBookOfFighting", 50], _    ; 50 gems
+			["FullBookOfBuilding", 50], _    ; 50 gems
+			["FullBookOfSpell", 50], _        ; 50 gems
+			["FullRuneOfGold", 60], _        ; 50 gems
+			["FullRuneOfElixir", 60], _    ; 50 gems
+			["FullRuneOfDarkElixir", 60], _ ; 50 gems
+			["FullRuneOfBuilderGold", 60], _ ; 50 gems
+			["FullRuneOfBuilderElixir", 60], _ ; 50 gems
+			["FullShovel", 70], _            ; 50 gems
+			["FullWallRing", 70], _        ; ? gem
+			["WallRing", 70], _
+			["PotBuilder", 80], _
+			["PotResearch", 80], _
+			["PotClock", 80], _
+			["PotBoost", 80], _
+			["PotHero", 80], _
+			["PotResources", 80], _
+			["PotPower", 80], _
+			["PotSuper", 80], _
+			["FullPotBuilder", 90], _        ; 10 gems
+			["FullPotResearch", 90], _        ; 10 gems
+			["FullPotClock", 90], _        ; 10 gems
+			["FullPotBoost", 90], _        ; 10 gems
+			["FullPotHero", 90], _            ; 10 gems
+			["FullPotResources", 90], _    ; 10 gems
+			["FullPotPower", 90], _        ; 10 gems
+			["FullPotSuper", 90]]          ; 10 gems
+
+	Local $sIniPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\ClanGamesRewards.ini"
+	Local $ResultIni
+
+	If Not FileExists($sIniPath) Then
+		SetDebuglog(" - Ini Path: " & $sIniPath)
+		; Write INI File
+		Local $File = FileOpen($sIniPath, $FO_APPEND)
+		Local $HelpText = "; - MyBotRun - Clan Games Rewards Priority List 2024 - " & @CRLF & _
+				"; - 'Reward' = 'Priority' [1 to 99][highest to lowest] , if grouped then random from group" & @CRLF & _
+				"; - Do not change any Reward name" & @CRLF & _
+				"; - Deleting this file will restore the default values." & @CRLF & @CRLF
+		FileWrite($File, $HelpText)
+		FileClose($File)
+
+		For $j = 0 To UBound($aRewardsList) - 1
+			IniWrite($sIniPath, "Rewards", $aRewardsList[$j][0], $aRewardsList[$j][1])
+			SetDebugLog($aRewardsList[$j][0] & " - " & $aRewardsList[$j][1])
+		Next
+	EndIf
+
+EndFunc   ;==>CreateCGRewardsFile

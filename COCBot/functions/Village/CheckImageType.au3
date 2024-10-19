@@ -14,7 +14,7 @@
 Func CheckImageType()
 	SetLog("Detecting your Village Theme", $COLOR_INFO)
 
-	ClickAway()
+	ClearScreen()
 
 	If _Sleep($DELAYCHECKIMAGETYPE1) Then Return
 	If Not IsMainPage() Then ClickAway()

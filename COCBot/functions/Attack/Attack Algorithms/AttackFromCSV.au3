@@ -41,10 +41,20 @@ Global $g_aiDeployableLRTB = [0, $g_iGAME_WIDTH - 1, 0, 626] ; used by another i
 
 Func ConvertInternalExternArea()
 	; set the diamond shape based on reference village
-	Local $InnerDiamondLeft = $g_afRefVillage[$g_iTree][1]
-	Local $InnerDiamondRight = $g_afRefVillage[$g_iTree][2]
-	Local $InnerDiamondTop = $g_afRefVillage[$g_iTree][3]
-	Local $InnerDiamondBottom = $g_afRefVillage[$g_iTree][4]
+	If isOnMainVillage(True) And ($g_iTree = $eTreeEG Or $g_iTree = $eTreeMS Or $g_iTree = $eTreePG) Then
+		For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
+			If $g_iTree <> $g_afRefCustomMainVillage[$i][5] Then ContinueLoop
+			Local $InnerDiamondLeft = $g_afRefCustomMainVillage[$i][0]
+			Local $InnerDiamondRight = $g_afRefCustomMainVillage[$i][1]
+			Local $InnerDiamondTop = $g_afRefCustomMainVillage[$i][2]
+			Local $InnerDiamondBottom = $g_afRefCustomMainVillage[$i][3]
+		Next
+	Else
+		Local $InnerDiamondLeft = $g_afRefVillage[$g_iTree][1]
+		Local $InnerDiamondRight = $g_afRefVillage[$g_iTree][2]
+		Local $InnerDiamondTop = $g_afRefVillage[$g_iTree][3]
+		Local $InnerDiamondBottom = $g_afRefVillage[$g_iTree][4]
+	EndIf
 
 	Local $OuterDiamondLeft = $InnerDiamondLeft - $g_afRefVillage[$g_iTree][6]
 	Local $OuterDiamondRight = $InnerDiamondRight + $g_afRefVillage[$g_iTree][7]
@@ -187,9 +197,9 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		debugAttackCSV("SLOT n.: " & $i & " - Troop: " & GetTroopName($g_avAttackTroops[$i][0]) & " (" & $g_avAttackTroops[$i][0] & ") - Quantity: " & $g_avAttackTroops[$i][1])
 	Next
 
-	Local $hTimerTOTAL = __timerinit()
+	Local $hTimerTOTAL = __TimerInit()
 	;02.01 - REDAREA -----------------------------------------------------------------------------------------------------------------------------------------
-	Local $hTimer = __timerinit()
+	Local $hTimer = __TimerInit()
 
 	SetDebugLog("Redline mode: " & $g_aiAttackScrRedlineRoutine[$g_iMatchMode])
 	SetDebugLog("Dropline mode: " & $g_aiAttackScrDroplineEdge[$g_iMatchMode])
@@ -368,7 +378,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 
 	;04.01 If drop troop near gold mine
 	If $g_bCSVLocateMine Then
-		$hTimer = __timerinit()
+		$hTimer = __TimerInit()
 		SuspendAndroid()
 		$g_aiPixelMine = GetLocationMine()
 		ResumeAndroid()
@@ -408,7 +418,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 
 	;04.02  If drop troop near elisir
 	If $g_bCSVLocateElixir Then
-		$hTimer = __timerinit()
+		$hTimer = __TimerInit()
 		SuspendAndroid()
 		$g_aiPixelElixir = GetLocationElixir()
 		ResumeAndroid()
@@ -449,7 +459,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	;04.03 If drop troop near drill
 	If $g_bCSVLocateDrill Then
 		;SetLog("Locating drills")
-		$hTimer = __timerinit()
+		$hTimer = __TimerInit()
 		SuspendAndroid()
 		$g_aiPixelDarkElixir = GetLocationDarkElixir()
 		ResumeAndroid()
@@ -539,7 +549,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	EndIf
 
 	If $g_bCSVLocateStorageDarkElixir = True Then
-		$hTimer = __timerinit()
+		$hTimer = __TimerInit()
 		SuspendAndroid()
 		; USES OLD OPENCV DETECTION
 		Local $g_aiPixelDarkElixirStorage = GetLocationDarkElixirStorageWithLevel()

@@ -46,7 +46,7 @@ Func _LocatePetHouse($bCollect = True)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_PetHouse_02", "Locate PetHouse"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickAway()
+			ClearScreen()
 			Local $aPos = FindPos()
 			$g_aiPetHousePos[0] = Int($aPos[0])
 			$g_aiPetHousePos[1] = Int($aPos[1])
@@ -68,18 +68,18 @@ Func _LocatePetHouse($bCollect = True)
 						ContinueLoop
 					Case $iStupid > 4
 						SetLog(" Operator Error - Bad Pet House Location.", $COLOR_ERROR)
-						ClickAway()
+						ClearScreen()
 						Return False
 				EndSelect
 			EndIf
 		Else
 			SetLog("Locate Pet House Cancelled", $COLOR_INFO)
-			ClickAway()
+			ClearScreen()
 			Return
 		EndIf
-		Local $sPetHouseInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+		Local $sPetHouseInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 		If $sPetHouseInfo[0] > 1 Or $sPetHouseInfo[0] = "" Then
-			If StringInStr($sPetHouseInfo[1], "House") = 0 Then
+			If StringInStr($sPetHouseInfo[1], "Pet") = 0 Then
 				Local $sLocMsg = ($sPetHouseInfo[0] = "" ? "Nothing" : $sPetHouseInfo[1])
 
 				$iSilly += 1
@@ -98,7 +98,7 @@ Func _LocatePetHouse($bCollect = True)
 						ContinueLoop
 					Case $iSilly > 4
 						SetLog("Ok, you really think that's a Pet House?" & @CRLF & "I don't care anymore, go ahead with it!", $COLOR_ERROR)
-						ClickAway()
+						ClearScreen()
 						ExitLoop
 				EndSelect
 			EndIf
@@ -106,13 +106,13 @@ Func _LocatePetHouse($bCollect = True)
 			SetLog(" Operator Error - Bad Pet House Location: " & "(" & $g_aiPetHousePos[0] & "," & $g_aiPetHousePos[1] & ")", $COLOR_ERROR)
 			$g_aiPetHousePos[0] = -1
 			$g_aiPetHousePos[1] = -1
-			ClickAway()
+			ClearScreen()
 			Return False
 		EndIf
 		SetLog("Locate Pet House Success: " & "(" & $g_aiPetHousePos[0] & "," & $g_aiPetHousePos[1] & ")", $COLOR_SUCCESS)
 		ExitLoop
 	WEnd
-	ClickAway()
+	ClearScreen()
 
 EndFunc   ;==>_LocatePetHouse
 

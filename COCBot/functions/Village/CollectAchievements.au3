@@ -24,14 +24,14 @@ Func CollectAchievements($bTestMode = False) ;Run with True parameter if testing
 		If Not CollectAchievementsRandomization() Then Return
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 	If Not IsMainPage() Then Return
 
 	SetLog("Begin collecting achievement rewards", $COLOR_INFO)
 	If _Sleep($DELAYCOLLECT2) Then Return
 
 	;Check if possible rewards available from main screen
-	Local $aImgAchievementsMainScreen = decodeSingleCoord(findImage("AchievementsMainScreen", $g_sImgAchievementsMainScreen, GetDiamondFromRect("5, 60, 70, 2"), 1, True))
+	Local $aImgAchievementsMainScreen = decodeSingleCoord(findImage("AchievementsMainScreen", $g_sImgAchievementsMainScreen, GetDiamondFromRect("5,2,70,60"), 1, True))
 	If UBound($aImgAchievementsMainScreen) > 1 Then
 		SetDebugLog("Achievement counter found on main screen", $COLOR_SUCCESS)
 		Click($aImgAchievementsMainScreen[0] - 10, $aImgAchievementsMainScreen[1] + 20)
@@ -44,32 +44,26 @@ Func CollectAchievements($bTestMode = False) ;Run with True parameter if testing
 
 	;Check MyProfile window Opened correctly
 	If Not $g_bRunState Then Return
-	Local $aImgAchievementsMyProfile = decodeSingleCoord(findImage("MyProfile", $g_sImgAchievementsMyProfile, GetDiamondFromRect("100, 110, 275, 55"), 1, True))
+	Local $aImgAchievementsMyProfile = decodeSingleCoord(findImage("MyProfile", $g_sImgAchievementsMyProfile, GetDiamondFromRect("100,55,275,110"), 1, True))
 	If UBound($aImgAchievementsMainScreen) > 1 Then
 		SetDebugLog("My Profile window opened successfully", $COLOR_SUCCESS)
 		If _Sleep(1500) Then Return
 	Else
 		SetDebugLog("My Profile window failed to open", $COLOR_ERROR)
-		ClickAway()
+		ClickAway("Right")
 		If _Sleep(1000) Then Return
 	EndIf
 
 	If Not CollectAchievementsClaimReward() Then
 		SetDebugLog("There are no achievement rewards to collect", $COLOR_INFO)
 		If _Sleep(1000) Then Return
-		ClickAway()
+		CloseWindow2()
 		Return
 	EndIf
 
-;HArchH : Test fix for never-ending scrolling.  Now will claim 1 reward only each time.
-;	While $g_iFoundScrollEnd <> 2
-		CollectAchievementsClaimReward()
-;		CollectAchievementsScroll()
-;	WEnd
-
 	If _Sleep(1000) Then Return
 	SetDebugLog("All achievment rewards collected successfully", $COLOR_SUCCESS)
-	ClickAway()
+	CloseWindow2()
 	Return
 EndFunc   ;==>CollectAchievements
 
@@ -92,30 +86,11 @@ Func CollectAchievementsRandomization() ; Add some randomization to avoid runnin
 	EndIf
 EndFunc   ;==>CollectAchievementsRandomization
 
-
-Func CollectAchievementsScroll()
-
-	ClickDrag(70, 630, 70, 220)
-	If _Sleep(1000) Then Return
-
-	Local $aImgAchievementsScrollEnd = decodeSingleCoord(findImage("ScrollEnd", $g_sImgAchievementsScrollEnd, GetDiamondFromRect("50, 700, 250, 550"), 1, True))
-	If UBound($aImgAchievementsScrollEnd) > 1 Then
-		SetDebugLog("End of achievements list located", $COLOR_INFO)
-		$g_iFoundScrollEnd = $g_iFoundScrollEnd + 1
-		If _Sleep(1500) Then Return
-	Else
-		SetDebugLog("End of achievements list not found", $COLOR_INFO)
-		SetDebugLog("Continue searching", $COLOR_INFO)
-		If _Sleep(1500) Then Return
-	EndIf
-EndFunc   ;==>CollectAchievementsScroll
-
-
 Func CollectAchievementsClaimReward()
 	;Check Profile for Achievements and collect
 	If Not $g_bRunState Then Return
 
-	Local $sSearchArea = GetDiamondFromRect("660, 160, 845, 675")
+	Local $sSearchArea = GetDiamondFromRect2(660, 130 + $g_iMidOffsetY, 845, 645 + $g_iMidOffsetY)
 	Local $aClaimButtons = findMultiple($g_sImgAchievementsClaimReward, $sSearchArea, $sSearchArea, 0, 1000, 0, "objectname,objectpoints", True)
 	If IsArray($aClaimButtons) And UBound($aClaimButtons) > 0 Then
 		For $i = 0 To UBound($aClaimButtons) - 1

@@ -978,6 +978,7 @@ Func chkActivateClangames()
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
 		GUICtrlSetState($g_hChkClanGamesCollectRewards, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtClanGamesLog, $GUI_ENABLE)
 	Else
 		GUICtrlSetState($g_hBtnCGRewardsSettingsOpen, $GUI_DISABLE)
 		GUICtrlSetState($g_hBtnCGSettingsOpen, $GUI_DISABLE)
@@ -985,6 +986,7 @@ Func chkActivateClangames()
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 		GUICtrlSetState($g_hChkClanGamesCollectRewards, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtClanGamesLog, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkActivateClangames
 
@@ -1201,6 +1203,33 @@ Func CGMainGroundTVItem()
 		EndIf
 	Next
 EndFunc   ;==>CGMainGroundTVItem
+
+Func CGEquipmentTVRoot()
+	If BitAND(GUICtrlRead($g_hChkCGEquipment), $GUI_CHECKED) And GUICtrlRead($g_hChkCGRootEnabledAll) = $GUI_CHECKED Then ;root Clangames MainVillage Equipment Challenges
+		For $i = 0 To UBound($g_ahCGEquipmentItem) - 1
+			GUICtrlSetState($g_ahCGEquipmentItem[$i], $GUI_CHECKED)
+		Next
+	EndIf
+	If Not BitAND(GUICtrlRead($g_hChkCGEquipment), $GUI_CHECKED) And GUICtrlRead($g_hChkCGRootEnabledAll) = $GUI_CHECKED Then ;root Clangames MainVillage Equipment Challenges
+		For $i = 0 To UBound($g_ahCGEquipmentItem) - 1
+			GUICtrlSetState($g_ahCGEquipmentItem[$i], $GUI_UNCHECKED)
+		Next
+	EndIf
+	GUICtrlSetData($g_hLabelClangamesDesc, "Enable/Disable Main Village Equipment Challenges")
+EndFunc   ;==>CGEquipmentTVRoot
+
+Func CGEquipmentTVItem()
+	Local $tmpChallenges = ClanGamesChallenges("$EquipmentChallenges")
+	For $i = 0 To UBound($g_ahCGEquipmentItem) - 1
+		If GUICtrlRead($g_hClanGamesTV) = $g_ahCGEquipmentItem[$i] Then
+			GUICtrlSetData($g_hLabelClangamesDesc, $tmpChallenges[$i][4] & @CRLF & "Required TH Level : " & $tmpChallenges[$i][2] _
+					 & @CRLF & "Difficulty : " & $tmpChallenges[$i][3])
+			ExitLoop
+		Else
+			GUICtrlSetData($g_hLabelClangamesDesc, "")
+		EndIf
+	Next
+EndFunc   ;==>CGEquipmentTVItem
 
 Func CGMainMiscTVRoot()
 	If BitAND(GUICtrlRead($g_hChkCGMainMisc), $GUI_CHECKED) And GUICtrlRead($g_hChkCGRootEnabledAll) = $GUI_CHECKED Then ;root Clangames MainVillage Miscellaneous Challenges
@@ -1423,11 +1452,13 @@ Func EnableAutoUpgradeCC()
 		For $i = $g_hChkAutoUpgradeCCPriorArmy To $g_hChkAutoUpgradeCCWallIgnore
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
+		GUICtrlSetState($g_hTxtAutoUpgradeCCLog, $GUI_ENABLE)
 	Else
 		$g_bChkEnableAutoUpgradeCC = False
 		For $i = $g_hChkAutoUpgradeCCPriorArmy To $g_hChkAutoUpgradeCCWallIgnore
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
+		GUICtrlSetState($g_hTxtAutoUpgradeCCLog, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>EnableAutoUpgradeCC
 

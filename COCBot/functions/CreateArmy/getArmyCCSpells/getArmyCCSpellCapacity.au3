@@ -36,11 +36,11 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	EndIf
 
 	; Verify spell current and total capacity
-	Local $sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
+	Local $sCCSpellsInfo = getCCSpellCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 
 	Local $iCount = 0 ; reset OCR loop counter
-	While $sCCSpellsInfo = "" ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
-		$sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
+	While $sCCSpellsInfo = "" ; In case the CC donations received msg are blocking, need to keep checking numbers till valid
+		$sCCSpellsInfo = getCCSpellCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 		$iCount += 1
 		If $iCount > 10 Then ExitLoop ; try reading 30 times for 250+150ms OCR for 4 sec
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return ; Wait 250ms
@@ -64,7 +64,7 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 		$g_iCurrentCCSpells = 0
 	EndIf
 
-	If $bSetLog Then SetLog("Total Clan Castle Spells: " & $g_iCurrentCCSpells & "/" & $g_iTotalCCSpells)
+	If $bSetLog Then SetLog("Clan Castle Spell" & ($g_iTotalCCSpells > 1 ? "s" : "") & ": " & $g_iCurrentCCSpells & "/" & $g_iTotalCCSpells)
 
 	If $bCloseArmyWindow Then CloseWindow()
 

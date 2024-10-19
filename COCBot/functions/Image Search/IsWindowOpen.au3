@@ -80,14 +80,14 @@ Func CloseWindow($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebug
 
 		If IsArray($aiButton) And UBound($aiButton) >= 2 Then
 			ClickP($aiButton, 1)
-			SetLog("Window Closed!")
-			If _Sleep(500) Then Return
+			SetDebugLog("Window Closed!")
+			If _Sleep(1000) Then Return
 
 			; clear building text - this area is needed for ZoomOut()
-			Local $sBuildingText = getNameBuilding(242, 468 + $g_iBottomOffsetY)
+			Local $sBuildingText = getNameBuilding(242, 475 + $g_iBottomOffsetY)
 
 			If $sBuildingText <> "" Then
-				SetLog("Clearing Building Text", $COLOR_INFO)
+				SetDebugLog("Clearing Building Text", $COLOR_INFO)
 				ClickAway()
 				If _Sleep($iDelay) Then Return
 			EndIf
@@ -139,3 +139,25 @@ Func CloseWindow2($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebu
 
 	Return False
 EndFunc   ;==>CloseWindow2
+
+Func ClearScreen($Area = "Defaut", $MainVillage = True)
+	Local $IsGrayed = False
+	If $MainVillage Then
+		If _CheckPixel($aIsMainGrayed, $g_bCapturePixel) Then $IsGrayed = True
+	Else
+		If _CheckPixel($aIsBuilderBaseGrayed, $g_bCapturePixel) Then $IsGrayed = True
+	EndIf
+	Local $sBuildingText = getNameBuilding(242, 475 + $g_iBottomOffsetY)
+	If $sBuildingText <> "" Or $IsGrayed Then
+		SetDebugLog("Clearing Screen", $COLOR_INFO)
+		Switch $Area
+			Case "Defaut"
+				ClickAway()
+			Case "Left"
+				ClickAway("Left")
+			Case "Right"
+				ClickAway("Right")
+		EndSwitch
+		If _Sleep(1500) Then Return
+	EndIf
+EndFunc   ;==>ClearScreen

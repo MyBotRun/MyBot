@@ -360,6 +360,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkCGMainDestruction, $g_bChkClanGamesDes ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCGMainAir, $g_bChkClanGamesAirTroop ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCGMainGround, $g_bChkClanGamesGroundTroop ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkCGEquipment, $g_bChkClanGamesEquipment ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCGMainMisc, $g_bChkClanGamesMiscellaneous ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCGMainSpell, $g_bChkClanGamesSpell ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCGBBBattle, $g_bChkClanGamesBBBattle ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -393,6 +394,9 @@ Func ApplyConfig_600_6($TypeReadSave)
 			For $i = 0 To UBound($g_ahCGMainGroundItem) - 1
 				GUICtrlSetState($g_ahCGMainGroundItem[$i], $g_abCGMainGroundItem[$i] = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
+			For $i = 0 To UBound($g_ahCGEquipmentItem) - 1
+				GUICtrlSetState($g_ahCGEquipmentItem[$i], $g_abCGEquipmentItem[$i] = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			Next
 			For $i = 0 To UBound($g_ahCGMainMiscItem) - 1
 				GUICtrlSetState($g_ahCGMainMiscItem[$i], $g_abCGMainMiscItem[$i] = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
@@ -410,6 +414,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			Next
 
 			chkActivateClangames()
+			CreateCGRewardsFile()
 
 			; Builder Base Attack
 			GUICtrlSetState($g_hChkEnableBBAttack, $g_bChkEnableBBAttack ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -558,6 +563,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_bChkClanGamesDes = BitAND(GUICtrlRead($g_hChkCGMainDestruction), $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesAirTroop = BitAND(GUICtrlRead($g_hChkCGMainAir), $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesGroundTroop = BitAND(GUICtrlRead($g_hChkCGMainGround), $GUI_CHECKED) ? 1 : 0
+			$g_bChkClanGamesEquipment = BitAND(GUICtrlRead($g_hChkCGEquipment), $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesMiscellaneous = BitAND(GUICtrlRead($g_hChkCGMainMisc), $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesSpell = BitAND(GUICtrlRead($g_hChkCGMainSpell), $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesBBBattle = BitAND(GUICtrlRead($g_hChkCGBBBattle), $GUI_CHECKED) ? 1 : 0
@@ -588,6 +594,9 @@ Func ApplyConfig_600_6($TypeReadSave)
 			Next
 			For $i = 0 To UBound($g_ahCGMainGroundItem) - 1
 				$g_abCGMainGroundItem[$i] = BitAND(GUICtrlRead($g_ahCGMainGroundItem[$i]), $GUI_CHECKED) ? 1 : 0
+			Next
+			For $i = 0 To UBound($g_ahCGEquipmentItem) - 1
+				$g_abCGEquipmentItem[$i] = BitAND(GUICtrlRead($g_ahCGEquipmentItem[$i]), $GUI_CHECKED) ? 1 : 0
 			Next
 			For $i = 0 To UBound($g_ahCGMainMiscItem) - 1
 				$g_abCGMainMiscItem[$i] = BitAND(GUICtrlRead($g_ahCGMainMiscItem[$i]), $GUI_CHECKED) ? 1 : 0
@@ -918,11 +927,12 @@ Func ApplyConfig_600_15($TypeReadSave)
 			cmbHeroReservedBuilder()
 
 			GUICtrlSetState($g_hChkCustomEquipmentOrderEnable, $g_bChkCustomEquipmentOrderEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkFinishCurrentEquipmentFirst, $g_bChkFinishCurrentEquipmentFirst ? $GUI_CHECKED : $GUI_UNCHECKED)
 			For $z = 0 To UBound($g_ahCmbEquipmentOrder) - 1
 				GUICtrlSetState($g_hChkCustomEquipmentOrder[$z], $g_bChkCustomEquipmentOrder[$z] ? $GUI_CHECKED : $GUI_UNCHECKED)
 				_GUICtrlComboBox_SetCurSel($g_ahCmbEquipmentOrder[$z], $g_aiCmbCustomEquipmentOrder[$z])
-				_GUICtrlSetImage($g_ahImgEquipmentOrder[$z], $g_sLibIconPath, $g_aiEquipmentOrderIcon[$g_aiCmbCustomEquipmentOrder[$z] + 1])
-				_GUICtrlSetImage($g_ahImgEquipmentOrder2[$z], $g_sLibIconPath, $g_aiEquipmentOrderIcon2[$g_aiCmbCustomEquipmentOrder[$z] + 1])
+				_GUICtrlSetImage($g_ahImgEquipmentOrder[$z], $g_sLibIconPath, $g_aiEquipmentOrderIcon[$g_aiCmbCustomEquipmentOrder[$z] + 1][0])
+				_GUICtrlSetImage($g_ahImgEquipmentOrder2[$z], $g_sLibIconPath, $g_aiEquipmentOrderIcon[$g_aiCmbCustomEquipmentOrder[$z] + 1][1])
 			Next
 
 			Local $iValueSet = 0
@@ -934,12 +944,12 @@ Func ApplyConfig_600_15($TypeReadSave)
 			Next
 			If $iValueSet > 0 And $iValueSet < $eEquipmentCount Then
 				SetLog("Set your Equipment Upgrade Order!")
-				btnRegularOrder()
+				btnEquipmentOrderSet()
 			EndIf
 			If Not ChangeEquipmentOrder() Then SetDefaultEquipmentGroup()
 			If $iValueSet = 0 And $g_bChkCustomEquipmentOrderEnable Then
 				SetLog("Set your Equipment Upgrade Order!")
-				btnRegularOrder()
+				btnEquipmentOrderSet()
 			EndIf
 			EnableUpgradeEquipment()
 			chkEquipmentOrder()
@@ -958,6 +968,7 @@ Func ApplyConfig_600_15($TypeReadSave)
 			$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
 
 			$g_bChkCustomEquipmentOrderEnable = (GUICtrlRead($g_hChkCustomEquipmentOrderEnable) = $GUI_CHECKED)
+			$g_bChkFinishCurrentEquipmentFirst = (GUICtrlRead($g_hChkFinishCurrentEquipmentFirst) = $GUI_CHECKED)
 			For $z = 0 To UBound($g_ahCmbEquipmentOrder) - 1
 				$g_bChkCustomEquipmentOrder[$z] = (GUICtrlRead($g_hChkCustomEquipmentOrder[$z]) = $GUI_CHECKED)
 				$g_aiCmbCustomEquipmentOrder[$z] = _GUICtrlComboBox_GetCurSel($g_ahCmbEquipmentOrder[$z])
@@ -1026,6 +1037,7 @@ Func ApplyConfig_auto($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			GUICtrlSetState($g_hChkAutoUpgrade, $g_bAutoUpgradeEnabled ? $GUI_CHECKED : $GUI_UNCHECKED)
+			_GUICtrlComboBox_SetCurSel($g_hChkAppBuilder, $g_bChkAppBuilder)
 			For $i = 0 To UBound($g_iChkUpgradesToIgnore) - 1
 				GUICtrlSetState($g_hChkUpgradesToIgnore[$i], $g_iChkUpgradesToIgnore[$i] = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
@@ -1038,6 +1050,7 @@ Func ApplyConfig_auto($TypeReadSave)
 			chkAutoUpgrade()
 		Case "Save"
 			$g_bAutoUpgradeEnabled = (GUICtrlRead($g_hChkAutoUpgrade) = $GUI_CHECKED)
+			$g_bChkAppBuilder = _GUICtrlComboBox_GetCurSel($g_hChkAppBuilder)
 			For $i = 0 To UBound($g_iChkUpgradesToIgnore) - 1
 				$g_iChkUpgradesToIgnore[$i] = GUICtrlRead($g_hChkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 			Next
@@ -1996,21 +2009,14 @@ Func ApplyConfig_600_31($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
 	Switch $TypeReadSave
 		Case "Read"
-			For $i = 6 To 15
-				GUICtrlSetState($g_ahChkDBCollectorLevel[$i], $g_abCollectorLevelEnabled[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
-				GUICtrlSetState($g_ahCmbDBCollectorLevel[$i], $g_abCollectorLevelEnabled[$i] ? $GUI_ENABLE : $GUI_DISABLE)
-				_GUICtrlComboBox_SetCurSel($g_ahCmbDBCollectorLevel[$i], $g_aiCollectorLevelFill[$i])
-			Next
 			GUICtrlSetState($g_hChkDBDisableCollectorsFilter, $g_bCollectorFilterDisable ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkSupercharge, $g_bSupercharge ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbMinCollectorMatches, $g_iCollectorMatchesMin - 1)
 			GUICtrlSetData($g_hSldCollectorTolerance, $g_iCollectorToleranceOffset)
-			checkCollectors()
+			chkDBDisableCollectorsFilter()
 		Case "Save"
-			For $i = 6 To 15
-				$g_abCollectorLevelEnabled[$i] = (GUICtrlRead($g_ahChkDBCollectorLevel[$i]) = $GUI_CHECKED)
-				$g_aiCollectorLevelFill[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbDBCollectorLevel[$i])
-			Next
 			$g_bCollectorFilterDisable = (GUICtrlRead($g_hChkDBDisableCollectorsFilter) = $GUI_CHECKED)
+			$g_bSupercharge = (GUICtrlRead($g_hChkSupercharge) = $GUI_CHECKED)
 			$g_iCollectorMatchesMin = _GUICtrlComboBox_GetCurSel($g_hCmbMinCollectorMatches) + 1
 			$g_iCollectorToleranceOffset = GUICtrlRead($g_hSldCollectorTolerance)
 	EndSwitch
@@ -2158,7 +2164,6 @@ Func ApplyConfig_600_35_2($TypeReadSave)
 		Case "Read"
 			_GUICtrlComboBox_SetCurSel($g_hCmbSwitchAcc, $g_iCmbSwitchAcc)
 			GUICtrlSetState($g_hChkSwitchAcc, $g_bChkSwitchAcc ? $GUI_CHECKED : $GUI_UNCHECKED)
-			If $g_bChkGooglePlay Then GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_CHECKED)
 			If $g_bChkSuperCellID Then GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_CHECKED)
 			If $g_bChkSharedPrefs Then GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_CHECKED)
 			GUICtrlSetState($g_hChkSmartSwitch, $g_bChkSmartSwitch ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -2175,7 +2180,6 @@ Func ApplyConfig_600_35_2($TypeReadSave)
 		Case "Save"
 			$g_iCmbSwitchAcc = _GUICtrlComboBox_GetCurSel($g_hCmbSwitchAcc)
 			$g_bChkSwitchAcc = (GUICtrlRead($g_hChkSwitchAcc) = $GUI_CHECKED)
-			$g_bChkGooglePlay = (GUICtrlRead($g_hRadSwitchGooglePlay) = $GUI_CHECKED)
 			$g_bChkSuperCellID = (GUICtrlRead($g_hRadSwitchSuperCellID) = $GUI_CHECKED)
 			$g_bChkSharedPrefs = (GUICtrlRead($g_hRadSwitchSharedPrefs) = $GUI_CHECKED)
 			$g_bChkSmartSwitch = (GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED)
@@ -2219,22 +2223,13 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			For $T = 0 To $eTroopCount - 1
-				;Local $iColor = ($g_aiTrainArmyTroopLevel[$T] = $g_aiTroopCostPerLevel[$T][0] ? $COLOR_YELLOW : $COLOR_WHITE)
 				GUICtrlSetData($g_ahTxtTrainArmyTroopCount[$T], $g_aiArmyCustomTroops[$T])
-				;GUICtrlSetData($g_ahLblTrainArmyTroopLevel[$T], $g_aiTrainArmyTroopLevel[$T])
-				;If GUICtrlGetBkColor($g_ahLblTrainArmyTroopLevel[$T]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmyTroopLevel[$T], $iColor)
 			Next
 			For $S = 0 To $eSpellCount - 1
-				;Local $iColor = ($g_aiTrainArmySpellLevel[$S] = $g_aiSpellCostPerLevel[$S][0] ? $COLOR_YELLOW : $COLOR_WHITE)
 				GUICtrlSetData($g_ahTxtTrainArmySpellCount[$S], $g_aiArmyCustomSpells[$S])
-				;GUICtrlSetData($g_ahLblTrainArmySpellLevel[$S], $g_aiTrainArmySpellLevel[$S])
-				;If GUICtrlGetBkColor($g_ahLblTrainArmySpellLevel[$S]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmySpellLevel[$S], $iColor)
 			Next
 			For $S = 0 To $eSiegeMachineCount - 1
-				;Local $iColor = ($g_aiTrainArmySiegeMachineLevel[$S] = $g_aiSiegeMachineCostPerLevel[$S][0] ? $COLOR_YELLOW : $COLOR_WHITE)
 				GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], $g_aiArmyCompSiegeMachines[$S])
-				;GUICtrlSetData($g_ahLblTrainArmySiegeLevel[$S], $g_aiTrainArmySiegeMachineLevel[$S])
-				;If GUICtrlGetBkColor($g_ahLblTrainArmySiegeLevel[$S]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmySiegeLevel[$S], $iColor)
 			Next
 			; full & forced Total Camp values
 			GUICtrlSetData($g_hTxtFullTroop, $g_iTrainArmyFullTroopPct)

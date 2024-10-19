@@ -43,6 +43,7 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 			$aGetBuilders = StringSplit($sBuilderInfo, "#", $STR_NOCOUNT) ; Split into free and total builder strings
 			If Not $bBuilderBase Then
 				$g_iFreeBuilderCount = Int($aGetBuilders[0] - $ExtraBuilderCount) ; update global values
+				If $ExtraBuilderCount = 1 And Number($aGetBuilders[0]) = 0 Then $g_iFreeBuilderCount = 0
 				If $g_iTestFreeBuilderCount <> -1 Then $g_iFreeBuilderCount = $g_iTestFreeBuilderCount ; used for test cases
 				$g_iTotalBuilderCount = Int($aGetBuilders[1] - $ExtraBuilderCount)
 				If $g_bDebugSetlog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCount & "/" & $g_iTotalBuilderCount, $COLOR_DEBUG)

@@ -39,7 +39,7 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 		SetLog("Dropping King at " & $iX & ", " & $iY, $COLOR_INFO)
 		SelectDropTroop($iKingSlotNumber, 1, Default, False)
 		If _Sleep($DELAYDROPHEROES2) Then Return
-		AttackClick($iX, $iY, 1, 0, 0, "#0093")
+		AttackClick($iX, $iY, 1, 50, 0, "#0093")
 		If Not $g_bDropKing Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
 			$g_bCheckKingPower = True
 		Else
@@ -56,7 +56,7 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 		SetLog("Dropping Queen at " & $iX & ", " & $iY, $COLOR_INFO)
 		SelectDropTroop($iQueenSlotNumber, 1, Default, False)
 		If _Sleep($DELAYDROPHEROES2) Then Return
-		AttackClick($iX, $iY, 1, 0, 0, "#0095")
+		AttackClick($iX, $iY, 1, 50, 0, "#0095")
 		If Not $g_bDropQueen Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
 			$g_bCheckQueenPower = True
 		Else
@@ -73,7 +73,7 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 		SetLog("Dropping Grand Warden at " & $iX & ", " & $iY, $COLOR_INFO)
 		SelectDropTroop($iWardenSlotNumber, 1, Default, False)
 		If _Sleep($DELAYDROPHEROES2) Then Return
-		AttackClick($iX, $iY, 1, 0, 0, "#x999")
+		AttackClick($iX, $iY, 1, 50, 0, "#x999")
 		If Not $g_bDropWarden Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
 			$g_bCheckWardenPower = True
 		Else
@@ -90,7 +90,7 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 		SetLog("Dropping Royal Champion at " & $iX & ", " & $iY, $COLOR_INFO)
 		SelectDropTroop($iChampionSlotNumber, 1, Default, False)
 		If _Sleep($DELAYDROPHEROES2) Then Return
-		AttackClick($iX, $iY, 1, 0, 0, "#x999")
+		AttackClick($iX, $iY, 1, 50, 0, "#x999")
 		If Not $g_bDropChampion Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
 			$g_bCheckChampionPower = True
 		Else

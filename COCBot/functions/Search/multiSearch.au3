@@ -188,7 +188,9 @@ EndFunc   ;==>returnMultipleMatchesOwnVillage
 Func returnSingleMatchOwnVillage($directory, $statFile = "", $minLevel = 0, $maxLevel = 1000, $forceCaptureRegion = True)
 	; This is simple, just do a multiMatch search, with 1 return point but pass "ECD" for the redlines
 	; and full coc area so whole village is checked because obstacles can appear on the outer grass area
-	Local $aResult = multiMatches($directory, 1, "ECD", "ECD", $statFile, $minLevel, $maxLevel, $forceCaptureRegion)
+	Local $Area = "ECD"
+	If $g_iTree = $eTreeEG Then $Area = "DCD"
+	Local $aResult = multiMatches($directory, 1, $Area, $Area, $statFile, $minLevel, $maxLevel, $forceCaptureRegion)
 
 	Return $aResult
 EndFunc   ;==>returnSingleMatchOwnVillage

@@ -96,6 +96,7 @@ Func SaveClanGamesConfig()
 	_Ini_Add("clangames", "ChkClanGamesDestruction", $g_bChkClanGamesDes ? 1 : 0)
 	_Ini_Add("clangames", "ChkClanGamesAirTroop", $g_bChkClanGamesAirTroop ? 1 : 0)
 	_Ini_Add("clangames", "ChkClanGamesGroundTroop", $g_bChkClanGamesGroundTroop ? 1 : 0)
+	_Ini_Add("clangames", "ChkClanGamesEquipment", $g_bChkClanGamesEquipment ? 1 : 0)
 	_Ini_Add("clangames", "ChkClanGamesMiscellaneous", $g_bChkClanGamesMiscellaneous ? 1 : 0)
 	_Ini_Add("clangames", "ChkClanGamesSpell", $g_bChkClanGamesSpell ? 1 : 0)
 	_Ini_Add("clangames", "ChkClanGamesBBBattle", $g_bChkClanGamesBBBattle ? 1 : 0)
@@ -141,6 +142,12 @@ Func SaveClanGamesConfig()
 		$str &= $g_abCGMainGroundItem[$i] & "|"
 	Next
 	_Ini_Add("clangames", "EnabledCGGroundTroop", $str)
+
+	$str = ""
+	For $i = 0 To UBound($g_abCGEquipmentItem) - 1
+		$str &= $g_abCGEquipmentItem[$i] & "|"
+	Next
+	_Ini_Add("clangames", "EnabledCGEquipment", $str)
 
 	$str = ""
 	For $i = 0 To UBound($g_abCGMainMiscItem) - 1
@@ -686,6 +693,7 @@ Func SaveConfig_600_15()
 
 	; Equipment Order
 	_Ini_Add("upgrade", "ChkUpgradeEquipment", $g_bChkCustomEquipmentOrderEnable ? 1 : 0)
+	_Ini_Add("upgrade", "ChkFinishCurrentEquipmentFirst", $g_bChkFinishCurrentEquipmentFirst ? 1 : 0)
 	For $z = 0 To UBound($g_aiCmbCustomEquipmentOrder) - 1
 		_Ini_Add("upgrade", "ChkEquipment" & $z, $g_bChkCustomEquipmentOrder[$z] ? 1 : 0)
 		_Ini_Add("upgrade", "cmbEquipmentOrder" & $z, $g_aiCmbCustomEquipmentOrder[$z])
@@ -707,6 +715,7 @@ Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
 	; Auto Upgrade
 	_Ini_Add("Auto Upgrade", "AutoUpgradeEnabled", $g_bAutoUpgradeEnabled)
+	_Ini_Add("Auto Upgrade", "IsChkAppBuilder", _GUICtrlComboBox_GetCurSel($g_hChkAppBuilder))
 	For $i = 0 To UBound($g_iChkUpgradesToIgnore) - 1
 		_Ini_Add("Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i])
 	Next
@@ -1146,11 +1155,8 @@ EndFunc   ;==>SaveConfig_600_30_LB
 Func SaveConfig_600_31()
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
 	ApplyConfig_600_31(GetApplyConfigSaveAction())
-	For $i = 6 To 15
-		_Ini_Add("collectors", "lvl" & $i & "Enabled", $g_abCollectorLevelEnabled[$i] ? 1 : 0)
-		_Ini_Add("collectors", "lvl" & $i & "fill", $g_aiCollectorLevelFill[$i])
-	Next
 	_Ini_Add("search", "chkDisableCollectorsFilter", $g_bCollectorFilterDisable ? 1 : 0)
+	_Ini_Add("search", "chkSupercharge", $g_bSupercharge ? 1 : 0)
 	_Ini_Add("collectors", "minmatches", $g_iCollectorMatchesMin)
 	_Ini_Add("collectors", "tolerance", $g_iCollectorToleranceOffset)
 EndFunc   ;==>SaveConfig_600_31
@@ -1244,7 +1250,6 @@ Func SaveConfig_600_35_2()
 	If $iCmbSwitchAcc Then
 		$sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $iCmbSwitchAcc & ".ini"
 		IniWrite($sSwitchAccFile, "SwitchAccount", "Enable", $g_bChkSwitchAcc ? 1 : 0)
-		IniWrite($sSwitchAccFile, "SwitchAccount", "GooglePlay", $g_bChkGooglePlay ? 1 : 0)
 		IniWrite($sSwitchAccFile, "SwitchAccount", "SuperCellID", $g_bChkSuperCellID ? 1 : 0)
 		IniWrite($sSwitchAccFile, "SwitchAccount", "SharedPrefs", $g_bChkSharedPrefs ? 1 : 0)
 		IniWrite($sSwitchAccFile, "SwitchAccount", "SmartSwitch", $g_bChkSmartSwitch ? 1 : 0)
@@ -1286,7 +1291,6 @@ Func SaveConfig_600_52_2()
 	For $t = 0 To $eTroopCount - 1
 		_Ini_Add("troop", $g_asTroopShortNames[$t], $g_aiArmyCustomTroops[$t])
 	Next
-
 	For $s = 0 To $eSpellCount - 1
 		_Ini_Add("Spells", $g_asSpellShortNames[$s], $g_aiArmyCustomSpells[$s])
 	Next

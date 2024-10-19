@@ -19,35 +19,35 @@ Func BotDetectFirstTime()
 
 	SetLog("Detecting your Buildings", $COLOR_INFO)
 
-   #cs
+	#cs
+	If Not isInsideDiamond($g_aiTownHallPos) Then
+	checkMainScreen()
+	Collect(False)
+	_CaptureRegion2()
+	; USES OLD OPENCV DETECTION
+	Local $PixelTHHere = GetLocationItem("getLocationTownHall")
+	If UBound($PixelTHHere) > 0 Then
+	Local $pixel = $PixelTHHere[0]
+	$g_aiTownHallPos[0] = $pixel[0]
+	$g_aiTownHallPos[1] = $pixel[1]
+	SetDebugLog("DLLc# Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
+	EndIf
+	If $g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1 Then
+	imglocTHSearch(True, True) ; search th on myvillage
+	$g_aiTownHallPos[0] = $g_iTHx
+	$g_aiTownHallPos[1] = $g_iTHy
+	SetDebugLog("OldDDL Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
+	EndIf
+	SetLog("Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_DEBUG)
+	EndIf
+	#ce
+
 	If Not isInsideDiamond($g_aiTownHallPos) Then
 		checkMainScreen()
 		Collect(False)
-		_CaptureRegion2()
-		; USES OLD OPENCV DETECTION
-		Local $PixelTHHere = GetLocationItem("getLocationTownHall")
-		If UBound($PixelTHHere) > 0 Then
-			Local $pixel = $PixelTHHere[0]
-			$g_aiTownHallPos[0] = $pixel[0]
-			$g_aiTownHallPos[1] = $pixel[1]
-			SetDebugLog("DLLc# Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
-		EndIf
-		If $g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1 Then
-			imglocTHSearch(True, True) ; search th on myvillage
-			$g_aiTownHallPos[0] = $g_iTHx
-			$g_aiTownHallPos[1] = $g_iTHy
-			SetDebugLog("OldDDL Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
-		EndIf
+		imglocTHSearch(True, True, True) ; search th on myvillage
 		SetLog("Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_DEBUG)
 	EndIf
-   #ce
-
-   If Not isInsideDiamond($g_aiTownHallPos) Then
-	  checkMainScreen()
-	  Collect(False)
-	  imglocTHSearch(True, True, True) ; search th on myvillage
-	  SetLog("Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_DEBUG)
-   EndIf
 
 	If Number($g_iTownHallLevel) < 2 Then
 		Local $aTownHallLevel = GetTownHallLevel(True) ; Get the Users TH level
@@ -62,7 +62,7 @@ Func BotDetectFirstTime()
 	If $g_iTownHallLevel < 2 Or ($g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1) Then LocateTownHall(False, False)
 
 	If _Sleep($DELAYBOTDETECT1) Then Return
-	CheckImageType()
+	; CheckImageType()
 	If _Sleep($DELAYBOTDETECT1) Then Return
 
 	If $g_bScreenshotHideName Then

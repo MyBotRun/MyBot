@@ -41,12 +41,20 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 		If _Sleep($DELAYTREASURY4) Then Return
 
 		Local $aAttack = findButton("AttackButton", Default, 1, True)
+		Local $AttackCoordsX[2] = [45, 85]
+		Local $AttackCoordsY[2] = [590 + $g_iBottomOffsetY, 625 + $g_iBottomOffsetY]
+		Local $AttackButtonClickXY[2] = [Random($AttackCoordsX[0], $AttackCoordsX[1], 1), Random($AttackCoordsY[0], $AttackCoordsY[1], 1)]
 		If IsArray($aAttack) And UBound($aAttack, 1) = 2 Then
-			ClickP($aAttack, 1, 0, "#0149")
+			ClickP($AttackButtonClickXY, 1, 130, "#0149")
 		Else
-			SetLog("Couldn't find the Attack Button!", $COLOR_ERROR)
-			If $g_bDebugImageSave Then SaveDebugImage("AttackButtonNotFound")
-			Return
+			Local $aRescueAttack = findButton("RescueATKButton", Default, 1, True)
+			If IsArray($aRescueAttack) And UBound($aRescueAttack, 1) = 2 Then
+				ClickP($AttackButtonClickXY, 1, 130, "#0149")
+			Else
+				SetLog("Couldn't find the Attack Button!", $COLOR_ERROR)
+				If $g_bDebugImageSave Then SaveDebugImage("AttackButtonNotFound")
+				Return
+			EndIf
 		EndIf
 	EndIf
 
@@ -69,62 +77,86 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 
 	$g_bLeagueAttack = False
 	Do
+		Local $bAttackPictureFound = False
 		Local $bSignedUpLegendLeague = False
-		Local $sSearchDiamond = GetDiamondFromRect("300,195,815,630")
-		Local $avAttackButton = findMultiple($g_sImgPrepareLegendLeagueSearch, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
-		If IsArray($avAttackButton) And UBound($avAttackButton, 1) > 0 Then
+		Local $sSearchDiamond = GetDiamondFromRect2(300, 165 + $g_iMidOffsetY, 815, 600 + $g_iMidOffsetY)
+		For $z = 0 To 9
+			Local $avAttackButton = findMultiple($g_sImgPrepareLegendLeagueSearch, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
+			If IsArray($avAttackButton) And UBound($avAttackButton, 1) > 0 Then
+				$bAttackPictureFound = True
+				ExitLoop
+			EndIf
+			If _Sleep(200) Then ExitLoop
+		Next
+		If $bAttackPictureFound Then
 			$g_bLeagueAttack = True
+			$g_bLegendsAllMade = False
 			Local $avAttackButtonSubResult = $avAttackButton[0]
 			Local $sButtonState = $avAttackButtonSubResult[0]
 			If StringInStr($sButtonState, "Ended", 0) > 0 Then
 				SetLog("League Day ended already! Trying again later", $COLOR_INFO)
 				$g_bRestart = True
-				CloseWindow()
+				CloseWindow2()
 				$g_bForceSwitch = True     ; set this switch accounts next check
 				Return
 			ElseIf StringInStr($sButtonState, "Made", 0) > 0 Then
 				SetLog("All Attacks already made! Returning home", $COLOR_INFO)
 				$g_bLegendsAllMade = True
 				$g_bRestart = True
-				CloseWindow()
+				CloseWindow2()
 				$g_bForceSwitch = True     ; set this switch accounts next check
 				Return
 			ElseIf StringInStr($sButtonState, "FindMatchLegend", 0) > 0 Then
 				Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
-				ClickP($aCoordinates, 1, 0, "#0149")
+				ClickP($aCoordinates, 1, 140, "#0149")
+				If _Sleep(1500) Then Return
 				Local $aConfirmAttackButton
 				For $i = 0 To 10
-					If _Sleep(200) Then Return
 					$aConfirmAttackButton = findButton("ConfirmAttack", Default, 1, True)
 					If IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) = 2 Then
-						ClickP($aConfirmAttackButton, 1, 0)
+						If $Mode <> $DT Or ($Mode = $DT And $g_bDropTrophyAtkDead) Then SuperchargeCheck()
+						ClickP($aConfirmAttackButton, 1, 120)
 						ExitLoop
 					EndIf
+					If _Sleep(200) Then Return
+					If $i = 10 Then
+						SetLog("Couldn't find the confirm attack button!", $COLOR_ERROR)
+						If $g_bDebugImageSave Then SaveDebugImage("ConfirmAttackButtonNotFound")
+						CloseWindow2()
+						If _Sleep(1000) Then Return
+						CloseWindow2()
+						Return
+					EndIf
 				Next
-				If Not IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) < 2 Then
-					SetLog("Couldn't find the confirm attack button!", $COLOR_ERROR)
-					Return
-				EndIf
 			ElseIf StringInStr($sButtonState, "FindMatchNormal") > 0 Then
 				Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 				If IsArray($aCoordinates) And UBound($aCoordinates, 1) = 2 Then
 					$g_bLeagueAttack = False
-					ClickP($aCoordinates, 1, 0, "#0150")
+					If $Mode <> $DT Or ($Mode = $DT And $g_bDropTrophyAtkDead) Then SuperchargeCheck()
+					ClickP($aCoordinates, 1, 120, "#0150")
 					ExitLoop
 				Else
 					SetLog("Couldn't find the Find a Match Button!", $COLOR_ERROR)
-					If $g_bDebugImageSave Then SaveDebugImage("FindAMatchBUttonNotFound")
+					If $g_bDebugImageSave Then SaveDebugImage("FindAMatchButtonNotFound")
+					CloseWindow2()
 					Return
 				EndIf
 			ElseIf StringInStr($sButtonState, "Sign", 0) > 0 Then
 				SetLog("Sign-up to Legend League", $COLOR_INFO)
 				Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
-				ClickP($aCoordinates, 1, 0, "#0000")
+				ClickP($aCoordinates, 1, 120, "#0000")
 				If _Sleep(2000) Then Return
 				$aCoordinates = findButton("Okay", Default, 1, True)
 				If IsArray($aCoordinates) And UBound($aCoordinates) > 1 Then
-					ClickP($aCoordinates, 1, 0, "#0000")
+					ClickP($aCoordinates, 1, 120, "#0000")
 					If _Sleep(2000) Then Return
+				Else
+					SetLog("Couldn't find the Okay Button!", $COLOR_ERROR)
+					If $g_bDebugImageSave Then SaveDebugImage("OkayButtonNotFound")
+					Click(323, 415 + $g_iMidOffsetY) ; Cancel Button Coordinates October 2024
+					If _Sleep(1000) Then Return
+					CloseWindow2()
+					Return
 				EndIf
 				SetLog("Sign-up to Legend League done", $COLOR_INFO)
 				If _Sleep(1000) Then Return
@@ -146,13 +178,13 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 			If IsArray($g_iFindMatchButtonClassic) Or IsArray($g_iFindMatchButtonLegend) Then
 				SetLog("Couldn't find the Attack Button : Grey Button!", $COLOR_ERROR)
 				$g_bRestart = True
-				CloseWindow()
+				CloseWindow2()
 				Return
 			EndIf
 			If Number($g_aiCurrentLoot[$eLootTrophy]) >= Number($g_asLeagueDetails[21][4]) Then
 				SetLog("Couldn't find the Attack Button!", $COLOR_ERROR)
 				$g_bRestart = True
-				CloseWindow()
+				CloseWindow2()
 				Return
 			EndIf
 		EndIf
@@ -191,7 +223,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 				SetDebugLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 				SetDebugLog("Shld Btn Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_DEBUG)
 			EndIf
-			Click($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 1, 0, "#0153") ; Click Okay Button
+			Click($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 1, 120, "#0153") ; Click Okay Button
 		EndIf
 	EndIf
 

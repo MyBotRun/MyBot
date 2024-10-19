@@ -191,7 +191,7 @@ Func SmartWait4Train($iTestSeconds = Default)
 		getArmyCCStatus()
 	EndIf
 
-	ClickAway()
+	CloseWindow()
 	If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 
 	If $iTrainWaitCloseFlag = $TRAINWAIT_NOWAIT Then Return ; Check close game flag enabled or return back without close
@@ -215,7 +215,6 @@ Func SmartWait4Train($iTestSeconds = Default)
 			$iTrainWaitTime = $g_aiTimeTrain[0] ; use troop time
 		Case 1 ; BitAND($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) = $iTrainWaitCloseFlag
 			If $g_aiTimeTrain[0] <= 1 And Not $bTest Then
-				ClickAway()
 				If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 				SetLog("No smart troop wait needed", $COLOR_SUCCESS)
 				Return

@@ -119,6 +119,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		AttackRemainingTime(True) ; Timer for knowing when attack starts, in 30 Sec. attack automatically starts and lasts for 3 Minutes
 		If $g_bRestart Then Return ; exit func
 
+		Local $bDetectionTimer = __TimerInit()
+
 		$g_bCloudsActive = False
 
 		GetResources(False) ;Reads Resource Values
@@ -348,11 +350,22 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		; ----------------- ADD RANDOM DELAY IF REQUESTED -----------------------------------
+		Local $iDetectionTimer = Round(__TimerDiff($bDetectionTimer) / 1000, 2)
+		Local $iDetectionTimerSetLog = Round($iDetectionTimer)
+		SetDebugLog("Detections made in : " & $iDetectionTimerSetLog & "ms", $COLOR_DEBUG)
 		If $g_iSearchDelayMin > 0 And $g_iSearchDelayMax > 0 Then ; Check if village delay values are set
 			If $g_iSearchDelayMin <> $g_iSearchDelayMax Then ; Check if random delay requested
-				If _Sleep(Round(1000 * Random($g_iSearchDelayMin, $g_iSearchDelayMax))) Then Return ;Delay time is random between min & max set by user
+				If $iDetectionTimer < $g_iSearchDelayMax Then
+					If $g_iSearchDelayMax < 10 Then
+						If _Sleep(Round(1000 * Random($g_iSearchDelayMin, $g_iSearchDelayMax))) Then Return ; Delay time is random between min & max set by user
+					EndIf
+				EndIf
 			Else
-				If _Sleep(1000 * $g_iSearchDelayMin) Then Return ; Wait Village Serch delay set by user
+				If $iDetectionTimer < $g_iSearchDelayMin Then
+					If $g_iSearchDelayMin < 10 Then
+						If _Sleep(1000 * $g_iSearchDelayMin) Then Return ; Wait Village Search delay set by user
+					EndIf
+				EndIf
 			EndIf
 		EndIf
 		If _Sleep($DELAYRESPOND) Then Return
@@ -381,7 +394,11 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 			If (_ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1]), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage(False) Then
 				$g_bCloudsActive = True
-				Click($NextBtn[0] + 55, $NextBtn[1] - 18, 1, 0, "#0155") ;Click Next
+				Local $NextCoordsX[2] = [740, 820]
+				Local $NextCoordsY[2] = [495 + $g_iBottomOffsetY, 540 + $g_iBottomOffsetY]
+				Local $NextButtonClickX = Random($NextCoordsX[0], $NextCoordsX[1], 1)
+				Local $NextButtonClickY = Random($NextCoordsY[0], $NextCoordsY[1], 1)
+				Click($NextButtonClickX, $NextButtonClickY, 1, 120, "#0155") ;Click Next
 				ExitLoop
 			Else
 				SetDebugLog("Wait to see Next Button... " & $i, $COLOR_DEBUG)

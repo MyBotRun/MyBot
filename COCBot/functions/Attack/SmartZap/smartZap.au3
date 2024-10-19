@@ -629,7 +629,7 @@ Func zapBuilding(ByRef $Spells, $x, $y)
 		SetLog("Dropping " & $Spells[$iSpell][0] & " " & String(GetTroopName($Spells[$iSpell][1])), $COLOR_ACTION)
 		SelectDropTroop($Spells[$iSpell][2])
 		If _Sleep($DELAYCASTSPELL1) Then Return
-		If IsAttackPage() Then Click($x, $y, 1, 0, "#0029")
+		If IsAttackPage() Then Click($x, $y, 1, 100, "#0029")
 		$Spells[$iSpell][4] -= 1
 	Else
 		If $g_bDebugSmartZap = True Then SetLog("No " & String(GetTroopName($Spells[$iSpell][1])) & " Found", $COLOR_DEBUG)

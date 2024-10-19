@@ -55,7 +55,7 @@ Func getArmyCCStatus($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Check
 	EndIf
 
 	If $bCloseArmyWindow Then
-		ClickAway()
+		CloseWindow()
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
 

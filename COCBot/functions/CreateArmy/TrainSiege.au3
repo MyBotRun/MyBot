@@ -27,18 +27,12 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	If Not OpenSiegeMachinesTab(True, "TrainSiege()") Then Return
 	If _Sleep(500) Then Return
 
-	Local $aCheckIsOccupied[4] = [766, 202 + $g_iMidOffsetY, 0xE21012, 15]
+	Local $aCheckIsOccupied[4] = [766, 202 + $g_iMidOffsetY, 0xE70D0F, 15]
 	Local $aCheckIsFilled[4] = [765, 185 + $g_iMidOffsetY, 0xD7AFA9, 15]
 	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiTotalSiegeMachine = $g_aiCurrentSiegeMachines
 
-	If _CheckPixel($aReceivedTroopsDouble, True) Or _CheckPixel($aReceivedTroopsDoubleOCR, True) Then ; Found the "You have received" Message on Screen, wait till its gone.
-		SetDebugLog("Detected Clan Castle Message Blocking Siege Count. Waiting until it's gone", $COLOR_INFO)
-		_CaptureRegion2()
-		While (_CheckPixel($aReceivedTroopsDouble, True) Or _CheckPixel($aReceivedTroopsDoubleOCR, True))
-			If _Sleep($DELAYTRAIN1) Then Return
-		WEnd
-	EndIf
+	WaitForClanMessage("TrainTabs")
 
 	; check queueing siege
 	If _CheckPixel($aCheckIsFilled, True, Default, "Siege is Filled") Or _CheckPixel($aCheckIsOccupied, True, Default, "Siege is Queued") Then

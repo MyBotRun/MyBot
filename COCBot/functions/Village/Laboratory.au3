@@ -13,8 +13,8 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Local $iSlotWidth = 108, $iDistBetweenSlots = 14 ; use for logic to upgrade troops.. good for generic-ness
-Local $iYMidPoint = 480 ;Space between rows in lab screen.  CHANGE ONLY WITH EXTREME CAUTION.
-Local $iPicsPerPage = 12, $iPages = 4 ; used to know exactly which page the users choice is on
+Local $iYMidPoint = Random(475, 485, 1) ;Space between rows in lab screen.  CHANGE ONLY WITH EXTREME CAUTION.
+Local $iPicsPerPage = 12, $iPages = 5 ; used to know exactly which page the users choice is on
 Local $sLabTroopsSection = "70,365,795,600"
 Local $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection)
 
@@ -41,6 +41,8 @@ Func Laboratory($debug = False)
 		SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Lab.", $COLOR_ERROR)
 		Return
 	EndIf
+
+	If Not $g_bRunState Then Return
 
 	If $g_aiLaboratoryPos[0] = 0 Or $g_aiLaboratoryPos[1] = 0 Then
 		SetLog("Laboratory Location unknown!", $COLOR_WARNING)
@@ -69,6 +71,13 @@ Func Laboratory($debug = False)
 	If _Sleep($DELAYLABORATORY5) Then Return ; Wait for window to open
 
 	If Not FindResearchButton() Then Return False ; cant start because we cannot find the research button
+
+	If Not $GobBuilderPresent Then ; Just in case
+		If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilderLab, 510, 140 + $g_iMidOffsetY, 575, 195 + $g_iMidOffsetY, True))) > 1 Then
+			$GobBuilderPresent = True
+			$GobBuilderOffsetRunning = 355
+		EndIf
+	EndIf
 
 	If ChkLabUpgradeInProgress() Then
 		CloseWindow()
@@ -124,7 +133,6 @@ Func Laboratory($debug = False)
 			Return LaboratoryUpgrade($g_avLabTroops[$g_iCmbLaboratory][0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
 		EndIf
 		If _Sleep($DELAYLABORATORY2) Then Return
-		;ClickAway()
 		CloseWindow()
 
 	Else ; users choice is any upgrade
@@ -158,7 +166,6 @@ Func Laboratory($debug = False)
 
 		; If We got to here without returning, then nothing available for upgrade
 		SetLog("Nothing available for upgrade at the moment, try again later.")
-		;ClickAway()
 		CloseWindow()
 	EndIf
 
@@ -182,7 +189,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 		CloseWindow()
 		Return True ; return true as if we really started an upgrade
 	Else
-		Click(630, 545 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
+		Click(630, 545 + $g_iMidOffsetY, 1, 120, "#0202") ; Everything is good - Click the upgrade button
 		If isGemOpen(True) = False Then ; check for gem window
 			; success
 			SetLog("Upgrade " & $name & " in your laboratory started with success...", $COLOR_SUCCESS)
@@ -197,7 +204,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 				SaveBuildingConfig() ;Try to save for the future.
 			EndIf
 			If _Sleep(350) Then Return
-			ClickAway()
+			CloseWindow2()
 			If _Sleep(1000) Then Return
 			PushMsg("LabSuccess")
 			ChkLabUpgradeInProgress($name)
@@ -283,7 +290,13 @@ EndFunc   ;==>GetLabCostResult
 Func LabNextPage($iCurPage, $iPages, $iYMidPoint)
 	If $iCurPage >= $iPages Then Return ; nothing left to scroll
 	SetDebugLog("Drag to next full page.")
-	ClickDrag(720, $iYMidPoint - 50, 83, $iYMidPoint, 300)
+	If $iCurPage = 4 Then
+		SetDebugLog("Drag to last page.")
+		ClickDrag(680, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 550, $iYMidPoint, 300)
+	Else
+		SetDebugLog("Drag to next full page.")
+		ClickDrag(720, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 83, $iYMidPoint, 300)
+	EndIf
 EndFunc   ;==>LabNextPage
 
 ; check the lab to see if something is upgrading in the lab already
@@ -346,7 +359,7 @@ Func FindResearchButton()
 		Return True
 	Else
 		SetLog("Cannot find the Laboratory Research Button!", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen()
 		Return False
 	EndIf
 EndFunc   ;==>FindResearchButton

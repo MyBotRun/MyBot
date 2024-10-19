@@ -36,7 +36,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	If $sTreePrefix = Default Then $sTreePrefix = "tree"
 
 	Local $aResult = 0
-	Local $sDirectory
+	Local $sDirectory, $sDirectory2
 	Local $stone[6] = [0, 0, 0, 0, 0, ""], $tree[6] = [0, 0, 0, 0, 0, ""], $scenery[6] = [0, 0, 0, 0, 0, ""]
 	Local $x0, $y0, $d0, $x, $y, $x1, $y1, $right, $bottom, $a
 
@@ -58,10 +58,11 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		SetDeBugLog("GVZ using : \imgxml\village\BuilderBase\", $COLOR_INFO)
 	Else
 		$sDirectory = @ScriptDir & "\imgxml\village\NormalVillage\" ; all sceneries support
+		$sDirectory2 = @ScriptDir & "\imgxml\village\Custom\" ; Custom sceneries Main support
 		SetDeBugLog("GVZ using : \imgxml\village\NormalVillage\", $COLOR_INFO)
 	EndIf
 
-	Local $hTimer = TimerInit()
+	Local $hTimer = __TimerInit()
 
 	Local $i, $findImage, $sArea, $a, $sScenery = "", $bForceCapture = False
 
@@ -77,8 +78,33 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		Local $avSceneries = findMultiple($sImgDir, $sSearchArea, $sSearchArea, 0, 1000, 1, "objectname,objectpoints", $bForceCapture)
 
 		If Not IsArray($avSceneries) Or UBound($avSceneries, $UBOUND_ROWS) <= 0 Then
-			SetDeBugLog("No Sceneries Found", $COLOR_ERROR)
+			SetDebugLog("No Sceneries Found", $COLOR_ERROR)
 			If $g_bDebugImageSave Then SaveDebugRectImage("FailedSceneryMultiSearch", $x1 & "," & $y1 & "," & $right & "," & $bottom)
+			;Case Egypt And Magic Sceneries Top Scrolled.
+			Local $sSearchArea2 = Int($x1) & "," & Int($y1 - 125) & "|" & Int($right) & "," & Int($y1 - 125) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
+			Local $avSceneries2 = findMultiple($sImgDir, $sSearchArea2, $sSearchArea2, 0, 1000, 1, "objectname,objectpoints", $bForceCapture)
+			If IsArray($avSceneries2) And UBound($avSceneries2, $UBOUND_ROWS) > 0 Then
+				For $i = 0 To UBound($avSceneries2, $UBOUND_ROWS) - 1
+					Local $avTempArray, $aiSceneryCoords
+					$avTempArray = $avSceneries2[$i]
+					$aiSceneryCoords = decodeSingleCoord($avTempArray[1])
+					If IsArray($aiSceneryCoords) And UBound($aiSceneryCoords, $UBOUND_ROWS) = 2 Then
+						$x = Number($aiSceneryCoords[0])
+						$y = Number($aiSceneryCoords[1])
+						$a = StringRegExp($avTempArray[0], ".*-(\d+)-(\d+)", $STR_REGEXPARRAYMATCH)
+						If UBound($a) = 2 Then
+							$x0 = Number($a[0])
+							$y0 = Number($a[1])
+							If $x > ($x0 + 75) Or $x < ($x0 - 75) Or $y > ($y0 + 75) Or $y < ($y0 - 75) Then
+								SetDeBugLog("Village Scenery FP X/Y is off by more than 75 pixels", $COLOR_WARNING)
+								CenterVillage($x, $y, $x - $x0, $y - $y0)
+								$bForceCapture = True ; forces new capture after align
+								ExitLoop
+							EndIf
+						EndIf
+					EndIf
+				Next
+			EndIf
 		Else
 			Local $avTempArray, $aiSceneryCoords
 
@@ -117,7 +143,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 						SetDeBugLog("Village Scenery Found: " & $sScenery, $COLOR_OLIVE)
 
 						; if too far away from expected location then align
-						If $x > ($x0 + 75) Or $x < ($x0 - 75) Then
+						If $x > ($x0 + 75) Or $x < ($x0 - 75) Or $y > ($y0 + 75) Or $y < ($y0 - 75) Then
 							SetDeBugLog("Village Scenery FP X is off by more than 75 pixels", $COLOR_WARNING)
 							CenterVillage($x, $y, $x - $x0, $y - $y0)
 							$bForceCapture = True ; forces new capture after align
@@ -134,12 +160,12 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		EndIf
 
 		SetDeBugLog("Scenery search (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
-		$hTimer = TimerInit()
+		$hTimer = __TimerInit()
 
 		If Not $bMeasureOnly Then
 			If $scenery[0] = 0 And $g_aiSearchZoomOutCounter[0] = 1 Then
 				If $g_bDebugImageSave Then SaveDebugRectImage("FailedScenerySearch", $x1 & "," & $y1 & "," & $right & "," & $bottom)
-				ClickAway()
+				ClearScreen()
 				If _Sleep(100) Then Return
 			EndIf
 			;If $scenery[0] = 0 Then SaveDebugRectImage("FailedScenerySearch", $x1 & "," & $y1 & "," & $right & "," & $bottom)
@@ -153,7 +179,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	EndIf
 
 	SetDeBugLog("Scenery routines completed (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
-	$hTimer = TimerInit()
+	$hTimer = __TimerInit()
 
 	If $scenery[0] = 0 Then
 		If $bIsOnMainBase Then SetDeBugLog("No Supported Sceneries Found!", $COLOR_ERROR)
@@ -161,7 +187,11 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & "*.*", $FLTA_FILES)
 	Else
 		SetDeBugLog("Loading Stone Scenery: " & $sScenery, $COLOR_INFO)
-		Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & $sScenery & "*.*", $FLTA_FILES)
+		If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+			Local $aStoneFiles = _FileListToArray($sDirectory2, $sStonePrefix & $sScenery & "*.*", $FLTA_FILES)
+		Else
+			Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & $sScenery & "*.*", $FLTA_FILES)
+		EndIf
 	EndIf
 
 	If @error Then
@@ -184,7 +214,11 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			$bottom = $y0 + $iAdditionalY
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			SetDebugLog("GetVillageSize check for image " & $findImage)
-			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, $bForceCapture))
+			If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+				$a = decodeSingleCoord(findImage($findImage, $sDirectory2 & "\" & $findImage, $sArea, 1, $bForceCapture))
+			Else
+				$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, $bForceCapture))
+			EndIf
 			If $g_bDebugImageSave Then SaveDebugRectImage("GetVillageSize", $x1 & "," & $y1 & "," & $right & "," & $bottom)
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
@@ -200,7 +234,6 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 
 				Local $asStoneName = StringSplit($findImage, "-") ; get filename only
 				Local $asStoneScenery = StringRight($asStoneName[1], 2) ; get extension
-
 				SetDeBugLog("Found Stone scenery : " & $asStoneScenery, $COLOR_INFO)
 
 				ExitLoop
@@ -212,12 +245,12 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	Next
 
 	If $stone[0] = 0 Then
-		SetDeBugLog("GetVillageSize cannot find stone", $COLOR_WARNING)
+		SetDebugLog("GetVillageSize cannot find stone", $COLOR_WARNING)
 		;Return $aResult
 	EndIf
 
 	SetDeBugLog("Stone search (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
-	$hTimer = TimerInit()
+	$hTimer = __TimerInit()
 
 	If $stone[0] = 0 Then
 		SetDeBugLog("Searching ALL tree files!", $COLOR_INFO)
@@ -225,7 +258,11 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	ElseIf $asStoneScenery = "DS" Then
 		Local $aTreeFiles = _FileListToArray($sDirectory, $sTreePrefix & "D*.*", $FLTA_FILES)
 	Else
-		Local $aTreeFiles = _FileListToArray($sDirectory, $sTreePrefix & $asStoneScenery & "*.*", $FLTA_FILES)
+		If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+			Local $aTreeFiles = _FileListToArray($sDirectory2, $sTreePrefix & $asStoneScenery & "*.*", $FLTA_FILES)
+		Else
+			Local $aTreeFiles = _FileListToArray($sDirectory, $sTreePrefix & $asStoneScenery & "*.*", $FLTA_FILES)
+		EndIf
 	EndIf
 
 	If @error Then
@@ -248,7 +285,11 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			$bottom = $y0 + $iAdditionalY
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			SetDebugLog("GetVillageSize check for image " & $findImage)
-			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
+			If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+				$a = decodeSingleCoord(findImage($findImage, $sDirectory2 & "\" & $findImage, $sArea, 1, False))
+			Else
+				$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
+			EndIf
 			If $g_bDebugImageSave Then SaveDebugRectImage("GetVillageSize", $x1 & "," & $y1 & "," & $right & "," & $bottom)
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
@@ -286,13 +327,14 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	EndIf
 
 	SetDeBugLog("Tree search (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
-	$hTimer = TimerInit()
+	$hTimer = __TimerInit()
 
 	Local $iX_Exp = 0
 	Local $iY_Exp = 0
 	Local $z = 1    ; for centering only
 	Local $c = 0    ; for centering only
 	Local $a = 0, $b = 0, $iRefSize = 0
+	Local $d = 0, $e = 0
 
 	; Failed to locate Stone Or Tree ; zoom out
 	If $stone[0] = 0 And $tree[0] = 0 Then
@@ -312,7 +354,15 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$b = $stone[1] - $tree[1]
 		$c = Sqrt($a * $a + $b * $b) - $stone[4] - $tree[4]
 
-		$iRefSize = $g_afRefVillage[$g_iTree][$iTreeIndex]
+		If $sScenery = "MS" Then
+			$iRefSize = $g_afRefCustomMainVillage[0][4]
+		ElseIf $sScenery = "PG" Then
+			$iRefSize = $g_afRefCustomMainVillage[1][4]
+		ElseIf $sScenery = "EG" Then
+			$iRefSize = $g_afRefCustomMainVillage[2][4]
+		Else
+			$iRefSize = $g_afRefVillage[$g_iTree][$iTreeIndex]
+		EndIf
 
 		$z = $c / $iRefSize
 
@@ -414,7 +464,7 @@ Func CenterVillage($iX, $iY, $iOffsetX, $iOffsetY)
 
 	If $g_bDebugSetlog Then SetDebugLog("CenterVillage at point : " & $aScrollPos[0] & ", " & $aScrollPos[1] & " Offset : " & $iOffsetX & ", " & $iOffsetY, $COLOR_INFO)
 	If $g_bDebugImageSave Then SaveDebugPointImage("CenterVillage", $aScrollPos)
-	ClickAway()
+	ClearScreen()
 	ClickDrag($aScrollPos[0], $aScrollPos[1], $aScrollPos[0] - $iOffsetX, $aScrollPos[1] - $iOffsetY)
 
 	If _Sleep(150) Then Return

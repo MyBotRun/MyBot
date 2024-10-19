@@ -529,7 +529,7 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hChkDebugFunc
 			chkDebugFunc()
 		Case $g_hChkDebugDisableZoomout
-			chkDebugDisableZoomout()
+			chkDebugDisableZoomOut()
 		Case $g_hChkDebugDisableVillageCentering
 			chkDebugDisableVillageCentering()
 		Case $g_hChkDebugDeadbaseImage

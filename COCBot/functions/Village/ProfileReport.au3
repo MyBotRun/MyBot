@@ -18,12 +18,12 @@ Func ProfileReport()
 	Local $iAttacksWon = 0, $iDefensesWon = 0
 
 	Local $iCount
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYPROFILEREPORT1) Then Return
 
 	SetLog("Profile Report", $COLOR_INFO)
-	SetLog("Opening Profile page to read Attacks, Defenses, Donations and Recieved Troops", $COLOR_INFO)
-	Click(40, 32, 1, 0, "#0222") ; Click Info Profile Button
+	SetLog("Opening Profile page to read Attacks, Defenses, Donations and received Troops", $COLOR_INFO)
+	Click(40, 32, 1, 140, "#0222") ; Click Info Profile Button
 	If _Sleep($DELAYPROFILEREPORT2) Then Return
 
 	While Not _ColorCheck(_GetPixelColor(252, 100 + $g_iMidOffsetY, True), Hex(0xE8E8E0, 6), 5) ; wait for Info Profile to open
@@ -33,47 +33,65 @@ Func ProfileReport()
 	WEnd
 	If $iCount >= 25 Then SetDebugLog("Profile Page did not open after " & $iCount & " Loops", $COLOR_DEBUG)
 
-	; Check If exist 'Claim Reward' button , click and return to Top of the Profile Page
-	Local $aSearchResult
-	For $i = 0 To 1 ; Check twice,  because the button is animated
-		$aSearchResult = decodeSingleCoord(findImage("CollectReward", $g_sImgCollectReward, GetDiamondFromRect("560,220,830,630"), 1, True)) ; To Do After October 2023 update
-		If IsArray($aSearchResult) And UBound($aSearchResult) = 2 Then
-			Click($aSearchResult[0], $aSearchResult[1])
-			SetLog("Reward collected", $COLOR_SUCCESS)
-			For $i = 0 To 9
-				ClickDrag(321, 200 + $g_iMidOffsetY, 321, 540 + $g_iMidOffsetY, 2000)
-				If _Sleep(2000) Then Return ; 2000ms
-				If _ColorCheck(_GetPixelColor($aCheckTopProfile[0], $aCheckTopProfile[1], True), Hex($aCheckTopProfile[2], 6), $aCheckTopProfile[3]) = True _
-						And _ColorCheck(_GetPixelColor($aCheckTopProfile2[0], $aCheckTopProfile2[1], True), Hex($aCheckTopProfile2[2], 6), $aCheckTopProfile2[3]) = True Then ExitLoop
+	Local $sSearchArea = GetDiamondFromRect2(660, 130 + $g_iMidOffsetY, 845, 645 + $g_iMidOffsetY)
+	Local $aClaimButtons = findMultiple($g_sImgAchievementsClaimReward, $sSearchArea, $sSearchArea, 0, 1000, 0, "objectname,objectpoints", True)
+	If IsArray($aClaimButtons) And UBound($aClaimButtons) > 0 Then
+		If $g_bChkCollectAchievements Then
+			For $i = 0 To UBound($aClaimButtons) - 1
+				Local $aTemp = $aClaimButtons[$i]
+				Local $aClaimButtonXY = decodeMultipleCoords($aTemp[1])
+				For $t = 0 To UBound($aClaimButtonXY) - 1
+					Local $aTemp = $aClaimButtonXY[$t]
+					Click($aTemp[0], $aTemp[1])
+					SetLog("Achievement reward collected", $COLOR_SUCCESS)
+					If _Sleep(1500) Then Return
+				Next
 			Next
-			ExitLoop ; ok task was done , lets exit from here|
 		EndIf
-		If _Sleep($DELAYPROFILEREPORT1) Then Return ; 500ms
-	Next
+		For $z = 0 To 12
+			Local $bX1 = Random(321, 325, 1), $bX2 = Random(326, 330, 1)
+			Local $bY1 = Random(198 + $g_iMidOffsetY, 200 + $g_iMidOffsetY, 1), $bY2 = Random(538 + $g_iMidOffsetY, 540 + $g_iMidOffsetY, 1)
+			ClickDrag($bX1, $bY1, $bX2, $bY2, 1000)
+			If _Sleep(Random(1500, 2500, 1)) Then Return ; 2000ms
+			If _ColorCheck(_GetPixelColor($aCheckTopProfile[0], $aCheckTopProfile[1], True), Hex($aCheckTopProfile[2], 6), $aCheckTopProfile[3]) And _
+					_ColorCheck(_GetPixelColor($aCheckTopProfile2[0], $aCheckTopProfile2[1], True), Hex($aCheckTopProfile2[2], 6), $aCheckTopProfile2[3]) Then ExitLoop
+		Next
+	Else
+		If Not _ColorCheck(_GetPixelColor($aCheckTopProfile[0], $aCheckTopProfile[1], True), Hex($aCheckTopProfile[2], 6), $aCheckTopProfile[3]) And _
+				Not _ColorCheck(_GetPixelColor($aCheckTopProfile2[0], $aCheckTopProfile2[1], True), Hex($aCheckTopProfile2[2], 6), $aCheckTopProfile2[3]) Then
+			For $z = 0 To 12
+				Local $bX1 = Random(321, 325, 1), $bX2 = Random(326, 330, 1)
+				Local $bY1 = Random(198 + $g_iMidOffsetY, 200 + $g_iMidOffsetY, 1), $bY2 = Random(538 + $g_iMidOffsetY, 540 + $g_iMidOffsetY, 1)
+				ClickDrag($bX1, $bY1, $bX2, $bY2, 1000)
+				If _Sleep(Random(1500, 2500, 1)) Then Return ; 2000ms
+				If _ColorCheck(_GetPixelColor($aCheckTopProfile[0], $aCheckTopProfile[1], True), Hex($aCheckTopProfile[2], 6), $aCheckTopProfile[3]) And _
+						_ColorCheck(_GetPixelColor($aCheckTopProfile2[0], $aCheckTopProfile2[1], True), Hex($aCheckTopProfile2[2], 6), $aCheckTopProfile2[3]) Then ExitLoop
+			Next
+		EndIf
+	EndIf
 
 	If _Sleep($DELAYPROFILEREPORT1) Then Return
-	$iAttacksWon = ""
 
 	If _ColorCheck(_GetPixelColor($aProfileReport[0], $aProfileReport[1], True), Hex($aProfileReport[2], 6), $aProfileReport[3]) Then
-        SetDebugLog("Profile seems to be currently unranked", $COLOR_DEBUG)
-        $iAttacksWon = 0
-        $iDefensesWon = 0
-    Else
-        $iAttacksWon = getProfile(547, 449 + $g_iMidOffsetY)
-        If $g_bDebugSetlog Then SetDebugLog("$iAttacksWon: " & $iAttacksWon, $COLOR_DEBUG)
-        $iCount = 0
-        While $iAttacksWon = "" ; Wait for $attacksWon to be readable in case of slow PC
-            If _Sleep($DELAYPROFILEREPORT1) Then Return
-            $iAttacksWon = getProfile(547, 449 + $g_iMidOffsetY)
-            If $g_bDebugSetlog Then SetDebugLog("Read Loop $iAttacksWon: " & $iAttacksWon & ", Count: " & $iCount, $COLOR_DEBUG)
-            $iCount += 1
-            If $iCount >= 20 Then ExitLoop
-        WEnd
-        If $g_bDebugSetlog And $iCount >= 20 Then SetLog("Excess wait time for reading $AttacksWon: " & getProfile(547, 449 + $g_iMidOffsetY), $COLOR_DEBUG)
-        $iDefensesWon = getProfile(761, 449 + $g_iMidOffsetY)
-    EndIf
-    $g_iTroopsDonated = getProfile(179, 449 + $g_iMidOffsetY)
-    $g_iTroopsReceived = getProfile(363, 449 + $g_iMidOffsetY)
+		SetDebugLog("Profile seems to be currently unranked", $COLOR_DEBUG)
+		$iAttacksWon = 0
+		$iDefensesWon = 0
+	Else
+		$iAttacksWon = getProfile(547, 449 + $g_iMidOffsetY)
+		If $g_bDebugSetlog Then SetDebugLog("$iAttacksWon: " & $iAttacksWon, $COLOR_DEBUG)
+		$iCount = 0
+		While $iAttacksWon = "" ; Wait for $attacksWon to be readable in case of slow PC
+			If _Sleep($DELAYPROFILEREPORT1) Then Return
+			$iAttacksWon = getProfile(547, 449 + $g_iMidOffsetY)
+			If $g_bDebugSetlog Then SetDebugLog("Read Loop $iAttacksWon: " & $iAttacksWon & ", Count: " & $iCount, $COLOR_DEBUG)
+			$iCount += 1
+			If $iCount >= 20 Then ExitLoop
+		WEnd
+		If $g_bDebugSetlog And $iCount >= 20 Then SetLog("Excess wait time for reading $AttacksWon: " & getProfile(547, 449 + $g_iMidOffsetY), $COLOR_DEBUG)
+		$iDefensesWon = getProfile(761, 449 + $g_iMidOffsetY)
+	EndIf
+	$g_iTroopsDonated = getProfile(179, 449 + $g_iMidOffsetY)
+	$g_iTroopsReceived = getProfile(363, 449 + $g_iMidOffsetY)
 
 	SetLog(" [ATKW]: " & _NumberFormat($iAttacksWon) & " [DEFW]: " & _NumberFormat($iDefensesWon) & " [TDON]: " & _NumberFormat($g_iTroopsDonated) & " [TREC]: " & _NumberFormat($g_iTroopsReceived), $COLOR_SUCCESS)
 	CloseWindow() ; Close Profile page

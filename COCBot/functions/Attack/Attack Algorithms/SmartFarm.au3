@@ -25,13 +25,16 @@ Func TestSmartFarm()
 
 	checkMainScreen(False)
 	CheckIfArmyIsReady()
-	ClickAway()
+	CloseWindow2()
 	If _Sleep(100) Then Return FuncReturn()
-	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Then
+	If IsSearchModeActive($DB) Or IsSearchModeActive($LB) Then
 		If _Sleep(100) Then Return FuncReturn()
 		PrepareSearch()
 		If $g_bOutOfGold Then Return ; Check flag for enough gold to search
-		If $g_bRestart Then Return
+		If $g_bRestart Then
+			CleanSuperchargeTemplates()
+			Return
+		EndIf
 		If _Sleep(1000) Then Return FuncReturn()
 		VillageSearch()
 		If $g_bOutOfGold Then Return ; Check flag for enough gold to search
@@ -52,6 +55,8 @@ Func TestSmartFarm()
 
 	Setlog("Finish the SmartFarm Attack()", $COLOR_INFO)
 
+	CleanSuperchargeTemplates()
+
 	$g_bRunState = $RuntimeA
 
 EndFunc   ;==>TestSmartFarm
@@ -60,7 +65,7 @@ EndFunc   ;==>TestSmartFarm
 Func ChkSmartFarm($TypeResources = "All")
 
 	; Initial Timer
-	Local $hTimer = TimerInit()
+	Local $hTimer = __TimerInit()
 
 	; [0] = x , [1] = y , [2] = Side , [3] = In/out , [4] = Side,  [5]= Is string with 5 coordinates to deploy
 	Local $aResourcesOUT[0][6]
@@ -74,7 +79,7 @@ Func ChkSmartFarm($TypeResources = "All")
 	; Local $aMines = SmartFarmDetection("Mines")
 	; Local $aDrills = SmartFarmDetection("Drills")
 
-	$hTimer = TimerInit()
+	$hTimer = __TimerInit()
 
 	If $g_iSearchTH = "-" Then FindTownHall(True, True)
 	; [0] = Level , [1] = Xaxis , [2] = Yaxis , [3] = Distances to redlines
@@ -216,7 +221,7 @@ Func SmartFarmDetection($txtBuildings = "Mines")
 
 
 	; Initial Timer
-	Local $hTimer = TimerInit()
+	Local $hTimer = __TimerInit()
 
 	; Prepared for Winter Theme
 	Switch $txtBuildings
@@ -549,7 +554,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	SetDebugLog("Giants : " & $GiantComp & "  , per side: " & ($GiantComp / $nbSides) & " / deploy points per side: " & $g_iSlotsGiants)
 
 	If $g_bCustomDropOrderEnable Then
-		Local $listInfoDeploy[45][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+		Local $listInfoDeploy[46][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 				[MatchTroopDropName(1), MatchSidesDrop(1), MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 				[MatchTroopDropName(2), MatchSidesDrop(2), MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 				[MatchTroopDropName(3), MatchSidesDrop(3), MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -593,9 +598,10 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(41), MatchSidesDrop(41), MatchTroopWaveNb(41), 1, MatchSlotsPerEdge(41)], _
 				[MatchTroopDropName(42), MatchSidesDrop(42), MatchTroopWaveNb(42), 1, MatchSlotsPerEdge(42)], _
 				[MatchTroopDropName(43), MatchSidesDrop(43), MatchTroopWaveNb(43), 1, MatchSlotsPerEdge(43)], _
-				[MatchTroopDropName(44), MatchSidesDrop(44), MatchTroopWaveNb(44), 1, MatchSlotsPerEdge(44)]]
+				[MatchTroopDropName(44), MatchSidesDrop(44), MatchTroopWaveNb(44), 1, MatchSlotsPerEdge(44)], _
+				[MatchTroopDropName(45), MatchSidesDrop(45), MatchTroopWaveNb(45), 1, MatchSlotsPerEdge(45)]]
 	Else
-		Local $listInfoDeploy[45][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[46][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
 				, [$eIceH, $nbSides, 1, 1, 2] _
 				, [$eIceG, $nbSides, 1, 1, 2] _
@@ -638,6 +644,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$ePekk, $nbSides, 1, 1, 1] _
 				, [$eHunt, $nbSides, 1, 1, 0] _
 				, [$eAppWard, $nbSides, 1, 1, 1] _
+				, [$eDruid, $nbSides, 1, 1, 1] _
 				, ["CC", 1, 1, 1, 1] _
 				, ["HEROES", 1, 2, 1, 1]]
 	EndIf

@@ -15,10 +15,7 @@
 Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 	Local Static $aAttackBar[0][8]
 	Local Static $bDoubleRow = False, $bCheckSlot12 = False
-	;Local $sSearchDiamond = GetDiamondFromRect("0,635,835,698")
-	;Local $sSearchDiamond = GetDiamondFromRect("0,635,858,698")
 	Local $sSearchDiamond = GetDiamondFromRect2(0, 575 + $g_iBottomOffsetY, 858, 638 + $g_iBottomOffsetY)
-
 	Local $iYBelowRowOne = 630, $aiOCRLocation[2] = [-1, -1], $aSlotAmountX[0][3]
 	Local $g_bCheckExtAttackBar = True
 
@@ -38,12 +35,9 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		If _CheckPixel($aDoubRowAttackBar, True) Then
 			$bDoubleRow = True
 			$sSearchDiamond = GetDiamondFromRect("0,535,835,698")
-		ElseIf IsArray(_PixelSearch($a12OrMoreSlots[0], $a12OrMoreSlots[1], $a12OrMoreSlots[0] + 3, $a12OrMoreSlots[1], Hex($a12OrMoreSlots[2], 6), $a12OrMoreSlots[3], True)) And $g_bCheckExtAttackBar Then
+		ElseIf IsArray(_PixelSearch($a12OrMoreSlots[0], $a12OrMoreSlots[1], $g_iGAME_WIDTH, $a12OrMoreSlots[1] + 3, Hex($a12OrMoreSlots[2], 6), $a12OrMoreSlots[3], True)) And $g_bCheckExtAttackBar Then
 			$bCheckSlot12 = True
-			SetLog("Check Extended Attack Bar with Normal Troop at first slot")
-		ElseIf IsArray(_PixelSearch($a12OrMoreSlots2[0], $a12OrMoreSlots2[1], $a12OrMoreSlots2[0] + 3, $a12OrMoreSlots2[1], Hex($a12OrMoreSlots2[2], 6), $a12OrMoreSlots2[3], True)) And $g_bCheckExtAttackBar Then
-			$bCheckSlot12 = True
-			SetLog("Check Extended Attack Bar with Super Troop at first slot")
+			SetLog("Check Extended Attack Bar")
 		EndIf
 		SetDebugLog("GetBarCheck: DoubleRow= " & $bDoubleRow)
 	EndIf

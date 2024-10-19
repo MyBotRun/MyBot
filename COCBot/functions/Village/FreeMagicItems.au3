@@ -19,7 +19,7 @@ Func CollectFreeMagicItems($bTest = False)
 	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 	If $iLastTimeChecked[$g_iCurAccount] = @MDAY And Not $bTest Then Return
 
-	ClickAway()
+	ClearScreen()
 
 	If Not IsMainPage() Then Return
 
@@ -79,7 +79,7 @@ Func CollectFreeMagicItems($bTest = False)
 	EndIf
 	SetLog("Daily Discounts: " & $aGem[0] & " | " & $aGem[1] & " | " & $aGem[2])
 
-	ClickAway()
+	CloseWindow2()
 	If _Sleep(1000) Then Return
 EndFunc   ;==>CollectFreeMagicItems
 
@@ -113,8 +113,15 @@ EndFunc   ;==>GetFreeMagic
 
 Func OpenTraderWindow()
 	Local $Found = False
+	Local $Area[4] = [90, 100 + $g_iMidOffsetY, 210, 210 + $g_iMidOffsetY]
+	If $g_iTree = $eTreeMS Or $g_iTree = $eTreeEG Then
+		$Area[0] = 120
+		$Area[1] = 150 + $g_iMidOffsetY
+		$Area[2] = 240
+		$Area[3] = 230 + $g_iMidOffsetY
+	EndIf
 	For $i = 1 To 5
-		If QuickMIS("BC1", $g_sImgTrader, 90, 100 + $g_iMidOffsetY, 210, 210 + $g_iMidOffsetY) Then
+		If QuickMIS("BC1", $g_sImgTrader, $Area[0], $Area[1], $Area[2], $Area[3]) Then
 			Click($g_iQuickMISX, $g_iQuickMISY)
 			If _Sleep(1500) Then Return
 			$Found = True
@@ -128,20 +135,11 @@ Func OpenTraderWindow()
 		Return False
 	Else
 		Local $aIsWeekyDealsOpen[4] = [40, 0, 0x8DC11D, 20]
-		If _CheckPixel($aReceivedTroopsWeeklyDeals, True) Then ; Found the "You have received" Message on Screen, wait till its gone.
-			SetDebugLog("Detected Clan Castle Message Blocking Gems Button. Waiting until it's gone", $COLOR_INFO)
-			_CaptureRegion2()
-			Local $Safetyexit = 0
-			While _CheckPixel($aReceivedTroopsWeeklyDeals, True)
-				If _Sleep($DELAYTRAIN1) Then Return
-				$Safetyexit += 1
-				If $Safetyexit > 60 Then ExitLoop  ;If waiting longer than 1 min, something is wrong
-			WEnd
-		EndIf
+		WaitForClanMessage("WeeklyDeals")
 		Local $aTabButton = findButton("WeeklyDeals", Default, 1, True)
 		If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
 			$aIsWeekyDealsOpen[1] = $aTabButton[1]
-			If Not _CheckPixel($aIsWeekyDealsOpen, True) Then 
+			If Not _CheckPixel($aIsWeekyDealsOpen, True) Then
 				ClickP($aTabButton)
 				If Not _WaitForCheckPixel($aIsWeekyDealsOpen, True) Then
 					SetLog("Error : Cannot open Gems Menu. Pixel to check did not appear", $COLOR_ERROR)

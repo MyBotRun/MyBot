@@ -20,7 +20,6 @@ Func CheckCGCompleted()
 	Local $CompleteBar = 0
 	For $x = 1 To 12
 		If QuickMIS("BC1", $g_sImgBBAttackBonus, 360, 450 + $g_iMidOffsetY, 500, 510 + $g_iMidOffsetY) Then
- 			SetLog("Congrats Chief, Stars Bonus Awarded", $COLOR_INFO)
 			SetLog("Congrats Chief, Stars Bonus Awarded", $COLOR_INFO)
 			Click($g_iQuickMISX, $g_iQuickMISY)
 			If _Sleep(250) Then Return
@@ -124,7 +123,6 @@ Func DoAttackBB()
 	EndIf
 	If Not $g_bRunState Then Return
 	If $AttackCount > 0 Then SetLog("BB Attack Cycle Done", $COLOR_SUCCESS1)
-	ClickAway()
 	ZoomOut()
 	$iStartSlotMem = 0
 	$iStartSlotMem2 = 0
@@ -144,7 +142,7 @@ Func ClickFindNowButton()
 	If _Sleep(8000) Then Return ; give time for find now button to go away
 	If Not $bRet Then
 		SetLog("Could not locate Find Now Button to go find an attack.", $COLOR_ERROR)
-		ClickAway("Left")
+		CloseWindow2()
 		Return False
 	EndIf
 
@@ -170,7 +168,7 @@ Func WaitCloudsBB()
 			If _Sleep(1500) Then Return
 			SetLog("Try Again going to attack.", $COLOR_INFO)
 			If Not ClickFindNowButton() Then
-				ClickAway("Left")
+				ClearScreen("Defaut", False)
 				Return False
 			EndIf
 		EndIf
@@ -193,7 +191,7 @@ Func _AttackBB()
 
 	SetLog("Going to attack.", $COLOR_INFO)
 	If Not ClickFindNowButton() Then
-		ClickAway("Left")
+		ClearScreen("Defaut", False)
 		Return False
 	EndIf
 
@@ -305,7 +303,7 @@ Func EndBattleBB() ; Find if battle has ended and click okay
 					If CheckCGCompleted() Then
 						$IsChallengeCompleted = True
 					Else
-						SetLog("Challenge Is Not Finished...", $COLOR_ERROR)
+						SetLog("Challenge is not finished...", $COLOR_ERROR)
 					EndIf
 				EndIf
 				If _Sleep(2000) Then Return
@@ -439,7 +437,7 @@ Func DeployBBTroop($sName, $x, $y, $iAmount, $ai_AttackDropPoints)
 		PureClickP($iPixel)
 		Local $b_MachineTimeOffset = 0
 		If $sName = "Battle Copter" Or $sName = "Battle Machine" Then
-			Local $b_MachineTimeOffsetDiff = TimerInit()
+			Local $b_MachineTimeOffsetDiff = __TimerInit()
 			Local $bRet = False
 			For $i = 1 To 16 ; 4 seconds limit
 				If Not $g_bRunState Then Return
@@ -447,12 +445,11 @@ Func DeployBBTroop($sName, $x, $y, $iAmount, $ai_AttackDropPoints)
 				Local $aBMPosCheck = GetMachinePos()
 				If IsArray($aBMPosCheck) And $aBMPosCheck <> 0 And Number($aBMPos[1]) <> Number($aBMPosCheck[1]) Then
 					If $g_bDebugSetLog Then
-						Local $b_MachineTimeOffsetSec = Round($b_MachineTimeOffset / 1000, 2)
+						Local $b_MachineTimeOffsetSec = Round(__TimerDiff($b_MachineTimeOffsetDiff) / 1000, 2)
 						SetLog("$aBMPosCheck fixed in : " & $b_MachineTimeOffsetSec & " second", $COLOR_DEBUG)
 					EndIf
 					$bRet = True
 				EndIf
-				$b_MachineTimeOffset = TimerDiff($b_MachineTimeOffsetDiff)
 				If $bRet Then ExitLoop
 			Next
 			Local $g_DeployColor[2] = [0xCD3AFF, 0xFF8BFF]

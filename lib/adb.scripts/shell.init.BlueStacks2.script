@@ -1,2 +1,0 @@
-echo Android Steady Shell PID=$PPID
-/system/xbin/bstk/su

@@ -55,7 +55,7 @@ Func imglocCheckWall()
 		SetDebugLog("$FoundWalls = " & $FoundWalls)
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 
 	If ($FoundWalls[0] = "") Then ; nothing found
 		SetLog("No wall(s) level: " & $levelWall & " found.", $COLOR_ERROR)
@@ -81,7 +81,7 @@ Func imglocCheckWall()
 				;try click
 				GemClick($aCoord[0], $aCoord[1])
 				If _Sleep(500) Then Return
-				Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
+				Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; Get building name and level with OCR
 				If $aResult[0] = 2 Then ; We found a valid building name
 					If StringInStr($aResult[1], "wall") = True And Number($aResult[2]) = $levelWall Then ; we found a wall
 						SetLog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is a Wall Level: " & $levelWall & ".")
@@ -90,7 +90,7 @@ Func imglocCheckWall()
 						ConvertFromVillagePos($g_aiLastGoodWallPos[0], $g_aiLastGoodWallPos[1])
 						Return True
 					Else
-						ClickAway()
+						ClearScreen()
 						If $g_bDebugSetlog Then
 							SetDebugLog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is not a Wall Level: " & $levelWall & ". It was: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG) ;debug
 						Else
@@ -99,7 +99,7 @@ Func imglocCheckWall()
 						EndIf
 					EndIf
 				Else
-					ClickAway()
+					ClearScreen()
 				EndIf
 			Next
 		Next

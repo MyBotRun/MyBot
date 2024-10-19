@@ -46,6 +46,7 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 	If Not IsArray($aRequestButton) Then
 		SetLog("Error in RequestCC(): $aRequestButton is no Array")
 		If $g_bDebugImageSave Then SaveDebugImage("RequestButtonStateError")
+		If Not $bClickPAtEnd Then CloseWindow2()
 		Return
 	EndIf
 
@@ -92,29 +93,28 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 
 	;exit from army overview
 	If _Sleep($DELAYREQUESTCC1) Then Return
-	If $bClickPAtEnd Then ClickAway()
+	If $bClickPAtEnd Then CloseWindow2()
 
 EndFunc   ;==>RequestCC
 
 Func _makerequest($aRequestButtonPos)
 	Local $sSendButtonArea = GetDiamondFromRect("220,150,650,650")
 
-	ClickP($aRequestButtonPos, 1, 0, "0336") ;click button request troops
+	ClickP($aRequestButtonPos, 1, 120, "0336") ;click button request troops
 
 	If _Sleep(250) Then Return
 	isGemOpen(True)
 	If _Sleep(500) Then Return
 
 	If Not IsWindowOpen($g_sImgSendRequestButton, 20, 100, $sSendButtonArea) Then
-		SetLog("Request has already been made, or request window not available", $COLOR_ERROR)
-		ClickAway()
+		SetLog("Request has already been made, or request window not available", $COLOR_INFO)
 		If _Sleep($DELAYMAKEREQUEST2) Then Return
 	Else
 		If $g_sRequestTroopsText <> "" Then
 			If Not $g_bChkBackgroundMode And Not $g_bNoFocusTampering Then ControlFocus($g_hAndroidWindow, "", "")
 			; fix for Android send text bug sending symbols like ``"
 			AndroidSendText($g_sRequestTroopsText, True)
-			Click(Int($g_avWindowCoordinates[0]), Int($g_avWindowCoordinates[1] - 100), 1, 0, "#0254")
+			Click(Int($g_avWindowCoordinates[0]), Int($g_avWindowCoordinates[1] - 100), 1, 100, "#0254")
 			If _Sleep($DELAYMAKEREQUEST2) Then Return
 			If SendText($g_sRequestTroopsText) = 0 Then
 				SetLog(" Request text entry failed, try again", $COLOR_ERROR)
@@ -129,14 +129,18 @@ Func _makerequest($aRequestButtonPos)
 		EndIf
 
 		If Not $g_bChkBackgroundMode And Not $g_bNoFocusTampering Then ControlFocus($g_hAndroidWindow, "", "") ; make sure Android has window focus
-		ClickP($g_avWindowCoordinates, 1, 100, "#0256")
+		Local $CoordsX[2] = [$g_avWindowCoordinates[0] - 60, $g_avWindowCoordinates[0] + 30]
+		Local $CoordsY[2] = [$g_avWindowCoordinates[1] - 15, $g_avWindowCoordinates[1] + 25]
+		Local $ButtonClickX = Random($CoordsX[0], $CoordsX[1], 1)
+		Local $ButtonClickY = Random($CoordsY[0], $CoordsY[1], 1)
+		Click($ButtonClickX, $ButtonClickY, 1, 100, "#0256")
 		$g_bCanRequestCC = False
 	EndIf
 
 EndFunc   ;==>_makerequest
 
 Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine = 2
-	Local $aCheckCCNotFull[3] = [78, 449, 601], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
+	Local $aCheckCCNotFull[3] = [79, 446, 563], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
 	Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
 	Local $bIsCCRequestTypeNotUsed = Not ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2])
 	If $CCType <> 0 And $bIsCCRequestTypeNotUsed Then ; Continue reading CC status if all 3 items are unchecked, but only if not troop
@@ -165,9 +169,13 @@ Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine =
 				Return False
 			Else
 				If $CCType < 2 Then
-					Local $sCCReceived = getOcrAndCapture("coc-camps", 307 + $CCType * 158, 428 + $g_iMidOffsetY, 60, 16, True, False, True) ; read CC (troops x/40 or spells x/2)
+					If $CCType = 0 Then
+						Local $sCCReceived = getOcrAndCapture("coc-camps", 307, 428 + $g_iMidOffsetY, 60, 16, True, False, True) ; read CC troop
+					Else
+						Local $sCCReceived = getOcrAndCapture("coc-camps", 461, 428 + $g_iMidOffsetY, 35, 16, True, False, True) ; read CC spells
+					EndIf
 				Else
-					Local $sCCReceived = getOcrAndCapture("coc-camps", 617, 428 + $g_iMidOffsetY, 28, 16, True, False, True) ; read CC (Siege x/1)
+					Local $sCCReceived = getOcrAndCapture("coc-camps", 578, 428 + $g_iMidOffsetY, 30, 16, True, False, True) ; read CC (Siege x/1)
 				EndIf
 				SetDebugLog("Read CC " & $sLog[$CCType] & "s: " & $sCCReceived)
 				Local $aCCReceived = StringSplit($sCCReceived, "#", $STR_NOCOUNT) ; split the trained troop number from the total troop number
@@ -217,15 +225,14 @@ Func CheckCCArmy()
 	Local $bSkipTroop = Not $g_abRequestType[0] Or _ArrayMin($g_aiClanCastleTroopWaitType) = 0 ; All 3 troop comboboxes are set = "any"
 	Local $bSkipSpell = Not $g_abRequestType[1] Or _ArrayMin($g_aiClanCastleSpellWaitType) = 0 ; All 3 spell comboboxes are set = "any"
 	Local $bSkipSiege = Not $g_abRequestType[2] Or _ArrayMin($g_aiClanCastleSiegeWaitType) = 0 ; All 2 siege comboboxes are set = "any"
-	Local $bOneSlotSpell = False
 
 	If $bSkipTroop And $bSkipSpell And $bSkipSiege Then Return
 
-	Local $bNeedRemove = False, $aToRemove[8][2] ; 5 troop slots + 2 spell slots + 1 siege slot [X_Coord, Q'ty]
-	Local $aTroopWSlot, $aSpellWSlot
+	Local $bNeedRemove = False, $aToRemove[10][3] ; 5 troop slots + 3 spell slots + 2 siege slots [X_Coord/Page, Q'ty, X coord For Remove]
+	Local $aTroopWSlot, $aSpellWSlot, $aSiegeWSlot
 
 	For $i = 0 To 2
-		If $g_aiClanCastleTroopWaitQty[$i] = 0 And $g_aiClanCastleTroopWaitType[$i] > 0 Then $g_aiCCTroopsExpected[$g_aiClanCastleTroopWaitType[$i] - 1] = 40 ; expect troop type only. Do not care about qty
+		If $g_aiClanCastleTroopWaitQty[$i] = 0 And $g_aiClanCastleTroopWaitType[$i] > 0 Then $g_aiCCTroopsExpected[$g_aiClanCastleTroopWaitType[$i] - 1] = 50 ; expect troop type only. Do not care about qty
 	Next
 
 	SetLog("Getting current army in Clan Castle...")
@@ -233,8 +240,8 @@ Func CheckCCArmy()
 	If Not $g_bRunState Then Return
 
 	If Not $bSkipTroop Then $aTroopWSlot = getArmyCCTroops(False, False, False, True, True, True) ; X-Coord, Troop name index, Quantity
-	If Not $bSkipSpell Then $aSpellWSlot = getArmyCCSpells(False, False, False, True, True, True) ; X-Coord, Spell name index, Quantity
-	If Not $bSkipSiege Then getArmyCCSiegeMachines() ; getting value of $g_aiCurrentCCSiegeMachines
+	If Not $bSkipSpell Then $aSpellWSlot = getArmyCCSpells(False, False, False, True, True) ; Page, Spell name index, Quantity, X Coord for Remove
+	If Not $bSkipSiege Then $aSiegeWSlot = getArmyCCSiegeMachines(False, False, False, True, True) ; Page, Siege name index, Quantity, X Coord for Remove
 
 	; CC troops
 	If IsArray($aTroopWSlot) Then
@@ -250,7 +257,7 @@ Func CheckCCArmy()
 					If $j > 4 Then ExitLoop
 					If $aTroopWSlot[$j][1] = $i Then
 						$aToRemove[$j][0] = $aTroopWSlot[$j][0]
-						$aToRemove[$j][1] = _Min($aTroopWSlot[$j][2], $iUnwanted)
+						$aToRemove[$j][1] = _Min(Number($aTroopWSlot[$j][2]), Number($iUnwanted))
 						$iUnwanted -= $aToRemove[$j][1]
 						SetLog(" - " & $aToRemove[$j][1] & "x " & ($aToRemove[$j][1] > 1 ? $g_asTroopNamesPlural[$i] : $g_asTroopNames[$i]) & ($g_bDebugSetlog ? (", at slot " & $j & ", x" & $aToRemove[$j][0] + 35) : ""))
 					EndIf
@@ -261,26 +268,23 @@ Func CheckCCArmy()
 
 	; CC spells
 	If IsArray($aSpellWSlot) Then
-		Local $sCCSpells = getOcrAndCapture("coc-camps", 465, 428 + $g_iMidOffsetY, 60, 16, True, False, True)
-		Local $aCCSpells = StringSplit($sCCSpells, "#", $STR_NOCOUNT)
-		If IsArray($aCCSpells) Then
-			If Number($aCCSpells[1]) = 1 Then $bOneSlotSpell = True
-		EndIf
+
 		For $i = 0 To $eSpellCount - 1
 			Local $iUnwanted = $g_aiCurrentCCSpells[$i] - $g_aiCCSpellsExpected[$i]
 			If $g_aiCurrentCCSpells[$i] > 0 Then SetDebugLog("Expecting " & $g_asSpellNames[$i] & ": " & $g_aiCCSpellsExpected[$i] & "x. Received: " & $g_aiCurrentCCSpells[$i])
 			If $iUnwanted > 0 Then
 				If Not $bNeedRemove Then
-					SetLog("Removing unexpected CC spells/siege machine:")
+					SetLog("Removing unexpected CC spells/siege machines:")
 					$bNeedRemove = True
 				EndIf
 				For $j = 0 To UBound($aSpellWSlot) - 1
-					If $j > 1 Then ExitLoop
+					If $j > 2 Then ExitLoop
 					If $aSpellWSlot[$j][1] = $i Then
 						$aToRemove[$j + 5][0] = $aSpellWSlot[$j][0]
-						$aToRemove[$j + 5][1] = _Min($aSpellWSlot[$j][2], $iUnwanted)
+						$aToRemove[$j + 5][1] = _Min(Number($aSpellWSlot[$j][2]), Number($iUnwanted))
+						$aToRemove[$j + 5][2] = $aSpellWSlot[$j][3]
 						$iUnwanted -= $aToRemove[$j + 5][1]
-						SetLog(" - " & $aToRemove[$j + 5][1] & "x " & $g_asSpellNames[$i] & ($aToRemove[$j + 5][1] > 1 ? " spells" : " spell") & ($g_bDebugSetlog ? (", at slot " & $j + 5 & ", x" & $aToRemove[$j + 5][0] + 35) : ""))
+						SetLog(" - " & $aToRemove[$j + 5][1] & "x " & $g_asSpellNames[$i] & ($aToRemove[$j + 5][1] > 1 ? " spells" : " spell") & ($g_bDebugSetlog ? (", at slot " & $j + 5 & ", Page" & $aToRemove[$j + 5][0]) : ""))
 					EndIf
 				Next
 			EndIf
@@ -288,29 +292,38 @@ Func CheckCCArmy()
 	EndIf
 
 	; CC siege machine
-	If Not $bSkipSiege Then
+	If IsArray($aSiegeWSlot) Then
+
 		For $i = 0 To $eSiegeMachineCount - 1
+			Local $iUnwanted = $g_aiCurrentCCSiegeMachines[$i] - $g_aiCCSiegeExpected[$i]
 			If $g_aiCurrentCCSiegeMachines[$i] > 0 Then SetDebugLog("Expecting " & $g_asSiegeMachineNames[$i] & ": " & $g_aiCCSiegeExpected[$i] & "x. Received: " & $g_aiCurrentCCSiegeMachines[$i])
-			If $g_aiCurrentCCSiegeMachines[$i] > $g_aiCCSiegeExpected[$i] Then
+			If $iUnwanted > 0 Then
 				If Not $bNeedRemove Then
-					SetLog("Removing unexpected CC siege machine:")
+					SetLog("Removing unexpected CC siege machines:")
 					$bNeedRemove = True
 				EndIf
-				$aToRemove[7][1] = 1
-				SetLog(" - " & $aToRemove[7][1] & "x " & $g_asSiegeMachineNames[$i])
-				ExitLoop
+				For $j = 0 To UBound($aSiegeWSlot) - 1
+					If $j > 1 Then ExitLoop
+					If $aSiegeWSlot[$j][1] = $i Then
+						$aToRemove[$j + 8][0] = $aSiegeWSlot[$j][0]
+						$aToRemove[$j + 8][1] = _Min(Number($aSiegeWSlot[$j][2]), Number($iUnwanted))
+						$aToRemove[$j + 8][2] = $aSiegeWSlot[$j][3]
+						$iUnwanted -= $aToRemove[$j + 8][1]
+						SetLog(" - " & $aToRemove[$j + 8][1] & "x " & $g_asSiegeMachineNames[$i] & ($aToRemove[$j + 8][1] > 1 ? " Sieges" : " Siege") & ($g_bDebugSetlog ? (", at slot " & $j + 8 & ", Page" & $aToRemove[$j + 8][0]) : ""))
+					EndIf
+				Next
 			EndIf
 		Next
 	EndIf
 
 	; Removing CC Troops, Spells & Siege Machine
 	If $bNeedRemove Then
-		RemoveCastleArmy($aToRemove, $bOneSlotSpell)
+		RemoveCastleArmy($aToRemove)
 		If _Sleep(1000) Then Return
 	EndIf
 EndFunc   ;==>CheckCCArmy
 
-Func RemoveCastleArmy($aToRemove, $bOneSlotSpell = False)
+Func RemoveCastleArmy($aToRemove)
 
 	If _ArrayMax($aToRemove, 0, -1, -1, 1) = 0 Then Return
 
@@ -332,13 +345,37 @@ Func RemoveCastleArmy($aToRemove, $bOneSlotSpell = False)
 			Switch $i
 				Case 0 To 4
 					$aPos[0] = $aToRemove[$i][0] + 44
-				Case 5
-					$aPos[0] = 499 ; x-coordinate of first Spell slot
-					If $bOneSlotSpell Then $aPos[0] = 533 ; x-coordinate of Single Spell slot
-				Case 6
-					$aPos[0] = 563 ; x-coordinate of second Spell slot
-				Case 7
-					$aPos[0] = 649 ; x-coordinate of Siege machine slot
+				Case 5 To 7
+					Switch $aToRemove[$i][0]
+						Case 0
+							$aPos[0] = $aToRemove[$i][2] ; x-coordinate of only one Spell slot
+						Case 1, 11
+							$aPos[0] = $aToRemove[$i][2] ; x-coordinate of first Spell slot, or second when 3 spells
+							If $aToRemove[$i][0] = 11 Then
+								ClickDrag(527, 495 + $g_iMidOffsetY, 455, 495 + $g_iMidOffsetY, 300)
+								If _Sleep(1000) Then Return
+							EndIf
+						Case 2, 3
+							$aPos[0] = $aToRemove[$i][2] ; x-coordinate of second Spell slot
+							If $aToRemove[$i][0] = 2 Then
+								ClickDrag(527, 495 + $g_iMidOffsetY, 455, 495 + $g_iMidOffsetY, 300)
+								If _Sleep(2000) Then Return
+							Else
+								ClickDrag(527, 495 + $g_iMidOffsetY, 475, 495 + $g_iMidOffsetY, 300)
+								If _Sleep(2000) Then Return
+							EndIf
+					EndSwitch
+				Case 8, 9
+					Switch $aToRemove[$i][0]
+						Case 0
+							$aPos[0] = $aToRemove[$i][2] ; x-coordinate of only one Siege slot
+						Case 1
+							$aPos[0] = $aToRemove[$i][2] ; x-coordinate of first Siege slot when 2 available slots
+						Case 2
+							$aPos[0] = $aToRemove[$i][2] ; x-coordinate of second Siege slot when 2 available slots
+							ClickDrag(645, 495 + $g_iMidOffsetY, 573, 495 + $g_iMidOffsetY, 300)
+							If _Sleep(2000) Then Return
+					EndSwitch
 			EndSwitch
 			SetDebugLog(" - Click at slot " & $i & ". (" & $aPos[0] & ") x " & $aToRemove[$i][1])
 			ClickRemoveTroop($aPos, $aToRemove[$i][1], $g_iTrainClickDelay) ; Click on Remove button as much as needed

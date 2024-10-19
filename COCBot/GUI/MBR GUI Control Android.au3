@@ -187,11 +187,7 @@ Func getAllEmulators()
 
 	Local $aEmulator = StringSplit($sEmulatorString, "|", $STR_NOCOUNT)
 	If $sEmulatorString <> "" Then
-		If UBound($aEmulator) = 1 Then
-			Setlog("Emulator Found In Your Machine :")
-		Else
-			Setlog(UBound($aEmulator) & " Emulators Found In Your Machine :")
-		EndIf
+		Setlog("Emulator" & (UBound($aEmulator) > 1 ? "s" : "") & " Found In Your Machine :")
 		For $i = 0 To UBound($aEmulator) - 1
 			Local $emuVer = ""
 			If StringInStr($aEmulator[$i], "BlueStacks") Then $emuVer = $__BlueStacks_Version

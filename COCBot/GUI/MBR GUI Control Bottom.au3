@@ -56,6 +56,8 @@ Func Initiate()
 
 		$g_bInitiateSwitchAcc = True
 		$g_sLabUpgradeTime = ""
+		$g_sPetUpgradeTime = ""
+		$g_sBSmithUpgradeTime = ""
 		For $i = 0 To $eLootCount - 1
 			$g_abFullStorage[$i] = False
 		Next

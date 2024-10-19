@@ -15,10 +15,10 @@
 #include-once
 
 Func ClockTimeGained()
-Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
-Local $TowerClockLevel = $aResult[2]
-SetLog("Clock Tower Level " & $TowerClockLevel & " Detected")
-Local $ClockTimeGained = 0
+	Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY)
+	Local $TowerClockLevel = $aResult[2]
+	SetLog("Clock Tower Level " & $TowerClockLevel & " Detected")
+	Local $ClockTimeGained = 0
 	Switch $TowerClockLevel
 		Case 1
 			$ClockTimeGained = 126 ;boost lenght*(10-1) <=> boost lenght*9
@@ -41,20 +41,20 @@ Local $ClockTimeGained = 0
 		Case 10
 			$ClockTimeGained = 288
 		Case Else
-			$ClockTimeGained = 270;30 minutes boost(?)
+			$ClockTimeGained = 270 ;30 minutes boost(?)
 	EndSwitch
-Return $ClockTimeGained
-EndFunc
+	Return $ClockTimeGained
+EndFunc   ;==>ClockTimeGained
 
 Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 
 	If Not $g_bChkStartClockTowerBoost Then Return
 	If Not $g_bRunState Then Return
-	
+
 	Local $TimeGained = 0
 
 	If $bSwitchToBB Then
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If Not SwitchBetweenBases(True, True) Then Return ; Switching to Builders Base
 	EndIf
 
@@ -70,6 +70,7 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 		SetLog("Boosting Clock Tower", $COLOR_INFO)
 		If _Sleep($DELAYCOLLECT2) Then Return
 
+		ClearScreen("Left", False)
 		Local $sCTCoords, $aCTCoords, $aCTBoost
 		$sCTCoords = findImage("ClockTowerAvailable", $g_sImgStartCTBoost, "FV", 1, True) ; Search for Clock Tower
 		If $sCTCoords <> "" Then
@@ -103,7 +104,8 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 			SetLog("Clock Tower boost is not available!")
 		EndIf
 	EndIf
-	ClickAway()
+	ClearScreen("Defaut", False)
+
 	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
 
 	If $bSwitchToNV Then SwitchBetweenBases() ; Switching back to the normal Village if true

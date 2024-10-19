@@ -26,12 +26,13 @@ Second Instance Key:  MEmu_1
 Known issues/bugs: Runs spam advertisements that cause errors during game. 
 
 
-BlueStacks - Not Supported
+BlueStacks
 ==========
 http://www.bluestacks.com/
-Known issues/bugs: - V5.11.X not compatible with Oct 2023 game update, and all V5.12.x+ has window sizing problems
-
-Info/known issues/bugs: -
+Versions 5.13.220.1001 - 5.21.580.1017
+MyBot Command Line Key: BlueStacks5
+Default Instance Key: Pie64
+Second Instance Key:  Pie64_1
 
 If you see errors like this "BigNoxVMMgr.exe: error: Code REGDB_E_CLASSNOTREG (0x80040154) - Class not registered (extended info not available)"
 your Nox installation is corrupt. Then open cmd.exe and register all dlls:

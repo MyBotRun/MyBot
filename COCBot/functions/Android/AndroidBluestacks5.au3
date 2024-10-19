@@ -35,25 +35,19 @@ Func _OpenBlueStacks5($bRestart = False)
 	; always start ADB first to avoid ADB connection problems
 	LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "start-server", $process_killed)
 
-	;$PID = ShellExecute($__BlueStacks_Path & "HD-RunApp.exe", "-p " & $g_sAndroidGamePackage & " -a " & $g_sAndroidGamePackage & $g_sAndroidGameClass)  ;Start BS and CoC with command line
-	;$PID = ShellExecute($__BlueStacks_Path & "HD-Frontend.exe", $g_sAndroidInstance) ;Start BS and CoC with command line
 	$cmdPar = GetAndroidProgramParameter()
-	$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
-	;$ErrorResult = ControlGetHandle("BlueStacks Error", "", "") ; Check for BS error window handle if it opens
-	;If $g_bDebugAndroid Then SetDebugLog("$PID= " & $PID & ", $ErrorResult = " & $ErrorResult, $COLOR_DEBUG)
-	;If $PID = 0 Or $ErrorResult <> 0 Then ; IF ShellExecute failed or BS opens error window = STOP
-	;	SetScreenBlueStacks()
-	;	SetError(1, 1, -1)
-	;	Return False
-	;EndIf
+	If WinGetAndroidHandle() = 0 Then
+		$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
+		;LaunchAndroid($g_sAndroidProgramPath, GetAndroidProgramParameter(), $g_sAndroidPath)
+	Else
+		SetLog("BlueStacks5 Already Loaded")
+		Return True
+	EndIf
 
-	WinGetAndroidHandle()
 	$hTimer = __TimerInit() ; start a timer for tracking BS start up time
 	While $g_hAndroidControl = 0
-		If _Sleep(3000) Then ExitLoop
 		_StatusUpdateTime($hTimer, $g_sAndroidEmulator & " Starting")
 		If __TimerDiff($hTimer) > $g_iAndroidLaunchWaitSec * 1000 Then ; if no BS position returned in 4 minutes, BS/PC has major issue so exit
-			;xbebenk SetScreenBlueStacks()
 			SetLog("Serious error has occurred, please restart PC and try again", $COLOR_ERROR)
 			SetLog("BlueStacks refuses to load, waited " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_ERROR)
 			SetLog("Unable to continue........", $COLOR_WARNING)
@@ -66,18 +60,12 @@ Func _OpenBlueStacks5($bRestart = False)
 
 	If $g_hAndroidControl Then
 		$connected_to = ConnectAndroidAdb(False, 3000) ; small time-out as ADB connection must be available now
-
 		If WaitForAndroidBootCompleted($g_iAndroidLaunchWaitSec - __TimerDiff($hTimer) / 1000, $hTimer) Then Return
-		If Not $g_bRunState Then Return False
-
+		If Not $g_bRunState Then Return
 		SetLog("BlueStacks Loaded, took " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_SUCCESS)
-
 		Return True
-
 	EndIf
-
 	Return False
-
 EndFunc   ;==>_OpenBlueStacks5
 
 Func GetBlueStacks5AdbPath()
@@ -90,10 +78,6 @@ Func InitBlueStacks5X($bCheckOnly = False, $bAdjustResolution = False, $bLegacyM
 	;Bluestacks5 doesn't have registry tree for engine, only installation dir info available on registry
 	$__BlueStacks5_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "Version")
 	$__BlueStacks_Path = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "InstallDir")
-	If @error <> 0 Then
-		$__BlueStacks_Path = @ProgramFilesDir & "\BlueStacks_nxt\"
-		SetError(0, 0, 0)
-	EndIf
 	$__BlueStacks_Path = StringReplace($__BlueStacks_Path, "\\", "\")
 
 	Local $frontend_exe = ["HD-Frontend.exe", "HD-Player.exe"]
@@ -128,7 +112,6 @@ Func InitBlueStacks5X($bCheckOnly = False, $bAdjustResolution = False, $bLegacyM
 		; update global variables
 		$g_sAndroidPath = $__BlueStacks_Path
 		$g_sAndroidProgramPath = $__BlueStacks_Path & $frontend_exe
-		;$g_sAndroidAdbPath = $__BlueStacks_Path & "HD-Adb.exe"
 		$g_sAndroidAdbPath = $sPreferredADB
 		$g_sAndroidVersion = $__BlueStacks5_Version
 		ConfigureSharedFolderBlueStacks5() ; something like D:\ProgramData\BlueStacks\Engine\UserData\SharedFolder\
@@ -162,6 +145,13 @@ Func ConfigureSharedFolderBlueStacks5($iMode = 0, $bSetLog = Default)
 					EndIf
 				EndIf
 			Next
+			If Not $bResult Then ;set default value
+				$g_sAndroidPicturesHostPath = "C:\ProgramData\BlueStacks_nxt\Engine\UserData\SharedFolder\"
+				$g_sAndroidPicturesPath = "/mnt/windows/BstSharedFolder/"
+				SetDebugLog("g_sAndroidPicturesHostPath = " & $g_sAndroidPicturesHostPath)
+				SetDebugLog("g_sAndroidPicturesPath = " & $g_sAndroidPicturesPath)
+				$bResult = True
+			EndIf
 		Case 1 ; create missing shared folder
 		Case 2 ; Configure VM and add missing shared folder
 	EndSwitch
@@ -255,77 +245,65 @@ EndFunc   ;==>RestartBlueStacks5CoC
 Func CheckScreenBlueStacks5($bSetLog = True)
 	Local $__BlueStacks5_ProgramData = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "UserDefinedDir")
 	Local $__Bluestacks5Conf = FileReadToArray($__BlueStacks5_ProgramData & "\bluestacks.conf")
-	If Not @error Then
-		Local $iLineCount = @extended
+	Local $iLineCount = @extended
 
-		Local $aiSearch = ["bst.instance." & $g_sAndroidInstance & ".fb_width", _
-				"bst.instance." & $g_sAndroidInstance & ".fb_height", _
-				'bst.instance.' & $g_sAndroidInstance & '.dpi="160"', _
-				"bst.instance." & $g_sAndroidInstance & ".gl_win_height", _
-				"bst.instance." & $g_sAndroidInstance & ".display_name"]
+	Local $aiSearch = ["bst.instance." & $g_sAndroidInstance & ".fb_width", _
+			"bst.instance." & $g_sAndroidInstance & ".fb_height", _
+			'bst.instance.' & $g_sAndroidInstance & '.dpi="160"', _
+			"bst.instance." & $g_sAndroidInstance & ".gl_win_height", _
+			"bst.instance." & $g_sAndroidInstance & ".display_name"]
 
-		Local $aiMustBe = ['"860"', _
-				'"732"', _
-				'"160"', _
-				'"732"', _
-				'"Bluestacks5']
+	Local $aiMustBe = ['"860"', _
+			'"732"', _
+			'"160"', _
+			'"732"', _
+			'"BlueStacks5']
 
-		For $i = 0 To $iLineCount - 1
-			For $iSearch = 0 To UBound($aiSearch) - 1
-				If StringInStr($__Bluestacks5Conf[$i], $aiSearch[$iSearch]) Then
-					SetDebugLog($__Bluestacks5Conf[$i])
-					If StringInStr($__Bluestacks5Conf[$i], $aiMustBe[$iSearch]) = 0 Then
-						If $bSetLog = True Then SetLog("The bot will configure your Bluestacks", $COLOR_ERROR)
-						Return False
-					EndIf
+	For $i = 0 To $iLineCount - 1
+		For $iSearch = 0 To UBound($aiSearch) - 1
+			If StringInStr($__Bluestacks5Conf[$i], $aiSearch[$iSearch]) Then
+				SetDebugLog($__Bluestacks5Conf[$i])
+				If StringInStr($__Bluestacks5Conf[$i], $aiMustBe[$iSearch]) = 0 Then
+					If $bSetLog = True Then SetLog("Please wait, Bot will configure your Bluestacks", $COLOR_ERROR)
+					Return False
 				EndIf
-			Next
+			EndIf
 		Next
-	Else
-		SetLog("[CheckScreenBlueStacks5] Error in config path : " & @error, $COLOR_ERROR)
-		Return False
-	EndIf
+	Next
 	Return True
 EndFunc   ;==>CheckScreenBlueStacks5
 
 Func SetScreenBlueStacks5()
 	Local $__BlueStacks5_ProgramData = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "UserDefinedDir")
 	Local $__Bluestacks5Conf = FileReadToArray($__BlueStacks5_ProgramData & "\bluestacks.conf")
-	If Not @error Then
-		Local $iLineCount = @extended
+	Local $iLineCount = @extended
 
-		Local $aiSearch = ["bst.instance." & $g_sAndroidInstance & ".fb_width", _
-				"bst.instance." & $g_sAndroidInstance & ".fb_height", _
-				"bst.instance." & $g_sAndroidInstance & ".dpi", _
-				"bst.instance." & $g_sAndroidInstance & ".gl_win_height", _
-				"bst.instance." & $g_sAndroidInstance & ".show_sidebar", _
-				"bst.instance." & $g_sAndroidInstance & ".display_name", _
-				"bst.instance." & $g_sAndroidInstance & ".enable_fps_display", _
-				"bst.instance." & $g_sAndroidInstance & ".google_login_popup_shown"]
+	Local $aiSearch = ["bst.instance." & $g_sAndroidInstance & ".fb_width", _
+			"bst.instance." & $g_sAndroidInstance & ".fb_height", _
+			"bst.instance." & $g_sAndroidInstance & ".dpi", _
+			"bst.instance." & $g_sAndroidInstance & ".gl_win_height", _
+			"bst.instance." & $g_sAndroidInstance & ".show_sidebar", _
+			"bst.instance." & $g_sAndroidInstance & ".display_name", _
+			"bst.instance." & $g_sAndroidInstance & ".enable_fps_display", _
+			"bst.instance." & $g_sAndroidInstance & ".google_login_popup_shown"]
 
-		Local $aiMustBe = ['bst.instance.' & $g_sAndroidInstance & '.fb_width="860"', _
-				'bst.instance.' & $g_sAndroidInstance & '.fb_height="732"', _
-				'bst.instance.' & $g_sAndroidInstance & '.dpi="160"', _
-				'bst.instance.' & $g_sAndroidInstance & '.gl_win_height="732"', _
-				'bst.instance.' & $g_sAndroidInstance & '.show_sidebar="0"', _
-				'bst.instance.' & $g_sAndroidInstance & '.display_name="BlueStacks5-' & $g_sAndroidInstance & '"', _
-				'bst.instance.' & $g_sAndroidInstance & '.enable_fps_display="1"', _
-				"bst.instance." & $g_sAndroidInstance & '.google_login_popup_shown="0"']
+	Local $aiMustBe = ['bst.instance.' & $g_sAndroidInstance & '.fb_width="860"', _
+			'bst.instance.' & $g_sAndroidInstance & '.fb_height="732"', _
+			'bst.instance.' & $g_sAndroidInstance & '.dpi="160"', _
+			'bst.instance.' & $g_sAndroidInstance & '.gl_win_height="732"', _
+			'bst.instance.' & $g_sAndroidInstance & '.show_sidebar="0"', _
+			'bst.instance.' & $g_sAndroidInstance & '.display_name="BlueStacks5-' & $g_sAndroidInstance & '"', _
+			'bst.instance.' & $g_sAndroidInstance & '.enable_fps_display="1"', _
+			"bst.instance." & $g_sAndroidInstance & '.google_login_popup_shown="0"']
 
-		For $i = 0 To $iLineCount - 1
-			For $iSearch = 0 To UBound($aiSearch) - 1
-				If StringInStr($__Bluestacks5Conf[$i], $aiSearch[$iSearch]) Then
-					$__Bluestacks5Conf[$i] = $aiMustBe[$iSearch]
-				EndIf
-			Next
+	For $i = 0 To $iLineCount - 1
+		For $iSearch = 0 To UBound($aiSearch) - 1
+			If StringInStr($__Bluestacks5Conf[$i], $aiSearch[$iSearch]) Then
+				$__Bluestacks5Conf[$i] = $aiMustBe[$iSearch]
+			EndIf
 		Next
-;~ 	_ArrayDisplay($__Bluestacks5Conf)
-		_FileWriteFromArray($__BlueStacks5_ProgramData & "\bluestacks.conf", $__Bluestacks5Conf)
-	Else
-		SetLog("[SetScreenBlueStacks5] Error in config path : " & @error, $COLOR_ERROR)
-		Return False
-	EndIf
-	Return True
+	Next
+	_FileWriteFromArray($__BlueStacks5_ProgramData & "\bluestacks.conf", $__Bluestacks5Conf)
 EndFunc   ;==>SetScreenBlueStacks5
 
 Func ConfigBlueStacks5WindowManager()
@@ -430,11 +408,7 @@ Func CloseBlueStacks5()
 	Else
 		SetDebugLog("Closing BlueStacks: " & $__BlueStacks_Path & "HD-Quit.exe")
 		RunWait($__BlueStacks_Path & "HD-Quit.exe")
-		If @error <> 0 Then
-			SetLog($g_sAndroidEmulator & " failed to quit", $COLOR_ERROR)
-			;SetError(1, @extended, -1)
-			;Return False
-		EndIf
+		If @error <> 0 Then SetLog($g_sAndroidEmulator & " failed to quit", $COLOR_ERROR)
 	EndIf
 
 	If _Sleep(2000) Then Return ; wait a bit

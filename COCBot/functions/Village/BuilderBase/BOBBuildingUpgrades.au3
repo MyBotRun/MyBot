@@ -29,7 +29,7 @@ Func DoubleCannonUpgrade($test = False)
 		EndIf
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	SetLog("Saved Coord :" & $g_aiDoubleCannonPos[0] & ", " & $g_aiDoubleCannonPos[1], $COLOR_INFO)
 	If $g_aiDoubleCannonPos[2] = 0 Then
 		SetLog("Double Cannon is in Main Builder Base", $COLOR_SUCCESS)
@@ -46,12 +46,12 @@ Func DoubleCannonUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Double Cannon info and Level
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -63,7 +63,7 @@ Func DoubleCannonUpgrade($test = False)
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 		If StringInStr($sInfo[1], "uble") = 0 Then
 			SetLog("Bad Double Cannon location", $COLOR_ACTION)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
@@ -75,14 +75,14 @@ Func DoubleCannonUpgrade($test = False)
 					SetLog("Your Double Cannon is at level needed for BOB Control upgrade!", $COLOR_INFO)
 					$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
 					GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
-					ClickAway()
+					ClearScreen("Defaut", False)
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return
 				EndIf
 			Else
 				SetLog("Your Double Cannon Level was not found!", $COLOR_INFO)
-				ClickAway()
+				ClearScreen("Defaut", False)
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -90,7 +90,7 @@ Func DoubleCannonUpgrade($test = False)
 		EndIf
 	Else
 		SetLog("Bad Double Cannon OCR", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -98,9 +98,9 @@ Func DoubleCannonUpgrade($test = False)
 
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
 
-	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afDoubleCannonUpgCost[$aDoubleCannonLevel] * 1000) Then
-		SetLog("Double Cannon Upg failed, require " & ($g_afDoubleCannonUpgCost[$aDoubleCannonLevel] * 1000) & " builder gold!", $COLOR_INFO)
-		ClickAway()
+	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afDoubleCannonUpgCost[$aDoubleCannonLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) Then
+		SetLog("Double Cannon Upg failed, require " & ($g_afDoubleCannonUpgCost[$aDoubleCannonLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) & " builder gold!", $COLOR_INFO)
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -117,15 +117,15 @@ Func DoubleCannonUpgrade($test = False)
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
-			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
+			Local $aWhiteZeros = _PixelSearch(365, 532 + $g_iMidOffsetY, 470, 542 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20)
+			If IsArray($aWhiteZeros) Then
+				Click(425, 535 + $g_iMidOffsetY) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 				; Just incase the buy Gem Window pop up!
 				If isGemOpen(True) Then
 					SetLog("Double Cannon Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickAway()
+					CloseWindow()
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return False
@@ -137,7 +137,7 @@ Func DoubleCannonUpgrade($test = False)
 			Else
 				SetLog("Double Cannon Upgrade Fail!", $COLOR_ERROR)
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDoubleCannon2")
-				ClickAway()
+				CloseWindow()
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -150,7 +150,7 @@ Func DoubleCannonUpgrade($test = False)
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDoubleCannon1")
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 	SwitchToBuilderbase()
 EndFunc   ;==>DoubleCannonUpgrade
@@ -170,7 +170,7 @@ Func ArcherTowerUpgrade($test = False)
 		EndIf
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	SetLog("Saved Coord :" & $g_aiArcherTowerPos[0] & ", " & $g_aiArcherTowerPos[1], $COLOR_INFO)
 	If $g_aiArcherTowerPos[2] = 0 Then
 		SetLog("Archer Tower is in Main Builder Base", $COLOR_SUCCESS)
@@ -186,12 +186,12 @@ Func ArcherTowerUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Archer Tower info and Level
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -203,7 +203,7 @@ Func ArcherTowerUpgrade($test = False)
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 		If StringInStr($sInfo[1], "Archer") = 0 Then
 			SetLog("Bad Archer Tower location", $COLOR_ACTION)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
@@ -215,14 +215,14 @@ Func ArcherTowerUpgrade($test = False)
 					SetLog("Your Archer Tower is at level needed for BOB Control upgrade!", $COLOR_INFO)
 					$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
 					GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
-					ClickAway()
+					ClearScreen("Defaut", False)
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return
 				EndIf
 			Else
 				SetLog("Archer Tower Level was not found!", $COLOR_INFO)
-				ClickAway()
+				ClearScreen("Defaut", False)
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -230,7 +230,7 @@ Func ArcherTowerUpgrade($test = False)
 		EndIf
 	Else
 		SetLog("Bad Archer Tower OCR", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -238,9 +238,9 @@ Func ArcherTowerUpgrade($test = False)
 
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
 
-	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afArcherTowerUpgCost[$aArcherTowerLevel] * 1000) Then
-		SetLog("Archer Tower Upg failed, require " & ($g_afArcherTowerUpgCost[$aArcherTowerLevel] * 1000) & " builder gold!", $COLOR_INFO)
-		ClickAway()
+	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afArcherTowerUpgCost[$aArcherTowerLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) Then
+		SetLog("Archer Tower Upg failed, require " & ($g_afArcherTowerUpgCost[$aArcherTowerLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) & " builder gold!", $COLOR_INFO)
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -257,15 +257,15 @@ Func ArcherTowerUpgrade($test = False)
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
-			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
+			Local $aWhiteZeros = _PixelSearch(365, 532 + $g_iMidOffsetY, 470, 542 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20)
+			If IsArray($aWhiteZeros) Then
+				Click(425, 535 + $g_iMidOffsetY) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 				; Just incase the buy Gem Window pop up!
 				If isGemOpen(True) Then
 					SetLog("Archer Tower Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickAway()
+					CloseWindow()
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return False
@@ -277,7 +277,7 @@ Func ArcherTowerUpgrade($test = False)
 			Else
 				SetLog("Archer Tower Upgrade Fail!", $COLOR_ERROR)
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeArcherTower2")
-				ClickAway()
+				CloseWindow()
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -290,7 +290,7 @@ Func ArcherTowerUpgrade($test = False)
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeArcherTower1")
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 	SwitchToBuilderbase()
 EndFunc   ;==>ArcherTowerUpgrade
@@ -310,7 +310,7 @@ Func MultiMortarUpgrade($test = False)
 		EndIf
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	SetLog("Saved Coord :" & $g_aiMultiMortarPos[0] & ", " & $g_aiMultiMortarPos[1], $COLOR_INFO)
 	If $g_aiMultiMortarPos[2] = 0 Then
 		SetLog("Multi Mortar is in Main Builder Base", $COLOR_SUCCESS)
@@ -327,12 +327,12 @@ Func MultiMortarUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Multi Mortar info and Level
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -344,7 +344,7 @@ Func MultiMortarUpgrade($test = False)
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 		If StringInStr($sInfo[1], "Multi") = 0 Then
 			SetLog("Bad Multi Mortar location", $COLOR_ACTION)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
@@ -356,14 +356,14 @@ Func MultiMortarUpgrade($test = False)
 					SetLog("Your Multi Mortar is at level needed for BOB Control upgrade!", $COLOR_INFO)
 					$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
 					GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
-					ClickAway()
+					ClearScreen("Defaut", False)
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return
 				EndIf
 			Else
 				SetLog("Multi Mortar Level was not found!", $COLOR_INFO)
-				ClickAway()
+				ClearScreen("Defaut", False)
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -371,7 +371,7 @@ Func MultiMortarUpgrade($test = False)
 		EndIf
 	Else
 		SetLog("Bad Multi Mortar OCR", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -379,9 +379,9 @@ Func MultiMortarUpgrade($test = False)
 
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
 
-	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afMultiMortarUpgCost[$aMultiMortarLevel] * 1000) Then
-		SetLog("Multi Mortar Upg failed, require " & ($g_afMultiMortarUpgCost[$aMultiMortarLevel] * 1000) & " builder gold!", $COLOR_INFO)
-		ClickAway()
+	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afMultiMortarUpgCost[$aMultiMortarLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) Then
+		SetLog("Multi Mortar Upg failed, require " & ($g_afMultiMortarUpgCost[$aMultiMortarLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) & " builder gold!", $COLOR_INFO)
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -398,15 +398,15 @@ Func MultiMortarUpgrade($test = False)
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
-			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
+			Local $aWhiteZeros = _PixelSearch(365, 532 + $g_iMidOffsetY, 470, 542 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20)
+			If IsArray($aWhiteZeros) Then
+				Click(425, 535 + $g_iMidOffsetY) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 				; Just incase the buy Gem Window pop up!
 				If isGemOpen(True) Then
 					SetLog("Multi Mortar Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickAway()
+					CloseWindow()
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return False
@@ -418,7 +418,7 @@ Func MultiMortarUpgrade($test = False)
 			Else
 				SetLog("Multi Mortar Upgrade Fail!", $COLOR_ERROR)
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeMultiMortar2")
-				ClickAway()
+				CloseWindow()
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -431,7 +431,7 @@ Func MultiMortarUpgrade($test = False)
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeMultiMortar1")
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 	SwitchToBuilderbase()
 EndFunc   ;==>MultiMortarUpgrade
@@ -451,7 +451,7 @@ Func AnyDefUpgrade($test = False)
 		EndIf
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	SetLog("Saved Coord :" & $g_aiAnyDefPos[0] & ", " & $g_aiAnyDefPos[1], $COLOR_INFO)
 	If $g_aiAnyDefPos[2] = 0 Then
 		SetLog("Cannon is in Main Builder Base", $COLOR_SUCCESS)
@@ -468,12 +468,12 @@ Func AnyDefUpgrade($test = False)
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Cannon info and Level
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
@@ -485,7 +485,7 @@ Func AnyDefUpgrade($test = False)
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 		If StringInStr($sInfo[1], "Cann") = 0 Or StringInStr($sInfo[1], "uble") <> 0 Then
 			SetLog("Bad Cannon location", $COLOR_ACTION)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
@@ -497,14 +497,14 @@ Func AnyDefUpgrade($test = False)
 					SetLog("Your Cannon is at level needed for BOB Control upgrade!", $COLOR_INFO)
 					$g_bAnyDefUpgrade = False ; turn Off the Cannon upgrade
 					GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
-					ClickAway()
+					ClearScreen("Defaut", False)
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return
 				EndIf
 			Else
 				SetLog("Cannon Level was not found!", $COLOR_INFO)
-				ClickAway()
+				ClearScreen("Defaut", False)
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -512,7 +512,7 @@ Func AnyDefUpgrade($test = False)
 		EndIf
 	Else
 		SetLog("Bad Cannon OCR", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -520,9 +520,9 @@ Func AnyDefUpgrade($test = False)
 
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
 
-	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afAnyDefUpgCost[$aCannonLevel] * 1000) Then
-		SetLog("Cannon Upg failed, require " & ($g_afAnyDefUpgCost[$aCannonLevel] * 1000) & " builder gold!", $COLOR_INFO)
-		ClickAway()
+	If $g_aiCurrentLootBB[$eLootGoldBB] < ($g_afAnyDefUpgCost[$aCannonLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) Then
+		SetLog("Cannon Upg failed, require " & ($g_afAnyDefUpgCost[$aCannonLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) & " builder gold!", $COLOR_INFO)
+		ClearScreen("Defaut", False)
 		If _Sleep(1000) Then Return
 		SwitchToBuilderbase()
 		Return
@@ -539,15 +539,15 @@ Func AnyDefUpgrade($test = False)
 
 		; check for storage full window
 		If IsWindowOpen($sImgBBUpgradeWindow, 0, 0, GetDiamondFromRect($sSearchArea)) Then
-			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("340,535,525,600"), 1, True, Default))
-			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
+			Local $aWhiteZeros = _PixelSearch(365, 532 + $g_iMidOffsetY, 470, 542 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20)
+			If IsArray($aWhiteZeros) Then
+				Click(425, 535 + $g_iMidOffsetY) ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 				; Just incase the buy Gem Window pop up!
 				If isGemOpen(True) Then
 					SetLog("Cannon Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickAway()
+					CloseWindow()
 					If _Sleep(1000) Then Return
 					SwitchToBuilderbase()
 					Return False
@@ -559,7 +559,7 @@ Func AnyDefUpgrade($test = False)
 			Else
 				SetLog("Cannon Upgrade Fail!", $COLOR_ERROR)
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeAnyDef2")
-				ClickAway()
+				CloseWindow()
 				If _Sleep(1000) Then Return
 				SwitchToBuilderbase()
 				Return
@@ -572,7 +572,7 @@ Func AnyDefUpgrade($test = False)
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeAnyDef1")
 	EndIf
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 	SwitchToBuilderbase()
 EndFunc   ;==>AnyDefUpgrade

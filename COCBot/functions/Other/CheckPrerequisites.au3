@@ -24,7 +24,7 @@ Func CheckPrerequisites($bSilent = False)
 		EndIf
 		If (Not $isVC2010Installed And Not $bSilent) Then
 			SetLog("The VC 2010 x86 is not installed", $COLOR_ERROR)
-			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_ERROR)
+			SetLog("Please download here : https://www.microsoft.com/en-us/download/details.aspx?id=26999", $COLOR_ERROR)
 		EndIf
 		$bIsAllOk = False
 	EndIf

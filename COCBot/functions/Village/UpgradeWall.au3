@@ -20,12 +20,13 @@ Func UpgradeWall()
 	If Not $g_bRunState Then Return
 
 	If $g_bAutoUpgradeWallsEnable = True Then
+		VillageReport(True, True)
 		SetLog("Checking Upgrade Walls", $COLOR_INFO)
 		SetDebugLog("$iWallCost:" & $iWallCost)
 		If SkipWallUpgrade($iWallCost) Then Return
 		SetDebugLog("$g_iFreeBuilderCount:" & $g_iFreeBuilderCount)
 		If $g_iFreeBuilderCount > 0 Then
-			ClickAway()
+			ZoomOut()
 			Local $MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $iWallCost) >= Number($g_iUpgradeWallMinGold) ; Check if enough Gold
 			Local $MinWallElixir = Number($g_aiCurrentLoot[$eLootElixir] - $iWallCost) >= Number($g_iUpgradeWallMinElixir) ; Check if enough Elixir
 
@@ -105,10 +106,10 @@ Func UpgradeWall()
 
 				; Check Builder/Shop if open by accident
 				If _CheckPixel($g_aShopWindowOpen, $g_bCapturePixel, Default, "ChkShopOpen", $COLOR_DEBUG) = True Then
-					Click(820, 40, 1, 0, "#0315") ; Close it
+					Click(820, 40, 1, 100, "#0315") ; Close it
 				EndIf
 
-				ClickAway()
+				ClearScreen()
 				VillageReport(True, True)
 				If SkipWallUpgrade($iWallCost) Then Return
 				$MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $iWallCost) > Number($g_iUpgradeWallMinGold) ; Check if enough Gold
@@ -120,6 +121,8 @@ Func UpgradeWall()
 		EndIf
 	EndIf
 	If _Sleep($DELAYUPGRADEWALL1) Then Return
+	VillageReport(True, True)
+	UpdateStats()
 	checkMainScreen(False) ; Check for errors during function
 
 EndFunc   ;==>UpgradeWall
@@ -147,19 +150,18 @@ Func UpgradeWallGold($iWallCost = $g_iWallCost)
 			SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
 			Return False
 		EndIf
-		Click(620, 540 + $g_iMidOffsetY, 1, 0, "#0317")
+		Click(620, 540 + $g_iMidOffsetY, 1, 120, "#0317")
 		If _Sleep(1000) Then Return
 		If isGemOpen(True) Then
-			ClickAway()
 			SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
 			Return False
 		ElseIf _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
-			ClickAway()
+			CloseWindow()
 			SetLog("unable to upgrade", $COLOR_ERROR)
 			Return False
 		Else
 			If _Sleep($DELAYUPGRADEWALLGOLD3) Then Return
-			ClickAway()
+			ClearScreen()
 			SetLog("Upgrade complete", $COLOR_SUCCESS)
 			PushMsg("UpgradeWithGold")
 			$g_iNbrOfWallsUppedGold += 1
@@ -170,9 +172,9 @@ Func UpgradeWallGold($iWallCost = $g_iWallCost)
 		EndIf
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 	SetLog("No Upgrade Gold Button", $COLOR_ERROR)
-	Pushmsg("NowUpgradeGoldButton")
+	Pushmsg("NoUpgradeGoldButton")
 	Return False
 
 EndFunc   ;==>UpgradeWallGold
@@ -200,19 +202,18 @@ Func UpgradeWallElixir($iWallCost)
 			SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
 			Return False
 		EndIf
-		Click(620, 540 + $g_iMidOffsetY, 1, 0, "#0317")
+		Click(620, 540 + $g_iMidOffsetY, 1, 120, "#0317")
 		If _Sleep(1000) Then Return
 		If isGemOpen(True) Then
-			ClickAway()
 			SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
 			Return False
 		ElseIf _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
-			ClickAway()
+			CloseWindow()
 			SetLog("unable to upgrade", $COLOR_ERROR)
 			Return False
 		Else
 			If _Sleep($DELAYUPGRADEWALLELIXIR3) Then Return
-			ClickAway()
+			ClearScreen()
 			SetLog("Upgrade complete", $COLOR_SUCCESS)
 			PushMsg("UpgradeWithElixir")
 			$g_iNbrOfWallsUppedElixir += 1
@@ -223,9 +224,9 @@ Func UpgradeWallElixir($iWallCost)
 		EndIf
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 	SetLog("No Upgrade Elixir Button", $COLOR_ERROR)
-	Pushmsg("NowUpgradeElixirButton")
+	Pushmsg("NoUpgradeElixirButton")
 	Return False
 
 EndFunc   ;==>UpgradeWallElixir

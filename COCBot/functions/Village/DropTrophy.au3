@@ -29,7 +29,7 @@ Func DropTrophy()
 			SetDebugLog("Current Trophy Count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
 			If $g_aiCurrentLoot[$eLootTrophy] <> "" Then ExitLoop
 			If _Sleep(1000) Then Return
-			ClickAway()
+			ClearScreen()
 		Next
 
 		If Number($g_aiCurrentLoot[$eLootTrophy]) <= Number($g_iDropTrophyMax) Then Return ; exit on trophy count to avoid other checks
@@ -95,17 +95,27 @@ Func DropTrophy()
 				If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 				ZoomOut()
 				PrepareSearch($DT)
-				If $g_bOutOfGold Or $g_bRestart Then Return
+				If $g_bOutOfGold Then Return
+				If $g_bRestart Then
+					CleanSuperchargeTemplates()
+					Return
+				EndIf
 
 				WaitForClouds() ; Wait for clouds to disappear
 
-				If $g_bRestart Then Return ; exit func
+				If $g_bRestart Then
+					CleanSuperchargeTemplates()
+					Return
+				EndIf
 
 				If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 
 				$g_iSearchCount = 0
 				GetResources(False, $DT) ; no log, use $DT matchmode (DropThrophy)
-				If $g_bRestart Then Return ; exit func
+				If $g_bRestart Then
+					CleanSuperchargeTemplates()
+					Return
+				EndIf
 
 				If $g_bDropTrophyAtkDead Then
 					; Check for Dead Base on 1st search
@@ -126,18 +136,23 @@ Func DropTrophy()
 							SetLog("      " & "Dead Base Found while dropping Trophies!", $COLOR_SUCCESS, "Lucida Console", 7.5)
 							SetLog("Identification of your troops:", $COLOR_INFO)
 							PrepareAttack($DB) ; ==== Troops :checks for type, slot, and quantity ===
-							If $g_bRestart Then Return
+							If $g_bRestart Then
+								CleanSuperchargeTemplates()
+								Return
+							EndIf
 							Attack()
 							ReturnHome($g_bTakeLootSnapShot)
 							$g_bIsClientSyncError = False ; reset OOS flag to get new new army
 							$g_bIsSearchLimit = False ; reset search limit flag to get new new army
 							$g_bRestart = True ; Set restart flag after dead base attack to ensure troops are trained
 							SetDebugLog("Drop Trophy END: Dead Base was attacked, reset army and return to Village.", $COLOR_DEBUG)
+							CleanSuperchargeTemplates()
 							ExitLoop ; or Return, Will end function, no troops left to drop Trophies, will need to Train new Troops first
 						Else
 							SetLog("      " & "Not a Dead Base, resuming Trophy Dropping.", $COLOR_BLACK, "Lucida Console", 7.5)
 						EndIf
 					EndIf
+					CleanSuperchargeTemplates()
 				EndIf
 
 				; Normal Drop Trophy, no check for Dead Base
@@ -156,7 +171,7 @@ Func DropTrophy()
 					Local $IsBoostButton = False
 					For $i = 1 To 5
 						If _Sleep(300) Then Return
-						If QuickMIS("BFI", $g_sImgImgLocButtons & "\BoostButtons\BoostButton*.xml", 130, 520 + $g_iBottomOffsetY, 390, 555 + $g_iBottomOffsetY) Then
+						If QuickMIS("BFI", $g_sImgImgLocButtons & "\BoostButtons\BoostButton*.xml", 130, 515 + $g_iBottomOffsetY, 390, 555 + $g_iBottomOffsetY) Then
 							$IsBoostButton = True
 							ExitLoop
 						EndIf
@@ -202,7 +217,7 @@ Func DropTrophy()
 										SetLog("Deploying Queen", $COLOR_INFO)
 										SelectDropTroop($g_iQueenSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
-										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0180") ;Drop Queen
+										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0180") ;Drop Queen
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 										SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
 										ReturnfromDropTrophies()
@@ -215,7 +230,7 @@ Func DropTrophy()
 										SetLog("Deploying King", $COLOR_INFO)
 										SelectDropTroop($g_iKingSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
-										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0178") ;Drop King
+										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0178") ;Drop King
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 										SelectDropTroop($g_iKingSlot) ;If King was not activated: Boost King before EndBattle to restore some health
 										ReturnfromDropTrophies()
@@ -228,7 +243,7 @@ Func DropTrophy()
 										SetLog("Deploying Warden", $COLOR_INFO)
 										SelectDropTroop($g_iWardenSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
-										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0000") ;Drop Warden
+										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0000") ;Drop Warden
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 										SelectDropTroop($g_iWardenSlot) ;If Warden was not activated: Boost Warden before EndBattle to restore some health
 										ReturnfromDropTrophies()
@@ -241,7 +256,7 @@ Func DropTrophy()
 										SetLog("Deploying Royal Champion", $COLOR_INFO)
 										SelectDropTroop($g_iChampionSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
-										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0000") ;Drop Champion
+										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0000") ;Drop Champion
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 										SelectDropTroop($g_iChampionSlot) ;If Champion was not activated: Boost Champion before EndBattle to restore some health
 										ReturnfromDropTrophies()
@@ -260,7 +275,7 @@ Func DropTrophy()
 						If ($g_avAttackTroops[$i][0] >= $eBarb And $g_avAttackTroops[$i][0] <= $eWiza) Or $g_avAttackTroops[$i][0] = $eMini Then
 							SelectDropTroop($i)
 							If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
-							Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0181") ;Drop one troop
+							Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0181") ;Drop one troop
 							SetLog("Deploying 1 " & $g_asTroopNames[$g_avAttackTroops[$i][0]], $COLOR_INFO)
 							$g_aiCurrentTroops[$g_avAttackTroops[$i][0]] -= 1
 							ExitLoop

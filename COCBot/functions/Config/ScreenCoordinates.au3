@@ -11,8 +11,6 @@
 ; Example .......: No
 ; ===============================================================================================================================
 ; 	   $aiSomeVar = [StartX, StartY, EndX, EndY]
-;Global $aiClickAwayRegionLeft = [225, 10, 255, 30]
-;Global $aiClickAwayRegionRight = [605, 10, 645, 30]
 ;Let's tighten these up to avoid clicking on shields.
 Global $aiClickAwayRegionLeft = [235, 10, 245, 30]
 Global $aiClickAwayRegionRight = [640, 10, 650, 30]
@@ -25,7 +23,7 @@ Global $aCenterHomeVillageClickDrag = [430, 650] ; Scroll village using this loc
 Global $aIsMain[4] = [378, 10, 0x7ABDE3, 15] ; Main Screen, Builder Info Icon / October 2023 -37103
 Global $aIsMainGrayed[4] = [378, 10, 0x3D5F72, 15] ; Main Screen, Builder Info Icon grayed
 Global $aIsBuilderBaseGrayed[4] = [369, 9, 0x3F5F6F, 15] ; Builder Base, Builder Info Icon grayed
-Global $aIsOnBuilderBase[4] = [838, 18, 0xffff45, 10] ; Check the Gold Coin from resources , is a square not round
+Global $aIsOnBuilderBase[4] = [838, 18, 0xFFFF45, 10] ; Check the Gold Coin from resources , is a square not round
 Global $aAttackButton[2] = [60, 614 + $g_iBottomOffsetY] ; Attack Button, Main Screen
 Global $aFindMatchButton[4] = [470, 20 + $g_iBottomOffsetY, 0xD8A420, 10] ; Find Multiplayer Match Button, Attack Screen 860x780 without shield
 Global $aIsAttackShield[4] = [250, 415 + $g_iMidOffsetY, 0xE8E8E0, 10] ; Attack window, white shield verification window
@@ -44,16 +42,14 @@ Global $aEndFightSceneBtn[4] = [429, 529 + $g_iMidOffsetY, 0xE1F989, 20] ; Victo
 Global $aEndFightSceneAvl[4] = [241, 196 + $g_iMidOffsetY, 0xFFF098, 20] ; Victory or defeat scene left side ribbon = light gold
 Global $aEndFightSceneReportGold = $aEndFightSceneAvl ; Missing... TripleM ???
 Global $aReturnHomeButton[4] = [430, 566 + $g_iMidOffsetY, 0x6CBB1F, 15] ; Return Home Button, End Battle Screen
+Global $aRewardButton[4] = [430, 573 + $g_iMidOffsetY, 0x6CBB1F, 15] ; Claim Reward Button, End Battle Screen
 Global $aChatTab[4] = [412, 290 + $g_iMidOffsetY, 0xF3AA28, 20] ; Chat Window Open, Main Screen
 Global $aChatTab2[4] = [412, 305 + $g_iMidOffsetY, 0xF3AA28, 20] ; Chat Window Open, Main Screen
 Global $aChatTab3[4] = [412, 325 + $g_iMidOffsetY, 0xEA8A3B, 20] ; Chat Window Open, Main Screen
-;Global $aOpenChat[2] = [19, 309 + $g_iMidOffsetY] ; Open Chat Windows, Main Screen
-;Global $aClanTab[2] = [189, 24] ; Clan Tab, Chat Window, Main Screen
-;Global $aClanInfo[2] = [282, 55] ; Clan Info Icon
 Global $aArmyCampSize[2] = [153, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
 Global $aSiegeMachineSize[2] = [707, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Number/Total Number
 Global $aArmySpellSize[2] = [143, 296 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
-Global $g_aArmyCCSpellSize[2] = [465, 428 + $g_iMidOffsetY] ; Training Window, Overview Screen, Current CC Spell number/total cc spell capacity
+Global $g_aArmyCCSpellSize[2] = [461, 428 + $g_iMidOffsetY] ; Training Window, Overview Screen, Current CC Spell number/total cc spell capacity
 Global $aArmyCCRemainTime[2] = [730, 526 + $g_iMidOffsetY] ; Training Window Overviewscreen, Minutes & Seconds remaining till can request again
 Global $aIsCampFull[4] = [82, 177 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full
 Global $aBuildersDigits[2] = [424, 21] ; Main Screen, Free/Total Builders
@@ -78,7 +74,7 @@ Global $aRtnHomeCloud1[4] = [56, 592 + $g_iBottomOffsetY, 0x0A223F, 15] ; Cloud 
 Global $aRtnHomeCloud2[4] = [72, 592 + $g_iBottomOffsetY, 0x103F7E, 15] ; Cloud Screen, during search, blue pixel in right eye
 Global $aDetectLang[2] = [16, 634 + $g_iBottomOffsetY] ; Detect Language, bottom left Attack button must read "Attack"
 Global $aGreenArrowTrainTroops[2] = [325, 122 + $g_iMidOffsetY]
-Global $aGreenArrowBrewSpells[2] = [460, 122 + $g_iMidOffsetY]
+Global $aGreenArrowBrewSpells[2] = [461, 122 + $g_iMidOffsetY]
 Global $aGreenArrowTrainSiegeMachines[2] = [595, 122 + $g_iMidOffsetY]
 Global $g_aShopWindowOpen[4] = [804, 54, 0xC00508, 15] ; Red pixel in lower right corner of RED X to close shop window
 Global $aTreasuryWindow[4] = [695, 138 + $g_iMidOffsetY, 0xFF8D95, 20] ; Redish pixel above X to close treasury window
@@ -91,14 +87,17 @@ Global $aCheckTopProfile2[4] = [160, 455 + $g_iMidOffsetY, 0x4E4D79, 5]
 
 Global $aIsTabOpen[4] = [0, 145 + $g_iMidOffsetY, 0xECECE5, 25] ;Check if specific Tab is opened, X Coordinate is a dummy
 
-Global $aReceivedTroops[4] = [185, 235 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsOCR[4] = [400, 178 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedSieges[4] = [650, 235 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsDoubleOCR[4] = [400, 170 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsDouble[4] = [380, 220 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsTab[4] = [207, 140 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsTreasury[4] = [660, 140 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsWeeklyDeals[4] = [50, 195 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroops[5] = [567, 200 + $g_iMidOffsetY, 0xFFFFFF, 20, 60] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsOCR[5] = [400, 158 + $g_iMidOffsetY, 0xFFFFFF, 20, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsDouble[5] = [380, 210 + $g_iMidOffsetY, 0xFFFFFF, 20, 15] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsTab[5] = [342, 120 + $g_iMidOffsetY, 0xFFFFFF, 20, 25] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsTreasury[5] = [560, 140 + $g_iMidOffsetY, 0xFFFFFF, 20, 30] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsWeeklyDeals[5] = [240, 180 + $g_iMidOffsetY, 0xFFFFFF, 20, 30] ; Y of You have received blabla from xx!
+Global $aBoostTroopsWindow[5] = [330, 100 + $g_iMidOffsetY, 0xFFFFFF, 20, 50] ; Y of You have received blabla from xx!
+Global $aBuidersAppWindowTop[5] = [650, 90 + $g_iMidOffsetY, 0xFFFFFF, 20, 30] ; Y of You have received blabla from xx!
+Global $aBuidersAppWindowMid[5] = [397, 165 + $g_iMidOffsetY, 0xFFFFFF, 20, 145] ; Y of You have received blabla from xx!
+Global $aBuidersAppWindowConfirm[5] = [640, 130 + $g_iMidOffsetY, 0xFFFFFF, 15, 30] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsCG[5] = [407, 160 + $g_iMidOffsetY, 0xFFFFFF, 15, 145] ; Y of You have received blabla from xx!
 
 ; King Health Bar, check at the middle of the bar, index - 10 is x-offset added to middle of health bar
 Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 10]
@@ -110,14 +109,13 @@ Global $aWardenHealth = [-1, 567 + $g_iBottomOffsetY, 0x00D500, 15, 10]
 Global $aChampionHealth = [-1, 566 + $g_iBottomOffsetY, 0x00D500, 15, 2]
 
 ; attack report... stars won
-Global $aWonOneStarAtkRprt[4] = [325, 180 + $g_iMidOffsetY, 0xC8CaC4, 30] ; Center of 1st Star reached attacked village
+Global $aWonOneStarAtkRprt[4] = [325, 180 + $g_iMidOffsetY, 0xC8CAC4, 30] ; Center of 1st Star reached attacked village
 Global $aWonTwoStarAtkRprt[4] = [398, 180 + $g_iMidOffsetY, 0xD0D6D0, 30] ; Center of 2nd Star reached attacked village
 Global $aWonThreeStarAtkRprt[4] = [534, 180 + $g_iMidOffsetY, 0xC8CAC7, 30] ; Center of 3rd Star reached attacked village
 ; pixel color: location information								BS 850MB (Reg GFX), BS 500MB (Med GFX) : location
 
-Global $NextBtn[4] = [720, 536 + $g_iBottomOffsetY, 0xE5510D, 20] ;  Next Button
-Global $a12OrMoreSlots[4] = [20, 579 + $g_iBottomOffsetY, 0x86DEFC, 25] ; Attackbar Check if 12+ Slots exist / BS5
-Global $a12OrMoreSlots2[4] = [20, 580 + $g_iBottomOffsetY, 0xFF4040, 25] ; Attackbar Check if 12+ Slots exist SuperTroops / BS5
+Global $NextBtn[4] = [720, 536 + $g_iBottomOffsetY, 0xE6530D, 20] ;  Next Button
+Global $a12OrMoreSlots[4] = [850, 662 + $g_iBottomOffsetY, 0x3A396E, 25] ; Attackbar Check if 12+ Slots exist
 Global $aDoubRowAttackBar[4] = [68, 486, 0xFC5D64, 20]
 Global $aTroopIsDeployed[4] = [0, 0, 0x404040, 20] ; Attackbar Remain Check X and Y are Dummies
 Global Const $aIsAttackPage[4] = [50, 548 + $g_iBottomOffsetY, 0xD10D0E, 20] ; red button "end battle" - left portion
@@ -155,7 +153,7 @@ Global $aButtonVillageOkay[4] = [500, 170 + $g_iMidOffsetY, 0x81CA2D, 20] ; Okay
 
 ;SuperCell ID
 Global $aButtonConnectedSCID[4] = [640, 160 + $g_iMidOffsetY, 0x2D89FD, 20] ; Setting screen, Supercell ID Connected button (Blue Part)
-Global $aCloseTabSCID[4] = [831, 57] ; Button Close Supercell ID tab
+Global $aCloseTabSCID[4] = [825, 35] ; Button Close Supercell ID tab
 
 ;Train
 Global $aButtonEditArmy[4] = [700, 495 + $g_iMidOffsetY, 0xD0F078, 25]
@@ -177,7 +175,7 @@ Global Const $aPersonalChallengeRewardsAvail[4] = [450, 61 + $g_iMidOffsetY, 0xF
 Global Const $aPersonalChallengeRewardsTab[4] = [385, 105 + $g_iMidOffsetY, 0x698293, 20] ; Personal Challenge - Rewards tab unchecked with Gold Pass - Jun23 Update
 Global Const $aPersonalChallengePerksTab[4] = [545, 105 + $g_iMidOffsetY, 0xEDB905, 20] ; Personal Challenge - Perks tab Checked - Dec23 Update
 Global Const $aPersonalChallengeLeftEdge[4] = [30, 385 + $g_iMidOffsetY, 0x29231F, 20] ; Personal Challenge Window - Rewards tab - Black left edge
-Global Const $aPersonalChallengeCancelBtn[4] = [288, 391 + $g_iMidOffsetY, 0xFDC875, 20] ; Personal Challenge Window - Cancel button at Storage Full msg
+Global Const $aPersonalChallengeCancelBtn[4] = [288, 391 + $g_iMidOffsetY, 0xFFC877, 20] ; Personal Challenge Window - Cancel button at Storage Full msg
 Global Const $aPersonalChallengeOkBtn[4] = [500, 391 + $g_iMidOffsetY, 0xDFF887, 20] ; Personal Challenge Window - Okay button at Storage Full msg
 
 ;BB Attack 2.0

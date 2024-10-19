@@ -96,8 +96,8 @@ Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetL
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCSiegeMachines")
-	getArmyCCSiegeMachines(False, False, False, $bSetLog) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCSiegeCapacity")
+	getArmyCCSiegeCapacity(False, False, False, $bSetLog) ; Last parameter is to check the Army Window
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 

@@ -381,7 +381,7 @@ Func NotifyRemoteControlProc()
 						$txtStats &= "%0A%0A" & GetTranslatedFileIni("MBR Func_Notify", "Free-Builders_Info_01", "No. of Free Builders") & ": " & $g_iFreeBuilderCount & "%0A[" & GetTranslatedFileIni("MBR Func_Notify", "Wall-Up_Info_01", "No. of Wall Up") & "]: [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: "
 						$txtStats &= $g_iNbrOfWallsUppedGold & "/ [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & $g_iNbrOfWallsUppedElixir & "%0A%0A" & GetTranslatedFileIni("MBR Func_Notify", "Attack_Info_01", "Attacked") & ": "
 						$txtStats &= $g_aiAttackedCount & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Skip_Info_02", "Skipped") & ": " & $g_iSkippedVillageCount
-						if ($g_bLegendsAllMade = True) Then
+						If ($g_bLegendsAllMade = True) Then
 							$txtStats &= "%0A" & GetTranslatedFileIni("LegendsAllMade", "LegendsAllMade", "All Legends attacks made today.")
 						EndIf
 						Local $day = 0, $hour = 0, $min = 0, $sec = 0
@@ -389,12 +389,12 @@ Func NotifyRemoteControlProc()
 						GUICtrlSetData($g_hLblResultRuntime, $day > 0 ? StringFormat("%2u Day(s) %02i:%02i:%02i", $day, $hour, $min, $sec) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 						$txtStats &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_07", "Run Time") & ": " & GUICtrlRead($g_hLblResultRuntime) ;This label only changes when on the stats screen, so update it here.
 						;Optionally show Clan Games stats
-						If (GUICtrlRead($g_hLblRemainTime) <> "N/A" AND GUICtrlRead($g_hLblRemainTime) <> "0d 00h") Then
+						If (GUICtrlRead($g_hLblRemainTime) <> "N/A" And GUICtrlRead($g_hLblRemainTime) <> "0d 00h") Then
 							$txtStats &= "%0A%0A" & "Clan Games:"
 							$txtStats &= "%0A" & "[T]: " & GUICtrlRead($g_hLblRemainTime) & " [S]: " & GUICtrlRead($g_hLblYourScore)
 						EndIf
 						;Optionally show Clan Capitol Stats
-						if ($g_iStatsClanCapCollected > 0 Or $g_iStatsClanCapUpgrade > 0) Then
+						If ($g_iStatsClanCapCollected > 0 Or $g_iStatsClanCapUpgrade > 0) Then
 							$txtStats &= "%0A%0A" & "Clan Capitol:"
 							$txtStats &= "%0A" & "Collected: " & $g_iStatsClanCapCollected & ", Upgrades: " & $g_iStatsClanCapUpgrade
 						EndIf
@@ -628,14 +628,14 @@ Func NotifyPushMessageToBoth($Message, $Source = "")
 			If $g_bNotifyAlertOutOfSync Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_06", "Disconnected after") & " " & StringFormat("%3s", $g_iSearchCount) & " " & GetTranslatedFileIni("MBR Func_Notify", "Skip_Info_01", "skip(s)") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Attack_Info_02", "Cannot locate Next button, Restarting Bot") & "...")
 		Case "MatchFound"
 			If $g_bNotifyAlertMatchFound Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & $g_asModeText[$g_iMatchMode] & " " & GetTranslatedFileIni("MBR Func_Notify", "Match-Found_Info_01", "Match Found! after") & " " & StringFormat("%3s", $g_iSearchCount) & " " & GetTranslatedFileIni("MBR Func_Notify", "Skip_Info_01", "skip(s)") & "%0A" & "[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iSearchGold) & "; [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iSearchElixir) & "; [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-DE_Info_01", "DE") & "]: " & _NumberFormat($g_iSearchDark) & "; [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iSearchTrophy)
-		Case "UpgradeWithGold"
-			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_07", "Upgrade completed by using GOLD") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_03", "Complete by using GOLD") & "...")
-		Case "UpgradeWithElixir"
-			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_08", "Upgrade completed by using ELIXIR") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_04", "Complete by using ELIXIR") & "...")
-		Case "NoUpgradeWallButton"
-			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_05", "No Upgrade Gold Button") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_10", "Cannot find gold upgrade button") & "...")
+		Case "NoUpgradeGoldButton"
+			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_03", "No Wall Upgrade Gold Button") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_04", "Cannot find gold upgrade button") & "...")
 		Case "NoUpgradeElixirButton"
-			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_09", "No Upgrade Elixir Button") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_06", "Cannot find elixir upgrade button") & "...")
+			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_05", "No Wall Upgrade Elixir Button") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_06", "Cannot find elixir upgrade button") & "...")
+		Case "UpgradeWithGold"
+			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_07", "Upgrade Wall completed by using Gold"))
+		Case "UpgradeWithElixir"
+			If $g_bNotifyAlertUpgradeWalls Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Upgrading_Info_08", "Upgrade Wall completed by using Elixir"))
 		Case "RequestScreenshot"
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
@@ -663,52 +663,52 @@ Func NotifyPushMessageToBoth($Message, $Source = "")
 				SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
 			EndIf
 		Case "BuilderInfo"
-			ClickAway()
-			; open the builders menu
-			Click(400, 30)
-			If _Sleep(750) Then Return
-			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
-			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(305, 75, 579, 350)
-			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
-			_GDIPlus_ImageSaveToFile($g_hBitmap, $g_sProfileTempPath & $Screnshotfilename)
-			If $g_bTGRequestBuilderInfo Then
+			If isOnMainVillage() Then
+				ClickAway()
+				; open the builders menu
+				Click(400, 30)
+				If _Sleep(750) Then Return
+				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+				Local $Time = @HOUR & "." & @MIN
+				_CaptureRegion(305, 75, 579, 350)
+				Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
+				_GDIPlus_ImageSaveToFile($g_hBitmap, $g_sProfileTempPath & $Screnshotfilename)
+				_GDIPlus_ImageDispose($g_hBitmap)
 				If $g_bTGRequestBuilderInfo Then
-					NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $g_sNotifyOrigin & " | " & "Builder Information" & "%0A" & $Screnshotfilename)
-					SetLog("Notify Telegram: Builder Information sent!", $COLOR_GREEN)
+					NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $g_sNotifyOrigin & " | " & "Builder Information [Main]" & "%0A" & $Screnshotfilename)
+					SetLog("Notify Telegram: Builder Information [Main] sent!", $COLOR_GREEN)
+				EndIf
+				$g_bTGRequestBuilderInfo = False
+				;wait a second and then delete the file
+				If _Sleep($DELAYPUSHMSG2) Then Return
+				Local $iDelete = FileDelete($g_sProfileTempPath & $Screnshotfilename)
+				If Not $iDelete Then
+					SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
 				EndIf
 			EndIf
-			$g_bTGRequestBuilderInfo = False
-			;wait a second and then delete the file
-			If _Sleep($DELAYPUSHMSG2) Then Return
-			Local $iDelete = FileDelete($g_sProfileTempPath & $Screnshotfilename)
-			If Not $iDelete Then
-				SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
-			EndIf
-			ClickAway()
 		Case "ShieldInfo"
-			ClickAway()
-			Click(511, 13)
-			If _Sleep(500) Then Return
-			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
-			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(139, 139, 720, 600)
-			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
-			_GDIPlus_ImageSaveToFile($g_hBitmap, $g_sProfileTempPath & $Screnshotfilename)
-			If $g_bTGRequestShieldInfo Then
+			If isOnMainVillage() Then
+				ClickAway()
+				Click(511, 13)
+				If _Sleep(500) Then Return
+				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+				Local $Time = @HOUR & "." & @MIN
+				_CaptureRegion(139, 139, 720, 600)
+				Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
+				_GDIPlus_ImageSaveToFile($g_hBitmap, $g_sProfileTempPath & $Screnshotfilename)
 				If $g_bTGRequestShieldInfo Then
 					NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $g_sNotifyOrigin & " | " & "Shield Information" & "%0A" & $Screnshotfilename)
 					SetLog("Notify Telegram: Shield Information sent!", $COLOR_SUCCESS)
 				EndIf
+				$g_bTGRequestShieldInfo = False
+				;wait a second and then delete the file
+				If _Sleep($DELAYPUSHMSG2) Then Return
+				Local $iDelete = FileDelete($g_sProfileTempPath & $Screnshotfilename)
+				If Not $iDelete Then
+					SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
+				EndIf
+				ClickAway()
 			EndIf
-			$g_bTGRequestShieldInfo = False
-			;wait a second and then delete the file
-			If _Sleep($DELAYPUSHMSG2) Then Return
-			Local $iDelete = FileDelete($g_sProfileTempPath & $Screnshotfilename)
-			If Not $iDelete Then
-				SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
-			EndIf
-			ClickAway()
 		Case "CampFull"
 			If $g_bNotifyAlertCampFull Then
 				NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Camps-Full_Info_01", "Your Army Camps are now Full"))
@@ -748,8 +748,6 @@ Func IsPlanUseTelegram($Message)
 	EndIf
 	Return True
 EndFunc   ;==>IsPlanUseTelegram
-
-
 
 ; ::: EXTRA TOOLS :::
 ; Checking the connection of the card to the Internet

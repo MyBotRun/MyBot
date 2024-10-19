@@ -68,15 +68,17 @@ Func AttackReport()
 
 	If $g_iStatsLastAttack[$eLootTrophy] >= 0 Then
 		$iBonusLast = Number(getResourcesBonusPerc(578, 309 + $g_iMidOffsetY))
-		If $iBonusLast > 100 Then ; If % is detected as 7.
+		Local $iCheckBonusLast = StringTrimRight($iBonusLast, 1)
+		If $iBonusLast > 100 And $iCheckBonusLast = 7 Then ; If % is detected as 7.
 			If $g_bDebugImageSave Then SaveDebugImage("AttackReport", True)
 			Local $Loop = 0
-			While $iBonusLast > 100
+			While ($iBonusLast > 100 And $iCheckBonusLast = 7)
 				If $Loop = 20 Then
-					If $iBonusLast > 100 Then $iBonusLast = StringTrimRight($iBonusLast, 1)
+					If $iBonusLast > 100 And $iCheckBonusLast = 7 Then $iBonusLast = StringTrimRight($iBonusLast, 1)
 					ExitLoop
 				EndIf
 				$iBonusLast = Number(getResourcesBonusPerc(578, 309 + $g_iMidOffsetY))
+				$iCheckBonusLast = StringTrimRight($iBonusLast, 1)
 				$Loop += 1
 				If _Sleep(250) Then Return
 			WEnd
@@ -84,6 +86,8 @@ Func AttackReport()
 		If $iBonusLast > 0 Then
 			SetLog("Bonus Percentage: " & $iBonusLast & "%")
 			Local $iCalcMaxBonus = 0, $iCalcMaxBonusDark = 0
+
+			Local $bIsEvent = IsStreakEvent()
 
 			If _ColorCheck(_GetPixelColor($aAtkRprtDECheck2[0], $aAtkRprtDECheck2[1], True), Hex($aAtkRprtDECheck2[2], 6), $aAtkRprtDECheck2[3]) Then
 				If _Sleep($DELAYATTACKREPORT2) Then Return
@@ -98,12 +102,18 @@ Func AttackReport()
 
 				If $iBonusLast = 100 Then
 					$iCalcMaxBonus = $g_iStatsBonusLast[$eLootGold]
+					If $bIsEvent Then $iCalcMaxBonus = Ceiling($iCalcMaxBonus * (100 / $iBonusLast))
 					SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]) & " [DE]: " & _NumberFormat($g_iStatsBonusLast[$eLootDarkElixir]), $COLOR_SUCCESS)
 				Else
-					$iCalcMaxBonus = Ceiling($g_iStatsBonusLast[$eLootGold] / ($iBonusLast / 100))
-					$iCalcMaxBonusDark = Ceiling($g_iStatsBonusLast[$eLootDarkElixir] / ($iBonusLast / 100))
-
-					SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " out of " & _NumberFormat($iCalcMaxBonus) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]) & " out of " & _NumberFormat($iCalcMaxBonus) & " [DE]: " & _NumberFormat($g_iStatsBonusLast[$eLootDarkElixir]) & " out of " & _NumberFormat($iCalcMaxBonusDark), $COLOR_SUCCESS)
+					If $bIsEvent Then
+						$iCalcMaxBonus = $g_iStatsBonusLast[$eLootGold]
+						$iCalcMaxBonus = Ceiling($iCalcMaxBonus * (100 / $iBonusLast))
+						SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]) & " [DE]: " & _NumberFormat($g_iStatsBonusLast[$eLootDarkElixir]), $COLOR_SUCCESS)
+					Else
+						$iCalcMaxBonus = Ceiling($g_iStatsBonusLast[$eLootGold] / ($iBonusLast / 100))
+						$iCalcMaxBonusDark = Ceiling($g_iStatsBonusLast[$eLootDarkElixir] / ($iBonusLast / 100))
+						SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " out of " & _NumberFormat($iCalcMaxBonus) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]) & " out of " & _NumberFormat($iCalcMaxBonus) & " [DE]: " & _NumberFormat($g_iStatsBonusLast[$eLootDarkElixir]) & " out of " & _NumberFormat($iCalcMaxBonusDark), $COLOR_SUCCESS)
+					EndIf
 				EndIf
 			Else
 				If _Sleep($DELAYATTACKREPORT2) Then Return
@@ -116,10 +126,17 @@ Func AttackReport()
 
 				If $iBonusLast = 100 Then
 					$iCalcMaxBonus = $g_iStatsBonusLast[$eLootGold]
+					If $bIsEvent Then $iCalcMaxBonus = Ceiling($iCalcMaxBonus * (100 / $iBonusLast))
 					SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]), $COLOR_SUCCESS)
 				Else
-					$iCalcMaxBonus = Ceiling($g_iStatsBonusLast[$eLootGold] / ($iBonusLast / 100))
-					SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " out of " & _NumberFormat($iCalcMaxBonus) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]) & " out of " & _NumberFormat($iCalcMaxBonus), $COLOR_SUCCESS)
+					If $bIsEvent Then
+						$iCalcMaxBonus = $g_iStatsBonusLast[$eLootGold]
+						$iCalcMaxBonus = Ceiling($iCalcMaxBonus * (100 / $iBonusLast))
+						SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]), $COLOR_SUCCESS)
+					Else
+						$iCalcMaxBonus = Ceiling($g_iStatsBonusLast[$eLootGold] / ($iBonusLast / 100))
+						SetLog("Bonus [G]: " & _NumberFormat($g_iStatsBonusLast[$eLootGold]) & " out of " & _NumberFormat($iCalcMaxBonus) & " [E]: " & _NumberFormat($g_iStatsBonusLast[$eLootElixir]) & " out of " & _NumberFormat($iCalcMaxBonus), $COLOR_SUCCESS)
+					EndIf
 				EndIf
 			EndIf
 
@@ -265,3 +282,11 @@ Func AttackReport()
 	$g_iSidesAttack = 0
 
 EndFunc   ;==>AttackReport
+
+Func IsStreakEvent()
+	Local $offColors[3][3] = [[0xFFFFFF, 12, 7], [0x000000, 23, 0], [0x000000, 12, 12]] ; 2nd pixel White Color, 3rd pixel Black right edge of cross, 4th pixel Black bottom edge of cross
+	Local $WhiteCross = _MultiPixelSearch(623, 295, 655, 310, 1, 1, Hex(0x000000, 6), $offColors, 30) ; first black pixel on side of cross
+	SetDebugLog("Pixel Color #1: " & _GetPixelColor(627, 295, True) & ", #2: " & _GetPixelColor(639, 302, True) & ", #3: " & _GetPixelColor(650, 295, True) & ", #4: " & _GetPixelColor(639, 307, True), $COLOR_DEBUG)
+	If IsArray($WhiteCross) Then Return True
+	Return False
+EndFunc   ;==>IsStreakEvent

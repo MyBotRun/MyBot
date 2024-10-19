@@ -21,7 +21,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 		BuildingClickP($aPos, "#0462")
 		If _Sleep($DELAYBOOSTHEROES2) Then Return
 		ForceCaptureRegion()
-		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 		If $aResult[0] > 1 Then
 			Local $sN = $aResult[1] ; Store bldg name
 			Local $sL = $aResult[2] ; Sotre bdlg level
@@ -39,11 +39,11 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 		Local $Boost = findButton("BoostOne")
 		If IsArray($Boost) Then
 			If $g_bDebugSetlog Then SetDebugLog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
-			Click($Boost[0], $Boost[1], 1, 0, "#0463")
+			Click($Boost[0], $Boost[1], 1, 120, "#0463")
 			If _Sleep($DELAYBOOSTHEROES1) Then Return
 			$Boost = findButton("GEM")
 			If IsArray($Boost) Then
-				Click($Boost[0], $Boost[1], 1, 0, "#0464")
+				Click($Boost[0], $Boost[1], 1, 120, "#0464")
 				If _Sleep($DELAYBOOSTHEROES4) Then Return
 				If IsArray(findButton("EnterShop")) Then
 					SetLog("Not enough gems to boost " & $sName, $COLOR_ERROR)
@@ -61,7 +61,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 				SetLog($sName & " is already Boosted", $COLOR_SUCCESS)
 			EndIf
 			If _Sleep($DELAYBOOSTHEROES3) Then Return
-			ClickAway()
+			ClearScreen()
 		Else
 			SetLog($sName & " Boost Button not found", $COLOR_ERROR)
 			If _Sleep($DELAYBOOSTHEROES4) Then Return
@@ -74,12 +74,11 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 EndFunc   ;==>BoostStructure
 
 Func AllowBoosting($sName, $icmbBoost)
-
 	If ($g_bTrainEnabled = True And $icmbBoost > 0) = False Then Return False
 
 	Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 	If $g_abBoostBarracksHours[$hour[0]] = False Then
-		SetLog("Boosting " & $sName & " is not planned and skipped...", $COLOR_SUCCESS)
+		SetLog("Boosting " & $sName & " is not planned and skipped...", $COLOR_DEBUG)
 		Return False
 	EndIf
 
@@ -95,7 +94,7 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 		BuildingClickP($aPos, "#0462")
 		If _Sleep($DELAYBOOSTHEROES2) Then Return
 		ForceCaptureRegion()
-		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 		If $aResult[0] > 1 Then
 			Local $sN = $aResult[1] ; Store bldg name
 			Local $sL = $aResult[2] ; Sotre bdlg level
@@ -109,27 +108,29 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 		EndIf
 	EndIf
 	If $ok = True Then
-		Local $sTile = "BoostPotion_0_90.xml", $sRegionToSearch = "172,238,684,469"
+		Local $sTile = "BoostPotion_0_90.xml", $sRegionToSearch = "172,238,684,439"
 		Local $Boost = findButton("MagicItems")
 		If UBound($Boost) > 1 Then
 			If $g_bDebugSetlog Then SetDebugLog("Magic Items Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
-			Click($Boost[0], $Boost[1], 1, 0, "#0463")
+			Click($Boost[0], $Boost[1], 1, 120, "#0463")
 			If _Sleep($DELAYBOOSTHEROES1) Then Return
 			$Boost = decodeSingleCoord(FindImageInPlace($sTile, @ScriptDir & "\imgxml\imglocbuttons\" & $sTile, $sRegionToSearch))
 			If UBound($Boost) > 1 Then
 				If $g_bDebugSetlog Then SetDebugLog("Boost Potion Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 				ClickP($Boost)
 				If _Sleep($DELAYBOOSTHEROES1) Then Return
-				If Not _ColorCheck(_GetPixelColor(256, 500 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 25) Then
+				If Not _ColorCheck(_GetPixelColor(584, 500 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 25) Then
 					SetLog("Cannot find/verify 'Use' Button", $COLOR_WARNING)
-					ClickAway()
+					CloseWindow2()
+					If _Sleep(1000) Then Return
+					CloseWindow()
 					Return False ; Exit Function
 				EndIf
-				Click(260, 505 + $g_iMidOffsetY) ; Click on 'Use'
+				Click(600, 505 + $g_iMidOffsetY) ; Click on 'Use'
 				If _Sleep($DELAYBOOSTHEROES2) Then Return
 				$Boost = findButton("BoostPotionGreen")
 				If IsArray($Boost) Then
-					Click($Boost[0], $Boost[1], 1, 0, "#0465")
+					Click($Boost[0], $Boost[1], 1, 120, "#0465")
 					If _Sleep($DELAYBOOSTHEROES4) Then Return
 					If $icmbBoostValue <= 5 Then
 						$icmbBoostValue -= 1
@@ -145,10 +146,12 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 				If _Sleep($DELAYBOOSTHEROES4) Then Return
 			EndIf
 			If _Sleep($DELAYBOOSTHEROES3) Then Return
-			ClickAway()
+			ClearScreen()
 		Else
 			SetLog("Abort boosting " & $sName & ", bad location", $COLOR_ERROR)
 		EndIf
 	EndIf
+	ClearScreen()
+	If _Sleep(Random(1000, 1500, 1)) Then Return
 	Return $boosted
 EndFunc   ;==>BoostPotion

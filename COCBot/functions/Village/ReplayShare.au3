@@ -24,7 +24,7 @@ Func ReplayShare($bShareLastReplay)
 
 	SetLog("Sharing last Attack", $COLOR_INFO)
 
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYREPLAYSHARE2) Then Return
 
 	If ClickB("MessagesButton", Default, 300) Then
@@ -35,7 +35,7 @@ Func ReplayShare($bShareLastReplay)
 		If _Sleep(2000) Then Return
 		If IsArray($aiAttackLogTab) And UBound($aiAttackLogTab, 1) >= 2 Then
 			SetDebugLog("Found Attack Log tab", $COLOR_DEBUG)
-			Local $aIsAttackLogTabOpen[4] = [$aiAttackLogTab[0], $aiAttackLogTab[1] - 13, 0xF4F4F0, 20]
+			Local $aIsAttackLogTabOpen[4] = [$aiAttackLogTab[0], $aiAttackLogTab[1] - 15, 0xF4F4F0, 20]
 			If Not _CheckPixel($aIsAttackLogTabOpen, True) Then ClickP($aiAttackLogTab)  ; Check if Attack Log Tab is already open otherwise click it
 			If _Sleep(1000) Then Return
 

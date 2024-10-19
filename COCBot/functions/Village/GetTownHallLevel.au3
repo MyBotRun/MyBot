@@ -31,7 +31,7 @@ Func GetTownHallLevel($bFirstTime = False)
 	If $g_bDebugImageSave Then SaveDebugImage("GetTHLevelView")
 
 	$g_iTownHallLevel = 0 ; Reset Townhall level
-	$aTHInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+	$aTHInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 	SetDebugLog("$aTHInfo[0]=" & $aTHInfo[0] & ", $aTHInfo[1]=" & $aTHInfo[1] & ", $aTHInfo[2]=" & $aTHInfo[2], $COLOR_DEBUG)
 	If $aTHInfo[0] > 1 Then
 		If StringInStr($aTHInfo[1], "Town") = 0 Then
@@ -44,16 +44,16 @@ Func GetTownHallLevel($bFirstTime = False)
 			saveConfig()
 		Else
 			SetLog("Your Town Hall Level was not found! Please Manually Locate", $COLOR_INFO)
-			ClickAway()
+			ClearScreen()
 			Return False
 		EndIf
 	Else
 		SetLog("Your Town Hall Level was not found! Please Manually Locate", $COLOR_INFO)
-		ClickAway()
+		ClearScreen()
 		Return False
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 	Return True
 
 EndFunc   ;==>GetTownHallLevel

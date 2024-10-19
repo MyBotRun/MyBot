@@ -126,7 +126,7 @@ Func LocateUpgrades()
 					SetLog("Impossible value (" & $MsgBox & ") from Msgbox, you have been a bad programmer!", $COLOR_DEBUG)
 			EndSwitch
 
-			ClickAway()
+			ClearScreen()
 
 		Next
 		ExitLoop
@@ -182,7 +182,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 	Local $bOopsFlag = False
 
 	If $bRepeat Or $g_abUpgradeRepeatEnable[$inum] Then ; check for upgrade in process when continiously upgrading
-		ClickAway()
+		ClearScreen()
 		If _Sleep($DELAYUPGRADEVALUE1) Then Return
 		BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1]) ;Select upgrade trained
 		If _Sleep($DELAYUPGRADEVALUE4) Then Return
@@ -191,22 +191,22 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If StringInStr($g_avBuildingUpgrades[$inum][4], "collect", $STR_NOCASESENSEBASIC) Or _
 				StringInStr($g_avBuildingUpgrades[$inum][4], "mine", $STR_NOCASESENSEBASIC) Or _
 				StringInStr($g_avBuildingUpgrades[$inum][4], "drill", $STR_NOCASESENSEBASIC) Then
-			ClickAway()
+			ClearScreen()
 			If _Sleep($DELAYUPGRADEVALUE1) Then Return
 			BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1]) ;Select collector upgrade trained
 			If _Sleep($DELAYUPGRADEVALUE4) Then Return
 		EndIf
 		; check for upgrade in process
-		Local $offColors[3][3] = [[0x000000, 44, 17], [0xE07740, 69, 31], [0xF2F7F1, 81, 0]] ; 2nd pixel black broken hammer, 3rd pixel lt brown handle, 4th pixel white edge of button
-		Local $ButtonPixel = _MultiPixelSearch(284, 572, 570, 615, 1, 1, Hex(0x000000, 6), $offColors, 25) ; first pixel blackon side of button
-		SetDebugLog("Pixel Color #1: " & _GetPixelColor(389, 572, True) & ", #2: " & _GetPixelColor(433, 589, True) & ", #3: " & _GetPixelColor(458, 603, True) & ", #4: " & _GetPixelColor(470, 572, True), $COLOR_DEBUG)
+		Local $offColors[3][3] = [[0x0D0D0D, 39, 29], [0x904F31, 67, 34], [0xFFFFFF, 81, 0]] ; 2nd pixel black broken hammer, 3rd pixel lt brown handle, 4th pixel white edge of button
+		Local $ButtonPixel = _MultiPixelSearch(284, 572, 580, 615, 1, 1, Hex(0x0D0D0D, 6), $offColors, 40) ; first black pixel on side of button
+		SetDebugLog("Pixel Color #1: " & _GetPixelColor(390, 572, True) & ", #2: " & _GetPixelColor(429, 601, True) & ", #3: " & _GetPixelColor(457, 606, True) & ", #4: " & _GetPixelColor(471, 572, True), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then
 			If $g_bDebugSetlog Or $bOopsFlag Then
 				SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-				SetLog("Pixel Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 44, $ButtonPixel[1] + 17, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 69, $ButtonPixel[1] + 31, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 81, $ButtonPixel[1], True), $COLOR_DEBUG)
+				SetLog("Pixel Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 39, $ButtonPixel[1] + 19, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 68, $ButtonPixel[1] + 34, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 81, $ButtonPixel[1], True), $COLOR_DEBUG)
 			EndIf
 			SetLog("Selection #" & $inum + 1 & " Upgrade in process - Skipped!", $COLOR_WARNING)
-			ClickAway()
+			ClearScreen()
 			Return False
 		EndIf
 	Else ; If upgrade not in process
@@ -223,7 +223,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		GUICtrlSetData($g_hTxtUpgradeTime[$inum], "") ; Set GUI time to match $g_avBuildingUpgrades variable
 		$g_avBuildingUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
 		GUICtrlSetData($g_hTxtUpgradeEndTime[$inum], "") ; Set GUI time to match $g_avBuildingUpgrades variable
-		ClickAway()
+		ClearScreen()
 		SetLog("-$Upgrade #" & $inum + 1 & " Location =  " & "(" & $g_avBuildingUpgrades[$inum][0] & "," & $g_avBuildingUpgrades[$inum][1] & ")", $COLOR_DEBUG1) ;Debug
 		If _Sleep($DELAYUPGRADEVALUE1) Then Return
 		BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1], "#0212") ;Select upgrade trained
@@ -233,7 +233,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 
 	If $bOopsFlag And $g_bDebugImageSave Then SaveDebugImage("ButtonView")
 
-	$aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+	$aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 	If $aResult[0] > 0 Then
 		$g_avBuildingUpgrades[$inum][4] = $aResult[1] ; Store bldg name
 		GUICtrlSetData($g_hTxtUpgradeName[$inum], $g_avBuildingUpgrades[$inum][4]) ; Set GUI name to match $g_avBuildingUpgrades variable
@@ -274,9 +274,11 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 	EndIf
 
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
-		ClickP($aUpgradeButton, 1, 0, "#0213") ; Click Upgrade Button
+		ClickP($aUpgradeButton, 1, 120, "#0213") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADEVALUE5) Then Return
 		If $bOopsFlag And $g_bDebugImageSave Then SaveDebugImage("UpgradeView")
+
+		CloseSuperchargeWindow()
 
 		If $IsTHWeapon Then
 			Local $THWLevelUp = getOcrAndCapture("coc-THWeapon", 503, 113 + $g_iMidOffsetY, 18, 17)
@@ -302,12 +304,18 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					GUICtrlSetState($g_hChkUpgrade[$inum], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
 					$g_avBuildingUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
 					GUICtrlSetData($g_hTxtUpgradeEndTime[$inum], "") ; Set GUI time to match $g_avBuildingUpgrades variable
-					ClickAway()
+					CloseWindow()
 					Return False
 				EndIf
 
-				If _ColorCheck(_GetPixelColor(682, 545 + $g_iMidOffsetY, True), Hex(0xFFF456, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
-				If _ColorCheck(_GetPixelColor(682, 545 + $g_iMidOffsetY, True), Hex(0xF558FF, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
+				Local $aiSupercharge = decodeSingleCoord(FindImageInPlace2("Supercharge", $g_sImgSupercharge, 400, 445 + $g_iMidOffsetY, 455, 495 + $g_iMidOffsetY, True))
+				If IsArray($aiSupercharge) And UBound($aiSupercharge) = 2 Then
+					$g_avBuildingUpgrades[$inum][5] = $g_avBuildingUpgrades[$inum][5] & "+"
+					GUICtrlSetData($g_hTxtUpgradeLevel[$inum], $g_avBuildingUpgrades[$inum][5])
+				EndIf
+
+				If _ColorCheck(_GetPixelColor(682, 545 + $g_iMidOffsetY, True), Hex(0xFFF957, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
+				If _ColorCheck(_GetPixelColor(682, 545 + $g_iMidOffsetY, True), Hex(0xFF5AFF, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
 				If _ColorCheck(_GetPixelColor(682, 545 + $g_iMidOffsetY, True), Hex(0x4B3950, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Dark" ;Check if Dark Elixir required and update type
 
 				$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade(552, 541 + $g_iMidOffsetY)) ; Try to read white text.
@@ -322,10 +330,10 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				If $g_avBuildingUpgrades[$inum][6] <> "" Then $g_avBuildingUpgrades[$inum][7] = "" ; Clear old upgrade end time
 
 			Case Else
-				If isGemOpen(True) Then ClickAway()
+				isGemOpen(True)
 				SetLog("Selected Upgrade Window Opening Error, try again", $COLOR_ERROR)
 				ClearUpgradeInfo($inum) ; clear upgrade information
-				ClickAway()
+				CloseWindow()
 				Return False
 
 		EndSelect
@@ -373,7 +381,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			SetLog("Error finding loot info " & $inum & ", Loot = " & $g_avBuildingUpgrades[$inum][2] & ", Type= " & $g_avBuildingUpgrades[$inum][3], $COLOR_ERROR)
 			$g_avBuildingUpgrades[$inum][0] = -1 ; Clear upgrade location value as it is invalid
 			$g_avBuildingUpgrades[$inum][1] = -1 ; Clear upgrade location value as it  is invalid
-			ClickAway()
+			CloseWindow()
 			Return False
 		EndIf
 		SetLog("Upgrade #" & $inum + 1 & " Value = " & _NumberFormat($g_avBuildingUpgrades[$inum][2]) & " " & $g_avBuildingUpgrades[$inum][3], $COLOR_INFO) ; debug & document cost of upgrade
@@ -384,11 +392,11 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		ElseIf $g_abUpgradeRepeatEnable[$inum] = True Then
 			SetLog("Repeat upgrade problem - will retry value update later", $COLOR_ERROR)
 		EndIf
-		ClickAway()
+		CloseWindow()
 		Return False
 	EndIf
 
-	ClickAway()
+	CloseWindow()
 
 	; Update GUI with new values
 	Switch $g_avBuildingUpgrades[$inum][3] ;Set GUI Upgrade Type to match $g_avBuildingUpgrades variable
@@ -405,8 +413,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 	GUICtrlSetData($g_hTxtUpgradeTime[$inum], StringStripWS($g_avBuildingUpgrades[$inum][6], $STR_STRIPALL)) ; Set GUI time to match $g_avBuildingUpgrades variable
 	GUICtrlSetData($g_hTxtUpgradeEndTime[$inum], $g_avBuildingUpgrades[$inum][7]) ; Set GUI time to match $g_avBuildingUpgrades variable
 
-	If _Sleep(1500) Then Return
-	ClickAway()
+	If _Sleep(1000) Then Return
 	Return True
 
 EndFunc   ;==>UpgradeValue
@@ -424,3 +431,24 @@ Func ClearUpgradeInfo($inum)
 	$g_avBuildingUpgrades[$inum][6] = "" ; Clear upgrade time as it is invalid
 	$g_avBuildingUpgrades[$inum][7] = "" ; Clear upgrade end date/time as it is invalid
 EndFunc   ;==>ClearUpgradeInfo
+
+Func CloseSuperchargeWindow()
+
+	If Not _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then
+		If WaitforPixel(283, 193 + $g_iMidOffsetY, 287, 197 + $g_iMidOffsetY, Hex(0x121A87, 6), 20, 6) Then ; Wait 3 seconds
+			Local $hTimer = __TimerInit()
+			While 1
+				If _Sleep(500) Then Return
+				Local $aContinueButton = findButton("Continue", Default, 1, True)
+				If IsArray($aContinueButton) And UBound($aContinueButton, 1) = 2 Then
+					ClickP($aContinueButton, 1, 120, "#0433")
+					If _Sleep(2000) Then Return
+					ExitLoop
+				EndIf
+				Local $fDiff = __TimerDiff($hTimer)
+				If $fDiff > 5000 Then ExitLoop
+			WEnd
+		EndIf
+	EndIf
+
+EndFunc   ;==>CloseSuperchargeWindow

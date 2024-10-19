@@ -17,7 +17,7 @@
 Func Collect($bCheckTreasury = True)
 	If Not $g_bChkCollect Or Not $g_bRunState Then Return
 
-	ClickAway()
+	ClearScreen()
 
 	StartGainCost()
 
@@ -25,6 +25,10 @@ Func Collect($bCheckTreasury = True)
 
 	SetLog("Collecting Resources", $COLOR_INFO)
 	If _Sleep($DELAYCOLLECT2) Then Return
+
+	Local $aGoldFull = _FullResPixelSearch($aIsGoldFull[0], $aIsGoldFull[0] + 4, $aIsGoldFull[1], 1, Hex(0x0D0D0D, 6), $aIsGoldFull[2], $aIsGoldFull[3])
+	Local $aElixirFull = _FullResPixelSearch($aIsElixirFull[0], $aIsElixirFull[0] + 4, $aIsElixirFull[1], 1, Hex(0x0D0D0D, 6), $aIsElixirFull[2], $aIsElixirFull[3])
+	Local $aDarkElixirFull = _FullResPixelSearch($aIsDarkElixirFull[0], $aIsDarkElixirFull[0] + 4, $aIsDarkElixirFull[1], 1, Hex(0x0D0D0D, 6), $aIsDarkElixirFull[2], $aIsDarkElixirFull[3])
 
 	; Setup arrays, including default return values for $return
 	Local $sFileName = ""
@@ -38,25 +42,28 @@ Func Collect($bCheckTreasury = True)
 			$aCollectXY = $aResult[$i][5] ; Coords
 			Switch StringLower($sFileName)
 				Case "collectmines"
+					If IsArray($aGoldFull) Then ContinueLoop
 					If $g_iTxtCollectGold <> 0 And $g_aiCurrentLoot[$eLootGold] >= Number($g_iTxtCollectGold) Then
 						SetLog("Gold is high enough, skip collecting", $COLOR_ACTION)
 						ContinueLoop
 					EndIf
 				Case "collectelix"
+					If IsArray($aElixirFull) Then ContinueLoop
 					If $g_iTxtCollectElixir <> 0 And $g_aiCurrentLoot[$eLootElixir] >= Number($g_iTxtCollectElixir) Then
 						SetLog("Elixir is high enough, skip collecting", $COLOR_ACTION)
 						ContinueLoop
 					EndIf
 				Case "collectdelix"
+					If IsArray($aDarkElixirFull) Then ContinueLoop
 					If $g_iTxtCollectDark <> 0 And $g_aiCurrentLoot[$eLootDarkElixir] >= Number($g_iTxtCollectDark) Then
-						SetLog("Dark Elixier is high enough, skip collecting", $COLOR_ACTION)
+						SetLog("Dark Elixir is high enough, skip collecting", $COLOR_ACTION)
 						ContinueLoop
 					EndIf
 			EndSwitch
 			If IsArray($aCollectXY) Then ; found array of locations
 				$t = Random(0, UBound($aCollectXY) - 1, 1) ; SC May 2017 update only need to pick one of each to collect all
 				If $g_bDebugSetlog Then SetDebugLog($sFileName & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_GREEN)
-				If IsMainPage() Then Click($aCollectXY[$t][0], $aCollectXY[$t][1], 1, 0, "#0430")
+				If IsMainPage() Then Click($aCollectXY[$t][0], $aCollectXY[$t][1], 1, 120, "#0430")
 				If _Sleep($DELAYCOLLECT2) Then Return
 			EndIf
 		Next
@@ -65,33 +72,62 @@ Func Collect($bCheckTreasury = True)
 	If _Sleep($DELAYCOLLECT3) Then Return
 	checkMainScreen(False) ; check if errors during function
 
-	If Not $g_bChkCollectCartFirst And ($g_iTxtCollectGold = 0 Or $g_aiCurrentLoot[$eLootGold] < Number($g_iTxtCollectGold) Or $g_iTxtCollectElixir = 0 Or $g_aiCurrentLoot[$eLootElixir] < Number($g_iTxtCollectElixir) Or $g_iTxtCollectDark = 0 Or $g_aiCurrentLoot[$eLootDarkElixir] < Number($g_iTxtCollectDark)) Then CollectLootCart()
+	$aGoldFull = _FullResPixelSearch($aIsGoldFull[0], $aIsGoldFull[0] + 4, $aIsGoldFull[1], 1, Hex(0x0D0D0D, 6), $aIsGoldFull[2], $aIsGoldFull[3])
+	$aElixirFull = _FullResPixelSearch($aIsElixirFull[0], $aIsElixirFull[0] + 4, $aIsElixirFull[1], 1, Hex(0x0D0D0D, 6), $aIsElixirFull[2], $aIsElixirFull[3])
+	$aDarkElixirFull = _FullResPixelSearch($aIsDarkElixirFull[0], $aIsDarkElixirFull[0] + 4, $aIsDarkElixirFull[1], 1, Hex(0x0D0D0D, 6), $aIsDarkElixirFull[2], $aIsDarkElixirFull[3])
+	Local $iAllResourcesFull = IsArray($aGoldFull) And IsArray($aElixirFull) And IsArray($aDarkElixirFull)
 
-	If $g_bChkTreasuryCollect And $bCheckTreasury Then TreasuryCollect()
+	If Not $g_bChkCollectCartFirst And ($g_iTxtCollectGold = 0 Or $g_aiCurrentLoot[$eLootGold] < Number($g_iTxtCollectGold) Or $g_iTxtCollectElixir = 0 Or _
+			$g_aiCurrentLoot[$eLootElixir] < Number($g_iTxtCollectElixir) Or $g_iTxtCollectDark = 0 Or $g_aiCurrentLoot[$eLootDarkElixir] < Number($g_iTxtCollectDark)) And Not $iAllResourcesFull Then CollectLootCart()
+	If $g_bChkTreasuryCollect > 0 And $bCheckTreasury And Not $iAllResourcesFull Then TreasuryCollect()
 	EndGainCost("Collect")
 EndFunc   ;==>Collect
 
 Func CollectLootCart()
-	If Not $g_abNotNeedAllTime[0] Then 
-	    SetLog("Skipping loot cart check", $COLOR_INFO)
-	    Return
+	If Not $g_abNotNeedAllTime[0] Then
+		SetLog("Skipping loot cart check", $COLOR_INFO)
+		Return
 	EndIf
 
 	SetLog("Searching for a Loot Cart", $COLOR_INFO)
 
-	Local $aLootCart = decodeSingleCoord(findImage("LootCart", $g_sImgCollectLootCart, GetDiamondFromRect("1,220,120,290"), 1, True))
-	If UBound($aLootCart) > 1 Then
-		$aLootCart[1] += 15
-		If IsMainPage() Then ClickP($aLootCart, 1, 0, "#0330")
+	If $g_iTree = $eTreeEG Then
+		If _ColorCheck(_GetPixelColor(54, 278 + $g_iMidOffsetY, True), Hex(0xE90914, 6), 20) Then ; If Egypt Scenery, Open/Close Chat To remove red warning.
+			If ClickB("ClanChat") Then
+				If _Sleep(1000) Then Return
+				If Not ClickB("ClanChat") Then
+					If _ColorCheck(_GetPixelColor(390, 340 + $g_iMidOffsetY, True), Hex(0xEA8A3B, 6), 20) Then ; close chat
+						If Not ClickB("ClanChat") Then
+							SetDebugLog("Error finding the Clan Tab Button", $COLOR_ERROR)
+							Click(400, 312 + $g_iMidOffsetY)
+						EndIf
+						If _Sleep(2000) Then Return
+					EndIf
+				Else
+					If _Sleep(2000) Then Return
+				EndIf
+			EndIf
+		EndIf
+	EndIf
+
+	Local $Area[4] = [0, 180 + $g_iMidOffsetY, 120, 280 + $g_iMidOffsetY]
+	If $g_iTree = $eTreeMS Or $g_iTree = $eTreeEG Then
+		$Area[0] = 40
+		$Area[1] = 220 + $g_iMidOffsetY
+		$Area[2] = 150
+		$Area[3] = 320 + $g_iMidOffsetY
+	EndIf
+
+	If QuickMIS("BC1", $g_sImgCollectLootCart, $Area[0], $Area[1], $Area[2], $Area[3]) Then
+		Click($g_iQuickMISX, $g_iQuickMISY)
 		If _Sleep(1000) Then Return
 
-		If _ColorCheck(_GetPixelColor(385, 340 + $g_iMidOffsetY, True), Hex(0xC55115, 6), 20) Then     ; close chat
+		If _ColorCheck(_GetPixelColor(390, 340 + $g_iMidOffsetY, True), Hex(0xEA8A3B, 6), 20) Then     ; close chat
 			If Not ClickB("ClanChat") Then
-				SetLog("Error finding the Clan Tab Button", $COLOR_ERROR)
-				Click(392, 312 + $g_iMidOffsetY)
-				Return
+				SetDebugLog("Error finding the Clan Tab Button", $COLOR_ERROR)
+				Click(400, 312 + $g_iMidOffsetY)
 			EndIf
-			If _Sleep(500) Then Return
+			If _Sleep(2000) Then Return
 			Return False
 		EndIf
 
@@ -99,11 +135,24 @@ Func CollectLootCart()
 		If IsArray($aiCollectButton) And UBound($aiCollectButton) = 2 Then
 			SetLog("Clicking to collect loot cart.", $COLOR_SUCCESS)
 			ClickP($aiCollectButton)
+			If _Sleep(2000) Then Return
+			$aiCollectButton = findButton("CollectLootCart", Default, 1, True)
+			If IsArray($aiCollectButton) And UBound($aiCollectButton) = 2 Then
+				Click($g_iQuickMISX, $g_iQuickMISY)
+				If _Sleep(500) Then Return
+			EndIf
+			If _ColorCheck(_GetPixelColor(390, 340 + $g_iMidOffsetY, True), Hex(0xEA8A3B, 6), 20) Then     ; close chat
+				If Not ClickB("ClanChat") Then
+					SetDebugLog("Error finding the Clan Tab Button", $COLOR_ERROR)
+					Click(400, 312 + $g_iMidOffsetY)
+				EndIf
+				If _Sleep(500) Then Return
+				Return False
+			EndIf
 		Else
 			SetLog("Cannot find Collect Button", $COLOR_ERROR)
 			Return False
 		EndIf
-
 	Else
 		SetLog("No Loot Cart found on your Village", $COLOR_SUCCESS)
 	EndIf

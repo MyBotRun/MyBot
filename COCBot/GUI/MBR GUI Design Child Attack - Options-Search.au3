@@ -87,7 +87,7 @@ Func CreateAttackSearchOptionsSearch()
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$y += 21
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Search", "LblSearchReduceTrophy", "- Reduce Tropies"), $x, $y + 3, -1, 17)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Search", "LblSearchReduceTrophy", "- Reduce Trophies"), $x, $y + 3, -1, 17)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Search", "LblSearchReduceTrophy_Info_01", "Lower value for Trophies by this amount on each step.")
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hTxtSearchReduceTrophy = GUICtrlCreateInput("2", $x + 115, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))

@@ -306,6 +306,11 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hTabBot) = 1
 	$oAlwaysEnabledControls($g_hTabAbout) = 1
 
+	$oAlwaysEnabledControls($g_hTxtAutoUpgradeCCLog) = 1
+	$oAlwaysEnabledControls($g_hTxtClanGamesLog) = 1
+	$oAlwaysEnabledControls($g_hBtnHeroEquipment) = 1
+	$oAlwaysEnabledControls($g_hBtnHeroEquipmentClose) = 1
+
 	For $i In $aTabControlsVillage
 		$oAlwaysEnabledControls($i) = 1
 	Next

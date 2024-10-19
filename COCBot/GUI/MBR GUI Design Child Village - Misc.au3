@@ -51,12 +51,12 @@ Global $g_hChkClanGamesSort = 0, $g_hCmbClanGamesSort = 0
 Global $g_hLabelClangamesDesc = 0, $g_hChkCGRootEnabledAll = 0
 
 Global $g_hClanGamesTV = 0, $g_hChkCGMainLoot = 0, $g_hChkCGMainBattle = 0, $g_hChkCGMainDestruction = 0
-Global $g_hChkCGMainAir = 0, $g_hChkCGMainGround = 0, $g_hChkCGMainMisc = 0, $g_hChkCGMainSpell = 0
+Global $g_hChkCGMainAir = 0, $g_hChkCGMainGround = 0, $g_hChkCGEquipment = 0, $g_hChkCGMainMisc = 0, $g_hChkCGMainSpell = 0
 Global $g_hChkCGBBBattle = 0, $g_hChkCGBBDestruction = 0, $g_hChkCGBBTroops = 0
 Global $g_hChkClanGamesDebug = 0, $g_hChkCGDebugEvents = 0
 
 Global $g_ahCGMainLootItem[6], $g_ahCGMainBattleItem[22], $g_ahCGMainDestructionItem[34], $g_ahCGMainAirItem[13], _
-		$g_ahCGMainGroundItem[29], $g_ahCGMainMiscItem[3], $g_ahCGMainSpellItem[12], $g_ahCGBBBattleItem[4], _
+		$g_ahCGMainGroundItem[29], $g_ahCGEquipmentItem[20], $g_ahCGMainMiscItem[3], $g_ahCGMainSpellItem[12], $g_ahCGBBBattleItem[4], _
 		$g_ahCGBBDestructionItem[21], $g_ahCGBBTroopsItem[12]
 
 ;ClanCapitalTAB
@@ -115,7 +115,7 @@ Func CreateMiscNormalVillageSubTab()
 			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_03", "(G or E) Full and Max.Trophy") & "|" & _
 			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_04", "G or E Full or Max.Trophy") & "|" & _
 			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_05", "Gold and Elixir Full") & "|" & _
-			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_06", "Gold or Elixir Full") & "|" & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_06", "Gold or Elixir or DE Full") & "|" & _
 			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_07", "Gold Full and Max.Trophy") & "|" & _
 			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_08", "Elixir Full and Max.Trophy") & "|" & _
 			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_09", "Gold Full or Max.Trophy") & "|" & _
@@ -563,7 +563,7 @@ Func CreateMiscBuilderBaseSubTab()
 
 	; BB Building Upgrades
 	Local $x = 15, $y = 175 + $iOffset
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_05", "BOB Building Upgrades"), $x - 10, $y - 20, $g_iSizeWGrpTab3, 45)
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_07", "BOB Control Upgrades"), $x - 10, $y - 20, $g_iSizeWGrpTab3, 45)
 
 	Local $sTxtRelocate = GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtRelocateBB_Info_01", "Click on icon to delete your") & " "
 
@@ -688,6 +688,8 @@ Func CreateMiscClanGamesV3SubTab()
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_CG_Rewards", "Rewards"), $x - 10, $y - 15, $g_iSizeWGrpTab3 - 130, 70)
 	$y += 10
 	$g_hChkClanGamesCollectRewards = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesCollectRewards", "Collect"), $x, $y + 2, -1, -1)
+	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesCollectRewards_Info1", "Check This To Auto Collect Rewards At the End of Clan Games.") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesCollectRewards_Info2", "Settings are in \Profiles\YourProfile\ClanGamesRewards.ini"))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -746,7 +748,16 @@ Func CreateClanGamesSettings()
 		$g_ahCGMainGroundItem[$j] = GUICtrlCreateTreeViewItem($tmpChallenges[$j][1], $g_hChkCGMainGround)
 		GUICtrlSetOnEvent(-1, "CGMainGroundTVItem")
 	Next
-
+	; Equipement Challenges Not Available Yet !
+	#cs
+		$g_hChkCGEquipment = GUICtrlCreateTreeViewItem("Equipment Challenges", $g_hClanGamesTV)
+		GUICtrlSetOnEvent(-1, "CGEquipmentTVRoot")
+		$tmpChallenges = ClanGamesChallenges("$EquipmentChallenges")
+		For $j = 0 To UBound($tmpChallenges) - 1
+			$g_ahCGEquipmentItem[$j] = GUICtrlCreateTreeViewItem($tmpChallenges[$j][1], $g_hChkCGEquipment)
+			GUICtrlSetOnEvent(-1, "CGEquipmentTVItem")
+		Next
+	#ce
 	$g_hChkCGMainMisc = GUICtrlCreateTreeViewItem("Miscellaneous Challenges", $g_hClanGamesTV)
 	GUICtrlSetOnEvent(-1, "CGMainMiscTVRoot")
 	$tmpChallenges = ClanGamesChallenges("$MiscChallenges")

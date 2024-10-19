@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 #include-once
 Func ZoomOut() ;Zooms out
-	Local $hTimer = TimerInit()
+	Local $hTimer = __TimerInit()
 	$g_aiSearchZoomOutCounter[0] = 0
 	$g_aiSearchZoomOutCounter[1] = 1
 	ResumeAndroid()
@@ -103,6 +103,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 		EndIf
 		Local $tryCtrlWheelScroll = False
 		While StringInStr($aPicture[0], "zoomou") = 0 And Not $tryCtrlWheelScroll
+
 			If Not $g_bRunState Then
 				SetDebugLog("Exit ZoomOut, bot not running")
 				Return
@@ -183,6 +184,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 		Local $aMousePos = MouseGetPos()
 
 		While StringInStr($aPicture[0], "zoomou") = 0
+
 			If Not $g_bRunState Then
 				SetDebugLog("Exit ZoomOut, bot not running")
 				Return
@@ -283,6 +285,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 
 		$i = 0
 		While StringInStr($aPicture[0], "zoomou") = 0
+
 			If Not $g_bRunState Then
 				SetDebugLog("Exit ZoomOut, bot not running")
 				Return
@@ -422,7 +425,9 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 	Local $aResult = ["", 0, 0, 0, 0] ; expected dummy value
 
 	Local $village
-	If $g_aiSearchZoomOutCounter[0] = 5 Then SetLog("Try secondary village measuring...", $COLOR_INFO)
+	If $g_aiSearchZoomOutCounter[0] = 5 Then
+		SetLog("Try secondary village measuring...", $COLOR_INFO)
+	EndIf
 	If $g_aiSearchZoomOutCounter[0] < 5 Then
 		$village = GetVillageSize($DebugLog, "stone", "tree")
 	Else
@@ -492,7 +497,14 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 					$aScrollPos[1] = $aCenterHomeVillageClickDrag[1]
 				EndIf
 				If $g_bDebugImageSave Then SaveDebugPointImage("SearchZoomOut", $aScrollPos)
-				ClickAway()
+				Local $bIsOnMainBase = isOnMainVillage(True)
+				If $bIsOnMainBase Then
+					ClearScreen()
+				ElseIf isOnBuilderBase(True) Then
+					ClearScreen("Defaut", False)
+				Else
+					If Not isOnBuilderBaseEnemyVillage(True) Then ClickAway()
+				EndIf
 				ClickDrag($aScrollPos[0], $aScrollPos[1], $aScrollPos[0] - $x, $aScrollPos[1] - $y)
 				If _Sleep(250) Then Return $aResult
 				Local $aResult2 = SearchZoomOut(False, $UpdateMyVillage, "SearchZoomOut:" & $sSource, True, $DebugLog)

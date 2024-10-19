@@ -17,6 +17,8 @@ Func UpgradeHeroes()
 	If Not $g_bUpgradeKingEnable And Not $g_bUpgradeQueenEnable And Not $g_bUpgradeWardenEnable And Not $g_bUpgradeChampionEnable Then Return
 	If _Sleep(500) Then Return
 
+	CleanYard()
+
 	checkMainScreen(False)
 
 	If $g_bRestart Then Return
@@ -111,17 +113,17 @@ Func QueenUpgrade()
 	If Not $g_bUpgradeQueenEnable Then Return
 
 	SetLog("Upgrade Queen")
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiQueenAltarPos) ;Click Queen Altar
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Queen info and Level
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
 		$CountGetInfo += 1
@@ -145,7 +147,7 @@ Func QueenUpgrade()
 					GUICtrlSetState($g_hChkUpgradeQueen, $GUI_UNCHECKED)
 					chkUpgradeQueen()
 					ReducecmbHeroReservedBuilder()
-					ClickAway()
+					ClearScreen()
 					Return
 				EndIf
 			Else
@@ -184,8 +186,7 @@ Func QueenUpgrade()
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			Local $YellowSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFFF10D, 6), 20)
 			If (IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2) Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickAway()
+				ClickP($aWhiteZeros, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
@@ -200,8 +201,7 @@ Func QueenUpgrade()
 				$g_iCostDElixirHero += 1000 * ($g_afQueenUpgCost[$g_iQueenLevel - 1] * 1000 * (1 - Number($g_iBuilderBoostDiscount) / 100))
 				UpdateStats()
 			ElseIf IsArray($YellowSearch) Then
-				ClickP($YellowSearch, 1, 0) ; Click upgrade buttton
-				ClickAway()
+				ClickP($YellowSearch, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
@@ -217,7 +217,7 @@ Func QueenUpgrade()
 				UpdateStats()
 			Else
 				SetLog("Queen Upgrade Fail! No DE!", $COLOR_ERROR)
-				ClickAway()
+				CloseWindow()
 				Return
 			EndIf
 		Else
@@ -227,7 +227,7 @@ Func QueenUpgrade()
 		SetLog("Upgrade Queen error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 EndFunc   ;==>QueenUpgrade
 
 Func KingUpgrade()
@@ -235,17 +235,17 @@ Func KingUpgrade()
 	If Not $g_bUpgradeKingEnable Then Return
 
 	SetLog("Upgrade King")
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiKingAltarPos) ;Click King Altar
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get King info
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		If _Sleep(100) Then Return
 		$CountGetInfo += 1
@@ -268,7 +268,7 @@ Func KingUpgrade()
 					GUICtrlSetState($g_hChkUpgradeKing, $GUI_UNCHECKED)
 					chkUpgradeKing()
 					ReducecmbHeroReservedBuilder()
-					ClickAway()
+					ClearScreen()
 					Return
 				EndIf
 			Else
@@ -307,9 +307,8 @@ Func KingUpgrade()
 		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			Local $YellowSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFFF10D, 6), 20)
-			If (IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2) Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickAway()
+			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
+				ClickP($aWhiteZeros, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
@@ -324,8 +323,7 @@ Func KingUpgrade()
 				$g_iCostDElixirHero += 1000 * ($g_afKingUpgCost[$g_iKingLevel - 1] * 1000 * (1 - Number($g_iBuilderBoostDiscount) / 100))
 				UpdateStats()
 			ElseIf IsArray($YellowSearch) Then
-				ClickP($YellowSearch, 1, 0) ; Click upgrade buttton
-				ClickAway()
+				ClickP($YellowSearch, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
@@ -341,7 +339,7 @@ Func KingUpgrade()
 				UpdateStats()
 			Else
 				SetLog("King Upgrade Fail! No DE!", $COLOR_ERROR)
-				ClickAway()
+				CloseWindow()
 				Return
 			EndIf
 
@@ -352,7 +350,7 @@ Func KingUpgrade()
 		SetLog("Upgrade King error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 EndFunc   ;==>KingUpgrade
 
 Func WardenUpgrade()
@@ -364,20 +362,20 @@ Func WardenUpgrade()
 	EndIf
 
 	SetLog("Upgrade Grand Warden")
-	ClickAway()
+	ClearScreen()
 
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
-	ClickP($g_aiWardenAltarPos, 1, 0, "#8888") ;Click Warden Altar
+	ClickP($g_aiWardenAltarPos, 1, 120, "#8888") ;Click Warden Altar
 
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Warden info
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		If _Sleep(100) Then Return
 		$CountGetInfo += 1
@@ -400,7 +398,7 @@ Func WardenUpgrade()
 					GUICtrlSetState($g_hChkUpgradeWarden, $GUI_UNCHECKED)
 					chkUpgradeWarden()
 					ReducecmbHeroReservedBuilder()
-					CloseWindow()
+					ClearScreen()
 					Return
 				EndIf
 			Else
@@ -444,9 +442,8 @@ Func WardenUpgrade()
 
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			Local $YellowSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFFF10D, 6), 20)
-			If (IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2) Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickAway()
+			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
+				ClickP($aWhiteZeros, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 
@@ -464,8 +461,7 @@ Func WardenUpgrade()
 				$g_iWardenLevel += 1
 				UpdateStats()
 			ElseIf IsArray($YellowSearch) Then
-				ClickP($YellowSearch, 1, 0) ; Click upgrade buttton
-				ClickAway()
+				ClickP($YellowSearch, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugSetlog Then SaveDebugImage("UpgradeElixirBtn2")
@@ -483,7 +479,7 @@ Func WardenUpgrade()
 				UpdateStats()
 			Else
 				SetLog("Warden Upgrade Fail! Not enough Elixir!", $COLOR_ERROR)
-				ClickAway()
+				CloseWindow()
 				Return
 			EndIf
 		Else
@@ -493,7 +489,7 @@ Func WardenUpgrade()
 		SetLog("Upgrade Warden error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 EndFunc   ;==>WardenUpgrade
 
 Func ChampionUpgrade()
@@ -501,17 +497,17 @@ Func ChampionUpgrade()
 	If Not $g_bUpgradeChampionEnable Then Return
 
 	SetLog("Upgrade Champion")
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiChampionAltarPos) ;Click Champion Altar
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Champion info and Level
-	Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+	Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
 		$CountGetInfo += 1
@@ -535,7 +531,7 @@ Func ChampionUpgrade()
 					GUICtrlSetState($g_hChkUpgradeChampion, $GUI_UNCHECKED)
 					chkUpgradeChampion()
 					ReducecmbHeroReservedBuilder()
-					ClickAway()
+					ClearScreen()
 					Return
 				EndIf
 			Else
@@ -573,9 +569,8 @@ Func ChampionUpgrade()
 
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero", $g_sImgUpgradeWhiteZero, GetDiamondFromRect("560,565,670,595"), 1, True, Default))
 			Local $YellowSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFFF10D, 6), 20)
-			If (IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2) Then
-				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickAway()
+			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
+				ClickP($aWhiteZeros, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
@@ -590,8 +585,7 @@ Func ChampionUpgrade()
 				$g_iCostDElixirHero += 1000 * ($g_afChampionUpgCost[$g_iChampionLevel - 1] * 1000 * (1 - Number($g_iBuilderBoostDiscount) / 100))
 				UpdateStats()
 			ElseIf IsArray($YellowSearch) Then
-				ClickP($YellowSearch, 1, 0) ; Click upgrade buttton
-				ClickAway()
+				ClickP($YellowSearch, 1, 120) ; Click upgrade buttton
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
@@ -607,7 +601,7 @@ Func ChampionUpgrade()
 				UpdateStats()
 			Else
 				SetLog("Champion Upgrade Fail! No DE!", $COLOR_ERROR)
-				ClickAway()
+				CloseWindow()
 				Return
 			EndIf
 		Else
@@ -617,7 +611,7 @@ Func ChampionUpgrade()
 		SetLog("Upgrade Royal Champion error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 EndFunc   ;==>ChampionUpgrade
 
 Func ReservedBuildersForHeroes($aSetLog = True)

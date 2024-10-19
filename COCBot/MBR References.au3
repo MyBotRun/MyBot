@@ -31,7 +31,7 @@ Func ReferenceFunctions()
 	FindClosestToAxis(0)
 	GetSlotIndexFromXPos(0)
 	IsElixirTroop(0)
-	checkDeadBaseNew()
+	checkDeadBaseQuick()
 	GetDeployableNextTo(0)
 	GUISetFont_DPI(0)
 	SetDPI()
@@ -463,6 +463,7 @@ Func ReferenceGlobals()
 	$a1 = $eTroopIceGolem
 	$a1 = $eTroopHeadhunter
 	$a1 = $eTroopAppWard
+	$a1 = $eTroopDruid
 	$a1 = $eTroopCount
 	$a1 = $eSpellLightning
 	$a1 = $eSpellHeal
@@ -511,6 +512,7 @@ Func ReferenceGlobals()
 	$a1 = $eIceG
 	$a1 = $eHunt
 	$a1 = $eAppWard
+	$a1 = $eDruid
 	$a1 = $eKing
 	$a1 = $eQueen
 	$a1 = $eWarden

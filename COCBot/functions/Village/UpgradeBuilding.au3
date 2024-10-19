@@ -222,13 +222,13 @@ Func UpgradeBuilding()
 EndFunc   ;==>UpgradeBuilding
 ;
 Func UpgradeNormal($iUpgradeNumber)
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYUPGRADENORMAL1) Then Return
 
 	BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0296") ; Select the item to be upgrade
-	If _Sleep($DELAYUPGRADENORMAL1) Then Return ; Wait for window to open
+	If _Sleep($DELAYUPGRADENORMAL4) Then Return ; Wait for window to open
 
-	Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
+	Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
 	If UBound($aResult) < 2 Then Return False
 
 	Local $aUpgradeButton = findButton("Upgrade", Default, 1, True)
@@ -254,14 +254,15 @@ Func UpgradeNormal($iUpgradeNumber)
 
 	If StringStripWS($aResult[1], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) <> StringStripWS($g_avBuildingUpgrades[$iUpgradeNumber][4], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) Then ; check bldg names
 		SetLog("#" & $iUpgradeNumber + 1 & ":" & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ": Not same as :" & $aResult[1] & ":? Retry now...", $COLOR_INFO)
-		ClickAway()
-		If _Sleep($DELAYUPGRADENORMAL1) Then Return
+		ClearScreen()
+		If _Sleep($DELAYUPGRADENORMAL4) Then Return
 
 		BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0296") ; Select the item to be upgrade again in case full collector/mine
-		If _Sleep($DELAYUPGRADENORMAL1) Then Return ; Wait for window to open
+		If _Sleep($DELAYUPGRADENORMAL4) Then Return ; Wait for window to open
 
-		$aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
+		$aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
 		If $aResult[0] > 1 Then
+			$aUpgradeButton = findButton("Upgrade", Default, 1, True)
 			If $aResult[1] = "Town Hall" And $aResult[2] > 11 Then ;Upgrade THWeapon If TH > 11
 				$aTmpUpgradeButton = findButton("THWeapon") ;try to find UpgradeTHWeapon button (swords)
 				If IsArray($aTmpUpgradeButton) And UBound($aTmpUpgradeButton) = 2 Then
@@ -282,6 +283,7 @@ Func UpgradeNormal($iUpgradeNumber)
 			EndIf
 			If StringStripWS($aResult[1], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) <> StringStripWS($g_avBuildingUpgrades[$iUpgradeNumber][4], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) Then ; check bldg names
 				SetLog("Found #" & $iUpgradeNumber + 1 & ":" & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ": Not same as : " & $aResult[1] & ":, May need new location?", $COLOR_ERROR)
+				ClearScreen()
 				Return False
 			EndIf
 		EndIf
@@ -289,26 +291,28 @@ Func UpgradeNormal($iUpgradeNumber)
 
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
 		If _Sleep($DELAYUPGRADENORMAL2) Then Return
-		ClickP($aUpgradeButton, 1, 0, "#0297") ; Click Upgrade Button
+		ClickP($aUpgradeButton, 1, 120, "#0297") ; Click Upgrade Button
 		If _Sleep(2000) Then Return ; Wait for window to open
+		CloseSuperchargeWindow()
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn1")
 		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
+			Local $aiSupercharge = decodeSingleCoord(FindImageInPlace2("Supercharge", $g_sImgSupercharge, 400, 445 + $g_iMidOffsetY, 455, 495 + $g_iMidOffsetY, True))
 			Local $RedSearch = _PixelSearch(610, 548 + $g_iMidOffsetY, 650, 552 + $g_iMidOffsetY, Hex(0xFF887F, 6), 20)
 			Local $OrangeSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFF7A0D, 6), 20)
 			If IsArray($RedSearch) Or IsArray($OrangeSearch) Then ; Check for Red Zero = means not enough loot!
 
 				SetLog("Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ", No Loot!", $COLOR_ERROR)
 
-				ClickAway()
+				CloseWindow2()
 				Return False
 			Else
-				Click(630, 540 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
+				Click(630, 540 + $g_iMidOffsetY, 1, 120, "#0299") ; Click upgrade buttton
 				If _Sleep(1000) Then Return
 				If $aResult[1] = "Town Hall" Then
 					Local $aiCancelButton = findButton("Cancel", Default, 1, True)
 					If IsArray($aiCancelButton) And UBound($aiCancelButton, 1) = 2 Then
 						SetLog("MBR is not designed to rush a TH upgrade", $COLOR_ERROR)
-						PureClick($aiCancelButton[0], $aiCancelButton[1], 2, 50, "#0117") ; Click Cancel Button
+						PureClick($aiCancelButton[0], $aiCancelButton[1], 2, 120, "#0117") ; Click Cancel Button
 						If _Sleep(1500) Then Return
 						CloseWindow()
 						Return False
@@ -320,6 +324,7 @@ Func UpgradeNormal($iUpgradeNumber)
 					ClickAway()
 					Return False
 				EndIf
+				If IsArray($aiSupercharge) And UBound($aiSupercharge) = 2 Then $g_avBuildingUpgrades[$iUpgradeNumber][5] = StringReplace($g_avBuildingUpgrades[$iUpgradeNumber][5], "+", "", 0)
 				SetLog("Upgrade #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " started", $COLOR_SUCCESS)
 				_GUICtrlSetImage($g_hPicUpgradeStatus[$iUpgradeNumber], $g_sLibIconPath, $eIcnGreenLight) ; Change GUI upgrade status to done
 				$g_aiPicUpgradeStatus[$iUpgradeNumber] = $eIcnGreenLight ; Change GUI upgrade status to done
@@ -338,7 +343,7 @@ Func UpgradeNormal($iUpgradeNumber)
 					GUICtrlSetState($g_hChkUpgrade[$iUpgradeNumber], $GUI_CHECKED) ; Ensure upgrade selection box is checked
 					$g_abBuildingUpgradeEnable[$iUpgradeNumber] = True ; Ensure upgrade selection box is checked
 				EndIf
-				ClickAway()
+				ClearScreen()
 				If _Sleep($DELAYUPGRADENORMAL3) Then Return ; Wait for window to close
 
 				Return True
@@ -349,20 +354,44 @@ Func UpgradeNormal($iUpgradeNumber)
 		EndIf
 	Else
 		SetLog("Upgrade #" & $iUpgradeNumber + 1 & " Error finding button", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen()
 		Return False
 	EndIf
 EndFunc   ;==>UpgradeNormal
 
 Func UpgradeHero($iUpgradeNumber)
-	BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0304") ; Select the item to be upgrade
-	If _Sleep($DELAYUPGRADEHERO1) Then Return ; Wait for window to open
+	ClearScreen()
+	If _Sleep($DELAYUPGRADENORMAL1) Then Return
 
+	BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0304") ; Select the item to be upgrade
+	If _Sleep($DELAYUPGRADENORMAL4) Then Return ; Wait for window to open
+
+	Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY)
+	If UBound($aResult) < 2 Then Return False
 	Local $aUpgradeButton = findButton("Upgrade", Default, 1, True)
+
+	If StringStripWS($aResult[1], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) <> StringStripWS($g_avBuildingUpgrades[$iUpgradeNumber][4], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) Then ; check bldg names
+		SetLog("#" & $iUpgradeNumber + 1 & ":" & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ": Not same as :" & $aResult[1] & ":? Retry now...", $COLOR_INFO)
+		ClearScreen()
+		If _Sleep($DELAYUPGRADENORMAL4) Then Return
+
+		BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0296") ; Select the item to be upgrade again in case full collector/mine
+		If _Sleep($DELAYUPGRADENORMAL4) Then Return ; Wait for window to open
+
+		$aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
+		If $aResult[0] > 1 Then
+			$aUpgradeButton = findButton("Upgrade", Default, 1, True)
+			If StringStripWS($aResult[1], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) <> StringStripWS($g_avBuildingUpgrades[$iUpgradeNumber][4], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) Then ; check bldg names
+				SetLog("Found #" & $iUpgradeNumber + 1 & ":" & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ": Not same as : " & $aResult[1] & ":, May need new location?", $COLOR_ERROR)
+				ClearScreen()
+				Return False
+			EndIf
+		EndIf
+	EndIf
 
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
-		ClickP($aUpgradeButton, 1, 0, "#0305") ; Click Upgrade Button
+		ClickP($aUpgradeButton, 1, 120, "#0305") ; Click Upgrade Button
 		If _Sleep(2000) Then Return ; Wait for window to open
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
@@ -370,12 +399,11 @@ Func UpgradeHero($iUpgradeNumber)
 			Local $OrangeSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFF7A0D, 6), 20)
 			If IsArray($RedSearch) Or IsArray($OrangeSearch) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Hero Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No DE!", $COLOR_ERROR)
-				ClickAway()
+				CloseWindow2()
 				Return False
 			Else
-				Click(630, 540 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
-				ClickAway()
-				If _Sleep($DELAYUPGRADEHERO1) Then Return
+				Click(630, 540 + $g_iMidOffsetY, 1, 120, "#0299") ; Click upgrade buttton
+				If _Sleep($DELAYUPGRADENORMAL3) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
 				If isGemOpen(True) Then ; Redundant Safety Check if the use Gem window opens; Redundant Safety Check if the use Gem window opens
 					SetLog("Hero Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No DE!", $COLOR_ERROR)
@@ -400,7 +428,7 @@ Func UpgradeHero($iUpgradeNumber)
 					GUICtrlSetState($g_hChkUpgrade[$iUpgradeNumber], $GUI_CHECKED) ; Ensure upgrade selection box is checked
 					$g_abBuildingUpgradeEnable[$iUpgradeNumber] = True ; Ensure upgrade selection box is checked
 				EndIf
-				ClickAway()
+				ClearScreen()
 				If _Sleep($DELAYUPGRADEHERO2) Then Return ; Wait for window to close
 				Return True
 			EndIf
@@ -410,7 +438,7 @@ Func UpgradeHero($iUpgradeNumber)
 		EndIf
 	Else
 		SetLog("Upgrade #" & $iUpgradeNumber + 1 & " Error finding button", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen()
 		Return False
 	EndIf
 EndFunc   ;==>UpgradeHero

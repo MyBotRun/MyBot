@@ -66,8 +66,9 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 		If $aCurrentSpellsLog[$index][1] > 0 And $bSetLog Then SetLog(" - " & $aCurrentSpellsLog[$index][1] & " " & $aCurrentSpellsLog[$index][0] & " Brewed", $COLOR_SUCCESS)
 	Next
 
-	If $bCloseArmyWindow Then CloseWindow()
-	;	ClickAway()
-	;	If _Sleep($DELAYCHECKARMYCAMP4) Then Return
-	;EndIf
+	If $bCloseArmyWindow Then
+		CloseWindow()
+		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
+	EndIf
+
 EndFunc   ;==>getArmySpells

@@ -255,49 +255,28 @@ EndFunc   ;==>findButton
 
 Func GetButtonDiamond($sButtonName)
 	Local $btnDiamond = "FV"
-	;$g_iMidOffsetY $g_iBottomOffsetY
 
 	Switch $sButtonName
 		Case "ClanGamesStorageFullYes"
-			$btnDiamond = GetDiamondFromRect("460,400,615,480")
-		Case "ClanGamesCollectRewards"
-			$btnDiamond = GetDiamondFromRect("570,470,830,530")
-		Case "ClanGamesClaimReward"
-			$btnDiamond = GetDiamondFromRect("570,470,830,530")
-		Case "UpgradePets"
-			$btnDiamond = GetDiamondFromRect("730,530,800,600")
+			$btnDiamond = GetDiamondFromRect2(460, 370 + $g_iMidOffsetY, 615, 450 + $g_iMidOffsetY)
+		Case "ClanGamesCollectRewards", "ClanGamesClaimReward"
+			$btnDiamond = GetDiamondFromRect2(570, 440 + $g_iMidOffsetY, 830, 500 + $g_iMidOffsetY)
 		Case "ReloadButton"
 			$btnDiamond = GetDiamondFromRect2(650, 530 + $g_iMidOffsetY, 850, 645 + $g_iMidOffsetY)
-		Case "AttackButton" ;Main Window Screen
+		Case "AttackButton", "RescueATKButton" ;Main Window Screen
 			$btnDiamond = GetDiamondFromRect2(0, 540 + $g_iBottomOffsetY, 160, 660 + $g_iBottomOffsetY)
-		Case "OpenTrainWindow" ;Main Window Screen
-			$btnDiamond = "15,560|65,560|65,610|15,610"
 		Case "TrashEvent"
-			$btnDiamond = GetDiamondFromRect("100,200,840,540")
+			$btnDiamond = GetDiamondFromRect2(100, 170 + $g_iMidOffsetY, 840, 510 + $g_iMidOffsetY)
 		Case "EventFailed"
-			$btnDiamond = GetDiamondFromRect("230,130,777,560")
-		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon", "MagicItems", "Equipment" ; Full size of object buttons at the bottom
+			$btnDiamond = GetDiamondFromRect2(230, 150 + $g_iMidOffsetY, 777, 530 + $g_iMidOffsetY)
+		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon", "MagicItems", "Equipment", "BuildersApp" ; Buttons at the bottom
 			$btnDiamond = GetDiamondFromRect2(140, 500 + $g_iBottomOffsetY, 720, 590 + $g_iBottomOffsetY)
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			$btnDiamond = GetDiamondFromRect2(340, 370 + $g_iMidOffsetY, 525, 495 + $g_iMidOffsetY)
 		Case "EnterShop"
 			$btnDiamond = GetDiamondFromRect2(350, 380 + $g_iMidOffsetY, 515, 460 + $g_iMidOffsetY)
-		Case "EndBattleSurrender" ;surrender - attackwindow
-			$btnDiamond = "12,577|125,577|125,615|12,615"
 		Case "ClanChat"
-			$btnDiamond = GetDiamondFromRect("10,310,420,370")
-		Case "ChatOpenRequestPage" ;mainwindow - chat open
-			$btnDiamond = "5,688|65,688|65,615|5,725"
-		Case "Profile" ;mainwindow - only visible if chat closed
-			$btnDiamond = "172,15|205,15|205,48|172,48"
-		Case "DonateWindow" ;mainwindow - only when donate window is visible
-			$btnDiamond = "310,0|360,0|360,732|310,732"
-		Case "DonateButton" ;mainwindow - only when chat window is visible
-			$btnDiamond = "200,85|305,85|305,680|200,680"
-		Case "UpDonation" ;mainwindow - only when chat window is visible
-			$btnDiamond = "282,85|306,85|306,130|282,130"
-		Case "DownDonation" ;mainwindow - only when chat window is visible
-			$btnDiamond = "282,635|306,635|306,680|282,680"
+			$btnDiamond = GetDiamondFromRect2(10, 280 + $g_iMidOffsetY, 420, 340 + $g_iMidOffsetY)
 		Case "Collect"
 			$btnDiamond = "350,450|505,450|505,521|350,521"
 		Case "BoostBarrack", "BarrackBoosted"
@@ -305,18 +284,21 @@ Func GetButtonDiamond($sButtonName)
 		Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
 			$btnDiamond = GetDiamondFromRect2(75, 110 + $g_iMidOffsetY, 740, 160 + $g_iMidOffsetY)
 		Case "WeeklyDeals"
-			$btnDiamond = GetDiamondFromRect2(30, 115 + $g_iMidOffsetY, 170, 320 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(30, 115 + $g_iMidOffsetY, 170, 365 + $g_iMidOffsetY)
 		Case "MessagesButton"
 			$btnDiamond = GetDiamondFromRect2(0, 0, 90, 170 + $g_iMidOffsetY)
 		Case "AttackLogTab", "ShareReplayButton"
-			$btnDiamond = GetDiamondFromRect2(280, 80, 600, 160 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(280, 80, 805, 160 + $g_iMidOffsetY)
 		Case "EndBattle", "Surrender"
-			$btnDiamond = GetDiamondFromRect("1,570,140,628")
-		Case "Okay", "Cancel"
-			$btnDiamond = GetDiamondFromRect("240,250,630,630")
+			$btnDiamond = GetDiamondFromRect2(1, 510 + $g_iBottomOffsetY, 140, 568 + $g_iBottomOffsetY)
+		Case "Okay", "Cancel", "Continue", "ConfirmButton"
+			$btnDiamond = GetDiamondFromRect2(240, 220 + $g_iMidOffsetY, 630, 615 + $g_iMidOffsetY)
+		Case "ChatDown"
+			$btnDiamond = GetDiamondFromRect2(13, 580 + $g_iBottomOffsetY, 50, 620 + $g_iBottomOffsetY)
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch
+
 	Return $btnDiamond
 EndFunc   ;==>GetButtonDiamond
 
@@ -844,7 +826,7 @@ Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 				Return 505
 			Case 525 To 573 ; CC Spell Slot 2
 				Return 520
-			Case 598 To 660; CC Siege Machines
+			Case 598 To 660 ; CC Siege Machines
 				Return 610
 		EndSwitch
 	EndIf
@@ -867,3 +849,48 @@ Func ImgLogDebugProps($result)
 		Next
 	Next
 EndFunc   ;==>ImgLogDebugProps
+
+Func RemoveDupXY(ByRef $arr)
+	; Remove Dup X Sorted
+	Local $atmparray[0][2]
+	Local $tmpCoordX = 0
+	Local $tmpCoordY = 0
+	_ArraySort($arr, 0, 0, 0, 0) ;sort by x
+	For $i = 0 To UBound($arr) - 1
+		Local $a = $arr[$i][0] - $tmpCoordX
+		Local $b = $arr[$i][1] - $tmpCoordY
+		Local $c = Sqrt($a * $a + $b * $b)
+		If $c < 25 Then
+			SetDebugLog("Skip this dup : " & $arr[$i][0] & "," & $arr[$i][1], $COLOR_INFO)
+			ContinueLoop
+		Else
+			_ArrayAdd($atmparray, $arr[$i][0] & "|" & $arr[$i][1])
+			$tmpCoordX = $arr[$i][0]
+			$tmpCoordY = $arr[$i][1]
+		EndIf
+	Next
+	; Remove Dup Y Sorted
+	Local $atmparray2[0][2]
+	$tmpCoordX = 0
+	$tmpCoordY = 0
+	_ArraySort($atmparray, 0, 0, 0, 1) ;sort by y
+	For $i = 0 To UBound($atmparray) - 1
+		Local $a = $atmparray[$i][0] - $tmpCoordX
+		Local $b = $atmparray[$i][1] - $tmpCoordY
+		Local $c = Sqrt($a * $a + $b * $b)
+		If $c < 25 Then
+			SetDebugLog("Skip this dup : " & $atmparray[$i][0] & "," & $atmparray[$i][1], $COLOR_INFO)
+			ContinueLoop
+		Else
+			_ArrayAdd($atmparray2, $atmparray[$i][0] & "|" & $atmparray[$i][1])
+			$tmpCoordX = $atmparray[$i][0]
+			$tmpCoordY = $atmparray[$i][1]
+		EndIf
+	Next
+	_ArraySort($atmparray2, 0, 0, 0, 0) ;sort by x
+	For $i = 0 To UBound($atmparray2) - 1
+		$atmparray2[$i][0] = Number($atmparray2[$i][0])
+		$atmparray2[$i][1] = Number($atmparray2[$i][1])
+	Next
+	$arr = $atmparray2
+EndFunc   ;==>RemoveDupXY

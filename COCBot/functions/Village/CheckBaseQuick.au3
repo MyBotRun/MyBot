@@ -20,7 +20,7 @@ Func CheckBaseQuick($sReturnHome = "")
 		Case "cloud" ; PB found while in clouds searching for base, must press return home and wait for main base
 			If _CheckPixel($aRtnHomeCloud1, $g_bCapturePixel, Default, "Return Home Btn chk1", $COLOR_DEBUG) And _
 					_CheckPixel($aRtnHomeCloud2, $g_bCapturePixel, Default, "Return Home Btn chk2", $COLOR_DEBUG) Then ; verify return home button
-				ClickP($aRtnHomeCloud1, 1, 0, "#0513") ; click return home button, return to main screen for base check before log off
+				ClickP($aRtnHomeCloud1, 1, 120, "#0513") ; click return home button, return to main screen for base check before log off
 				Local $wCount = 0
 				While IsMainPage() = False ; wait for main screen
 					If _Sleep($DELAYGETRESOURCES1) Then Return ; wait 250ms

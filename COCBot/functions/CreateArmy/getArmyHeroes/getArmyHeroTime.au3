@@ -39,7 +39,7 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 			SetError(3)
 			Return ; not open, requested to be open - error.
 		EndIf
-		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
+		If _Sleep($DELAYCHECKARMYCAMP3) Then Return
 	EndIf
 
 	Local $iRemainTrainHeroTimer = 0, $sResultHeroTime
@@ -47,7 +47,7 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 	Local $aResultHeroes[$eHeroCount] = ["", "", "", ""] ; array to hold all remaining regen time read via OCR
 
 	; Constant Array with OCR find location: [X pos, Y Pos, Text Name, Global enum value]
-	Local Const $aHeroRemainData[$eHeroCount][4] = [[530, 382 + $g_iMidOffsetY, "King", $eHeroKing], [590, 382 + $g_iMidOffsetY, "Queen", $eHeroQueen], [655, 382 + $g_iMidOffsetY, "Warden", $eHeroWarden], [720, 382 + $g_iMidOffsetY, "Champion", $eHeroChampion]]
+	Local Const $aHeroRemainData[$eHeroCount][4] = [[530, 380 + $g_iMidOffsetY, "King", $eHeroKing], [595, 380 + $g_iMidOffsetY, "Queen", $eHeroQueen], [657, 380 + $g_iMidOffsetY, "Warden", $eHeroWarden], [721, 380 + $g_iMidOffsetY, "Champion", $eHeroChampion]]
 
 	For $index = 0 To UBound($aHeroRemainData) - 1 ;cycle through all 3 slots and hero types
 
@@ -70,6 +70,10 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 		EndIf
 
 		$sResult = getRemainTHero($aHeroRemainData[$index][0], $aHeroRemainData[$index][1]) ;Get Hero training time via OCR.
+		If StringInStr($sResult, "s", $STR_NOCASESENSEBASIC) = 0 Then
+			Local $YCoordsNewPos = $aHeroRemainData[$index][1] + 2
+			$sResult = getRemainTHero($aHeroRemainData[$index][0], $YCoordsNewPos)
+		EndIf
 
 		If $sResult <> "" Then
 
@@ -99,10 +103,10 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 		EndIf
 	Next
 
-	If $bCloseArmyWindow Then CloseWindow()
-	;	ClickAway()
-	;	If _Sleep($DELAYCHECKARMYCAMP4) Then Return
-	;EndIf
+	If $bCloseArmyWindow Then
+		CloseWindow()
+		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
+	EndIf
 
 	; Determine proper return value
 	If $iHeroType = $eHeroKing Or $iHeroType = $eHeroQueen Or $iHeroType = $eHeroWarden Or $iHeroType = $eHeroChampion Then

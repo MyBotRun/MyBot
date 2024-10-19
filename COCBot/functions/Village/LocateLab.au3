@@ -22,17 +22,17 @@ Func LocateLab($bCollect = True)
 		Return
 	EndIf
 
-	; auto locate 
+	; auto locate
 	ImgLocateLab()
-	
+
 	SetLog("Laboratory: (" & $g_aiLaboratoryPos[0] & "," & $g_aiLaboratoryPos[1] & ")", $COLOR_DEBUG)
- 
+
 	If $g_aiLaboratoryPos[1] = "" Or $g_aiLaboratoryPos[1] = -1 Then _LocateLab($bCollect) ; manual locate
-EndFunc
+EndFunc   ;==>LocateLab
 
 Func _LocateLab($bCollect = True)
 	Local $stext, $MsgBox, $iStupid = 0, $iSilly = 0, $sErrorText = ""
-	
+
 	If $g_iTownHallLevel < 3 Then
 		SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Lab, so skip locating.", $COLOR_ACTION)
 		Return
@@ -51,7 +51,7 @@ Func _LocateLab($bCollect = True)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Laboratory_02", "Locate Laboratory"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickAway()
+			ClearScreen()
 			Local $aPos = FindPos()
 			$g_aiLaboratoryPos[0] = Int($aPos[0])
 			$g_aiLaboratoryPos[1] = Int($aPos[1])
@@ -73,21 +73,21 @@ Func _LocateLab($bCollect = True)
 						ContinueLoop
 					Case $iStupid > 4
 						SetLog(" Operator Error - Bad Laboratory Location.", $COLOR_ERROR)
-						ClickAway()
+						ClearScreen()
 						Return False
 				EndSelect
 			EndIf
 		Else
 			SetLog("Locate Laboratory Cancelled", $COLOR_INFO)
-			ClickAway()
+			ClearScreen()
 			Return
 		EndIf
-		Local $sLabInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+		Local $sLabInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If $sLabInfo[0] > 1 Or $sLabInfo[0] = "" Then
 			If StringInStr($sLabInfo[1], "Lab") = 0 Then
 				Local $sLocMsg = ($sLabInfo[0] = "" ? "Nothing" : $sLabInfo[1])
 
-			    $iSilly += 1
+				$iSilly += 1
 				Select
 					Case $iSilly = 1
 						$sErrorText = "Wait, That is not the laboratory?, It was a " & $sLocMsg & @CRLF
@@ -103,7 +103,7 @@ Func _LocateLab($bCollect = True)
 						ContinueLoop
 					Case $iSilly > 4
 						SetLog("Ok, you really think that's a Laboratory?" & @CRLF & "I don't care anymore, go ahead with it!", $COLOR_ERROR)
-						ClickAway()
+						ClearScreen()
 						ExitLoop
 				EndSelect
 			EndIf
@@ -111,15 +111,15 @@ Func _LocateLab($bCollect = True)
 			SetLog(" Operator Error - Bad Laboratory Location: " & "(" & $g_aiLaboratoryPos[0] & "," & $g_aiLaboratoryPos[1] & ")", $COLOR_ERROR)
 			$g_aiLaboratoryPos[0] = -1
 			$g_aiLaboratoryPos[1] = -1
-			ClickAway()
+			ClearScreen()
 			Return False
 		EndIf
 		SetLog("Locate Laboratory Success: " & "(" & $g_aiLaboratoryPos[0] & "," & $g_aiLaboratoryPos[1] & ")", $COLOR_SUCCESS)
 		ExitLoop
 	WEnd
-	ClickAway()
+	ClearScreen()
 
-EndFunc   ;==>LocateLab
+EndFunc   ;==>_LocateLab
 
 ; Image Search for Pet House
 Func ImgLocateLab()
@@ -135,7 +135,7 @@ Func ImgLocateLab()
 	EndIf
 
 	Local $avLabRes, $aiLabCoords
-	
+
 	; active/inactive Laboratory have different images
 	; loop thro the detected images
 	For $i = 0 To UBound($avLab, $UBOUND_ROWS) - 1
@@ -149,6 +149,6 @@ Func ImgLocateLab()
 		$g_aiLaboratoryPos[1] = $aiLabCoords[1]
 		Return True
 	EndIf
-	
+
 	Return False
-EndFunc
+EndFunc   ;==>ImgLocateLab

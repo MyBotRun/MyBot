@@ -359,7 +359,7 @@ Func chkDebugFunc()
 	SetDebugLog("DebugFunc " & ($bDebugFunc ? "enabled" : "disabled"))
 EndFunc   ;==>chkDebugFunc
 
-Func chkDebugDisableZoomout()
+Func chkDebugDisableZoomOut()
 	$g_bDebugDisableZoomout = (GUICtrlRead($g_hChkDebugDisableZoomout) = $GUI_CHECKED)
 	SetDebugLog("DebugDisableZoomout " & ($g_bDebugDisableZoomout ? "enabled" : "disabled"))
 EndFunc   ;==>chkDebugDisableZoomout
@@ -437,7 +437,7 @@ Func btnTestDonateCC()
 	$g_aiCurrentSiegeMachines[$eSiegeLogLauncher] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeFlameFlinger] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeBattleDrill] = 1
-	DonateCC()
+	DonateCC(False)
 	SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_INFO)
 
 	$g_bRunState = $currentRunState
@@ -625,6 +625,8 @@ Func btnTestVillageSize()
 EndFunc   ;==>btnTestVillageSize
 
 Func btnTestDeadBase()
+	_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
 	Local $hBMP = 0, $hHBMP = 0
 	Local $sImageFile = FileOpenDialog("Select CoC screenshot to test, cancel to use live screenshot", $g_sProfileTempPath, "Image (*.png)", $FD_FILEMUSTEXIST, "", $g_hFrmBot)
 	If @error <> 0 Then
@@ -652,7 +654,7 @@ Func btnTestDeadBase()
 	SetLog("$g_sImglocRedline = " & $g_sImglocRedline, $COLOR_INFO)
 
 	SetLog("Testing checkDeadBase()", $COLOR_INFO)
-	SetLog("Result checkDeadBase() = " & checkDeadBase(), $COLOR_INFO)
+	SetLog("Result checkDeadBase() = " & checkDeadBase(True), $COLOR_INFO)
 	SetLog("Testing checkDeadBase() DONE", $COLOR_INFO)
 
 	If $hHBMP <> 0 Then
@@ -664,6 +666,7 @@ Func btnTestDeadBase()
 EndFunc   ;==>btnTestDeadBase
 
 Func btnTestDeadBaseFolder()
+	_GUICtrlTab_ClickTab($g_hTabMain, 0)
 
 	;Local $directory = FileOpenDialog("Select folder of CoC village screenshot to test for dead base", $g_sProfileTempPath, "Image (*.png)", $FD_PATHMUSTEXIST, "", $g_hFrmBot)
 	Local $directory = FileSelectFolder("Select folder of CoC village screenshot to test for dead base", "", $FSF_NEWDIALOG, @ScriptDir, $g_hFrmBot)
@@ -671,10 +674,7 @@ Func btnTestDeadBaseFolder()
 		SetLog("btnTestDeadBaseFolder cancelled", $COLOR_INFO)
 	EndIf
 
-	;checkDeadBaseFolder($directory, "checkDeadBaseNew()", "checkDeadBaseSuperNew()")
-	Local $oldFill = 'checkDeadBaseSuperNew(False, "' & @ScriptDir & "\imgxml\deadbase\elix\fill\old\" & '")'
-	Local $newFill = 'checkDeadBaseSuperNew(False, "' & @ScriptDir & "\imgxml\deadbase\elix\fill\new\" & '")'
-	checkDeadBaseFolder($directory, $oldFill, $newFill)
+	checkDeadBaseFolder($directory)
 
 EndFunc   ;==>btnTestDeadBaseFolder
 

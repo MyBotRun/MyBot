@@ -1194,14 +1194,14 @@ Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 	If $bRestart = False Then
 		waitMainScreenMini()
 		If Not $g_bRunState Then Return False
-		Zoomout()
+		ZoomOut()
 	Else
 		WaitMainScreenMini()
 		If Not $g_bRunState Then Return False
 		If @error = 1 Then
 			Return False
 		EndIf
-		Zoomout()
+		ZoomOut()
 	EndIf
 
 	If Not $g_bRunState Then Return False
@@ -1851,8 +1851,8 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 		; check shared folder
 		Local $pathFound = False
 		Local $iMount
-		For $iMount = 0 To 4 ;29
-			$s = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " mount", $process_killed)
+		For $iMount = 0 To 2
+			$s = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " mount|grep -E 'vboxsf|sharefolder'", $process_killed)
 			Local $path = $g_sAndroidPicturesPath
 			If StringRight($path, 1) = "/" Then $path = StringLeft($path, StringLen($path) - 1)
 			Local $aRegExResult = StringRegExp($s, "[^ ]+(?: on)* ([^ ]+).+", $STR_REGEXPARRAYGLOBALMATCH)
@@ -1868,6 +1868,12 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 			Else
 				SetLog("Cannot create dummy file: " & $g_sAndroidPicturesHostPath & $dummyFile, $COLOR_ERROR)
 				Return SetError(4, 0)
+			EndIf
+			$s = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " ls '" & $g_sAndroidPicturesPath & $dummyFile & "'", $process_killed)
+			If StringInStr($s, $dummyFile) > 0 And StringInStr($s, $dummyFile & ":") = 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error") = 0 And StringInStr($s, "Permission denied") = 0 Then
+				$pathFound = True
+				SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")
+				ExitLoop
 			EndIf
 			For $i = 0 To UBound($aMounts) - 1
 				$path = $aMounts[$i]
@@ -2013,7 +2019,7 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 				If $g_sAndroidEmulator = "Memu" Then
 					; minitouch binary is usually placed in the same shared folder as the screencap but Andriod Pie om Memu has this folder mounted with noexec flag
 					; will push minitounch binary to /data/local/tmp the same place as the minitouch README example
-					Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " push """ & $g_sAdbScriptsPath & "\minitouch"" /data/local/tmp/" , $process_killed)
+					Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " push """ & $g_sAdbScriptsPath & "\minitouch"" /data/local/tmp/", $process_killed)
 					SetLog($cmdOutput, $COLOR_INFO)
 
 					If _Sleep(3000) Then Return
@@ -2654,9 +2660,6 @@ Func _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder
 	Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/")
 
-	;SetLog("AdbScreencap HostPath: " & $hostPath)
-	;SetLog("AdbScreencap AndroidPath: " & $androidPath)
-
 	If $hostPath = "" Or $androidPath = "" Then
 		If $hostPath = "" Then
 			SetLog($g_sAndroidEmulator & " shared folder not configured for host", $COLOR_ERROR)
@@ -2948,17 +2951,14 @@ EndFunc   ;==>_AndroidScreencap
 
 Func AndroidZoomOut($loopCount = 0, $timeout = Default, $bMinitouch = Default, $wasRunState = Default)
 	If $g_bOnBuilderBaseEnemyVillage Then
-		SetDebugLog("Running minitouch ZoomOutTOP script", $COLOR_INFO)
-		Return AndroidAdbScript("ZoomOutTop", Default, $timeout, $bMinitouch, $wasRunState)
+		Local $iCounter = Random(0, 2, 1)
+		Local $sScript = "Small" & $iCounter
 	Else
-		Local $iCounter = $g_aiSearchZoomOutCounter[0]
-
-		If $iCounter > 5 Then $iCounter -= 5
-
-		Local $sScript = "ZoomOut" & $iCounter
-		SetDeBugLog("Running minitouch script " & $sScript, $COLOR_INFO)
-		Return AndroidAdbScript($sScript, Default, $timeout, $bMinitouch, $wasRunState)
+		Local $iCounter = Random(0, 6, 1)
+		Local $sScript = "Normal" & $iCounter
 	EndIf
+	SetDebugLog("Running minitouch script " & $sScript, $COLOR_INFO)
+	Return AndroidAdbScript($sScript, Default, $timeout, $bMinitouch, $wasRunState)
 EndFunc   ;==>AndroidZoomOut
 
 Func AndroidAdbScript($scriptTag, $variablesArray = Default, $timeout = Default, $bMinitouch = Default, $wasRunState = Default)
@@ -2973,11 +2973,11 @@ Func AndroidAdbScript($scriptTag, $variablesArray = Default, $timeout = Default,
 	Local $scriptFile = ""
 	If $bMinitouch And $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & "." & $g_sAndroidEmulator & ".minitouch") = 1 Then $scriptFile = $scriptTag & "." & $g_sAndroidEmulator & ".minitouch"
 	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & "." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = $scriptTag & "." & $g_sAndroidEmulator & ".script"
-	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & "." & $g_sAndroidEmulator & ".getevent") = 1 Then $scriptFile = $scriptTag & "." & $g_sAndroidEmulator & ".getevent"
+	;	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & "." & $g_sAndroidEmulator & ".getevent") = 1 Then $scriptFile = $scriptTag & "." & $g_sAndroidEmulator & ".getevent"
 	If Not $bMinitouch And $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & "." & $g_sAndroidEmulator & ".minitouch") = 1 Then $scriptFile = $scriptTag & "." & $g_sAndroidEmulator & ".minitouch"
 	If $bMinitouch And $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & ".minitouch") = 1 Then $scriptFile = $scriptTag & ".minitouch"
 	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & ".script") = 1 Then $scriptFile = $scriptTag & ".script"
-	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & ".getevent") = 1 Then $scriptFile = $scriptTag & ".getevent"
+	;	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & ".getevent") = 1 Then $scriptFile = $scriptTag & ".getevent"
 	If Not $bMinitouch And $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & ".minitouch") = 1 Then $scriptFile = $scriptTag & ".minitouch"
 	AndroidAdbSendShellCommandScript($scriptFile, $variablesArray, Default, $timeout, $wasRunState)
 	Return SetError(@error, @extended, (@error = 0 ? 1 : 0))
@@ -3122,7 +3122,7 @@ Func AndroidAdbClickSupported()
 	Return BitAND($g_iAndroidSupportFeature, 4) = 4
 EndFunc   ;==>AndroidAdbClickSupported
 
-Func AndroidClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True)
+Func AndroidClick($x, $y, $times = 1, $speed = 150, $checkProblemAffect = True)
 	If Not ($x = Default) Then $x = Int($x) + $g_aiMouseOffset[0]
 	If Not ($x = Default) Then $y = Int($y) + $g_aiMouseOffset[1]
 	ForceCaptureRegion()
@@ -3578,7 +3578,7 @@ Func Minitouch($x, $y, $iAction = 0, $iDelay = 1)
 	Return $iBytes
 EndFunc   ;==>Minitouch
 
-Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True, $iRetryCount = 0)
+Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 150, $checkProblemAffect = True, $iRetryCount = 0)
 	Local $minSleep = GetClickDownDelay()
 	Local $iDelay = GetClickUpDelay()
 	Local $_SilentSetLog = $g_bSilentSetLog
@@ -4234,12 +4234,12 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 	EndIf
 
 	SetLog("Android process " & $sPackage & " not running")
-	SaveDebugImage("GetAndroidProcessPID")
+	If $g_bDebugAndroid Then SaveDebugImage("GetAndroidProcessPID")
 	$g_iAdroidProcNotRunning += 1
-	if $g_iAdroidProcNotRunning = 10 Then ; HArchH arbitrary limit
+	If $g_iAdroidProcNotRunning = 10 Then ; HArchH arbitrary limit
 		SetLog("Too many not running errors.  Restarting emulator.", $COLOR_INFO)
 		$g_iAdroidProcNotRunning = 0
-		if _sleep(2000) then Return False
+		If _sleep(2000) Then Return False
 		RestartBOT()
 	EndIf
 	Return SetError($error, 0, 0)
@@ -5007,11 +5007,11 @@ Func CheckEmuNewVersions()
 			$NewVersion = GetVersionNormalized("0.0.0.0")
 			SetLog("This " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ") is not supported!", $COLOR_ERROR)    ;Not Supported with v8.1+
 		Case "BlueStacks5"
-			$NewVersion = GetVersionNormalized("5.20.102")
+			$NewVersion = GetVersionNormalized("5.21.580.1017")
 		Case "MEmu"
 			$NewVersion = GetVersionNormalized("9.0.8.0")
 		Case "Nox"
-			$NewVersion = GetVersionNormalized("7.0.5.9")
+			$NewVersion = GetVersionNormalized("7.0.6.1")
 		Case Else
 			; diabled of the others
 			$NewVersion = GetVersionNormalized("99.0.0.0")

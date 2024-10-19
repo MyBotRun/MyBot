@@ -32,12 +32,14 @@ Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChe
 		EndIf
 	EndIf
 
+	WaitForClanMessage("DonatedTroops")
 
 	Local $sResultTroops = getRemainTrainTimer(450, 168 + $g_iMidOffsetY, $bNeedCapture) ;Get time via OCR.
 	$g_aiTimeTrain[0] = ConvertOCRTime("Troops", $sResultTroops, $bSetLog) ; update global array
 
 	If $bCloseArmyWindow Then
-		ClickAway()
+		CloseWindow()
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
+
 EndFunc   ;==>getArmyTroopTime

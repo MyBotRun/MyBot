@@ -811,6 +811,8 @@ Func runBot() ;Bot that runs everything in order
 				If CheckAndroidReboot() Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			Next
 
+			AppBuilder()
+
 			If $g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack Then _ClanGames()
 
 			Local $BBaseAttacked = False
@@ -1019,9 +1021,9 @@ EndFunc   ;==>_Idle
 
 Func AttackMain() ;Main control for attack functions
 	If ProfileSwitchAccountEnabled() And $g_abDonateOnly[$g_iCurAccount] Then Return
-	ClickAway()
+	ClearScreen()
 	If IsSearchAttackEnabled() Then
-		If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Then
+		If IsSearchModeActive($DB) Or IsSearchModeActive($LB) Then
 			If ProfileSwitchAccountEnabled() And ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - 2) Then checkSwitchAcc()
 			If $g_bUseCCBalanced Then ;launch profilereport() only if option balance D/R is activated
 				ProfileReport()
@@ -1052,25 +1054,37 @@ Func AttackMain() ;Main control for attack functions
 				EndIf
 			WEnd
 
-			ClickAway()
-			;	If $g_bUpdateSharedPrefs Then PullSharedPrefs()
+			ClearScreen()
 			PrepareSearch()
 			If Not $g_bRunState Then Return
 			If $g_bOutOfGold Then Return ; Check flag for enough gold to search
-			If $g_bRestart Then Return
+			If $g_bRestart Then
+				CleanSuperchargeTemplates()
+				Return
+			EndIf
 			VillageSearch()
 			If $g_bOutOfGold Then Return ; Check flag for enough gold to search
 			If Not $g_bRunState Then Return
-			If $g_bRestart Then Return
+			If $g_bRestart Then
+				CleanSuperchargeTemplates()
+				Return
+			EndIf
 			PrepareAttack($g_iMatchMode)
 			If Not $g_bRunState Then Return
-			If $g_bRestart Then Return
+			If $g_bRestart Then
+				CleanSuperchargeTemplates()
+				Return
+			EndIf
 			Attack()
 			If Not $g_bRunState Then Return
-			If $g_bRestart Then Return
+			If $g_bRestart Then
+				CleanSuperchargeTemplates()
+				Return
+			EndIf
 			ReturnHome($g_bTakeLootSnapShot)
 			If Not $g_bRunState Then Return
 			If _Sleep($DELAYATTACKMAIN2) Then Return
+			CleanSuperchargeTemplates()
 			Return True
 		Else
 			SetLog("None of search condition match:", $COLOR_WARNING)

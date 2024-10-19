@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Moebius14 (Dec 2023)
-; Modified ......: 
+; Modified ......:
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -46,7 +46,7 @@ Func _LocateBlacksmith($bCollect = True)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Blacksmith_02", "Locate Blacksmith"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickAway()
+			ClearScreen()
 			Local $aPos = FindPos()
 			$g_aiBlacksmithPos[0] = Int($aPos[0])
 			$g_aiBlacksmithPos[1] = Int($aPos[1])
@@ -68,16 +68,16 @@ Func _LocateBlacksmith($bCollect = True)
 						ContinueLoop
 					Case $iStupid > 4
 						SetLog(" Operator Error - Bad Blacksmith Location.", $COLOR_ERROR)
-						ClickAway()
+						ClearScreen()
 						Return False
 				EndSelect
 			EndIf
 		Else
 			SetLog("Locate Blacksmith Cancelled", $COLOR_INFO)
-			ClickAway()
+			ClearScreen()
 			Return
 		EndIf
-		Local $sBlacksmithInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		Local $sBlacksmithInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 		If $sBlacksmithInfo[0] > 1 Or $sBlacksmithInfo[0] = "" Then
 			If StringInStr($sBlacksmithInfo[1], "smith") = 0 Then
 				Local $sLocMsg = ($sBlacksmithInfo[0] = "" ? "Nothing" : $sBlacksmithInfo[1])
@@ -98,7 +98,7 @@ Func _LocateBlacksmith($bCollect = True)
 						ContinueLoop
 					Case $iSilly > 4
 						SetLog("Ok, you really think that's a Blacksmith?" & @CRLF & "I don't care anymore, go ahead with it!", $COLOR_ERROR)
-						ClickAway()
+						ClearScreen()
 						ExitLoop
 				EndSelect
 			EndIf
@@ -106,13 +106,13 @@ Func _LocateBlacksmith($bCollect = True)
 			SetLog(" Operator Error - Bad Blacksmith Location: " & "(" & $g_aiBlacksmithPos[0] & "," & $g_aiBlacksmithPos[1] & ")", $COLOR_ERROR)
 			$g_aiBlacksmithPos[0] = -1
 			$g_aiBlacksmithPos[1] = -1
-			ClickAway()
+			ClearScreen()
 			Return False
 		EndIf
 		SetLog("Locate Blacksmith Success: " & "(" & $g_aiBlacksmithPos[0] & "," & $g_aiBlacksmithPos[1] & ")", $COLOR_SUCCESS)
 		ExitLoop
 	WEnd
-	ClickAway()
+	ClearScreen()
 
 EndFunc   ;==>_LocateBlacksmith
 
@@ -140,8 +140,8 @@ Func ImgLocateBlacksmith()
 	Next
 
 	If IsArray($aiBlacksmithCoords) And UBound($aiBlacksmithCoords, $UBOUND_ROWS) > 1 Then
-		$g_aiBlacksmithPos[0] = $aiBlacksmithCoords[0]
-		$g_aiBlacksmithPos[1] = $aiBlacksmithCoords[1]
+		$g_aiBlacksmithPos[0] = $aiBlacksmithCoords[0] + 6
+		$g_aiBlacksmithPos[1] = $aiBlacksmithCoords[1] + 10
 		Return True
 	EndIf
 

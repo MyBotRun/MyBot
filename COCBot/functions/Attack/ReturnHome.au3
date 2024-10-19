@@ -6,7 +6,7 @@
 ;                  $GoldChangeCheck     - [optional] an unknown value. Default is True.
 ; Return values .: None
 ; Author ........:
-; Modified ......: KnowJack (07-2015), MonkeyHunter (01-2016), CodeSlinger69 (01-2017), MonkeyHunter (03-2017)
+; Modified ......: KnowJack (07-2015), MonkeyHunter (01-2016), CodeSlinger69 (01-2017), MonkeyHunter (03-2017), Moebius14 (09-2024)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -91,7 +91,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			$aiSurrenderButton = findButton("EndBattle", Default, 1, True)
 			If IsArray($aiSurrenderButton) And UBound($aiSurrenderButton, 1) = 2 Then
 				If IsAttackPage() Then ; verify still on attack page, and battle has not ended magically before clicking
-					ClickP($aiSurrenderButton, 1, 0, "#0099") ;Click Surrender
+					ClickP($aiSurrenderButton, 1, 120, "#0099") ;Click Surrender
 					$j = 0
 					While 1 ; dynamic wait for Okay button
 						SetDebugLog("Wait for OK button to appear #" & $j)
@@ -174,7 +174,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		SetDebugLog("Wait for End Fight Scene to appear #" & $i)
 		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
 			If IsReturnHomeBattlePage(True) Then
-				ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
+				ClickP($aReturnHomeButton, 1, 120, "#0101") ;Click Return Home Button
 				; sometimes 1st click is not closing, so try again
 				$iExitLoop = $i
 			EndIf
@@ -186,14 +186,32 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	If _Sleep($DELAYRETURNHOME2) Then Return ; short wait for screen to close
 
 	$counter = 0
+	SetDebugLog("Wait for Special windows to appear")
 	While 1
-		SetDebugLog("Wait for Star Bonus window to appear #" & $counter)
 		If _Sleep($DELAYRETURNHOME4) Then Return
-		If StarBonus() Then SetLog("Star Bonus window closed chief!", $COLOR_INFO) ; Check for Star Bonus window to fill treasury (2016-01) update
+		Local $bIsMain = _CheckPixel($aIsMain, $g_bCapturePixel, Default, "IsMain")
+		Local $bIsMainGrayed = _CheckPixel($aIsMainGrayed, $g_bCapturePixel, Default, "IsMainGrayed")
+		Select
+			Case Not $bIsMain And Not $bIsMainGrayed
+				If TreasureHunt($counter) Then
+					SetLog("Treasury Hunt window closed chief!", $COLOR_INFO) ; Check for Treasury Hunt Event window to (2024-09) update
+					ContinueLoop
+				EndIf
+			Case $bIsMainGrayed
+				If StarBonus() Then
+					SetLog("Star Bonus window closed chief!", $COLOR_INFO) ; Check for Star Bonus window to fill treasury (2016-01) update
+					ContinueLoop
+				EndIf
+				If CheckStreakEvent() Then
+					SetLog("Streak Event window closed chief!", $COLOR_INFO) ; Check for Streak Event window to (2024-06) update
+					ContinueLoop
+				EndIf
+		EndSelect
 		$g_bFullArmy = False ; forcing check the army
 		$g_bIsFullArmywithHeroesAndSpells = False ; forcing check the army
 		If ReturnHomeMainPage() Then Return
 		$counter += 1
+		SetDebugLog("Loop #" & $counter)
 		If $counter >= 30 Or isProblemAffect(True) Then
 			SetLog("Cannot return home.", $COLOR_ERROR)
 			checkMainScreen()
@@ -217,7 +235,7 @@ Func ReturnfromDropTrophies()
 	For $i = 0 To 5 ; dynamic wait loop for surrender button to appear (if end battle or surrender button are not found in 5*(200)ms + 10*(200)ms or 3 seconds, then give up.)
 		$aiSurrenderButton = findButton("Surrender", Default, 1, True)
 		If IsArray($aiSurrenderButton) And UBound($aiSurrenderButton, 1) = 2 Then
-			ClickP($aiSurrenderButton, 1, 0, "#0099") ;Click Surrender
+			ClickP($aiSurrenderButton, 1, 120, "#0099") ;Click Surrender
 			If _Sleep(500) Then Return
 			Local $j = 0
 			While 1 ; dynamic wait for Okay button
@@ -243,7 +261,7 @@ Func ReturnfromDropTrophies()
 		SetDebugLog("Wait for End Fight Scene to appear #" & $i)
 		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
 			If IsReturnHomeBattlePage(True) Then
-				ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
+				ClickP($aReturnHomeButton, 1, 120, "#0101") ;Click Return Home Button
 				; sometimes 1st click is not closing, so try again
 				$iExitLoop = $i
 			EndIf
@@ -259,3 +277,126 @@ Func ReturnfromDropTrophies()
 	checkMainScreen()
 EndFunc   ;==>ReturnfromDropTrophies
 
+Func CheckStreakEvent()
+	If Not $g_bRunState Then Return
+	Local $bret = False
+	Local $sAllCoordsString, $aAllCoordsTemp, $aTempCoords
+	Local $aAllCoords[0][2]
+	If _Sleep($DELAYSTARBONUS100) Then Return
+	Local $aContinueButton = findButton("Continue", Default, 1, True)
+	If IsArray($aContinueButton) And UBound($aContinueButton, 1) = 2 Then
+		ClickP($aContinueButton, 1, 120, "#0433")
+		If _Sleep(2500) Then Return
+	EndIf
+	If Not _ColorCheck(_GetPixelColor(290, 120 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) And Not _ColorCheck(_GetPixelColor(560, 150 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) Then Return $bret
+	$bret = True
+	Local $SearchArea = GetDiamondFromRect("20,260(820,140)")
+	Local $aResult = findMultiple(@ScriptDir & "\imgxml\DailyChallenge\", $SearchArea, $SearchArea, 0, 1000, 10, "objectname,objectpoints", True)
+	If $aResult <> "" And IsArray($aResult) Then
+		For $t = 0 To UBound($aResult) - 1
+			Local $aResultArray = $aResult[$t]     ; ["Button Name", "x1,y1", "x2,y2", ...]
+			SetDebugLog("Find Claim buttons, $aResultArray[" & $t & "]: " & _ArrayToString($aResultArray))
+			If IsArray($aResultArray) And $aResultArray[0] = "ClaimBtn" Then
+				$sAllCoordsString = _ArrayToString($aResultArray, "|", 1)     ; "x1,y1|x2,y2|..."
+				$aAllCoordsTemp = decodeMultipleCoords($sAllCoordsString, 50, 50)     ; [{coords1}, {coords2}, ...]
+				For $k = 0 To UBound($aAllCoordsTemp, 1) - 1
+					$aTempCoords = $aAllCoordsTemp[$k]
+					_ArrayAdd($aAllCoords, Number($aTempCoords[0]) & "|" & Number($aTempCoords[1]))
+				Next
+			EndIf
+		Next
+		RemoveDupXY($aAllCoords)
+		For $j = 0 To UBound($aAllCoords) - 1
+			Click($aAllCoords[$j][0], $aAllCoords[$j][1], 1, 120, "Claim " & $j + 1)         ; Click Claim button
+			If _Sleep(2000) Then Return
+		Next
+	EndIf
+	CloseWindow2()
+	Return $bret
+EndFunc   ;==>CheckStreakEvent
+
+Func TreasureHunt($counter = 0)
+
+	If Not $g_bRunState Then Return
+	Local $bret = False
+	Local $bHitDone = False
+
+	If $counter > 0 Then
+		Local $aContinueButton = findButton("Continue", Default, 1, True) ; In case all below failed in the ReturnHome loop, unlikely
+		If IsArray($aContinueButton) And UBound($aContinueButton, 1) = 2 Then
+			ClickP($aContinueButton, 1, 120, "#0433")
+			SetLog("Reward Received", $COLOR_SUCCESS1)
+			If _Sleep($DELAYTREASURY2) Then Return ; 1500ms
+			Return True
+		EndIf
+	EndIf
+
+	SetLog("Opening Chest", $COLOR_SUCCESS)
+	Local $bLoop = 0
+	While 1
+		If Not $g_bRunState Then Return
+		Local $aiHammerOnRock = decodeSingleCoord(FindImageInPlace2("HammerOnRock", $ImgHammerOnRock, 340, 470 + $g_iMidOffsetY, 430, 520 + $g_iMidOffsetY, True))
+		If IsArray($aiHammerOnRock) And UBound($aiHammerOnRock) = 2 Then
+			For $i = 0 To 20
+				If Not $g_bRunState Then Return
+				Local $aiLockOfChest = decodeSingleCoord(FindImageInPlace2("LockOfBox", $ImgLockOfChest, 400, 305 + $g_iMidOffsetY, 480, 390 + $g_iMidOffsetY, True))
+				If IsArray($aiLockOfChest) And UBound($aiLockOfChest) = 2 Then
+					Local $iHammers = QuickMIS("CNX", $ImgHammersOnRock, 340, 470 + $g_iMidOffsetY, 510, 520 + $g_iMidOffsetY)
+					If IsArray($iHammers) And UBound($iHammers) > 1 And UBound($iHammers, $UBOUND_COLUMNS) > 1 Then
+						SetLog("Detected Hammers : " & UBound($iHammers), $COLOR_INFO)
+						For $t = 0 To UBound($iHammers) - 1
+							If Not $g_bRunState Then Return
+							Local $ButtonClickX = Random($aiLockOfChest[0] - 20, $aiLockOfChest[0] + 20, 1)
+							Local $ButtonClickY = Random($aiLockOfChest[1] - 20, $aiLockOfChest[1] + 20, 1)
+							SetLog(($t = 0 ? "Hit Number : #" : "#") & $t + 1 & ".. ", $COLOR_ACTION, Default, Default, Default, Default, ($t = 0 ? Default : False), ($t = UBound($iHammers) - 1 ? Default : False))
+							Click($ButtonClickX, $ButtonClickY, 1, 130, "LockHit")
+							If $t = UBound($iHammers) - 1 Then
+								If _Sleep(Random(2000, 3000, 1)) Then Return
+							Else
+								If _Sleep(Random(700, 1200, 1)) Then Return
+							EndIf
+						Next
+						$bHitDone = True
+						ExitLoop 2
+					EndIf
+				EndIf
+				If _Sleep(1000) Then Return
+			Next
+		EndIf
+		If _Sleep(1000) Then Return
+		$bLoop += 1
+		If $bLoop > 10 Then Return $bret ; Exit if more than 10 loops
+	WEnd
+
+	If $bHitDone Then
+		SetLog("Click on Continue...", $COLOR_INFO)
+		For $i = 0 To 30
+			If Not $g_bRunState Then Return
+			Local $offColors[3][3] = [[0x8BD13A, 5, 0], [0x8BD13A, 9, 6], [0x0D0D0D, 12, 11]] ; 2nd pixel Green Color, 3rd pixel Green Color, 4th pixel Black bottom edge of Button
+			Local $ContinueButtonEdge = _MultiPixelSearch(366, 535, 385, 550, 1, 1, Hex(0x0D0D0D, 6), $offColors, 15) ; first black pixel on side of Button
+			SetDebugLog("Pixel Color #1: " & _GetPixelColor(368, 535, True) & ", #2: " & _GetPixelColor(373, 535, True) & ", #3: " & _GetPixelColor(377, 541, True) & ", #4: " & _GetPixelColor(380, 546, True), $COLOR_DEBUG)
+			If IsArray($ContinueButtonEdge) Then
+				If _Sleep(500) Then Return
+				Local $aContinueButton = findButton("Continue", Default, 1, True)
+				If IsArray($aContinueButton) And UBound($aContinueButton, 1) = 2 Then
+					If _Sleep(500) Then Return
+					ClickP($aContinueButton, 1, 120, "#0433")
+					SetLog("Reward Received", $COLOR_SUCCESS1)
+					$bret = True
+					If _Sleep($DELAYTREASURY2) Then Return ; 1500ms
+					ExitLoop
+				EndIf
+			EndIf
+			If _Sleep(300) Then Return
+			If $i = 30 Then
+				SaveDebugImage("ChestRoomError")
+				SetLog("Cannot find Continue button", $COLOR_ERROR)
+				If _Sleep(200) Then Return
+				Click(430, 495 + $g_iMidOffsetY)
+			EndIf
+		Next
+	EndIf
+
+	Return $bret
+
+EndFunc   ;==>TreasureHunt

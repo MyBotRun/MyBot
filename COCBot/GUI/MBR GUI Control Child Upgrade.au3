@@ -56,9 +56,9 @@ EndFunc   ;==>btnchkbxRepeat
 Func picUpgradeTypeLocation()
 	Local $wasRunState = $g_bRunState
 	$g_bRunState = True
-	PureClick(1, 40, 1, 0, "#9999") ; Clear screen
+	PureClick(1, 40, 1, 100, "#9999") ; Clear screen
 	Sleep(100)
-	Zoomout() ; Zoom out if needed
+	ZoomOut() ; Zoom out if needed
 	Local $inum
 	For $inum = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 		If @GUI_CtrlId = $g_hPicUpgradeType[$inum] Then
@@ -462,7 +462,7 @@ EndFunc   ;==>chkUpgradeChampion
 
 Func chkUpgradePets()
 	If $g_iTownHallLevel = 14 Then ; Must be TH14 to have Pets 1->4
-		For $i = 0 To $ePetCount - 6
+		For $i = 0 To $ePetCount - 7
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
 			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
 				$g_bUpgradePetsEnable[$i] = True
@@ -472,13 +472,13 @@ Func chkUpgradePets()
 				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 			EndIf
 		Next
-		For $i = $ePetCount - 5 To $ePetCount - 1
+		For $i = $ePetCount - 6 To $ePetCount - 1
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_DISABLE + $GUI_UNCHECKED)
 			$g_bUpgradePetsEnable[$i] = False
 			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 		Next
 	ElseIf $g_iTownHallLevel = 15 Then ; TH15 : Pets 1->8
-		For $i = 0 To $ePetCount - 2
+		For $i = 0 To $ePetCount - 3
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
 			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
 				$g_bUpgradePetsEnable[$i] = True
@@ -488,10 +488,12 @@ Func chkUpgradePets()
 				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 			EndIf
 		Next
-		GUICtrlSetState($g_hChkUpgradePets[$ePetCount - 1], $GUI_DISABLE + $GUI_UNCHECKED)
-		$g_bUpgradePetsEnable[$ePetCount - 1] = False
-		SetDebugLog("Upgrade: " & $g_asPetNames[$ePetCount - 1] & " disabled")
-	ElseIf $g_iTownHallLevel = 16 Then ; TH16 : Pets 1->9
+		For $i = $ePetCount - 2 To $ePetCount - 1
+			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_DISABLE + $GUI_UNCHECKED)
+			$g_bUpgradePetsEnable[$i] = False
+			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
+		Next
+	ElseIf $g_iTownHallLevel = 16 Then ; TH16 : Pets 1->10
 		For $i = 0 To $ePetCount - 1
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
 			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
@@ -550,11 +552,12 @@ Func EnableUpgradeEquipment()
 	If $g_iTownHallLevel < 8 Then
 		GUICtrlSetState($g_hBtnHeroEquipment, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkCustomEquipmentOrderEnable, $GUI_UNCHECKED)
+		GUICtrlSetState($g_hChkFinishCurrentEquipmentFirst, $GUI_UNCHECKED)
 		btnRemoveEquipment()
 	Else
 		GUICtrlSetState($g_hBtnHeroEquipment, $GUI_ENABLE)
 	EndIf
-EndFunc   ;==>chkUpgradePets
+EndFunc   ;==>EnableUpgradeEquipment
 
 Func BtnHeroEquipment()
 	GUISetState(@SW_SHOW, $g_hGUI_HeroEquipment)
@@ -566,15 +569,15 @@ EndFunc   ;==>CloseHeroEquipment
 
 Func chkEquipmentOrder()
 	If GUICtrlRead($g_hChkCustomEquipmentOrderEnable) = $GUI_CHECKED Then
-		For $i = $g_EquipmentOrderLabel[0] To $g_ahImgEquipmentOrderSet
+		For $i = $g_hChkFinishCurrentEquipmentFirst To $g_ahImgEquipmentOrderSet
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
 	Else
-		For $i = $g_EquipmentOrderLabel[0] To $g_ahImgEquipmentOrderSet
+		For $i = $g_hChkFinishCurrentEquipmentFirst To $g_ahImgEquipmentOrderSet
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
-EndFunc
+EndFunc   ;==>chkEquipmentOrder
 
 Func GUIRoyalEquipmentOrder()
 	Local $bDuplicate = False
@@ -583,9 +586,9 @@ Func GUIRoyalEquipmentOrder()
 	Local $iCtrlIdImage2 = $iGUI_CtrlId + 2
 	Local $iEquipmentIndex = _GUICtrlComboBox_GetCurSel($iGUI_CtrlId) + 1
 
-	If $iEquipmentIndex < UBound($g_ahCmbEquipmentOrder) - 1 Then
-		_GUICtrlSetImage($iCtrlIdImage, $g_sLibIconPath, $g_aiEquipmentOrderIcon[$iEquipmentIndex]) ; set proper equipment icon
-		_GUICtrlSetImage($iCtrlIdImage2, $g_sLibIconPath, $g_aiEquipmentOrderIcon2[$iEquipmentIndex]) ; set proper hero icon
+	If $iEquipmentIndex < UBound($g_ahCmbEquipmentOrder) + 1 Then
+		_GUICtrlSetImage($iCtrlIdImage, $g_sLibIconPath, $g_aiEquipmentOrderIcon[$iEquipmentIndex][0]) ; set proper equipment icon
+		_GUICtrlSetImage($iCtrlIdImage2, $g_sLibIconPath, $g_aiEquipmentOrderIcon[$iEquipmentIndex][1]) ; set proper hero icon
 	EndIf
 
 	For $i = 0 To UBound($g_ahCmbEquipmentOrder) - 1 ; check for duplicate combobox index and flag problem
@@ -607,18 +610,6 @@ Func GUIRoyalEquipmentOrder()
 		GUICtrlSetState($g_hBtnEquipmentOrderSet, $GUI_ENABLE) ; enable button to apply new order
 	EndIf
 EndFunc   ;==>GUIRoyalEquipmentOrder
-
-Func btnRegularOrder()
-	btnRemoveEquipment()
-	For $i = 0 To UBound($g_ahCmbEquipmentOrder) - 1
-		GUICtrlSetState($g_ahCmbEquipmentOrder[$i], $GUI_ENABLE)
-		_GUICtrlComboBox_SetCurSel($g_ahCmbEquipmentOrder[$i], $i)
-		_GUICtrlSetImage($g_ahImgEquipmentOrder[$i], $g_sLibIconPath, $i + 1)
-		_GUICtrlSetImage($g_ahImgEquipmentOrder2[$i], $g_sLibIconPath, $i + 1)
-	Next
-	btnEquipmentOrderSet()
-	GUICtrlSetState($g_hBtnEquipmentOrderSet, $GUI_ENABLE) ; Re-enabling it.
-EndFunc
 
 Func btnRemoveEquipment()
 	Local $sComboData = ""
@@ -647,6 +638,7 @@ Func SetDefaultEquipmentGroup($bSetLog = True)
 EndFunc   ;==>SetDefaultEquipmentGroup
 
 Func btnEquipmentOrderSet()
+	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "btnEquipmentOrderSet")
 	Local $bReady = True ; Initialize ready to record troop order flag
 	Local $sNewEquipmentList = ""
 
@@ -675,8 +667,8 @@ Func btnEquipmentOrderSet()
 	For $i = 0 To UBound($g_ahCmbEquipmentOrder) - 1
 		GUICtrlSetState($g_ahCmbEquipmentOrder[$i], $GUI_ENABLE)
 		_GUICtrlComboBox_SetCurSel($g_ahCmbEquipmentOrder[$i], $aiUsedEquipment[$i])
-		_GUICtrlSetImage($g_ahImgEquipmentOrder[$i], $g_sLibIconPath, $g_aiEquipmentOrderIcon[$aiUsedEquipment[$i] + 1])
-		_GUICtrlSetImage($g_ahImgEquipmentOrder2[$i], $g_sLibIconPath, $g_aiEquipmentOrderIcon2[$aiUsedEquipment[$i] + 1])
+		_GUICtrlSetImage($g_ahImgEquipmentOrder[$i], $g_sLibIconPath, $g_aiEquipmentOrderIcon[$aiUsedEquipment[$i] + 1][0])
+		_GUICtrlSetImage($g_ahImgEquipmentOrder2[$i], $g_sLibIconPath, $g_aiEquipmentOrderIcon[$aiUsedEquipment[$i] + 1][1])
 	Next
 
 	$g_aiCmbCustomEquipmentOrder = $aiUsedEquipment
@@ -706,6 +698,7 @@ Func btnEquipmentOrderSet()
 		SetLog("Must use all Equipment and No duplicate equipment names!", $COLOR_ERROR)
 		_GUICtrlSetImage($g_ahImgEquipmentOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
+	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "btnEquipmentOrderSet")
 EndFunc   ;==>btnEquipmentOrderSet
 
 Func ChangeEquipmentOrder()
@@ -736,7 +729,7 @@ Func IsUseCustomEquipmentOrder()
 		If $g_aiCmbCustomEquipmentOrder[$i] = -1 Then Return False
 	Next
 	Return True
-EndFunc   ;==>IsUseCustomTroopOrder
+EndFunc   ;==>IsUseCustomEquipmentOrder
 
 Func chkWalls()
 	If GUICtrlRead($g_hChkWalls) = $GUI_CHECKED Then
@@ -782,7 +775,7 @@ EndFunc   ;==>cmbWalls
 Func btnWalls()
 	Local $wasRunState = $g_bRunState
 	$g_bRunState = True
-	Zoomout()
+	ZoomOut()
 	$g_iCmbUpgradeWallsLevel = _GUICtrlComboBox_GetCurSel($g_hCmbWalls)
 	If imglocCheckWall() Then SetLog("Hey Chef! We found the Wall!")
 	$g_bRunState = $wasRunState

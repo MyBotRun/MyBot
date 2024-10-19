@@ -20,9 +20,12 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False, $bSetLog = T
 	If Not $g_bRunState Then Return
 
 	If $bSwitchToBB Then
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If Not SwitchBetweenBases(True, True) Then Return ; Switching to Builders Base
 	EndIf
+
+	Local $IsGoldFull = CheckBBGoldStorageFull(False)
+	Local $IsElixirFull = CheckBBElixirStorageFull(False)
 
 	If $bSetLog Then
 		If $IsOttoVillage Then
@@ -44,10 +47,16 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False, $bSetLog = T
 		For $i = 1 To UBound($aResult) - 1  ; loop through array rows
 			$sFilename = $aResult[$i][1] ; Filename
 			$aCollectXY = $aResult[$i][5] ; Coords
+			Switch StringLower($sFileName)
+				Case "collectgold"
+					If $IsGoldFull Then ContinueLoop
+				Case "collectelix"
+					If $IsElixirFull Then ContinueLoop
+			EndSwitch
 			If IsArray($aCollectXY) Then ; found array of locations
 				$t = Random(0, UBound($aCollectXY) - 1, 1) ; SC May 2017 update only need to pick one of each to collect all
 				If $g_bDebugSetlog Then SetDebugLog($sFilename & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_SUCCESS)
-				If IsMainPageBuilderBase() Then Click($aCollectXY[$t][0], $aCollectXY[$t][1], 1, 0, "#0430")
+				If IsMainPageBuilderBase() Then Click($aCollectXY[$t][0], $aCollectXY[$t][1], 1, 120, "#0430")
 				If _Sleep($DELAYCOLLECT2) Then Return
 			EndIf
 		Next
@@ -64,14 +73,14 @@ Func CollectElixirCart($bSwitchToBB = False, $bSwitchToNV = False)
 	If Not $g_bRunState Then Return
 
 	If $bSwitchToBB Then
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If Not SwitchBetweenBases(True, True) Then Return ; Switching to Builders Base
 	EndIf
 
 	If CheckBBElixirStorageFull(False) Then Return
 
 	SetDebugLog("Collecting Elixir Cart", $COLOR_INFO)
-	ClickAway("Left")
+	ClearScreen("Left", False)
 	If _Sleep($DELAYCOLLECT2) Then Return
 
 	Local $bRet, $aiElixirCart, $aiCollect

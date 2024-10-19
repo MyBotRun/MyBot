@@ -276,6 +276,7 @@
 #include "functions\Village\ClanCapital.au3"
 #include "functions\Village\LocateBlacksmith.au3"
 #include "functions\Village\Blacksmith.au3"
+#include "functions\Village\AppBuilder.au3"
 
 #include "functions\Village\BuilderBase\Collect.au3"
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"

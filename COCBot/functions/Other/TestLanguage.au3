@@ -29,7 +29,7 @@ EndFunc
 Func ChangeLanguage()
 	SetLog("Change Language To English", $COLOR_INFO)
 
-	If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
+	If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 120, "Click Setting")
 	If _Sleep(500) Then Return False
 
 	For $i = 0 To 20 ; Checking Green Language Button continuously in 20sec
@@ -63,7 +63,7 @@ Func ChangeLanguage()
 	For $i = 0 To 10 ; Checking OKAY Button continuously in 10sec
 		If _ColorCheck(_GetPixelColor($aLanguageOkay[0], $aLanguageOkay[1], True), Hex($aLanguageOkay[2], 6), $aLanguageOkay[3]) Then
 			If _Sleep(250) Then Return False
-			Click($aLanguageOkay[0], $aLanguageOkay[1], 1, 0, "Click OKAY")
+			Click($aLanguageOkay[0], $aLanguageOkay[1], 1, 120, "Click OKAY")
 			SetLog("   3. Click OKAY")
 			SetLog("Please wait for loading CoC...!")
 			waitMainScreen()
@@ -74,4 +74,4 @@ Func ChangeLanguage()
 	Next
 
 	Return False
-EndFunc   ;==>TestLanguage
+EndFunc   ;==>ChangeLanguage

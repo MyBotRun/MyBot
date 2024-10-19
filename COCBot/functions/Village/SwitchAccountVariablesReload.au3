@@ -20,7 +20,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Local $aiZero83[8][3] = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 	Local $aiZero84[8][4] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 	Local $asEmpty[8] = ["", "", "", "", "", "", "", ""]
-	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 	; FirstRun
@@ -41,6 +41,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 	;Super Troops Boost
 	Static $gSbFirstStartBarrel = $aiTrue
+	Static $SMaxTroopsToBoost = $aiZero
+	Static $SiCmbSuperTroopsThird = $aiZero
 
 	;Builders Base
 	Static $gSaiCurrentLootBB = $aiZero83
@@ -66,6 +68,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Static $asLabUpgradeTime = $asEmpty, $aiLabStatus = $aiZero, $aiLabElixirCost = $aiZero, $aiLabDElixirCost = $aiZero
 	Static $asPetLabUpgradeTime = $asEmpty, $aiPetStatus = $aiZero, $asiMinDark4PetUpgrade = $aiZero
 	Static $asStarLabUpgradeTime = $asEmpty
+
+	; BlackSmith
+	Static $asBSmithUpgradeTime = $asEmpty
 
 	; Hero State
 	Static $aiHeroAvailable = $aiZero
@@ -97,6 +102,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 	;StarBonus
 	Static $SStarBonusReceived = $aiZero
+
+	;Builder's Apprentice
+	Static $gaSsAvailableAppBuilder = $aiZero
+	Static $aSTimeDiffAppBuilder = $aiZero
 
 	; First time switch account
 	Switch $sType
@@ -172,6 +181,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$asiMinDark4PetUpgrade = $asEmpty
 			$asStarLabUpgradeTime = $asEmpty
 
+			; BlackSmith
+			$asBSmithUpgradeTime = $asEmpty
+
 			;StarBonus
 			$SStarBonusReceived = $aiZero
 
@@ -210,11 +222,17 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 			;Super Troops Boost
 			$gSbFirstStartBarrel = $aiTrue
+			$SMaxTroopsToBoost = $aiZero
+			$SiCmbSuperTroopsThird = $aiZero
 
 			;Builders Base
 			$gSaiCurrentLootBB = $aiZero83
 			$gSiFreeBuilderCountBB = $aiZero
 			$gSiTotalBuilderCountBB = $aiZero
+
+			;Builder's Apprentice
+			$gaSsAvailableAppBuilder = $aiZero
+			$aSTimeDiffAppBuilder = $aiZero
 
 		Case "Save"
 			$abFirstStart[$iAccount] = $g_bFirstStart
@@ -239,6 +257,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 			;Super Troops Boost
 			$gSbFirstStartBarrel[$iAccount] = $g_bFirstStartBarrel
+			$SMaxTroopsToBoost[$iAccount] = UBound($g_iCmbSuperTroops)
+			If $SMaxTroopsToBoost[$iAccount] > $iMaxSupersTroop Then
+				$SiCmbSuperTroopsThird[$iAccount] = $g_iCmbSuperTroops[$iMaxSupersTroop]
+			EndIf
 
 			;Builders Base
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
@@ -313,6 +335,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 			$asStarLabUpgradeTime[$iAccount] = $g_sStarLabUpgradeTime
 
+			; BlackSmith
+			$asBSmithUpgradeTime[$iAccount] = $g_sBSmithUpgradeTime
+
 			;StarBonus
 			$SStarBonusReceived[$iAccount] = $StarBonusReceived
 
@@ -347,6 +372,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$abNotNeedAllTime0[$iAccount] = $g_abNotNeedAllTime[0]
 			$abNotNeedAllTime1[$iAccount] = $g_abNotNeedAllTime[1]
 
+			;Builder's Apprentice
+			$gaSsAvailableAppBuilder[$iAccount] = $g_sAvailableAppBuilder
+			$aSTimeDiffAppBuilder[$iAccount] = $TimeDiffAppBuilder
+
 		Case "Load"
 			$g_bFirstStart = $abFirstStart[$iAccount]
 			$g_iFirstRun = $aiFirstRun[$iAccount]
@@ -374,6 +403,20 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 			;Super Troops Boost
 			$g_bFirstStartBarrel = $gSbFirstStartBarrel[$iAccount]
+			If $SMaxTroopsToBoost[$iAccount] > 0 Then
+				If $SMaxTroopsToBoost[$iAccount] > $iMaxSupersTroop Then
+					ReDim $g_iCmbSuperTroops[$iMaxSupersTroop + 1]
+					$g_iCmbSuperTroops[$iMaxSupersTroop] = $SiCmbSuperTroopsThird[$iAccount]
+				Else
+					If UBound($g_iCmbSuperTroops) > $SMaxTroopsToBoost[$iAccount] Then
+						ReDim $g_iCmbSuperTroops[$iMaxSupersTroop]
+					EndIf
+				EndIf
+			Else
+				If UBound($g_iCmbSuperTroops) > $SMaxTroopsToBoost[$iAccount] And UBound($g_iCmbSuperTroops) = ($iMaxSupersTroop + 1) Then ; Only ReDim If running Event or Finished.
+					ReDim $g_iCmbSuperTroops[$iMaxSupersTroop]
+				EndIf
+			EndIf
 
 			;Builders Base
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
@@ -450,6 +493,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 			$g_sStarLabUpgradeTime = $asStarLabUpgradeTime[$iAccount]
 
+			; BlackSmith
+			$g_sBSmithUpgradeTime = $asBSmithUpgradeTime[$iAccount]
+
 			;Clan Games
 			$g_bClanGamesCompleted = $gSbClanGamesCompleted[$iAccount]
 			$g_bIsBBevent = $gSbIsBBevent[$iAccount]
@@ -488,6 +534,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 			; Reset the log
 			$g_hLogFile = 0
+
+			;Builder's Apprentice
+			$g_sAvailableAppBuilder = $gaSsAvailableAppBuilder[$iAccount]
+			$TimeDiffAppBuilder = $aSTimeDiffAppBuilder[$iAccount]
 
 		Case "UpdateStats"
 			For $i = 0 To 3

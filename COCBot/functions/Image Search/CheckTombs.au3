@@ -46,20 +46,62 @@ Func CheckTombs()
 		If $g_bDebugSetlog Then SetDebugLog("Type :" & $return[1])
 		If $g_bDebugSetlog Then SetDebugLog("Total Objects :" & $return[4])
 
-		Local $bRemoved = False
+		Local $bRemoved1 = False
 		If IsArray($TombsXY) Then
 			; Loop through all found points for the item and click them to clear them, there should only be one
 			For $j = 0 To UBound($TombsXY) - 1
 				If IsCoordSafe($TombsXY[$j][0], $TombsXY[$j][1]) Then
 					If $g_bDebugSetlog Then SetDebugLog("Coords :" & $TombsXY[$j][0] & "," & $TombsXY[$j][1])
 					If IsMainPage() Then
-						Click($TombsXY[$j][0], $TombsXY[$j][1], 1, 0, "#0430")
-						If Not $bRemoved Then $bRemoved = IsMainPage()
+						Click($TombsXY[$j][0], $TombsXY[$j][1], 1, 120, "#0430")
+						If Not $bRemoved1 Then $bRemoved1 = IsMainPage()
 					EndIf
 				EndIf
 			Next
 		EndIf
-		If $bRemoved Then
+		If $bRemoved1 Then
+			If _Sleep($DELAYCHECKTOMBS2) Then Return
+			;Second try if root tombs at first step
+			Local $return2[7] = ["None", "None", 0, 0, 0, "", ""]
+			Local $TombsXY2[2] = [0, 0]
+			; Perform a parallel search with all images inside the directory
+			Local $aResult2 = returnSingleMatchOwnVillage($g_sImgClearTombs)
+
+			If UBound($aResult2) > 1 Then
+				; Now loop through the array to modify values, select the highest entry to return2
+				For $t = 1 To UBound($aResult2) - 1
+					; Check to see if its a higher level then currently stored
+					If Number($aResult2[$t][2]) > Number($return2[2]) Then
+						; Store the data because its higher
+						$return2[0] = $aResult2[$t][0] ; Filename
+						$return2[1] = $aResult2[$t][1] ; Type
+						$return2[4] = $aResult2[$t][4] ; Total Objects
+						$return2[5] = $aResult2[$t][5] ; Coords
+					EndIf
+				Next
+				$TombsXY2 = $return2[5]
+
+				If $g_bDebugSetlog Then SetDebugLog("Filename :" & $return2[0])
+				If $g_bDebugSetlog Then SetDebugLog("Type :" & $return2[1])
+				If $g_bDebugSetlog Then SetDebugLog("Total Objects :" & $return2[4])
+
+				Local $bRemoved2 = False
+				If IsArray($TombsXY2) Then
+					; Loop through all found points for the item and click them to clear them, there should only be one
+					For $z = 0 To UBound($TombsXY2) - 1
+						If IsCoordSafe($TombsXY2[$z][0], $TombsXY2[$z][1]) Then
+							If $g_bDebugSetlog Then SetDebugLog("Coords :" & $TombsXY2[$z][0] & "," & $TombsXY2[$z][1])
+							If IsMainPage() Then
+								Click($TombsXY2[$z][0], $TombsXY2[$z][1], 1, 120, "#0430")
+								If Not $bRemoved2 Then $bRemoved2 = IsMainPage()
+							EndIf
+						EndIf
+					Next
+				EndIf
+			EndIf
+		EndIf
+
+		If $bRemoved1 Or $bRemoved2 Then
 			SetLog("Tombs removed!", $COLOR_DEBUG1)
 			$g_abNotNeedAllTime[1] = False
 		Else
@@ -95,7 +137,6 @@ Func CleanYard()
 	Local $sRedLines = $CocDiamondECD
 	Local $iElixir = 50000
 	Local $bNoBuilders = $g_iFreeBuilderCount < 1
-	;	Local $sImgCleanYard = $g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard ; All templates in only one folder
 
 	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then
 		Local $aResult = findMultiple($g_sImgCleanYard, $sCocDiamond, $sRedLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
@@ -107,7 +148,7 @@ Func CleanYard()
 					$CleanYardXY = $aPoints[$i] ; Coords
 					If UBound($CleanYardXY) > 1 And IsCoordSafe($CleanYardXY[0], $CleanYardXY[1]) Then ; secure x because of clan chat tab
 						If $g_bDebugSetlog Then SetDebugLog($Filename & " found (" & $CleanYardXY[0] & "," & $CleanYardXY[1] & ")", $COLOR_SUCCESS)
-						If IsMainPage() Then Click($CleanYardXY[0], $CleanYardXY[1], 1, 0, "#0430")
+						If IsMainPage() Then Click($CleanYardXY[0], $CleanYardXY[1], 1, 120, "#0430")
 						$bLocate = True
 						If _Sleep($DELAYCOLLECT3) Then Return
 						If Not ClickRemoveObstacle() Then ContinueLoop
@@ -119,7 +160,7 @@ Func CleanYard()
 						If $g_iFreeBuilderCount = 0 Then
 							SetLog("No More Builders available")
 							If _Sleep(2000) Then Return
-							ExitLoop (2)
+							ExitLoop 2
 						EndIf
 					EndIf
 				Next
@@ -157,7 +198,7 @@ Func CleanYard()
 				For $j = 0 To UBound($GemBoxXY) - 1
 					If $g_bDebugSetlog Then SetDebugLog("Coords :" & $GemBoxXY[$j][0] & "," & $GemBoxXY[$j][1])
 					If IsCoordSafe($GemBoxXY[$j][0], $GemBoxXY[$j][1]) Then
-						If IsMainPage() Then Click($GemBoxXY[$j][0], $GemBoxXY[$j][1], 1, 0, "#0430")
+						If IsMainPage() Then Click($GemBoxXY[$j][0], $GemBoxXY[$j][1], 1, 120, "#0430")
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
 						$bLocate = True
 						If _Sleep($DELAYCOLLECT3) Then Return
@@ -188,8 +229,7 @@ Func CleanYard()
 		If $g_bDebugSetlog Then SetDebugLog("Time: " & Round(__TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
 	EndIf
 	UpdateStats()
-	ClickAway()
-
+	ClearScreen()
 EndFunc   ;==>CleanYard
 
 Func ClickRemoveObstacle()

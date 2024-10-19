@@ -20,7 +20,7 @@ Func ClickOkay($FeatureName = "Okay", $bCheckOneTime = False)
 	While 1 ; Wait for window with Okay Button
 		$aiOkayButton = findButton("Okay", Default, 1, True)
 		If IsArray($aiOkayButton) And UBound($aiOkayButton, 1) = 2 Then
-			PureClick($aiOkayButton[0], $aiOkayButton[1], 2, 50, "#0117") ; Click Okay Button
+			PureClick($aiOkayButton[0], $aiOkayButton[1], 2, 100, "#0117") ; Click Okay Button
 			ExitLoop
 		Else
 			SetDebugLog("Cannot Find Okay Button", $COLOR_ERROR)

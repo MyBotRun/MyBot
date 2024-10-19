@@ -24,7 +24,7 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 
 	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 15, 10) Then
 		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
-		ClickP($aArmyTrainButton, 1, 0, "#0293") ; Button Army Overview
+		ClickP($aArmyTrainButton, 1, 120, "#0293") ; Button Army Overview
 	EndIf
 
 	If _Sleep($DELAYRUNBOT6) Then Return ; wait for window to open
@@ -63,13 +63,24 @@ EndFunc   ;==>OpenQuickTrainTab
 Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
 	FuncEnter(OpenTrainTab, $g_bDebugSetlogTrain)
 
+	WaitForClanMessage("Tabs")
+
 	If Not IsTrainPage() Then
 		SetDebugLog("Error in OpenTrainTab: Cannot find the Army Overview Window", $COLOR_ERROR)
 		Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlogTrain)
 	EndIf
 
-	Local $aTabButton = findButton(StringStripWS($sTab, 8), Default, 1, True)
-	If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
+	Local $bIsCleanArea = False
+	For $i = 0 To 9
+		WaitForClanMessage("Tabs")
+		Local $aTabButton = findButton(StringStripWS($sTab, 8), Default, 1, True)
+		If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
+			$bIsCleanArea = True
+			ExitLoop
+		EndIf
+		If _Sleep($DELAYRUNBOT3) Then Return
+	Next
+	If $bIsCleanArea Then
 		Switch $aTabButton[0]
 			Case 75 To 200
 				$aIsTabOpen[0] = 175
@@ -111,6 +122,7 @@ Func UpdateNextPageTroop()
 	Local $sBabyDragonTile = @ScriptDir & "\imgxml\Train\Train_Train\BabyD*"
 	Local $sPekkaTile = @ScriptDir & "\imgxml\Train\Train_Train\Pekk*"
 	Local $sDragonTile = @ScriptDir & "\imgxml\Train\Train_Train\Drag*"
+	Local $sSuperDragonTile = @ScriptDir & "\imgxml\Train\Train_Train\SDrag*"
 
 	If _Sleep(500) Then Return
 
@@ -124,11 +136,15 @@ Func UpdateNextPageTroop()
 		If PointInRect($aSlot1[0], $aSlot1[1], $aSlot1[2], $aSlot1[3], $aiTileCoord[0], $aiTileCoord[1]) Then
 			$g_iNextPageTroop = $eRDrag
 			SetDebugLog("Found Edrag moved 1 Slot")
+			If _Sleep(200) Then Return
+			Return
 		EndIf
 
 		If PointInRect($aSlot2[0], $aSlot2[1], $aSlot2[2], $aSlot2[3], $aiTileCoord[0], $aiTileCoord[1]) Then
 			$g_iNextPageTroop = $eYeti
 			SetDebugLog("Found Edrag moved 2 Slots")
+			If _Sleep(200) Then Return
+			Return
 		EndIf
 
 		If PointInRect($aSlot3[0], $aSlot3[1], $aSlot3[2], $aSlot3[3], $aiTileCoord[0], $aiTileCoord[1]) Then ; Support 2 Super Troops + 1 Event Troop Or 1 Super Troop + 2 Event Troops (Moebius14)
@@ -146,6 +162,8 @@ Func UpdateNextPageTroop()
 				If IsArray($aiTileCoord2) And UBound($aiTileCoord2, 1) = 2 Then
 					$g_iNextPageTroop = $eSMine
 					SetDebugLog("Found Miner moved 3 Slots and SuperMiner Detected")
+					If _Sleep(200) Then Return
+					Return
 				EndIf
 			EndIf
 
@@ -182,18 +200,37 @@ Func UpdateNextPageTroop()
 						If PointInRect($aSlot4[0], $aSlot4[1], $aSlot4[2], $aSlot4[3], $aiTileCoord5[0], $aiTileCoord5[1]) Then
 							$g_iNextPageTroop = $eMine
 							SetDebugLog("Found 4 Slots Offset For low TH Level")
+							If _Sleep(200) Then Return
+							Return
 						EndIf
 
 						If PointInRect($aSlot1[0], $aSlot1[1], $aSlot1[2], $aSlot1[3], $aiTileCoord5[0], $aiTileCoord5[1]) Then
 							$g_iNextPageTroop = $eBabyD
 							SetDebugLog("Found 5 Slots Offset For low TH Level")
+							If _Sleep(200) Then Return
+							Return
 						EndIf
 
 						If PointInRect($aSlot2[0], $aSlot2[1], $aSlot2[2], $aSlot2[3], $aiTileCoord5[0], $aiTileCoord5[1]) Then
-							$g_iNextPageTroop = $ePekk
-							SetDebugLog("Found 6 Slots Offset For low TH Level")
+							Local $aiTileCoord6 = decodeSingleCoord(findImage("UpdateNextPageTroop", $sSuperDragonTile, GetDiamondFromRect("75,375,780,550"), 1, True))
+							If IsArray($aiTileCoord6) And UBound($aiTileCoord6, 1) = 2 Then
+								$g_iNextPageTroop = $eSDrag
+								SetDebugLog("Found Dragon moved 6 Slots and SuperDragon Detected")
+							Else
+								$g_iNextPageTroop = $ePekk
+								SetDebugLog("Found 6 Slots Offset For low TH Level")
+							EndIf
+							If _Sleep(200) Then Return
+							Return
 						EndIf
 
+						If PointInRect($aSlot3[0], $aSlot3[1], $aSlot3[2], $aSlot3[3], $aiTileCoord5[0], $aiTileCoord5[1]) Then
+							$g_iNextPageTroop = $eDrag
+							SetDebugLog("Found Dragon moved 7 Slots") ; 2 Super Troops + 5 Event Troops (October 24)
+							If _Sleep(200) Then Return
+							Return
+						EndIf
+						
 					EndIf
 
 				EndIf

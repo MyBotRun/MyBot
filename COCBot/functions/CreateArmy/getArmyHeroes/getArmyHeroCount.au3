@@ -320,9 +320,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		If $iLabTime > 0 And $iLastCheck <= 360 Then Return
 	EndIf
 
-	;CLOSE ARMY WINDOW
-	ClickAway()
-	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
+	ClearScreen()
 
 	If $g_iTownHallLevel < 3 Then
 		SetDebugLog("TH reads as Lvl " & $g_iTownHallLevel & ", has no Lab.")
@@ -371,9 +369,15 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		If $g_bDebugImageSave Then SaveDebugImage("LabUpgrade") ; Debug Only
 		ClickP($aResearchButton)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
+		If Not $GobBuilderPresent Then ; Just in case
+			If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilderLab, 510, 140 + $g_iMidOffsetY, 575, 195 + $g_iMidOffsetY, True))) > 1 Then
+				$GobBuilderPresent = True
+				$GobBuilderOffsetRunning = 355
+			EndIf
+		EndIf
 	Else
 		SetLog("Cannot find the Laboratory Research Button!", $COLOR_ERROR)
-		ClickAway()
+		ClearScreen()
 		;===========Hide Red  Hide Green  Show Gray==
 		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
@@ -403,28 +407,27 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 			$g_sLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), _NowCalc())
 			SetLog("Research will finish in " & $sLabTimeOCR & " (" & $g_sLabUpgradeTime & ")")
 		EndIf
-		;ClickAway()
-		CloseWindow()
+
+		If _Sleep(500) Then Return
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
+		CloseWindow()
 		Return True
 	ElseIf _ColorCheck(_GetPixelColor(775 - $GobBuilderOffsetRunning, 170 + $g_iMidOffsetY, True), Hex(0x8089AF, 6), 20) Then ; Look for light purple in upper right corner of lab window.
 		SetLog("Laboratory has Stopped", $COLOR_INFO)
 		If $g_bNotifyTGEnable And $g_bNotifyAlertLaboratoryIdle Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_01", "Laboratory Idle") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_02", "Laboratory has Stopped"))
-		;ClickAway()
+		CloseWindow()
 		;========Show Red  Hide Green  Hide Gray=====
 		GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabRed, $GUI_SHOW)
 		GUICtrlSetData($g_hLbLLabTime, "")
 		;============================================
-		;ClickAway()
+		ClearScreen()
 		$g_sLabUpgradeTime = ""
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
-		CloseWindow()
 		Return
 	Else
 		SetLog("Unable to determine Lab Status", $COLOR_INFO)
-		;ClickAway()
 		;========Hide Red  Hide Green  Show Gray======
 		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
@@ -432,6 +435,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		GUICtrlSetData($g_hLbLLabTime, "")
 		;=============================================
 		CloseWindow()
+		$iLastTimeChecked[$g_iCurAccount] = ""
 		Return
 	EndIf
 

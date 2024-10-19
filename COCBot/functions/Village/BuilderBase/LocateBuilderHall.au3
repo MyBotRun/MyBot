@@ -9,30 +9,30 @@ Func LocateBuilderHall()
 		BuildingClickP($g_aiBuilderHallPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; Get building name and level with OCR
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Builder") = True Then ; we found the Clan Castle
 				SetLog("Builder Hall located.", $COLOR_INFO)
 				SetLog("It reads as Level " & $aResult[2] & ".", $COLOR_INFO)
 
 				If $aResult[2] > $g_iBuilderHallLevel Then $g_iBuilderHallLevel = $aResult[2]
-				ClickAway()
+				ClearScreen("Defaut", False)
 				Return True
 			Else
-				ClickAway()
+				ClearScreen("Defaut", False)
 				SetLog("Village position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
 				SetLog("Stored Builder Hall Position is not valid.", $COLOR_ERROR)
 				SetLog("Found instead: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG)
-				ConvertToVillagePos($g_aiBuilderHallPos[0],$g_aiBuilderHallPos[1])
+				ConvertToVillagePos($g_aiBuilderHallPos[0], $g_aiBuilderHallPos[1])
 				SetLog("Real position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
 				$g_aiBuilderHallPos[0] = -1
 				$g_aiBuilderHallPos[1] = -1
 			EndIf
 		Else
-			ClickAway()
+			ClearScreen("Defaut", False)
 			SetDebugLog("Stored Builder Hall Position is not valid.", $COLOR_ERROR)
 			SetDebugLog("Village position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
-			ConvertToVillagePos($g_aiBuilderHallPos[0],$g_aiBuilderHallPos[1])
+			ConvertToVillagePos($g_aiBuilderHallPos[0], $g_aiBuilderHallPos[1])
 			SetDebugLog("Real position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
 			$g_aiBuilderHallPos[0] = -1
 			$g_aiBuilderHallPos[1] = -1
@@ -51,7 +51,7 @@ Func LocateBuilderHall()
 
 	; DETECTION IMGLOC
 	Local $aResult
-	For $j = 0 to 10
+	For $j = 0 To 10
 		SetLog("ImgLoc Builder Hall loop :" & $j & " zoom factor :" & $g_aVillageSize[1])
 		$aResult = findMultiple($sImgDir, $sCocDiamond, $sRedLines, $iMinLevel, $iMaxLevel, $iMaxReturnPoints, $sReturnProps, $bForceCapture)
 		If IsArray($aResult) And UBound($aResult) > 0 Then ; we have an array with data of images found
@@ -76,7 +76,7 @@ Func LocateBuilderHall()
 							$g_aiBuilderHallPos[0] = Number($tempObbj[0]) + 9
 							$g_aiBuilderHallPos[1] = Number($tempObbj[1]) + 15
 							SetLog("Builder Hall :" & $g_aiBuilderHallPos[0] & "," & $g_aiBuilderHallPos[1])
-							ConvertFromVillagePos($g_aiBuilderHallPos[0],$g_aiBuilderHallPos[1])
+							ConvertFromVillagePos($g_aiBuilderHallPos[0], $g_aiBuilderHallPos[1])
 							SetLog("Builder Hall VillagePos:" & $g_aiBuilderHallPos[0] & "," & $g_aiBuilderHallPos[1])
 							ExitLoop 3
 						EndIf
@@ -88,7 +88,7 @@ Func LocateBuilderHall()
 						$g_aiBuilderHallPos[0] = Number($tempObbj[0]) + 9
 						$g_aiBuilderHallPos[1] = Number($tempObbj[1]) + 15
 						SetLog("Builder Hall :" & $g_aiBuilderHallPos[0] & "," & $g_aiBuilderHallPos[1])
-						ConvertFromVillagePos($g_aiBuilderHallPos[0],$g_aiBuilderHallPos[1])
+						ConvertFromVillagePos($g_aiBuilderHallPos[0], $g_aiBuilderHallPos[1])
 						SetLog("Builder Hall VillagePos:" & $g_aiBuilderHallPos[0] & "," & $g_aiBuilderHallPos[1])
 						ExitLoop 2
 					EndIf
@@ -103,7 +103,7 @@ Func LocateBuilderHall()
 		BuildingClickP($g_aiBuilderHallPos, "#0197")
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for description to popup
 
-		Local $aResult = BuildingInfo(242, 468 + $g_iBottomOffsetY) ; Get building name and level with OCR
+		Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; Get building name and level with OCR
 		If $aResult[0] = 2 Then ; We found a valid building name
 			If StringInStr($aResult[1], "Builder") = True Then ; we found the Clan Castle
 				SetLog("Builder Hall located.", $COLOR_INFO)
@@ -113,21 +113,21 @@ Func LocateBuilderHall()
 				;ChkCraftCapitalGold()
 				Return True
 			Else
-				ClickAway()
+				ClearScreen("Defaut", False)
 				SetDebugLog("Found Builder Hall Position is not valid.", $COLOR_ERROR)
 				SetDebugLog("Found instead: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG)
 				SetDebugLog("Village position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
-				ConvertToVillagePos($g_aiBuilderHallPos[0],$g_aiBuilderHallPos[1])
+				ConvertToVillagePos($g_aiBuilderHallPos[0], $g_aiBuilderHallPos[1])
 				SetDebugLog("Real position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
 				$g_aiBuilderHallPos[0] = -1
 				$g_aiBuilderHallPos[1] = -1
 
 			EndIf
 		Else
-			ClickAway()
+			ClearScreen("Defaut", False)
 			SetDebugLog("Found Builder Hall Position is not valid.", $COLOR_ERROR)
 			SetDebugLog("Village position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
-			ConvertToVillagePos($g_aiBuilderHallPos[0],$g_aiBuilderHallPos[1])
+			ConvertToVillagePos($g_aiBuilderHallPos[0], $g_aiBuilderHallPos[1])
 			SetDebugLog("Real position: " & $g_aiBuilderHallPos[0] & ", " & $g_aiBuilderHallPos[1], $COLOR_DEBUG, True)
 			$g_aiBuilderHallPos[0] = -1
 			$g_aiBuilderHallPos[1] = -1
@@ -136,7 +136,7 @@ Func LocateBuilderHall()
 
 	SetLog("Can not find Builder Hall.", $COLOR_ERROR)
 	Return False
-EndFunc   ;==>LocateBuilderHall()
+EndFunc   ;==>LocateBuilderHall
 
 Func LocateDoubleCannon($bCollect = False)
 	Local $wasRunState = $g_bRunState
@@ -152,7 +152,7 @@ EndFunc   ;==>LocateDoubleCannon
 
 Func _LocateDoubleCannon($bCollect = False)
 
-	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $aDoubleCannonLevel=0
+	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $aDoubleCannonLevel = 0
 
 	WinGetAndroidHandle()
 
@@ -168,7 +168,7 @@ Func _LocateDoubleCannon($bCollect = False)
 	SetLog("Saved Coord :" & $g_aiDoubleCannonPos[0] & ", " & $g_aiDoubleCannonPos[1], $COLOR_INFO)
 
 	If $g_aiDoubleCannonPos[0] <> -1 And $g_aiDoubleCannonPos[1] <> -1 Then
-		ClickAway()
+		ClearScreen("Defaut", False)
 
 		If $g_aiDoubleCannonPos[2] = 1 Then
 			If Not SwitchToOttoVillage() Then Return False
@@ -179,7 +179,7 @@ Func _LocateDoubleCannon($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Double Cannon info and Level
-		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -198,7 +198,7 @@ Func _LocateDoubleCannon($bCollect = False)
 							$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
 							GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
 						EndIf
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return True
@@ -221,11 +221,11 @@ Func _LocateDoubleCannon($bCollect = False)
 	$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Main_Otto", "Main|Otto"), GetTranslatedFileIni("MBR Popups", "Func_Locate_DoubleCannonVillage_02", "Select Village"), $stext, 20)
 	If $MsgBox = 1 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		$g_aiDoubleCannonPos[2] = 0
 	ElseIf $MsgBox = 2 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If Not SwitchToOttoVillage() Then Return
 		$g_aiDoubleCannonPos[2] = 1
 	EndIf
@@ -248,7 +248,7 @@ Func _LocateDoubleCannon($bCollect = False)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_DoubleCannon_02", "Locate Double Cannon"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickAway()
+			ClearScreen("Defaut", False)
 			Local $aPos = FindPos()
 			$g_aiDoubleCannonPos[0] = $aPos[0]
 			$g_aiDoubleCannonPos[1] = $aPos[1]
@@ -272,7 +272,7 @@ Func _LocateDoubleCannon($bCollect = False)
 						SetLog(" Operator Error - Bad Double Cannon Location: " & "(" & $g_aiDoubleCannonPos[0] & "," & $g_aiDoubleCannonPos[1] & ")", $COLOR_ERROR)
 						$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
 						GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -283,7 +283,7 @@ Func _LocateDoubleCannon($bCollect = False)
 						$g_aiDoubleCannonPos[2] = -1
 						$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
 						GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -299,18 +299,18 @@ Func _LocateDoubleCannon($bCollect = False)
 			$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
 			GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
 			SetLog("Locate Double Cannon Cancelled", $COLOR_INFO)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
 		EndIf
 
 		;get Double Cannon info
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -346,7 +346,7 @@ Func _LocateDoubleCannon($bCollect = False)
 						$g_aiDoubleCannonPos[2] = -1
 						$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
 						GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -359,7 +359,7 @@ Func _LocateDoubleCannon($bCollect = False)
 			$g_aiDoubleCannonPos[2] = -1
 			$g_bDoubleCannonUpgrade = False ; turn Off the Double Cannon upgrade
 			GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return False
@@ -367,7 +367,7 @@ Func _LocateDoubleCannon($bCollect = False)
 		ExitLoop
 	WEnd
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
@@ -392,7 +392,7 @@ EndFunc   ;==>LocateArcherTower
 
 Func _LocateArcherTower($bCollect = False)
 
-	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $iArcherTowerLevel=0
+	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $iArcherTowerLevel = 0
 
 	WinGetAndroidHandle()
 	;checkMainScreen(False)
@@ -409,7 +409,7 @@ Func _LocateArcherTower($bCollect = False)
 	SetLog("Saved Coord :" & $g_aiArcherTowerPos[0] & ", " & $g_aiArcherTowerPos[1], $COLOR_INFO)
 
 	If $g_aiArcherTowerPos[0] <> -1 And $g_aiArcherTowerPos[1] <> -1 Then
-		ClickAway()
+		ClearScreen("Defaut", False)
 
 		If $g_aiArcherTowerPos[2] = 1 Then
 			If Not SwitchToOttoVillage() Then Return False
@@ -420,7 +420,7 @@ Func _LocateArcherTower($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Archer Tower info and Level
-		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -439,7 +439,7 @@ Func _LocateArcherTower($bCollect = False)
 							$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
 							GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
 						EndIf
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return True
@@ -462,11 +462,11 @@ Func _LocateArcherTower($bCollect = False)
 	$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Main_Otto", "Main|Otto"), GetTranslatedFileIni("MBR Popups", "Func_Locate_ArcherTowerVillage_02", "Select Village"), $stext, 20)
 	If $MsgBox = 1 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		$g_aiArcherTowerPos[2] = 0
 	ElseIf $MsgBox = 2 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If Not SwitchToOttoVillage() Then Return
 		$g_aiArcherTowerPos[2] = 1
 	EndIf
@@ -489,7 +489,7 @@ Func _LocateArcherTower($bCollect = False)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_ArcherTower_02", "Locate Archer Tower"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickAway()
+			ClearScreen("Defaut", False)
 			Local $aPos = FindPos()
 			$g_aiArcherTowerPos[0] = $aPos[0]
 			$g_aiArcherTowerPos[1] = $aPos[1]
@@ -513,7 +513,7 @@ Func _LocateArcherTower($bCollect = False)
 						SetLog(" Operator Error - Bad  Archer Tower Location: " & "(" & $g_aiArcherTowerPos[0] & "," & $g_aiArcherTowerPos[1] & ")", $COLOR_ERROR)
 						$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
 						GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -524,7 +524,7 @@ Func _LocateArcherTower($bCollect = False)
 						$g_aiArcherTowerPos[2] = -1
 						$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
 						GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -540,18 +540,18 @@ Func _LocateArcherTower($bCollect = False)
 			$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
 			GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
 			SetLog("Locate Archer Tower Cancelled", $COLOR_INFO)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
 		EndIf
 
 		;get  Archer Tower info
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -587,7 +587,7 @@ Func _LocateArcherTower($bCollect = False)
 						$g_aiArcherTowerPos[2] = -1
 						$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
 						GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -600,7 +600,7 @@ Func _LocateArcherTower($bCollect = False)
 			$g_aiArcherTowerPos[2] = -1
 			$g_bArcherTowerUpgrade = False ; turn Off the Archer Tower upgrade
 			GUICtrlSetState($g_hChkArcherTowerUpgrade, $GUI_UNCHECKED)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return False
@@ -608,7 +608,7 @@ Func _LocateArcherTower($bCollect = False)
 		ExitLoop
 	WEnd
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
@@ -636,7 +636,7 @@ EndFunc   ;==>LocateMultiMortar
 
 Func _LocateMultiMortar($bCollect = False)
 
-	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $aMultiMortarLevel=0
+	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $aMultiMortarLevel = 0
 
 	WinGetAndroidHandle()
 
@@ -652,7 +652,7 @@ Func _LocateMultiMortar($bCollect = False)
 	SetLog("Saved Coord :" & $g_aiMultiMortarPos[0] & ", " & $g_aiMultiMortarPos[1], $COLOR_INFO)
 
 	If $g_aiMultiMortarPos[0] <> -1 And $g_aiMultiMortarPos[1] <> -1 Then
-		ClickAway()
+		ClearScreen("Defaut", False)
 
 		If $g_aiMultiMortarPos[2] = 1 Then
 			If Not SwitchToOttoVillage() Then Return False
@@ -663,7 +663,7 @@ Func _LocateMultiMortar($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Multi Mortar info and Level
-		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -682,7 +682,7 @@ Func _LocateMultiMortar($bCollect = False)
 							$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
 							GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
 						EndIf
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return True
@@ -705,11 +705,11 @@ Func _LocateMultiMortar($bCollect = False)
 	$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Main_Otto", "Main|Otto"), GetTranslatedFileIni("MBR Popups", "Func_Locate_MultiMortarVillage_02", "Select Village"), $stext, 20)
 	If $MsgBox = 1 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		$g_aiMultiMortarPos[2] = 0
 	ElseIf $MsgBox = 2 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If Not SwitchToOttoVillage() Then Return
 		$g_aiMultiMortarPos[2] = 1
 	EndIf
@@ -732,7 +732,7 @@ Func _LocateMultiMortar($bCollect = False)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_MultiMortar_02", "Locate Multi Mortar"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickAway()
+			ClearScreen("Defaut", False)
 			Local $aPos = FindPos()
 			$g_aiMultiMortarPos[0] = $aPos[0]
 			$g_aiMultiMortarPos[1] = $aPos[1]
@@ -756,7 +756,7 @@ Func _LocateMultiMortar($bCollect = False)
 						SetLog(" Operator Error - Bad Multi Mortar Location: " & "(" & $g_aiMultiMortarPos[0] & "," & $g_aiMultiMortarPos[1] & ")", $COLOR_ERROR)
 						$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
 						GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -767,7 +767,7 @@ Func _LocateMultiMortar($bCollect = False)
 						$g_aiMultiMortarPos[2] = -1
 						$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
 						GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -783,18 +783,18 @@ Func _LocateMultiMortar($bCollect = False)
 			SetLog("Locate Multi Mortar Cancelled", $COLOR_INFO)
 			$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
 			GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
 		EndIf
 
 		;get Multi Mortar info
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -830,7 +830,7 @@ Func _LocateMultiMortar($bCollect = False)
 						$g_aiMultiMortarPos[2] = -1
 						$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
 						GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -843,7 +843,7 @@ Func _LocateMultiMortar($bCollect = False)
 			$g_aiMultiMortarPos[2] = -1
 			$g_bMultiMortarUpgrade = False ; turn Off the Multi Mortar upgrade
 			GUICtrlSetState($g_hChkMultiMortarUpgrade, $GUI_UNCHECKED)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return False
@@ -851,7 +851,7 @@ Func _LocateMultiMortar($bCollect = False)
 		ExitLoop
 	WEnd
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
@@ -874,11 +874,11 @@ Func LocateAnyDef($bCollect = False)
 	$g_bRunState = $wasRunState
 	AndroidShield("LocateAnyDef 2") ; Update shield status due to manual $g_bRunState
 	Return $Result
-EndFunc   ;==>LocateMultiMortar
+EndFunc   ;==>LocateAnyDef
 
 Func _LocateAnyDef($bCollect = False)
 
-	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $aCannonLevel=0
+	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo, $aCannonLevel = 0
 
 	WinGetAndroidHandle()
 
@@ -894,7 +894,7 @@ Func _LocateAnyDef($bCollect = False)
 	SetLog("Saved Coord :" & $g_aiAnyDefPos[0] & ", " & $g_aiAnyDefPos[1], $COLOR_INFO)
 
 	If $g_aiAnyDefPos[0] <> -1 And $g_aiAnyDefPos[1] <> -1 Then
-		ClickAway()
+		ClearScreen("Defaut", False)
 
 		If $g_aiAnyDefPos[2] = 1 Then
 			If Not SwitchToOttoVillage() Then Return False
@@ -905,7 +905,7 @@ Func _LocateAnyDef($bCollect = False)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 		;Get Multi Mortar info and Level
-		Local $sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY)
+		Local $sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 
 		If @error Then SetError(0, 0, 0)
 
@@ -924,7 +924,7 @@ Func _LocateAnyDef($bCollect = False)
 							$g_bAnyDefUpgrade = False ; turn Off the Multi Mortar upgrade
 							GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
 						EndIf
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return True
@@ -947,11 +947,11 @@ Func _LocateAnyDef($bCollect = False)
 	$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Main_Otto", "Main|Otto"), GetTranslatedFileIni("MBR Popups", "Func_Locate_AnyDefVillage_02", "Select Village"), $stext, 20)
 	If $MsgBox = 1 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		$g_aiAnyDefPos[2] = 0
 	ElseIf $MsgBox = 2 Then
 		WinGetAndroidHandle()
-		ClickAway()
+		ClearScreen("Defaut", False)
 		If Not SwitchToOttoVillage() Then Return
 		$g_aiAnyDefPos[2] = 1
 	EndIf
@@ -974,7 +974,7 @@ Func _LocateAnyDef($bCollect = False)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_AnyDef_02", "Locate Cannon"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickAway()
+			ClearScreen("Defaut", False)
 			Local $aPos = FindPos()
 			$g_aiAnyDefPos[0] = $aPos[0]
 			$g_aiAnyDefPos[1] = $aPos[1]
@@ -998,7 +998,7 @@ Func _LocateAnyDef($bCollect = False)
 						SetLog(" Operator Error - Bad Cannon Location: " & "(" & $g_aiAnyDefPos[0] & "," & $g_aiAnyDefPos[1] & ")", $COLOR_ERROR)
 						$g_bAnyDefUpgrade = False ; turn Off the Cannon upgrade
 						GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -1009,7 +1009,7 @@ Func _LocateAnyDef($bCollect = False)
 						$g_aiAnyDefPos[2] = -1
 						$g_bAnyDefUpgrade = False ; turn Off the Cannon upgrade
 						GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -1020,18 +1020,18 @@ Func _LocateAnyDef($bCollect = False)
 			SetLog("Locate Cannon Cancelled", $COLOR_INFO)
 			$g_bAnyDefUpgrade = False ; turn Off the Cannon upgrade
 			GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return
 		EndIf
 
 		;get Cannon info
-		$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While Not IsArray($sInfo)
-			$sInfo = BuildingInfo(242, 468 + $g_iBottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -1067,7 +1067,7 @@ Func _LocateAnyDef($bCollect = False)
 						$g_aiAnyDefPos[1] = -1
 						$g_bAnyDefUpgrade = False ; turn Off the Cannon upgrade
 						GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
-						ClickAway()
+						ClearScreen("Defaut", False)
 						If _Sleep(1000) Then Return
 						SwitchToBuilderbase()
 						Return False
@@ -1080,7 +1080,7 @@ Func _LocateAnyDef($bCollect = False)
 			$g_aiAnyDefPos[1] = -1
 			$g_bAnyDefUpgrade = False ; turn Off the Cannon upgrade
 			GUICtrlSetState($g_hChkAnyDefUpgrade, $GUI_UNCHECKED)
-			ClickAway()
+			ClearScreen("Defaut", False)
 			If _Sleep(1000) Then Return
 			SwitchToBuilderbase()
 			Return False
@@ -1088,7 +1088,7 @@ Func _LocateAnyDef($bCollect = False)
 		ExitLoop
 	WEnd
 
-	ClickAway()
+	ClearScreen("Defaut", False)
 	If _Sleep(1000) Then Return
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)

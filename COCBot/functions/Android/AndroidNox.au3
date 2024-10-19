@@ -117,10 +117,9 @@ EndFunc   ;==>GetNoxRtPath
 Func GetNoxPath()
 	Local $sVersion = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\Nox\", "DisplayVersion")
 	If @error Then
-		SetLog("Nox version not found", $COLOR_ERROR)
+		SetDebugLog("Nox version not found", $COLOR_ERROR)
 	EndIf
 	$__Nox_Version = $sVersion  ; set Nox global version number
-
 	Local $path = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\DuoDianOnline\SetupInfo\", "InstallPath")
 	If @error = 0 Then
 		If StringRight($path, 1) <> "\" Then $path &= "\"

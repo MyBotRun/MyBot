@@ -89,7 +89,7 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 		EndIf
 	EndIf
 
-	ClickAway()
+	CloseWindow2()
 	If _Sleep($DELAYBOOSTBARRACKS2) Then Return
 
 	Return $bBoosted

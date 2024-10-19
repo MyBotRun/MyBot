@@ -1,4 +1,147 @@
-* v8.1.6
+* v8.1.7
+* Added Fireball equipment support.
+* Improved Donation system.
+* Fixed Overgrowth spell donate strings translation.
+* Improved Builder count.
+* Updated donateCCWBL.
+* Added Space Scenery support (attack only).
+* Typo
+* Added Blacksmith level 7/8 template.
+* Improved Super Dragon detection in attack bar.
+* Improved Space Scenery detection (Attack only).
+* Improved Hog puppet equipment detection.
+* Improved Pet level OCR (3 and 1).
+* Improved Hero heal status detection.
+* Updated Hero heal time OCR area.
+* Improved Boost button detection.
+* Improved Army cap OCR (0).
+* Improved Open donate window detection.
+* Added DE Drill level 10 template.
+* Added ClanGamesRewards.ini creating if missing.
+* Updated Upgrade in progress color detection.
+* Improved CG events detection.
+* Improved Troops upgrade cost detection (3 white OCR).
+* Fixed Share replay function.
+* Fixed Unbreakable function.
+* Improved Remaining training time OCR (7/9).
+* Improved Donate button detection.
+* Improved Elixir collector level 16 detection (Dead base and smart).
+* Improved Giant and wall breaker detection for donation.
+* Fixed Battle Copter window detection.
+* Fixed Bob Control upgrades white zeros detection.
+* Added Builder boost perks to bob control upgrades prices.
+* Improved EQ spell detection for donation.
+* Improved Laboratory status detection.
+* Added Full support for Magic and Egypt Scenery.
+* Changed Loot Cart templates for detection.
+* Improved Obstacles remove.
+* Improved Buildings info OCR.
+* Added New pet support (Angry Jelly).
+* Added Support for Eagle level 7 and Monolith level 3.
+* Update Flame Flinger max level.
+* Added Equipment challenges to Clan Games (Code Only).
+* Updated some GUI images.
+** Added support for COC 16.253.15.
+* Fixed Donations.
+* Fixed CC Status Detection.
+* Fixed missing _FilloBldgLevels() call.
+* Updated CC Spells/Sieges remove.
+* Change Egypt and Magic scenery fixed point detection.
+* Improved egyptian boat detection.
+* Increased cc spells/sieges speed detection.
+* Added Hog Gliders clan games event template.
+* Added Dead Eagle level 6 template.
+* Reduced Equipment updgrade display to 10 equipment.
+* Improved Donate window position detection.
+* Updated Siege switching detection area.
+* Fixed siege switching.
+* Fixed 6 red OCR for queue troops.
+* Added support for Streak Event in bonus calculation.
+* Improved Super Troops Count OCR in Army Overview.
+* Improved Egypt and Magic Scenery Zoom Out.
+* Fixed donation (COC 16.253.25).
+* Added Spiky Ball equipment support.
+* Fixed CC Sieges Removing array issue.
+* Added Football scenery support (Attack Only).
+* Added Pressure and zoom out script randomization (Minitouch).
+* Added Rocket Spear Equipment support.
+* Added Wild West scenery (Attack Only).
+* Improved Sieges training ClickDrag.
+* Improved Blacksmith auto location.
+* Improved TH16 detection.
+* Improved Army count OCR.
+* Improved Donate detection for : SWall, ETitan, FFlinger, SDrag, Wizard.
+* Improved BatSpell detection in Army Overview.
+* Improved few obstacles detection. 
+* Added Full Support for Druid Troop.
+* Updated Pets Cost.
+* Fixed SCID Switch.
+* Added Builder's Apprentice Support.
+* Updated Walls Cost.
+* Added Streak Event Window Support.
+* Added Choice To Finish Current Equipment Upgrade first.
+* Added New Survey Window Detection.
+* Updated Ban Window Detection.
+* Typo
+* Improved Builder's Apprentice Cooldown OCR.
+* Added Magic Mirror Equipment Support.
+* Added Clash Game Stadium and Anime Sceneries Support (Attack Only).
+* Added More Builder's Apprentice Options.
+* Updated Close SCID Window Button Coordinates.
+* Updated Trader Menu Coordinates.
+* Updated Clan Capital Buildings OCR Area (Menu).
+* Improved Daily Challenge Collect.
+* Updated Nox Version Support.
+* Improved Few OCR Libs.
+* Improved few Sceneries Detection (Attack Only).
+* Improved Heroes Status Detection.
+* Fixed Super Archer Donation.
+* Improved Anime Scenery Detection (Attack Only).
+* Fixed BS5 Shared Folder Mounting.
+* Updated Nox and BS5 Supported Versions.
+* Fixed Clan Games Rewards Collect (6th column + BOE).
+* Fixed SCID Switch (COC 16.517.4).
+* Added Auto-Deny for Personnal Datas Sharing.
+* Updated Building Info Position.
+* Fixed App Builder Assign Button detection.
+* Improved Apprentice Builder Time OCR.
+* Added support for dynamic building info position (Supercharge).
+* Improved Builder Base Upgrade Detection.
+* Added Treasury Hunt Event Window Support.
+* Fixed Shared_Prefs Switch Method.
+* Removed Google Play Switch.
+* Improved DonateWindowCap().
+* Updated Use Boost Potion Button Position.
+* Improved Daily Challenges Collect.
+* Added Clash of Dragons Scenery Support (Attack Only).
+* Added Special Event Attack Button Support.
+* Improved Chest Room Support.
+* Added Collect Resources only if not full.
+* Improved Build lib ("O" and "E").
+* Improved few time controlers.
+* Improved Treasury chest control.
+* Improved Attack! Button management.
+* Improved Claim Reward Button detection.
+* Improved Donation System.
+* Improved 8 digit detection for GuardShield.
+* Added WaitForClanMessage for donation.
+* Improved MakingDonatedTroops().
+* Improved IsDonateQueueOnly().
+* Improved Clan Games Event Purge Cooldown Management.
+* Hidden Clan Games Equipement Challenges.
+* Changed Defaut Scenery Detection Points (Allows broken boat).
+* Improved BB Troops Upgrade Red Cost OCR.
+* Fixed BB Broken Buildings OCR.
+* Added Dont Collect Loot Cart And Treasury If Resources are Full.
+* Updated Legend League support.
+* Improved Profil Report.
+* Added Supercharge Collector Detection (Dead Bases).
+* Added Support For 7 Extra Troops
+* Improved CC Building names OCR in Menu.
+* Added Support For Lavaloon Puppet Equipment.
+* Added Doomed Scenery Support (Attack Only).
+
+* v8.1.6 **
 * Added "Before you upgrade" window support.
 * Improved Blacksmith equipement upgrade.
 * Fixed BB Repair Building.

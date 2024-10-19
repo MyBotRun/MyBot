@@ -96,7 +96,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 								Switch $avAttackBar[$j][0]
 									Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF, $eBattleD ; Any = 8, Default = 9
 
-										SetLog("$g_aiAttackUseSiege[$pMatchMode] :" & $g_aiAttackUseSiege[$pMatchMode])
+										SetDebugLog("$g_aiAttackUseSiege[$pMatchMode] :" & $g_aiAttackUseSiege[$pMatchMode])
 
 										If $g_aiAttackUseSiege[$pMatchMode] <= $eSiegeMachineCount + 1 Then
 											SelectCastleOrSiege($avAttackBar[$j][0], Number($avAttackBar[$j][5]), $g_aiAttackUseSiege[$pMatchMode])
@@ -155,12 +155,10 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 
 	Local $hStarttime = _Timer_Init()
 	Local $aSiegeTypes[9] = [$eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF, $eBattleD, "Any"]
-	Local $bSiegesLevelFive[4] = [$eWallW, $eStoneS, $eSiegeB, $eLogL]
+	Local $bSiegesLevelFive[5] = [$eWallW, $eStoneS, $eSiegeB, $eLogL, $eFlameF]
 
 	Local $ToUse = $aSiegeTypes[$iCmbSiege]
 	Local $bNeedSwitch = False, $bAnySiege = False
-
-	Local $sLog = GetTroopName($iTroopIndex)
 
 	Local $iMaxSiegeLevel = 4
 	If $g_iTownHallLevel >= 10 Then
@@ -203,8 +201,8 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			Local $iLastX = $aiSwitchBtn[0] - 30, $iLastY = $aiSwitchBtn[1]
 			If _Sleep(2000) Then Return
 
-			; Lets detect the CC & Sieges and click - search window is - X, 530, X + 390, 530 + 30
-			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",539(395,70)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
+			; Lets detect the CC & Sieges and click - search window is - X, 539, X + 440, 539 + 70
+			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",539(440,70)") ; x = 470 when Castle is at slot 6+ and there are 6 slots in siege switching window
 
 			SetLog("Switch Search Area : " & $sSearchArea)
 			If $g_bDebugImageSave Then SaveDebugDiamondImage("SelectCastleOrSiege", $sSearchArea)
@@ -232,8 +230,8 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 
 					$iMaxSiegeLevel = 4
 					If $g_iTownHallLevel >= 10 Then
-						For $i = 0 To UBound($bSiegesLevelFive) - 1
-							If $iSiegeIndex = $bSiegesLevelFive[$i] Then
+						For $t = 0 To UBound($bSiegesLevelFive) - 1
+							If $iSiegeIndex = $bSiegesLevelFive[$t] Then
 								$iMaxSiegeLevel = 5
 								ExitLoop
 							EndIf

@@ -32,13 +32,7 @@ Func getArmySiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	If _CheckPixel($aReceivedSieges, $bNeedCapture) Or _CheckPixel($aReceivedTroopsOCR, $bNeedCapture) Then ; Found the "You have received" Message on Screen, wait till its gone.
-		If $bSetLog Then SetDebugLog("Detected Clan Castle Message Blocking Siege Images. Waiting until it's gone", $COLOR_INFO)
-		_CaptureRegion2()
-		While (_CheckPixel($aReceivedSieges, $bNeedCapture) Or _CheckPixel($aReceivedTroopsOCR, $bNeedCapture))
-			If _Sleep($DELAYTRAIN1) Then Return
-		WEnd
-	EndIf
+	WaitForClanMessage("ArmyOverview")
 
 	Local $sSiegeDiamond = GetDiamondFromRect2(575, 190 + $g_iMidOffsetY, 770, 270 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 

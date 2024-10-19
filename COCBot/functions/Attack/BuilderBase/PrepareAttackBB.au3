@@ -149,7 +149,7 @@ Func CheckArmyReady()
 		SetLog("Train to Fill Army", $COLOR_INFO)
 		ClickAway()
 		If _Sleep(2000) Then Return
-		ClickP($aArmyTrainButton, 1, 0, "BB Train Button")
+		ClickP($aArmyTrainButton, 1, 120, "BB Train Button")
 
 		If _Sleep(1000) Then Return ; wait for window
 		For $i = 1 To 5
@@ -188,7 +188,7 @@ Func CheckArmyReady()
 EndFunc   ;==>CheckArmyReady
 
 Func CheckForSlots()
-	ClickP($aArmyTrainButton, 1, 0, "BB Train Button")
+	ClickP($aArmyTrainButton, 1, 120, "BB Train Button")
 	If _Sleep(1000) Then Return
 	Local $aDetectedSlots = QuickMIS("CNX", $g_sImgDirBBTroops, 45, 220 + $g_iMidOffsetY, 608, 310 + $g_iMidOffsetY)
 	If IsArray($aDetectedSlots) And UBound($aDetectedSlots) > 0 Then

@@ -18,7 +18,7 @@ Func TreasuryCollect()
 	SetDebugLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
 	If Not $g_bRunState Then Return ; ensure bot is running
 
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYRESPOND) Then Return
 
 	If ($g_aiClanCastlePos[0] = "-1" Or $g_aiClanCastlePos[1] = "-1") Then ;check for valid CC location
@@ -30,15 +30,14 @@ Func TreasuryCollect()
 			Return
 		EndIf
 	EndIf
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYCOLLECT3) Then Return
 	BuildingClick($g_aiClanCastlePos[0], $g_aiClanCastlePos[1], "#0250") ; select CC
-	; Click($g_aiClanCastlePos[0], $g_aiClanCastlePos[1], 1, 0, "#0433")   ; select CC
 	If _Sleep($DELAYTREASURY2) Then Return
 
 	Local $aTreasuryButton = findButton("Treasury", Default, 1, True)
 	If IsArray($aTreasuryButton) And UBound($aTreasuryButton, 1) = 2 Then
-		If IsMainPage() Then ClickP($aTreasuryButton, 1, 0, "#0330")
+		If IsMainPage() Then ClickP($aTreasuryButton, 1, 120, "#0330")
 		If _Sleep($DELAYTREASURY1) Then Return
 	Else
 		SetLog("Cannot find the Treasury Button", $COLOR_ERROR)
@@ -51,6 +50,8 @@ Func TreasuryCollect()
 			If _Sleep($DELAYTRAIN1) Then Return
 		WEnd
 	EndIf
+
+	WaitForClanMessage("Treasury")
 
 	If Not _WaitForCheckPixel($aTreasuryWindow, $g_bCapturePixel, Default, "Wait treasury window:") Then
 		SetLog("Treasury window not found!", $COLOR_ERROR)
@@ -71,21 +72,24 @@ Func TreasuryCollect()
 	If $bForceCollect Or ($g_bChkTreasuryCollect And ((Number($g_aiCurrentLoot[$eLootGold]) <= $g_iTxtTreasuryGold) Or (Number($g_aiCurrentLoot[$eLootElixir]) <= $g_iTxtTreasuryElixir) Or (Number($g_aiCurrentLoot[$eLootDarkElixir]) <= $g_iTxtTreasuryDark))) Then
 		Local $aCollectButton = findButton("Collect", Default, 1, True)
 		If IsArray($aCollectButton) And UBound($aCollectButton, 1) = 2 Then
-			ClickP($aCollectButton, 1, 0, "#0330")
+			ClickP($aCollectButton, 1, 130, "#0330")
 			If _Sleep($DELAYTREASURY2) Then Return
 			If ClickOkay("ConfirmCollectTreasury") Then ; Click Okay to confirm collect treasury loot
 				SetLog("Treasury collected successfully.", $COLOR_SUCCESS)
 			Else
 				SetLog("Cannot Click Okay Button on Treasury Collect screen", $COLOR_ERROR)
+				CloseWindow2()
+				If _Sleep($DELAYTREASURY3) Then Return
+				CloseWindow()
 			EndIf
 		Else
 			SetDebugLog("Error in TreasuryCollect(): Cannot find the Collect Button", $COLOR_ERROR)
+			CloseWindow()
 		EndIf
 	Else
-		ClickAway()
-		If _Sleep($DELAYTREASURY4) Then Return
+		CloseWindow()
 	EndIf
 
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYTREASURY4) Then Return
 EndFunc   ;==>TreasuryCollect

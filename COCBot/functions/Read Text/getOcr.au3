@@ -17,8 +17,22 @@ Func getOresValues2($x_start, $y_start, $bNeedCapture = True) ;  -> Get least up
 	Return getOcrAndCapture("coc-ores2", $x_start, $y_start, 149, 16, $bNeedCapture)
 EndFunc   ;==>getOresValues2
 
-Func getNameBuilding($x_start, $y_start) ; getNameBuilding(242,520) -> Gets complete name and level of the buildings, bottom of screen
-	Return getOcrAndCapture("coc-build", $x_start, $y_start, 420, 27)
+Func getNameBuilding($x_start, $y_start) ; getNameBuilding(242,Y) -> Gets complete name and level of the buildings, bottom of screen
+	Local $b_Obstacles[9] = ["Broken", "Cart", "Tree", "Mush", "Trunk", "Bush", "Bark", "Gem", "Cake"]
+	Local $bResult = getOcrAndCapture("coc-build", $x_start, $y_start, 420, 27)
+	If StringInStr($bResult, "O T T O", $STR_CASESENSE) Then
+		$bResult = StringReplace($bResult, "O T T O", "O.T.T.O")
+		Return $bResult
+	ElseIf StringInStr($bResult, "B O B", $STR_CASESENSE) Then
+		$bResult = StringReplace($bResult, "B O B", "B.O.B")
+		Return $bResult
+	Else
+		For $i = 0 To UBound($b_Obstacles) - 1
+			If StringInStr($bResult, $b_Obstacles[$i]) Then Return $bResult
+		Next
+	EndIf
+	If $bResult = "" Or Not StringInStr($bResult, "Level") Then $bResult = getOcrAndCapture("coc-build2", $x_start, $y_start - 27, 420, 27)
+	Return $bResult
 EndFunc   ;==>getNameBuilding
 
 Func getGoldVillageSearch($x_start, $y_start) ;48, 69 -> Gets complete value of gold xxx,xxx while searching, top left, Getresources.au3
@@ -104,6 +118,10 @@ Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building u
 	Return $Result
 EndFunc   ;==>getBldgUpgradeTime
 
+Func getBldgUpgradeTime2($x_start, $y_start) ; -> Gets complete remain building upgrade time
+	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 105, 18, True) ; "12d 19h"
+EndFunc   ;==>getBldgUpgradeTime2
+
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
 	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 100, 24, True) ; 95 is required to upgrades
 EndFunc   ;==>getLabUpgradeTime
@@ -176,12 +194,16 @@ Func getSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army c
 	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 40, 16, True, False, $bNeedCapture)
 EndFunc   ;==>getSiegeCampCap
 
+Func getCCSpellCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
+	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 35, 16, True, False, $bNeedCapture)
+EndFunc   ;==>getCCSpellCap
+
 Func getCCSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
 	Return getOcrAndCapture("coc-camps", $x_start, $y_start, 28, 16, True, False, $bNeedCapture)
 EndFunc   ;==>getCCSiegeCampCap
 
 Func getCastleDonateCap($x_start, $y_start) ;  -> Gets clan castle capacity,  --> donatecc.au3
-	Return getOcrAndCapture("coc-army", $x_start, $y_start, 30, 14, True)
+	Return getOcrAndCapture("coc-army", $x_start, $y_start, 40, 14, True)
 EndFunc   ;==>getCastleDonateCap
 
 Func getOcrLanguage($x_start, $y_start) ;  -> Get english language - main screen - "Attack" text on attack button
@@ -192,6 +214,10 @@ Func getOcrSpaceCastleDonate($x_start, $y_start) ;  -> Get the number of troops 
 	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 49, 14, True)
 EndFunc   ;==>getOcrSpaceCastleDonate
 
+Func getOcrSpaceCastleDonateShort($x_start, $y_start) ;  -> Get the number of troops donated/capacity from a request
+	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 35, 14, True)
+EndFunc   ;==>getOcrSpaceCastleDonateShort
+
 Func getOcrOverAllDamage($x_start, $y_start) ;  -> Get the Overall Damage %
 	Return getOcrAndCapture("coc-overalldamage", $x_start, $y_start, 50, 20, True)
 EndFunc   ;==>getOcrOverAllDamage
@@ -201,8 +227,16 @@ Func getOcrGuardShield($x_start, $y_start) ;  -> Get the guard/shield time left,
 EndFunc   ;==>getOcrGuardShield
 
 Func getCCBuildingName($x_start, $y_start) ;  -> Get BuildingName on builder menu
-	Local $BuildingName = "", $Count = 1
-	Local $Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 18, False)
+	Local $Name = "", $BuildingName = "", $Count = 1
+	For $i = 1 To 2
+		$Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 18, False)
+		If $Name = "" Then
+			If _Sleep(50) Then Return
+			$Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start + $i, 200, 18, False)
+		Else
+			ExitLoop
+		EndIf
+	Next
 	If StringRegExp($Name, "x\d{1,}") Then
 		Local $aCount = StringRegExp($Name, "\d{1,}", 1) ;check if we found count of building
 		If IsArray($aCount) Then $Count = $aCount[0]
@@ -227,8 +261,17 @@ Func getCCBuildingName($x_start, $y_start) ;  -> Get BuildingName on builder men
 EndFunc   ;==>getCCBuildingName
 
 Func getCCBuildingNameSuggested($x_start, $y_start) ;  -> Get BuildingName on builder menu
-	Local $BuildingName = "", $Count = 1
-	Local $Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 18, False)
+	Local $Name = "", $BuildingName = "", $Count = 1
+	For $i = 1 To 2
+		$Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 18, False)
+		If $Name = "" Then
+			If _Sleep(50) Then Return
+			$Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start + $i, 200, 18, False)
+		Else
+			ExitLoop
+		EndIf
+	Next
+
 	If StringRegExp($Name, "x\d{1,}") Then
 		Local $aCount = StringRegExp($Name, "\d{1,}", 1) ;check if we found count of building
 		If IsArray($aCount) Then $Count = $aCount[0]
@@ -257,8 +300,16 @@ Func getCCBuildingNameSuggested($x_start, $y_start) ;  -> Get BuildingName on bu
 EndFunc   ;==>getCCBuildingNameSuggested
 
 Func getCCBuildingNameBlue($x_start, $y_start) ;  -> Get BuildingName on builder menu
-	Local $BuildingName = "", $Count = 1
-	Local $Name = getOcrAndCapture("coc-ccbuildermenu-nameblue", $x_start, $y_start, 200, 18, False)
+	Local $Name = "", $BuildingName = "", $Count = 1
+	For $i = 1 To 2
+		$Name = getOcrAndCapture("coc-ccbuildermenu-nameblue", $x_start, $y_start, 200, 18, False)
+		If $Name = "" Then
+			If _Sleep(50) Then Return
+			$Name = getOcrAndCapture("coc-ccbuildermenu-nameblue", $x_start, $y_start + $i, 200, 18, False)
+		Else
+			ExitLoop
+		EndIf
+	Next
 	If StringRegExp($Name, "x\d{1,}") Then
 		Local $aCount = StringRegExp($Name, "\d{1,}", 1) ;check if we found count of building
 		If IsArray($aCount) Then $Count = $aCount[0]
@@ -364,13 +415,13 @@ Func getRemainTLaboratoryGob($x_start, $y_start) ; read actual time remaining in
 	Return getOcrAndCapture("coc-RemainLabGob", $x_start, $y_start, 130, 18, True)
 EndFunc   ;==>getRemainTLaboratoryGob
 
-Func getRemainTHero($x_start, $y_start, $bNeedCapture = True) ; Get time remaining for hero to be ready for attack from train window, BK:443,504 AQ:504,504 GW:565:504
-	Local $Result = StringReplace(getOcrAndCapture("coc-remainhero", $x_start, $y_start, 55, 12, True, False, $bNeedCapture), "b", "")
+Func getRemainTHero($x_start, $y_start, $bNeedCapture = True) ; Get time remaining for hero to be ready for attack from train window
+	Local $Result = StringReplace(getOcrAndCapture("coc-remainhero", $x_start, $y_start, 55, 13, True, False, $bNeedCapture), "b", "")
 	Return $Result
 EndFunc   ;==>getRemainTHero
 
 Func getRequestRemainTime($x_start, $y_start, $bNeedCapture = True) ; Get Remain Time To request Troops
-	Return StringReplace(getOcrAndCapture("coc-CCremainTime", $x_start, $y_start, 30, 10, False, False, $bNeedCapture), "b", "")
+	Return StringReplace(getOcrAndCapture("coc-CCremainTime", $x_start, $y_start, 30, 10, True, False, $bNeedCapture), "b", "")
 EndFunc   ;==>getRequestRemainTime
 
 Func getCloudTextShort($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
@@ -396,7 +447,8 @@ Func getCloudFailShort($x_start, $y_start, $sLogText = Default, $LogTextColor = 
 EndFunc   ;==>getCloudFailShort
 
 Func getBarracksNewTroopQuantity($x_start, $y_start, $bNeedCapture = True) ;  -> Gets quantity of troops in army Window
-	Return getOcrAndCapture("coc-newarmy", $x_start, $y_start, 45, 18, True, False, $bNeedCapture)
+	Local $Result = StringReplace(getOcrAndCapture("coc-newarmy", $x_start, $y_start, 45, 18, True, False, $bNeedCapture), "b", "")
+	Return $Result
 EndFunc   ;==>getBarracksNewTroopQuantity
 
 Func getArmyCapacityOnTrainTroops($x_start, $y_start) ;  -> Gets quantity of troops in army Window

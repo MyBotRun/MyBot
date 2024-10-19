@@ -42,7 +42,7 @@ Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Defaul
 	If $Font = Default Then $Font = "Verdana"
 	If $FontSize = Default Then $FontSize = 7.5
 	If $statusbar = Default Then $statusbar = 1
-    If $time = Default Then $time = Time()
+	If $time = Default Then $time = Time()
 	Local $debugTime = TimeDebug()
 	If $bConsoleWrite = Default Then $bConsoleWrite = True
 	If $bEndLine = Default Then $bEndLine = True
@@ -162,14 +162,14 @@ Func SetDebugLog($sLogMessage, $sColor = $COLOR_DEBUG, $bSilentSetLog = Default,
 	If $bSilentSetLog = Default Then $bSilentSetLog = $g_bSilentSetDebugLog
 
 	If $g_bDebugSetlog And Not $bSilentSetLog Then
-        _SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, Default, Default, $sLogPrefix)
+		_SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, Default, Default, $sLogPrefix)
 	Else
 		If $sLogMessage <> "" Then _ConsoleWrite(GetLogLevel($sColor) & $sLog) ; Always write any log to console
 		If $g_hLogFile = 0 And $g_sProfileLogsPath Then CreateLogFile()
 		If $g_hLogFile Then
 			__FileWriteLog($g_hLogFile, $sLog)
 		Else
-            _SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, False, Default, $sLogPrefix, Default, True) ; $bConsoleWrite = False
+			_SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, False, Default, $sLogPrefix, Default, True) ; $bConsoleWrite = False
 		EndIf
 	EndIf
 EndFunc   ;==>SetDebugLog

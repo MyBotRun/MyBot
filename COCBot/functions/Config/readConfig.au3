@@ -72,15 +72,16 @@ Func ReadClanGamesConfig()
 	IniReadS($g_bChkClanGamesNoOneDay, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesNoOneDay", False, "Bool")
 	IniReadS($g_bChkClanGamesCollectRewards, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesCollectRewards", False, "Bool")
 
-	IniReadS($g_bChkClanGamesLoot, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesLoot", True, "Bool")
-	IniReadS($g_bChkClanGamesBattle, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesBattle", True, "Bool")
-	IniReadS($g_bChkClanGamesDes, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesDestruction", True, "Bool")
+	IniReadS($g_bChkClanGamesLoot, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesLoot", False, "Bool")
+	IniReadS($g_bChkClanGamesBattle, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesBattle", False, "Bool")
+	IniReadS($g_bChkClanGamesDes, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesDestruction", False, "Bool")
 	IniReadS($g_bChkClanGamesAirTroop, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesAirTroop", False, "Bool")
 	IniReadS($g_bChkClanGamesGroundTroop, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesGroundTroop", False, "Bool")
-	IniReadS($g_bChkClanGamesMiscellaneous, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesMiscellaneous", True, "Bool")
+	;	IniReadS($g_bChkClanGamesEquipment, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesEquipment", False, "Bool")
+	IniReadS($g_bChkClanGamesMiscellaneous, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesMiscellaneous", False, "Bool")
 	IniReadS($g_bChkClanGamesSpell, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesSpell", False, "Bool")
-	IniReadS($g_bChkClanGamesBBBattle, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesBBBattle", True, "Bool")
-	IniReadS($g_bChkClanGamesBBDes, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesBBDestruction", True, "Bool")
+	IniReadS($g_bChkClanGamesBBBattle, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesBBBattle", False, "Bool")
+	IniReadS($g_bChkClanGamesBBDes, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesBBDestruction", False, "Bool")
 	IniReadS($g_bChkClanGamesBBTroops, $g_sProfileClanGamesPath, "clangames", "ChkClanGamesBBTroops", False, "Bool")
 
 	IniReadS($g_bChkForceBBAttackOnClanGames, $g_sProfileClanGamesPath, "clangames", "ChkForceBBAttackOnClanGames", True, "Bool")
@@ -138,6 +139,16 @@ Func ReadClanGamesConfig()
 		Else
 			$g_abCGMainGroundItem[$i] = $str[$i]
 		EndIf
+	Next
+	;ClanGames MainVillage Equipment Challenges
+	$str = StringSplit(IniRead($g_sProfileClanGamesPath, "clangames", "EnabledCGEquipment", "0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|"), "|", $STR_NOCOUNT)
+	For $i = 0 To UBound($g_abCGEquipmentItem) - 1
+		$g_abCGEquipmentItem[$i] = 0
+		;	If $i >= UBound($str) Then
+		;		$g_abCGEquipmentItem[$i] = 0
+		;	Else
+		;		$g_abCGEquipmentItem[$i] = $str[$i]
+		;	EndIf
 	Next
 	;ClanGames MainVillage Miscellaneous Challenges
 	$str = StringSplit(IniRead($g_sProfileClanGamesPath, "clangames", "EnabledCGMisc", "0|0|0|"), "|", $STR_NOCOUNT)
@@ -782,6 +793,7 @@ Func ReadConfig_600_15()
 
 	; Equipment Order
 	IniReadS($g_bChkCustomEquipmentOrderEnable, $g_sProfileConfigPath, "upgrade", "ChkUpgradeEquipment", False, "Bool")
+	IniReadS($g_bChkFinishCurrentEquipmentFirst, $g_sProfileConfigPath, "upgrade", "ChkFinishCurrentEquipmentFirst", True, "Bool")
 	For $z = 0 To UBound($g_aiCmbCustomEquipmentOrder) - 1
 		IniReadS($g_bChkCustomEquipmentOrder[$z], $g_sProfileConfigPath, "upgrade", "ChkEquipment" & $z, False, "Bool")
 		IniReadS($g_aiCmbCustomEquipmentOrder[$z], $g_sProfileConfigPath, "upgrade", "cmbEquipmentOrder" & $z, -1)
@@ -803,6 +815,7 @@ EndFunc   ;==>ReadConfig_600_16
 Func ReadConfig_auto()
 	; Auto Upgrade
 	IniReadS($g_bAutoUpgradeEnabled, $g_sProfileConfigPath, "Auto Upgrade", "AutoUpgradeEnabled", False, "Bool")
+	IniReadS($g_bChkAppBuilder, $g_sProfileConfigPath, "Auto Upgrade", "IsChkAppBuilder", $g_bChkAppBuilder, "int")
 	For $i = 0 To UBound($g_iChkUpgradesToIgnore) - 1
 		IniReadS($g_iChkUpgradesToIgnore[$i], $g_sProfileConfigPath, "Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i], "int")
 	Next
@@ -1216,17 +1229,10 @@ EndFunc   ;==>ReadConfig_600_30_LB
 
 Func ReadConfig_600_31()
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
-	$g_abCollectorLevelEnabled[7] = 0
-	For $i = 7 To 15
-		IniReadS($g_abCollectorLevelEnabled[$i], $g_sProfileConfigPath, "collectors", "lvl" & $i & "Enabled", True, "Bool")
-	Next
-	For $i = 6 To 15
-		IniReadS($g_aiCollectorLevelFill[$i], $g_sProfileConfigPath, "collectors", "lvl" & $i & "fill", 0, "int")
-		If $g_aiCollectorLevelFill[$i] > 1 Then $g_aiCollectorLevelFill[$i] = 1
-	Next
 	IniReadS($g_bCollectorFilterDisable, $g_sProfileConfigPath, "search", "chkDisableCollectorsFilter", False, "Bool")
-	IniReadS($g_iCollectorMatchesMin, $g_sProfileConfigPath, "collectors", "minmatches", $g_iCollectorMatchesMin) ; 1-6 collectors
-	If $g_iCollectorMatchesMin < 1 Or $g_iCollectorMatchesMin > 6 Then $g_iCollectorMatchesMin = 3
+	IniReadS($g_bSupercharge, $g_sProfileConfigPath, "search", "chkSupercharge", False, "Bool")
+	IniReadS($g_iCollectorMatchesMin, $g_sProfileConfigPath, "collectors", "minmatches", $g_iCollectorMatchesMin) ; 1-7 collectors
+	If $g_iCollectorMatchesMin < 1 Or $g_iCollectorMatchesMin > 7 Then $g_iCollectorMatchesMin = 3
 	IniReadS($g_iCollectorToleranceOffset, $g_sProfileConfigPath, "collectors", "tolerance", 0, "int")
 EndFunc   ;==>ReadConfig_600_31
 
@@ -1322,7 +1328,6 @@ Func ReadConfig_SwitchAccounts()
 	If $g_iCmbSwitchAcc Then
 		Local $sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g_iCmbSwitchAcc & ".ini"
 		$g_bChkSwitchAcc = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "0") = "1"
-		$g_bChkGooglePlay = IniRead($sSwitchAccFile, "SwitchAccount", "GooglePlay", "0") = "1"
 		$g_bChkSuperCellID = IniRead($sSwitchAccFile, "SwitchAccount", "SuperCellID", "0") = "1"
 		$g_bChkSharedPrefs = IniRead($sSwitchAccFile, "SwitchAccount", "SharedPrefs", "0") = "1"
 		$g_bChkSmartSwitch = IniRead($sSwitchAccFile, "SwitchAccount", "SmartSwitch", "0") = "1"
@@ -1356,42 +1361,17 @@ EndFunc   ;==>ReadConfig_600_52_1
 
 Func ReadConfig_600_52_2()
 	For $T = 0 To $eTroopCount - 1
-		Local $tempTroopCount, $tempTroopLevel
-		Switch $T
-			Case $eTroopBarbarian
-				IniReadS($tempTroopCount, $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 58, "int")
-				IniReadS($tempTroopLevel, $g_sProfileConfigPath, "LevelTroop", $g_asTroopShortNames[$T], 1, "int")
-			Case $eTroopArcher
-				IniReadS($tempTroopCount, $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 115, "int")
-				IniReadS($tempTroopLevel, $g_sProfileConfigPath, "LevelTroop", $g_asTroopShortNames[$T], 1, "int")
-			Case $eTroopGoblin
-				IniReadS($tempTroopCount, $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 19, "int")
-				IniReadS($tempTroopLevel, $g_sProfileConfigPath, "LevelTroop", $g_asTroopShortNames[$T], 1, "int")
-			Case $eTroopGiant
-				IniReadS($tempTroopCount, $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 4, "int")
-				IniReadS($tempTroopLevel, $g_sProfileConfigPath, "LevelTroop", $g_asTroopShortNames[$T], 1, "int")
-			Case $eTroopWallBreaker
-				IniReadS($tempTroopCount, $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 4, "int")
-				IniReadS($tempTroopLevel, $g_sProfileConfigPath, "LevelTroop", $g_asTroopShortNames[$T], 1, "int")
-			Case Else
-				IniReadS($tempTroopCount, $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 0, "int")
-				IniReadS($tempTroopLevel, $g_sProfileConfigPath, "LevelTroop", $g_asTroopShortNames[$T], 0, "int")
-		EndSwitch
-		$g_aiArmyCustomTroops[$T] = $tempTroopCount
-		$g_aiTrainArmyTroopLevel[$T] = $tempTroopLevel
+		IniReadS($g_aiArmyCustomTroops[$T], $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 0, "int")
 	Next
+	$g_aiArmyCompTroops = $g_bQuickTrainEnable ? $g_aiArmyQuickTroops : $g_aiArmyCustomTroops
 
 	For $S = 0 To $eSpellCount - 1
 		IniReadS($g_aiArmyCustomSpells[$S], $g_sProfileConfigPath, "Spells", $g_asSpellShortNames[$S], 0, "int")
-		IniReadS($g_aiTrainArmySpellLevel[$S], $g_sProfileConfigPath, "LevelSpell", $g_asSpellShortNames[$S], 0, "int")
 	Next
-	$g_aiArmyCompTroops = $g_bQuickTrainEnable ? $g_aiArmyQuickTroops : $g_aiArmyCustomTroops
 	$g_aiArmyCompSpells = $g_bQuickTrainEnable ? $g_aiArmyQuickSpells : $g_aiArmyCustomSpells
 
 	For $S = 0 To $eSiegeMachineCount - 1
 		IniReadS($g_aiArmyCompSiegeMachines[$S], $g_sProfileConfigPath, "Siege", $g_asSiegeMachineShortNames[$S], 0, "int")
-		;IniReadS($g_aiTrainArmySiegeMachineLevel[$S], $g_sProfileConfigPath, "LevelSiege", $g_asSiegeMachineShortNames[$S], 0, "int")
-		;SetLog("Siege" & $g_asSiegeMachineShortNames[$S] & " - " & $g_aiArmyCompSiegeMachines[$S], $COLOR_ERROR)
 	Next
 	IniReadS($g_iTrainArmyFullTroopPct, $g_sProfileConfigPath, "troop", "fullTroop", 100, "int")
 	$g_bTotalCampForced = (IniRead($g_sProfileConfigPath, "other", "ChkTotalCampForced", "1") = "1")
