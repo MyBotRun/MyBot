@@ -1,4 +1,69 @@
-* v8.1.7
+* v8.1.8
+* Improved Shield Time OCR (Partially Hidden "M" is now read).
+* Improved Donate System (Requests with Pictures).
+* Updated Close While Training/Without Shield Option.
+* Added Snow Day Scenery Full Support.
+* Fixed Open Machines Tab When Donate Queue Only For Troops And Spells is unchecked.
+* Improved BB Tropps Red Cost OCR.
+* Improved Battle Drill Detection.
+* Improved Train "Hidden Troops" when the troop bar is moved all the way to the right.
+* Improved Clan Games Moved Tile Detection.
+* Added Clan Games Challenges Sorting by Scores.
+* Improved Few Clan Games Challenges Detection.
+* Cleaned CG Purge Code.
+* Improved Sieges Training Logic.
+* Updated IsPostDefenseSummaryPage() and CheckObstacles()
+* Increased Tolerance for CC/BB/Main White Menu Border Detection.
+* Fixed Array Bounds Error in CheckDonate().
+* Fixed Druid Donation.
+* Updated CheckObstacles().
+* Improved Builder's Apprentice Cooldown OCR.
+* Rewrited Custom Sceneries Code.
+* Updated BB New Buildings Placement.
+* Added Justice Scenery Full support.
+* Removed BS1 and BS2 Code.
+* Improved Finish Now Button Detection (Apprentice).
+* Fixed Read Laboratory Remaining Time When Goblin Builder is working.
+* Changed Main UTC Provider.
+* Updated IsAttackWhileShieldPage().
+* Improved Remove Obstacles System (DeDup).
+* Improved Army Cap OCR.
+* Improved Loot Cart Detection.
+* Adjusted Resources Reading Area.
+* Fixed Array Bounds Error in ClanGames().
+* Fixed IsCoordSafe(Obstacles).
+* Readded "I understand" detection (Chat).
+* Updated Pet Cost.
+* Updated Equipment Exclusion.
+* Improved Archer Puppet Detection.
+* Improved Hero Hall/Hero Status Detection.
+* Added Hero Slot Auto Detection.
+* Bug Fixes.
+* Improved Obstacles Detection.
+* Improved Level 7 and 8 Wall Detection.
+* Updated BS5 version.
+* Improved Lab Assistant System.
+* Improved Hero Upgrade and Cost
+* Improved Hero Status Detection.
+* Added Missing Variables.
+* Few Bug Fixes. 
+* Added Full support For COC 16.654.13-16
+* Added Minion Prince Full support.
+* Updated Blacksmith support.
+* Added New equipment support.
+* Added Thrower and Revive Spell Full support.
+* Added TH17 full Support.
+* Updated train slots position.
+* Updated Close Button Search Area.
+* Improved Upgrade Logic Between Lab/Heroes/Buildings/Walls.
+* Added Snake Bracelet Equipment Code.
+* Increased Hidden Troops Range Due To Thrower Slot.
+* Improved few icons quality.
+* Fixed Attack Window Fail When only 1 type of troop and empty siege.
+* Improved Justice Scenery detection (Main).
+* Improved Second Army Check Before Donate.
+
+* v8.1.7 **
 * Added Fireball equipment support.
 * Improved Donation system.
 * Fixed Overgrowth spell donate strings translation.

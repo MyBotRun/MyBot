@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -148,7 +148,6 @@
 #include "functions\Android\CheckAndroidPageError.au3"
 #include "functions\Android\CheckAndroidRebootCondition.au3"
 #include "functions\Android\AndroidBlueStacks5.au3"
-#include "functions\Android\AndroidBlueStacks.au3"
 #include "functions\Android\AndroidMEmu.au3"
 #include "functions\Android\AndroidNox.au3"
 #include "functions\Android\getBSPos.au3"
@@ -245,7 +244,7 @@
 #include "functions\Village\LocateClanCastle.au3"
 #include "functions\Village\LocateLab.au3"
 #include "functions\Village\LocateTownHall.au3"
-#include "functions\Village\LocateHeroesAltar.au3"
+#include "functions\Village\LocateHeroHall.au3"
 #include "functions\Village\ProfileReport.au3"
 #include "functions\Village\RequestCC.au3"
 #include "functions\Village\VillageReport.au3"
@@ -276,7 +275,8 @@
 #include "functions\Village\ClanCapital.au3"
 #include "functions\Village\LocateBlacksmith.au3"
 #include "functions\Village\Blacksmith.au3"
-#include "functions\Village\AppBuilder.au3"
+#include "functions\Village\HelperHut.au3"
+#include "functions\Village\LocateHelperHut.au3"
 
 #include "functions\Village\BuilderBase\Collect.au3"
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"

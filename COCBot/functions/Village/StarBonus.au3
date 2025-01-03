@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: MonkeyHunter(2016-1)
 ; Modified ......: MonkeyHunter (05-2017), Moebius14 (12-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,7 +16,7 @@ Func StarBonus()
 	SetDebugLog("Begin Star Bonus window check", $COLOR_DEBUG1)
 
 	Local $aWindowChk1[4] = [630, 100 + $g_iMidOffsetY, 0x32A1F7, 20] ; Top Blue Sky
-	Local $aWindowChk2[4] = [570, 180 + $g_iMidOffsetY, 0xC8CAC6, 20] ; Grey star
+	Local $aWindowChk2[4] = [570, 180 + $g_iMidOffsetY, 0xC8CBC6, 20] ; Grey star
 
 	If _Sleep($DELAYSTARBONUS100) Then Return
 
@@ -25,7 +25,7 @@ Func StarBonus()
 		; Find and Click Okay button
 		Local $aiOkayButton = findButton("Okay", Default, 1, True)
 		If IsArray($aiOkayButton) And UBound($aiOkayButton, 1) = 2 Then
-			PureClick($aiOkayButton[0], $aiOkayButton[1], 2, 50, "#0117") ; Click Okay Button
+			PureClickP($aiOkayButton, 1, 100, "#0117") ; Click Okay Button
 			If _Sleep($DELAYSTARBONUS500) Then Return
 			$StarBonusReceived = 1
 			Return True

@@ -5,8 +5,8 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........:
-; Modified ......: CodeSlinger69 (2017), Moebius14 (06-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Modified ......: CodeSlinger69 (2017), Moebius14 (12-2024)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -19,7 +19,8 @@ Global $g_hChkABActivateSearches = 0, $g_hTxtABSearchesMin = 0, $g_hTxtABSearche
 Global $g_hChkABActivateTropies = 0, $g_hTxtABTropiesMin = 0, $g_hTxtABTropiesMax = 0  ; Trophy limit
 Global $g_hChkABActivateCamps = 0, $g_hTxtABArmyCamps = 0 ; Camp limit
 Global $g_hChkABKingWait = 0, $g_hChkABQueenWait = 0, $g_hChkABWardenWait = 0, $g_hChkABChampionWait = 0, $g_hChkABNotWaitHeroes = 0
-Global $g_hChkABSpellsWait = 0, $g_hChkABWaitForCastle = 0
+Global $g_hChkABPrinceWait = 0, $g_hPicABPrinceWait = 0, $g_hPicABPrinceSleepWait = 0
+Global $g_hChkABSpellsWait = 0, $g_hChkABMachineWait = 0, $g_hChkABWaitForCastle = 0
 
 Global $g_hLblABSearches = 0, $g_hLblABTropies = 0, $g_hLblABArmyCamps = 0
 Global $g_hPicABHeroesWait = 0, $g_hTxtABHeroesWait = 0, $g_hPicABKingWait = 0, $g_hPicABKingSleepWait = 0, $g_hPicABQueenWait = 0, $g_hPicABQueenSleepWait = 0, _
@@ -34,7 +35,7 @@ Global $g_hChkABMeetTrophy = 0, $g_hTxtABMinTrophy = 0, $g_hTxtABMaxTrophy = 0
 Global $g_hChkABMeetTH = 0, $g_hCmbABTH = 0, $g_hChkABMeetTHO = 0
 
 Global $g_hGrpABFilter = 0, $g_hPicABMinGold = 0, $g_hPicABMinElixir = 0, $g_hPicABMinGPEGold = 0, $g_hPicABMinDarkElixir = 0, $g_hPicABMinTrophies = 0
-Global $g_ahPicABMaxTH[16]
+Global $g_ahPicABMaxTH[17]
 
 Func CreateAttackSearchActiveBaseSearch()
 	Local $sTxtLightningSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortLightningSpells", -1)
@@ -103,50 +104,60 @@ Func CreateAttackSearchActiveBaseSearch()
 	GUICtrlCreateLabel("%", $x + 163 + 3, $y + 4, -1, -1)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 
-	$y += 23
+	$y += 25
 	$g_hPicABHeroesWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHourGlass, $x - 1, $y + 3, 16, 16)
 	$g_hTxtABHeroesWait = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtHeroesWait", -1) & ":", $x + 20, $y + 4, 180, 18)
 
 	$y += 20
-	$x += 20
-	$g_hChkABKingWait = GUICtrlCreateCheckbox("", $x - 6, $y + 45, 16, 16)
+	$x += 23
+	$g_hChkABKingWait = GUICtrlCreateCheckbox("", $x - 9, $y + 35, 16, 16)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_01", -1) & @CRLF & _
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_02", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
-	$g_hPicABKingWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x - 18, $y + 4, 40, 40)
+	$g_hPicABKingWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x - 15, $y + 5, 25, 25)
 	_GUICtrlSetTip(-1, $sTxtTip)
-	$g_hPicABKingSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingKing, $x - 18, $y + 4, 40, 40)
+	$g_hPicABKingSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingKing, $x - 15, $y + 5, 25, 25)
 	GUICtrlSetState(-1, $GUI_HIDE)
 
-	$x += 45
-	$g_hChkABQueenWait = GUICtrlCreateCheckbox("", $x - 6, $y + 45, 16, 16)
+	$x += 35
+	$g_hChkABQueenWait = GUICtrlCreateCheckbox("", $x - 9, $y + 35, 16, 16)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_01", -1) & @CRLF & _
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_02", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
-	$g_hPicABQueenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x - 18, $y + 4, 40, 40)
+	$g_hPicABQueenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x - 15, $y + 5, 25, 25)
 	_GUICtrlSetTip(-1, $sTxtTip)
-	$g_hPicABQueenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingQueen, $x - 18, $y + 4, 40, 40)
+	$g_hPicABQueenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingQueen, $x - 15, $y + 5, 25, 25)
 	GUICtrlSetState(-1, $GUI_HIDE)
 
-	$x += 45
-	$g_hChkABWardenWait = GUICtrlCreateCheckbox("", $x - 6, $y + 45, 16, 16)
+	$x += 35
+	$g_hChkABPrinceWait = GUICtrlCreateCheckbox("", $x - 9, $y + 35, 16, 16)
+	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtPrinceWait_Info_01", -1) & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtPrinceWait_Info_02", -1)
+	_GUICtrlSetTip(-1, $sTxtTip)
+	$g_hPicABPrinceWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnPrince, $x - 15, $y + 5, 25, 25)
+	_GUICtrlSetTip(-1, $sTxtTip)
+	$g_hPicABPrinceSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingPrince, $x - 15, $y + 5, 25, 25)
+	GUICtrlSetState(-1, $GUI_HIDE)
+
+	$x += 35
+	$g_hChkABWardenWait = GUICtrlCreateCheckbox("", $x - 9, $y + 35, 16, 16)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_01", -1) & @CRLF & _
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_02", -1)
-	$g_hPicABWardenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x - 18, $y + 4, 40, 40)
+	$g_hPicABWardenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x - 15, $y + 5, 25, 25)
 	_GUICtrlSetTip(-1, $sTxtTip)
-	$g_hPicABWardenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x - 18, $y + 4, 40, 40)
+	$g_hPicABWardenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x - 15, $y + 5, 25, 25)
 	GUICtrlSetState(-1, $GUI_HIDE)
 
-	$x += 45
-	$g_hChkABChampionWait = GUICtrlCreateCheckbox("", $x - 6, $y + 45, 16, 16)
+	$x += 35
+	$g_hChkABChampionWait = GUICtrlCreateCheckbox("", $x - 9, $y + 35, 16, 16)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtChampionWait_Info_01", -1) & @CRLF & _
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtChampionWait_Info_02", -1)
-	$g_hPicABChampionWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x - 18, $y + 4, 40, 40)
+	$g_hPicABChampionWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x - 15, $y + 5, 25, 25)
 	_GUICtrlSetTip(-1, $sTxtTip)
-	$g_hPicABChampionSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingChampion, $x - 18, $y + 4, 40, 40)
+	$g_hPicABChampionSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingChampion, $x - 15, $y + 5, 25, 25)
 	GUICtrlSetState(-1, $GUI_HIDE)
 
-	$y += 70
+	$y += 58
 	$x = 10
 	$g_hChkABNotWaitHeroes = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkNotWaitHeroes", -1), $x, $y, -1, -1)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkNotWaitHeroes_Info_01", -1))
@@ -170,7 +181,11 @@ Func CreateAttackSearchActiveBaseSearch()
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait_Info_02", -1))
 	GUICtrlSetOnEvent(-1, "chkABSpellsWait")
 
-	$g_hChkABWaitForCastle = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastle", -1), $x, $y + 20, -1, -1)
+	$g_hChkABMachineWait = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkDBMachineWait", -1), $x, $y + 20, -1, -1)
+	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkDBMachineWait_Info_01", -1) & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkDBMachineWait_Info_02", -1))
+
+	$g_hChkABWaitForCastle = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastle", -1), $x, $y + 40, -1, -1)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastle_Info_01", -1))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -249,7 +264,7 @@ Func CreateAttackSearchActiveBaseSearch()
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbDBTH", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlSetState(-1, $GUI_DISABLE)
-	GUICtrlSetData(-1, "4-6|7|8|9|10|11|12|13|14|15", "4-6")
+	GUICtrlSetData(-1, "4-6|7|8|9|10|11|12|13|14|15|16", "4-6")
 	GUICtrlSetOnEvent(-1, "CmbABTH")
 	$g_ahPicABMaxTH[6] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV06, $x + 137, $y - 3, 24, 24)
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -281,6 +296,9 @@ Func CreateAttackSearchActiveBaseSearch()
 	$g_ahPicABMaxTH[15] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV15, $x + 137, $y - 3, 24, 24)
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlSetState(-1, $GUI_HIDE)
+	$g_ahPicABMaxTH[16] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV16, $x + 137, $y - 3, 24, 24)
+	_GUICtrlSetTip(-1, $sTxtTip)
+	GUICtrlSetState(-1, $GUI_HIDE)
 
 	$y += 24
 	$g_hChkABMeetTHO = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO", "Townhall Outside"), $x, $y, -1, -1)
@@ -309,7 +327,7 @@ Func CreateAttackSearchActiveBaseSearch()
 	$g_ahCmbWeakWizTower[$LB] = GUICtrlCreateCombo("", $x + 19, $y, 54, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMaxWizTower_Info_01", "Set the Max. level of the Wizard Tower to search for on a village to attack.")
 	_GUICtrlSetTip(-1, $sTxtTip)
-	GUICtrlSetData(-1, "-|Lvl 1|Lvl 2|Lvl 3|Lvl 4|Lvl 5|Lvl 6|Lvl 7|Lvl 8|Lvl 9|Lvl 10|Lvl 11|Lvl 12|Lvl 13|Lvl 14|Lvl 15", "Lvl 4")
+	GUICtrlSetData(-1, "-|Lvl 1|Lvl 2|Lvl 3|Lvl 4|Lvl 5|Lvl 6|Lvl 7|Lvl 8|Lvl 9|Lvl 10|Lvl 11|Lvl 12|Lvl 13|Lvl 14|Lvl 15|Lvl 16", "Lvl 4")
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$g_ahPicWeakWizTower[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWizTower, $x + 76, $y - 2, 24, 24)
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -321,7 +339,7 @@ Func CreateAttackSearchActiveBaseSearch()
 	$g_ahCmbWeakAirDefense[$LB] = GUICtrlCreateCombo("", $x + 19, $y, 54, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMaxAirDefense_Info_01", "Set the Max. level of the Air Defense to search for on a village to attack.")
 	_GUICtrlSetTip(-1, $sTxtTip)
-	GUICtrlSetData(-1, "-|Lvl 1|Lvl 2|Lvl 3|Lvl 4|Lvl 5|Lvl 6|Lvl 7|Lvl 8|Lvl 9|Lvl 10|Lvl 11|Lvl 12|Lvl 13", "Lvl 7")
+	GUICtrlSetData(-1, "-|Lvl 1|Lvl 2|Lvl 3|Lvl 4|Lvl 5|Lvl 6|Lvl 7|Lvl 8|Lvl 9|Lvl 10|Lvl 11|Lvl 12|Lvl 13|Lvl 14", "Lvl 7")
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$g_ahPicWeakAirDefense[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnAirdefense, $x + 76, $y - 2, 24, 24)
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -387,7 +405,7 @@ Func CreateAttackSearchActiveBaseSearch()
 	$g_ahPicWeakMonolith[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnMonolith, $x + 76, $y - 2, 24, 24)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$y += 44
+	$y += 20
 	$y += 24
 	$x = $xStartColumn
 	$g_ahChkMeetOne[$LB] = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetOne", -1), $x, $y, -1, -1)

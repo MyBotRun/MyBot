@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016-01)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,7 +23,7 @@ Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = Fals
 	Local $checkTropies = Int($currentTropies) >= Int($g_aiSearchTrophiesMin[$g_iMatchMode]) And Int($currentTropies) <= Int($g_aiSearchTrophiesMax[$g_iMatchMode]) And $g_abSearchTropiesEnable[$g_iMatchMode]
 	Local $checkArmyCamps = Int($currentArmyCamps) >= Int($g_aiSearchCampsPct[$g_iMatchMode]) And $g_abSearchCampsEnable[$g_iMatchMode]
 	; true if we have correct needed heroes or we do not need to check our heroes... this variable decides if your heroes are ready for this particular search mode
-	Local $bCheckHeroes = ($g_aiSearchHeroWaitEnable[$g_iMatchMode] = $eHeroNone) or ($g_aiSearchHeroWaitEnable[$g_iMatchMode] > $eHeroNone And BitAND($g_aiSearchHeroWaitEnable[$g_iMatchMode], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$g_iMatchMode]) Or $bDontCheckHeroes
+	Local $bCheckHeroes = ($g_aiSearchHeroWaitEnable[$g_iMatchMode] = $eHeroNone) Or ($g_aiSearchHeroWaitEnable[$g_iMatchMode] > $eHeroNone And BitAND($g_aiSearchHeroWaitEnable[$g_iMatchMode], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$g_iMatchMode]) Or $bDontCheckHeroes
 
 	Local $g_bCheckSpells = ($g_bFullArmySpells And $g_abSearchSpellsWaitEnable[$g_iMatchMode]) Or $g_abSearchSpellsWaitEnable[$g_iMatchMode] = False
 	Local $totalSpellsToBrew = 0
@@ -55,11 +55,11 @@ Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = Fals
 	Local $bcheckSiege = False
 	If $g_abSearchSiegeWaitEnable[$g_iMatchMode] Then
 		If (($g_aiAttackUseSiege[$g_iMatchMode] = 1 And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeWallWrecker] > 0)) Or _
-			($g_aiAttackUseSiege[$g_iMatchMode] = 2 And ($g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBattleBlimp] > 0)) Or _
-			($g_aiAttackUseSiege[$g_iMatchMode] = 3 And ($g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeStoneSlammer] > 0)) Or _
-			($g_aiAttackUseSiege[$g_iMatchMode] = 4 And ($g_aiCurrentSiegeMachines[$eSiegeBarracks] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBarracks] > 0)) Or _
-			($g_aiAttackUseSiege[$g_iMatchMode] = 5 And ($g_aiCurrentSiegeMachines[$eSiegeLogLauncher] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeLogLauncher] > 0)) Or _
-			$g_aiAttackUseSiege[$g_iMatchMode] = 0) Then
+				($g_aiAttackUseSiege[$g_iMatchMode] = 2 And ($g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBattleBlimp] > 0)) Or _
+				($g_aiAttackUseSiege[$g_iMatchMode] = 3 And ($g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeStoneSlammer] > 0)) Or _
+				($g_aiAttackUseSiege[$g_iMatchMode] = 4 And ($g_aiCurrentSiegeMachines[$eSiegeBarracks] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBarracks] > 0)) Or _
+				($g_aiAttackUseSiege[$g_iMatchMode] = 5 And ($g_aiCurrentSiegeMachines[$eSiegeLogLauncher] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeLogLauncher] > 0)) Or _
+				$g_aiAttackUseSiege[$g_iMatchMode] = 0) Then
 			$bcheckSiege = True
 		EndIf
 	Else
@@ -70,15 +70,15 @@ Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = Fals
 
 	If $bCheckHeroes And $g_bCheckSpells And $bcheckSiege Then ;If $bCheckHeroes Then
 		If ($checkSearches Or $g_abSearchSearchesEnable[$g_iMatchMode] = False) And ($checkTropies Or $g_abSearchTropiesEnable[$g_iMatchMode] = False) And ($checkArmyCamps Or $g_abSearchCampsEnable[$g_iMatchMode] = False) Then
-			If $g_bDebugSetlog And Not $bNoLog Then SetLog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & _
-																						  ",$checkTropies=" & $checkTropies & _
-																						  ",$checkArmyCamps=" & $checkArmyCamps & _
-																						  ",$bCheckHeroes=" & $bCheckHeroes & _
-																						  ",$g_bCheckSpells=" & $g_bCheckSpells & _
-																						  ",$bcheckSiege=" & $bcheckSiege & ")", $COLOR_INFO)
+			If $g_bDebugSetLog And Not $bNoLog Then SetLog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & _
+					",$checkTropies=" & $checkTropies & _
+					",$checkArmyCamps=" & $checkArmyCamps & _
+					",$bCheckHeroes=" & $bCheckHeroes & _
+					",$g_bCheckSpells=" & $g_bCheckSpells & _
+					",$bcheckSiege=" & $bcheckSiege & ")", $COLOR_INFO)
 			Return True
 		Else
-			If $g_bDebugSetlog And Not $bNoLog Then
+			If $g_bDebugSetLog And Not $bNoLog Then
 				SetLog($g_asModeText[$g_iMatchMode] & " not active!", $COLOR_INFO)
 				Local $txtsearches = "Fail"
 				If $checkSearches Then $txtsearches = "Success"
@@ -101,12 +101,12 @@ Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = Fals
 			Return False
 		EndIf
 	ElseIf Not $bCheckHeroes Then
-		If $g_bDebugSetlog And Not $bNoLog Then SetLog("Heroes not ready", $COLOR_DEBUG)
+		If $g_bDebugSetLog And Not $bNoLog Then SetLog("Heroes not ready", $COLOR_DEBUG)
 		Return False
 	ElseIf Not $bcheckSiege Then
-		If $g_bDebugSetlog And Not $bNoLog Then SetLog("Siege not ready", $COLOR_DEBUG)
+		If $g_bDebugSetLog And Not $bNoLog Then SetLog("Siege not ready", $COLOR_DEBUG)
 	Else
-		If $g_bDebugSetlog And Not $bNoLog Then SetLog("Spells not ready", $COLOR_DEBUG)
+		If $g_bDebugSetLog And Not $bNoLog Then SetLog("Spells not ready", $COLOR_DEBUG)
 		Return False
 	EndIf
 EndFunc   ;==>IsSearchModeActive
@@ -123,7 +123,7 @@ EndFunc   ;==>IsSearchModeActiveMini
 ; Return values .: Returns True if Wait for spells is enabled for any enabled attack mode, false if not
 ; Author ........: MonkeyHunter (06-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -132,11 +132,11 @@ EndFunc   ;==>IsSearchModeActiveMini
 Func IsWaitforSpellsActive()
 	For $i = $DB To $g_iModeCount - 1
 		If $g_abAttackTypeEnable[$i] And $g_abSearchSpellsWaitEnable[$i] Then
-			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforSpellsActive = True", $COLOR_DEBUG)
+			If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("IsWaitforSpellsActive = True", $COLOR_DEBUG)
 			Return True
 		EndIf
 	Next
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforSpellsActive = False", $COLOR_DEBUG)
+	If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("IsWaitforSpellsActive = False", $COLOR_DEBUG)
 	Return False
 EndFunc   ;==>IsWaitforSpellsActive
 
@@ -148,7 +148,7 @@ EndFunc   ;==>IsWaitforSpellsActive
 ; Return values .: Returns True if Wait for any Hero is enabled for any enabled attack mode, false if not
 ; Author ........: MonkeyHunter (06-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -157,11 +157,11 @@ EndFunc   ;==>IsWaitforSpellsActive
 Func IsWaitforHeroesActive()
 	For $i = $DB To $g_iModeCount - 1
 		If $g_abAttackTypeEnable[$i] And ($g_aiSearchHeroWaitEnable[$i] > $eHeroNone And (BitAND($g_aiAttackUseHeroes[$i], $g_aiSearchHeroWaitEnable[$i]) = $g_aiSearchHeroWaitEnable[$i]) And (Abs($g_aiSearchHeroWaitEnable[$i] - $g_iHeroUpgradingBit) > $eHeroNone)) Then
-			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforHeroesActive = True", $COLOR_DEBUG)
+			If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("IsWaitforHeroesActive = True", $COLOR_DEBUG)
 			Return True
 		EndIf
 	Next
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforHeroesActive = False", $COLOR_DEBUG)
+	If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("IsWaitforHeroesActive = False", $COLOR_DEBUG)
 	Return False
 EndFunc   ;==>IsWaitforHeroesActive
 
@@ -173,7 +173,7 @@ EndFunc   ;==>IsWaitforHeroesActive
 ; Return values .: Returns True if Wait for any Siege is enabled for any enabled attack mode, false if not
 ; Author ........: ProMac (07-2018)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -182,10 +182,10 @@ EndFunc   ;==>IsWaitforHeroesActive
 Func IsWaitforSiegeMachine()
 	For $i = $DB To $g_iModeCount - 1
 		If $g_abAttackTypeEnable[$i] And $g_abSearchSiegeWaitEnable[$i] Then
-			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforSiegeMachine = True", $COLOR_DEBUG)
+			If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("IsWaitforSiegeMachine = True", $COLOR_DEBUG)
 			Return True
 		EndIf
 	Next
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforSiegeMachine = False", $COLOR_DEBUG)
+	If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("IsWaitforSiegeMachine = False", $COLOR_DEBUG)
 	Return False
 EndFunc   ;==>IsWaitforSiegeMachine

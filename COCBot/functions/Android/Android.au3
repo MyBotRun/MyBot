@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (12-2015)
 ; Modified ......: CodeSlinger69 (01-2017), TFKNazgul (08-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -1770,7 +1770,7 @@ Func CheckScreenAndroid($ClientWidth, $ClientHeight, $bSetLog = True)
 		EndIf
 	Else
 		Switch $g_sAndroidEmulator
-			Case "BlueStacks", "BlueStacks2", "BlueStacks5" ; BlueStacks doesn't support it
+			Case "BlueStacks5" ; BlueStacks doesn't support it
 			Case Else
 				SetDebugLog($g_sAndroidEmulator & " Display Font Scale cannot be verified", $COLOR_ERROR)
 		EndSwitch
@@ -5003,11 +5003,8 @@ Func CheckEmuNewVersions()
 	Local $HelpLink = "Please visit MyBot Forum!"
 
 	Switch $g_sAndroidEmulator
-		Case "BlueStacks2"
-			$NewVersion = GetVersionNormalized("0.0.0.0")
-			SetLog("This " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ") is not supported!", $COLOR_ERROR)    ;Not Supported with v8.1+
 		Case "BlueStacks5"
-			$NewVersion = GetVersionNormalized("5.21.580.1017")
+			$NewVersion = GetVersionNormalized("5.21.642.1003")
 		Case "MEmu"
 			$NewVersion = GetVersionNormalized("9.0.8.0")
 		Case "Nox"

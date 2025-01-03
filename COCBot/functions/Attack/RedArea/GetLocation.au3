@@ -6,7 +6,7 @@
 ; Return values .: String with locations
 ; Author ........:
 ; Modified ......: ProMac (04-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -171,7 +171,7 @@ EndFunc   ;==>GetLocationDarkElixirWithLevel
 ; Return values .: None
 ; Author ........: MonkeyHunter (04-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -179,7 +179,7 @@ EndFunc   ;==>GetLocationDarkElixirWithLevel
 ; ===============================================================================================================================
 Func GetLocationBuilding($iBuildingType, $iAttackingTH = $g_iMaxTHLevel, $bForceCaptureRegion = True)
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin GetLocationBuilding: " & $g_sBldgNames[$iBuildingType], $COLOR_DEBUG1)
+	If $g_bDebugSetLog Then SetDebugLog("Begin GetLocationBuilding: " & $g_sBldgNames[$iBuildingType], $COLOR_DEBUG1)
 	Local $hTimer = __TimerInit() ; timer to track image detection time
 
 	; Variables
@@ -338,7 +338,7 @@ Func GetLocationBuilding($iBuildingType, $iAttackingTH = $g_iMaxTHLevel, $bForce
 	$aBldgCoord = decodeMultipleCoords($sLocCoord) ; change string into array with location x,y sub-arrays inside each row
 	;$aBldgCoord = GetListPixel($sLocCoord, ",", "GetLocationBuilding" & $g_sBldgNames[$iBuildingType]) ; change string into array with debugattackcsv message instead of general log msg?
 
-	If $g_bDebugBuildingPos Or  $g_bDebugSetlog Then ; temp debug message to display building location string returned, and convert "_LOCATION" array to string message for comparison
+	If $g_bDebugBuildingPos Or  $g_bDebugSetLog Then ; temp debug message to display building location string returned, and convert "_LOCATION" array to string message for comparison
 		SetLog("Bldg Loc Coord String: " & $sLocCoord, $COLOR_DEBUG)
 		Local $sText
 		Select
@@ -392,11 +392,11 @@ Func DebugImageGetLocation($sVector, $sType, $iBuildingENUM = "")
 					Local $aPixels = StringSplit($temp[1], "-", 2) ;PIXEL ["404","325"]
 					If UBound($aPixels) = 2 Then
 						If isInsideDiamondRedArea($aPixels) Then
-							If $g_bDebugSetlog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
+							If $g_bDebugSetLog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 							_CaptureRegion($aPixels[0] - 30, $aPixels[1] - 30, $aPixels[0] + 30, $aPixels[1] + 30)
 							SaveDebugImage("DebugImageGetLocation_" & $sType & "_", False)
 						Else
-							If $g_bDebugSetlog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
+							If $g_bDebugSetLog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 						EndIf
 					EndIf
 				EndIf
@@ -408,11 +408,11 @@ Func DebugImageGetLocation($sVector, $sType, $iBuildingENUM = "")
 				Local $aPixels = StringSplit($aVector[$i], "-", 2) ;PIXEL ["404","325"]
 				If UBound($aPixels) = 2 Then
 					If isInsideDiamondRedArea($aPixels) Then
-						If $g_bDebugSetlog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
+						If $g_bDebugSetLog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 						_CaptureRegion($aPixels[0] - 30, $aPixels[1] - 30, $aPixels[0] + 30, $aPixels[1] + 30)
 						SaveDebugImage("DebugImageGetLocation_" & $sType & "_", False)
 					Else
-						If $g_bDebugSetlog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
+						If $g_bDebugSetLog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 					EndIf
 				EndIf
 			Next
@@ -427,11 +427,11 @@ Func DebugImageGetLocation($sVector, $sType, $iBuildingENUM = "")
 				Local $aPixels = StringSplit($aVector[$i], ",", 2) ;PIXEL ["404","325"]
 				If UBound($aPixels) = 2 Then
 					If isInsideDiamondRedArea($aPixels) Then
-						If $g_bDebugSetlog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
+						If $g_bDebugSetLog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 						_CaptureRegion($aPixels[0] - 30, $aPixels[1] - 30, $aPixels[0] + 30, $aPixels[1] + 30)
 						SaveDebugImage("DebugImageGetLocation_" & StringStripWS($g_sBldgNames[$iBuildingENUM], $STR_STRIPALL) & "_", False)
 					Else
-						If $g_bDebugSetlog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
+						If $g_bDebugSetLog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 					EndIf
 				EndIf
 			Next
@@ -465,7 +465,7 @@ Func ConvertImgloc2MBR($aArray, $iMaxPositions, $bLevel = False)
 	EndIf
 
 	$sStringConverted = StringTrimRight($sStringConverted, 1) ; remove the last " |" or "~"
-	If $g_bDebugSetlog Then SetDebugLog("$sStringConverted: " & $sStringConverted)
+	If $g_bDebugSetLog Then SetDebugLog("$sStringConverted: " & $sStringConverted)
 
 	Return $sStringConverted ; xxx-yyy|xxx-yyy|n.... OR Lv#xxx-yyy~Lv#xxx-yyy
 EndFunc   ;==>ConvertImgloc2MBR

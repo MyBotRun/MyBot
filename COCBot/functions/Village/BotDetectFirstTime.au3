@@ -3,7 +3,7 @@
 ; Description ...: This script detects your builings on the first run
 ; Author ........: HungLe (04/2015)
 ; Modified ......: Hervidero (05/2015), HungLe (05/2015), KnowJack(07/2015), Sardo (08/2015), CodeSlinger69 (01/2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,7 +14,7 @@
 Func BotDetectFirstTime()
 	If $g_bIsClientSyncError Then Return ; if restart after OOS, and User stop/start bot, skip this.
 
-	ClickAway()
+	ClearScreen()
 	If _Sleep($DELAYBOTDETECT1) Then Return
 
 	SetLog("Detecting your Buildings", $COLOR_INFO)
@@ -67,8 +67,16 @@ Func BotDetectFirstTime()
 
 	If $g_bScreenshotHideName Then
 		If _Sleep($DELAYBOTDETECT3) Then Return
-		If $g_aiClanCastlePos[0] = -1 Then
+		If $g_aiClanCastlePos[0] = -1 Or $g_aiClanCastleTroopsCap = -1 Then
 			LocateClanCastle(False)
+			SaveConfig()
+		EndIf
+	EndIf
+
+	If Number($g_iTownHallLevel) >= 7 Then
+		If _Sleep($DELAYBOTDETECT3) Then Return
+		If $g_aiHeroHallPos[0] = "" Or $g_aiHeroHallPos[0] = -1 Then
+			LocateHeroHall(False)
 			SaveConfig()
 		EndIf
 	EndIf
@@ -95,37 +103,11 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	If Number($g_iTownHallLevel) >= 7 Then
-		If $g_iCmbBoostBarbarianKing > 0 Or $g_bUpgradeKingEnable Then
-			If _Sleep($DELAYBOTDETECT3) Then Return
-			If $g_aiKingAltarPos[0] = -1 Then
-				LocateKingAltar(False)
-				SaveConfig()
-			EndIf
-		EndIf
-
-		If Number($g_iTownHallLevel) >= 9 And ($g_iCmbBoostArcherQueen > 0 Or $g_bUpgradeQueenEnable) Then
-			If _Sleep($DELAYBOTDETECT3) Then Return
-			If $g_aiQueenAltarPos[0] = -1 Then
-				LocateQueenAltar(False)
-				SaveConfig()
-			EndIf
-		EndIf
-
-		If Number($g_iTownHallLevel) >= 11 And ($g_iCmbBoostWarden > 0 Or $g_bUpgradeWardenEnable) Then
-			If _Sleep($DELAYBOTDETECT3) Then Return
-			If $g_aiWardenAltarPos[0] = -1 Then
-				LocateWardenAltar(False)
-				SaveConfig()
-			EndIf
-		EndIf
-
-		If Number($g_iTownHallLevel) >= 13 And ($g_iCmbBoostChampion > 0 Or $g_bUpgradeChampionEnable) Then
-			If _Sleep($DELAYBOTDETECT3) Then Return
-			If $g_aiChampionAltarPos[0] = -1 Then
-				LocateChampionAltar(False)
-				SaveConfig()
-			EndIf
+	If Number($g_iTownHallLevel) >= 9 Then
+		If _Sleep($DELAYBOTDETECT3) Then Return
+		If $g_aiHelperHutPos[0] = "" Or $g_aiHelperHutPos[0] = -1 Then
+		LocateHelperHut(False)
+		SaveConfig()
 		EndIf
 	EndIf
 

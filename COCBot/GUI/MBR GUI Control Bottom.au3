@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), KnowJack(July 2015), CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -28,8 +28,8 @@ Func Initiate()
 		If StringInStr(@OSVersion, "WIN_11", $STR_NOCASESENSEBASIC) Or _
 				StringInStr(@OSVersion, "WIN_2019", $STR_NOCASESENSEBASIC) Or _
 				StringInStr(@OSVersion, "WIN_2022", $STR_NOCASESENSEBASIC) Then
-			Setlog(" Unsupported Windows 11 OS detected!!", $COLOR_ERROR)
-			Setlog(" See MBR forum for more information", $COLOR_ERROR)
+			SetLog(" Unsupported Windows 11 OS detected!!", $COLOR_ERROR)
+			SetLog(" See MBR forum for more information", $COLOR_ERROR)
 		EndIf
 
 		Local $sGameVersion = GetCoCAppVersion()
@@ -41,9 +41,9 @@ Func Initiate()
 			SetLogCentered(" Search Mode Start ", Default, $COLOR_SUCCESS)
 		EndIf
 		SetLogCentered("  Current Profile: " & $g_sProfileCurrentName & " ", "-", $COLOR_INFO)
-		If $g_bDebugSetlog Or $g_bDebugOcr Or $g_bDebugRedArea Or $g_bDevMode Or $g_bDebugImageSave Or $g_bDebugBuildingPos Or $g_bDebugOCRdonate Or $g_bDebugAttackCSV Or $g_bDebugAndroid Then
+		If $g_bDebugSetLog Or $g_bDebugOcr Or $g_bDebugRedArea Or $g_bDevMode Or $g_bDebugImageSave Or $g_bDebugBuildingPos Or $g_bDebugOCRdonate Or $g_bDebugAttackCSV Or $g_bDebugAndroid Then
 			SetLogCentered(" Warning Debug Mode Enabled! ", "-", $COLOR_ERROR)
-			SetLog("      SetLog : " & $g_bDebugSetlog, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("      SetLog : " & $g_bDebugSetLog, $COLOR_ERROR, "Lucida Console", 8)
 			SetLog("     Android : " & $g_bDebugAndroid, $COLOR_ERROR, "Lucida Console", 8)
 			SetLog("         OCR : " & $g_bDebugOcr, $COLOR_ERROR, "Lucida Console", 8)
 			SetLog("     RedArea : " & $g_bDebugRedArea, $COLOR_ERROR, "Lucida Console", 8)

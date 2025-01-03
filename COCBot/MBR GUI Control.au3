@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), kaganus (08-2015), CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -520,8 +520,8 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnVillageStat()
 		Case $g_hPicArrowLeft, $g_hPicArrowRight
 			btnVillageStat()
-		Case $g_hChkDebugSetlog
-			chkDebugSetlog()
+		Case $g_hChkDebugSetLog
+			chkDebugSetLog()
 		Case $g_hChkDebugAndroid
 			chkDebugAndroid()
 		Case $g_hChkDebugClick
@@ -576,7 +576,7 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hBtnTestArmyWindow
 			Local $RuntimeA = $g_bRunState
 			$g_bRunState = True
-			Setlog("Army Window Test")
+			SetLog("Army Window Test")
 			_checkArmyCamp(False, False, False, True)
 			$g_bRunState = $RuntimeA
 		Case $g_hBtnTestBuildingLocation
@@ -609,14 +609,14 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 
 			Local $RuntimeA = $g_bRunState
 			$g_bRunState = True
-			Setlog("Prepare Attack test")
+			SetLog("Prepare Attack test")
 			PrepareAttack($DB, False)
 			$g_bRunState = $RuntimeA
 		Case $g_hBtnTestQuickTrainsimgloc
 
 			Local $RuntimeA = $g_bRunState
 			$g_bRunState = True
-			Setlog("Prepare Attack test - Remaining troops")
+			SetLog("Prepare Attack test - Remaining troops")
 			PrepareAttack($DB, True)
 			$g_bRunState = $RuntimeA
 	EndSwitch
@@ -1506,7 +1506,7 @@ EndFunc   ;==>tiExit
 ; Return values .: Boolean of former redraw state
 ; Author ........: Cosote (2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -2032,7 +2032,7 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 	Switch $nCtrl
 		Case $g_hTabMain
 			; the icons for main tab
-			Local $aIconIndex = [$eIcnHourGlass, $eIcnTH16, $eIcnAttack, $eIcnGUI, $eIcnInfo]
+			Local $aIconIndex = [$eIcnHourGlass, $eIcnTH17, $eIcnAttack, $eIcnGUI, $eIcnInfo]
 
 		Case $g_hGUI_VILLAGE_TAB
 			; the icons for village tab

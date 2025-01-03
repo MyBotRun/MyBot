@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac (05-2017)
 ; Modified ......: Moebius14 (12-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -59,7 +59,7 @@ Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave)
 
 	; If is not selected return
 	If Not $g_iChkBBSuggestedUpgrades Then Return
-	Local $bDebug = $g_bDebugSetlog
+	Local $bDebug = $g_bDebugSetLog
 	Local $bScreencap = True
 	Local $y = 102, $x = 490, $x1 = 630
 
@@ -83,9 +83,9 @@ Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave)
 				SetDebugLog("Upgrade Window Opened successfully", $COLOR_INFO)
 				; Proceeds with icon detection
 				Local $aLine = QuickMIS("CNX", $g_sImgAutoUpgradeBB, $x, $y, $x1, 340 + $g_iMidOffsetY)
-				_ArraySort($aLine, 0, 0, 0, 2) ;sort by Y coord
 				; Proceeds with icon detection
 				If IsArray($aLine) And UBound($aLine) > 0 Then
+					_ArraySort($aLine, 0, 0, 0, 2) ;sort by Y coord
 					For $i = 0 To UBound($aLine) - 1
 						Local $g_WallDetected = False
 						Local $aResult = GetIconPosition($x, $aLine[$i][2] - 10, $x1, $aLine[$i][2] + 10, $g_sImgAutoUpgradeBB, $bScreencap, $bDebug, $bDebugImage)
@@ -206,7 +206,7 @@ Func ClickOnBuilder()
 
 	If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
 
-		If IsArray(_PixelSearch($asSearchResult[0] - 1, $asSearchResult[1] + 53, $asSearchResult[0] + 1, $asSearchResult[1] + 55, Hex(0xFFFFFF, 6), 15, True)) Then Return True
+		If IsArray(_PixelSearch($asSearchResult[0] - 1, $asSearchResult[1] + 53, $asSearchResult[0] + 1, $asSearchResult[1] + 55, Hex(0xFFFFFF, 6), 30, True)) Then Return True
 
 		; Master Builder Check pixel [i] icon
 		Local Const $aMasterBuilder[4] = [$asSearchResult[0] - 15, $asSearchResult[1] - 9, 0x7ABDE3, 10]
@@ -222,7 +222,7 @@ Func ClickOnBuilder()
 				Click($aMasterBuilder[0], $aMasterBuilder[1], 1)
 				If _Sleep(2000) Then Return
 				; Let's verify if the Suggested Window open
-				If IsArray(_PixelSearch($asSearchResult[0] - 1, $asSearchResult[1] + 53, $asSearchResult[0] + 1, $asSearchResult[1] + 55, Hex(0xFFFFFF, 6), 15, True)) Then
+				If IsArray(_PixelSearch($asSearchResult[0] - 1, $asSearchResult[1] + 53, $asSearchResult[0] + 1, $asSearchResult[1] + 55, Hex(0xFFFFFF, 6), 30, True)) Then
 					Return True
 				Else
 					$sDebugText = "Window didn't opened"
@@ -462,7 +462,7 @@ Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 						If $bDebugImage Then SaveDebugRectImage("FoundInfo", $aTileArea)
 
 						If $i = UBound($ClocksCoordinates) - 1 Then
-							If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources!", $COLOR_DEBUG)
+							If $g_bDebugSetLog Then SetDebugLog("Slot without enough resources!", $COLOR_DEBUG)
 							CloseWindow()
 							ExitLoop
 						EndIf
@@ -511,42 +511,52 @@ Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 
 							Return True
 						Else
+
 							If Not QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 80, 60, 800, 570 + $g_iMidOffsetY) And QuickMIS("BC1", $sImgTunnel, 0, 190 + $g_iMidOffsetY, $g_iGAME_WIDTH, $g_iGAME_HEIGHT) Then
 								ClickDrag(700, 500 + $g_iMidOffsetY, 170, 80 + $g_iMidOffsetY)
-								If _Sleep(2000) Then Return
+								If _Sleep(Random(1500, 2000, 1)) Then Return
+								Zoomout()
+								If _Sleep(250) Then Return
 								If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgYes, 80, 60, 800, 570 + $g_iMidOffsetY) Then
 									Click($g_iQuickMISX, $g_iQuickMISY)
 									SetLog("Placed a new Building on Builder Base!", $COLOR_INFO)
-
 									If _Sleep(1000) Then Return
-
 									; Lets check if exist the [x] , Some Buildings like Traps when you place one will give other to place automatically!
 									If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 80, 60, 800, 570 + $g_iMidOffsetY) Then
 										SetLog("Found another building!")
 										Click($g_iQuickMISX, $g_iQuickMISY)
 									EndIf
-
 									Return True
 								EndIf
 							EndIf
 
-							For $j = 0 To 9
+							For $j = 0 To 8
 								If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 80, 60, 800, 570 + $g_iMidOffsetY) Then
-									Click($g_iQuickMISX, $g_iQuickMISY)
+									ClickDrag($g_iQuickMISX + 15, $g_iQuickMISY + 36, $g_iQuickMISX + 15 + 40, $g_iQuickMISY + 36 + 30, 500)
+									If _Sleep(Random(1500, 2000, 1)) Then Return
+									If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgYes, 80, 60, 800, 570 + $g_iMidOffsetY) Then
+										Click($g_iQuickMISX, $g_iQuickMISY)
+										SetLog("Placed a new Building on Builder Base!", $COLOR_INFO)
+										If _Sleep(1000) Then Return False
+										; Lets check if exist the [x] , Some Buildings like Traps when you place one will give other to place automatically!
+										If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 80, 60, 800, 570 + $g_iMidOffsetY) Then
+											SetLog("Found another building!")
+											Click($g_iQuickMISX, $g_iQuickMISY)
+										EndIf
+										Return True
+									EndIf
 									SetLog("Failed to deploy a new building on BB! [" & $g_iQuickMISX & "," & $g_iQuickMISY & "]", $COLOR_ERROR)
-
-									If _Sleep(100) Then Return False
-
-									ClickOnBuilder()
-
-									If _Sleep(1000) Then Return False
-									ExitLoop
+									If _Sleep(250) Then Return False
+									If $j = 8 And QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 80, 60, 800, 570 + $g_iMidOffsetY) Then
+										Click($g_iQuickMISX, $g_iQuickMISY)
+										If _Sleep(1000) Then Return False
+									EndIf
+								Else
+									SetLog("Failed to locate Cancel button [x] : " & $j)
 								EndIf
-
-								SetLog("Failed to locate Cancel button [x] : " & $j)
-
-								If _Sleep(100) Then Return
+								If _Sleep(250) Then Return
 							Next
+
 						EndIf
 					EndIf
 				Else

@@ -7,7 +7,7 @@
 ;				   Failure: 0
 ; Author ........: MMHK (01-2018)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -50,18 +50,21 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 						Return
 					EndIf
 					Switch $g_iTotalCampSpace
-						Case $g_iMaxCapTroopTH[15] + 5 To $g_iMaxCapTroopTH[16]    ; TH16
-							$iTHCol = $iTHBeginCol + 10
-							$iTH = 16
-						Case $g_iMaxCapTroopTH[14] + 5 To $g_iMaxCapTroopTH[15]    ; TH15
+						Case $g_iMaxCapTroopTH[14] + 5 To $g_iMaxCapTroopTH[17]    ; TH15/16/17
 							$iTHCol = $iTHBeginCol + 9
 							$iTH = 15
-						Case $g_iMaxCapTroopTH[13] + 5 To $g_iMaxCapTroopTH[14]    ; TH14
-							$iTHCol = $iTHBeginCol + 8
-							$iTH = 14
-						Case $g_iMaxCapTroopTH[12] + 5 To $g_iMaxCapTroopTH[13]    ; TH13
-							$iTHCol = $iTHBeginCol + 7
-							$iTH = 13
+						Case $g_iMaxCapTroopTH[12] + 5 To $g_iMaxCapTroopTH[14]    ; TH13/14
+							Switch $g_aiClanCastleSpellsCap
+								Case 3 ; TH14
+									$iTHCol = $iTHBeginCol + 8
+									$iTH = 14
+								Case 2 ; TH13
+									$iTHCol = $iTHBeginCol + 7
+									$iTH = 13
+								Case Else ; Forgot to relocate ?
+									$iTHCol = $iTHBeginCol + 7
+									$iTH = 13
+							EndSwitch
 						Case $g_iMaxCapTroopTH[11] + 5 To $g_iMaxCapTroopTH[12]    ; TH12
 							$iTHCol = $iTHBeginCol + 6
 							$iTH = 12

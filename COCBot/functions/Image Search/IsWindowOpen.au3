@@ -4,7 +4,7 @@
 ;                : Search for [X] in TR area and click if found.  Search for building text and clickaway if found
 ; Author ........: Fliegerfaust (06/2019)
 ; Modified ......: GrumpyHog (11/2022)
-; Remarks .......: This file is part of MyBot Copyright 2015-2024
+; Remarks .......: This file is part of MyBot Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -12,7 +12,7 @@
 ; ===============================================================================================================================
 Global $g_avWindowCoordinates[2] = [-1, -1]
 
-Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = "", $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
+Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = "", $bDebuglog = $g_bDebugSetLog, $bDebugImageSave = $g_bDebugImageSave)
 	Local $aFiles = _FileListToArrayRec($sImagePath)
 	Local $aWindow, $avResetCoords[2] = [-1, -1]
 
@@ -57,13 +57,13 @@ Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = ""
 	Return False
 EndFunc   ;==>IsWindowOpen
 
-Func CloseWindow($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
+Func CloseWindow($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebuglog = $g_bDebugSetLog, $bDebugImageSave = $g_bDebugImageSave)
 	Local $aiButton
 	Local $sImageDir = @ScriptDir & "\imgxml\Windows\CloseButton\*"
 
 	If $aSearchArea = Default Then
 		Local $iMidPointX = Round($g_iGAME_WIDTH / 2)
-		Local $iMidPointY = Round($g_iGAME_HEIGHT / 2)
+		Local $iMidPointY = 460 + $g_iMidOffsetY
 
 		Local $iX1 = $iMidPointX
 		Local $iX2 = $g_iGAME_WIDTH
@@ -106,13 +106,13 @@ Func CloseWindow($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebug
 	Return False
 EndFunc   ;==>CloseWindow
 
-Func CloseWindow2($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
+Func CloseWindow2($iLoopCount = 5, $iDelay = 200, $aSearchArea = Default, $bDebuglog = $g_bDebugSetLog, $bDebugImageSave = $g_bDebugImageSave)
 	Local $aiButton
 	Local $sImageDir = @ScriptDir & "\imgxml\Windows\CloseButton\*"
 
 	If $aSearchArea = Default Then
 		Local $iMidPointX = Round($g_iGAME_WIDTH / 2)
-		Local $iMidPointY = Round($g_iGAME_HEIGHT / 2)
+		Local $iMidPointY = 460 + $g_iMidOffsetY
 
 		Local $iX1 = $iMidPointX
 		Local $iX2 = $g_iGAME_WIDTH
@@ -143,9 +143,9 @@ EndFunc   ;==>CloseWindow2
 Func ClearScreen($Area = "Defaut", $MainVillage = True)
 	Local $IsGrayed = False
 	If $MainVillage Then
-		If _CheckPixel($aIsMainGrayed, $g_bCapturePixel) Then $IsGrayed = True
+		If IsMainGrayed() Then $IsGrayed = True
 	Else
-		If _CheckPixel($aIsBuilderBaseGrayed, $g_bCapturePixel) Then $IsGrayed = True
+		If IsBuilderBaseGrayed() Then $IsGrayed = True
 	EndIf
 	Local $sBuildingText = getNameBuilding(242, 475 + $g_iBottomOffsetY)
 	If $sBuildingText <> "" Or $IsGrayed Then

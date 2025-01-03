@@ -8,7 +8,7 @@
 ; ...............: Sets @error if buttons not found properly and sets @extended with string error message
 ; Author ........: MonkeyHunter (2016-01)(2017-06)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,9 +17,9 @@
 
 Func BreakPersonalShield()
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin BreakPersonalShield:", $COLOR_DEBUG1)
+	If $g_bDebugSetLog Then SetDebugLog("Begin BreakPersonalShield:", $COLOR_DEBUG1)
 
-	If $g_bDebugSetlog Then
+	If $g_bDebugSetLog Then
 		SetDebugLog("Checking if Shield available", $COLOR_INFO)
 		SetDebugLog("Have shield pixel color: " & _GetPixelColor($aHaveShield, $g_bCapturePixel) & " :" & _CheckPixel($aHaveShield, $g_bCapturePixel), $COLOR_DEBUG)
 	EndIf
@@ -44,7 +44,7 @@ Func BreakPersonalShield()
 			SetLog("Shield removed", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("No shield available", $COLOR_SUCCESS)
+		If $g_bDebugSetLog Then SetDebugLog("No shield available", $COLOR_SUCCESS)
 	EndIf
 
 	If _Sleep($DELAYPERSONALSHIELD1) Then ; wait for break shield window
@@ -52,7 +52,7 @@ Func BreakPersonalShield()
 		Return
 	EndIf
 
-	If $g_bDebugSetlog Then
+	If $g_bDebugSetLog Then
 		SetDebugLog("Checking if Personal Guard available", $COLOR_INFO)
 		SetDebugLog("Have guard pixel color: " & _GetPixelColor($aHavePerGuard, $g_bCapturePixel) & " :" & _CheckPixel($aHavePerGuard, $g_bCapturePixel), $COLOR_DEBUG)
 	EndIf
@@ -77,7 +77,7 @@ Func BreakPersonalShield()
 			SetLog("Personal Guard removed", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("No guard available", $COLOR_SUCCESS)
+		If $g_bDebugSetLog Then SetDebugLog("No guard available", $COLOR_SUCCESS)
 	EndIf
 
 EndFunc   ;==>BreakPersonalShield

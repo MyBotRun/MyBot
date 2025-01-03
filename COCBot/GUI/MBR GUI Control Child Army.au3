@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), Boju (11-2016), MR.ViPER (11-2016), CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -286,10 +286,14 @@ Func lblTotalCountSiege()
 	Next
 
 	For $i = 0 To $eSiegeMachineCount - 1
-		If ($g_iTotalTrainSpaceSiege <= 3) Then
+		If $g_iTotalTrainSpaceSiege <= 3 Then
 			GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_WHITE)
 		Else
-			GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_RED)
+			If $g_bDoubleTrain Then
+				GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_RED)
+			Else
+				GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], ($g_iTotalTrainSpaceSiege > 6 ? $COLOR_RED : $COLOR_WHITE))
+			EndIf
 		EndIf
 	Next
 EndFunc   ;==>lblTotalCountSiege
@@ -372,6 +376,7 @@ Func HideSpellsFctTH()
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellClone], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellInvisibility], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRevive], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellHaste], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellSkeleton], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellBat], 0)
@@ -388,6 +393,7 @@ Func HideSpellsFctTH()
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellBat], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellInvisibility], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRevive], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellOvergrowth], 0)
 	EndIf
 
@@ -397,6 +403,7 @@ Func HideSpellsFctTH()
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellInvisibility], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRevive], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellOvergrowth], 0)
 	EndIf
 
@@ -404,6 +411,7 @@ Func HideSpellsFctTH()
 		_GUI_Value_STATE("ENABLE", $groupInvisibility)
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRevive], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellOvergrowth], 0)
 	EndIf
 
@@ -411,11 +419,16 @@ Func HideSpellsFctTH()
 		_GUI_Value_STATE("ENABLE", $groupOvergrowth)
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRecall], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRevive], 0)
 	EndIf
 
 	If $g_iTownHallLevel > 12 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupRecall)
+	Else
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellRevive], 0)
 	EndIf
+
+	If $g_iTownHallLevel > 14 Or $g_iTownHallLevel = 0 Then _GUI_Value_STATE("ENABLE", $groupRevive)
 
 EndFunc   ;==>HideSpellsFctTH
 
@@ -539,7 +552,7 @@ Func chkTroopOrder($bSetLog = True)
 			GUICtrlSetState($g_ahCmbTroopOrder[$i], $GUI_DISABLE) ; disable combo boxes
 		Next
 		SetDefaultTroopGroup($bSetLog) ; Reset troopgroup values to default
-		If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then
+		If ($bSetLog Or $g_bDebugSetLogTrain) And $g_bCustomTrainOrderEnable Then
 			Local $sNewTrainList = ""
 			For $i = 0 To $eTroopCount - 1
 				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
@@ -667,7 +680,7 @@ Func BtnSpellsOrderSet()
 	Local $bMissingTroop = False ; flag for when troops are not assigned by user
 	Local $aiBrewOrder[$eSpellCount] = [ _
 			$eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, _
-			$eSpellInvisibility, $eSpellRecall, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellBat, $eSpellOvergrowth]
+			$eSpellInvisibility, $eSpellRecall, $eSpellRevive, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellBat, $eSpellOvergrowth]
 
 	; check for duplicate combobox index and take action
 	For $i = 0 To UBound($g_ahCmbSpellsOrder) - 1
@@ -795,7 +808,7 @@ Func BtnTroopOrderSet()
 		Else
 			SetLog("Troop training order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eTroopCount - 1
-				If $g_bDebugSetlogTrain Then SetLog("i = " & $i & " g_aiTrainOrder = " & $aiUsedTroop[$i])
+				If $g_bDebugSetLogTrain Then SetLog("i = " & $i & " g_aiTrainOrder = " & $aiUsedTroop[$i])
 				$sNewTrainList &= $g_asTroopShortNames[$aiUsedTroop[$i]] & ", "
 			Next
 			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
@@ -809,7 +822,7 @@ Func BtnTroopOrderSet()
 EndFunc   ;==>BtnTroopOrderSet
 
 Func ChangeSpellsBrewOrder()
-	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then SetLog("Begin Func ChangeSpellsBrewOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetLog Or $g_bDebugSetLogTrain Then SetLog("Begin Func ChangeSpellsBrewOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewTroopOrder[$eSpellCount]
 	Local $iUpdateCount = 0
@@ -848,7 +861,7 @@ EndFunc   ;==>ChangeSpellsBrewOrder
 
 Func ChangeTroopTrainOrder()
 
-	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then SetLog("Begin Func ChangeTroopTrainOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetLog Or $g_bDebugSetLogTrain Then SetLog("Begin Func ChangeTroopTrainOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewTroopOrder[$eTroopCount]
 	Local $iUpdateCount = 0
@@ -889,7 +902,7 @@ Func SetDefaultTroopGroup($bSetLog = True)
 		$g_aiTrainOrder[$i] = $i
 	Next
 
-	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then SetLog("Default troop training order set", $COLOR_SUCCESS)
+	If ($bSetLog Or $g_bDebugSetLogTrain) And $g_bCustomTrainOrderEnable Then SetLog("Default troop training order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultTroopGroup
 
 Func SetDefaultSpellsGroup($bSetLog = True)
@@ -897,28 +910,28 @@ Func SetDefaultSpellsGroup($bSetLog = True)
 		$g_aiBrewOrder[$i] = $i
 	Next
 
-	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then SetLog("Default Spells Brew order set", $COLOR_SUCCESS)
+	If ($bSetLog Or $g_bDebugSetLogTrain) And $g_bCustomTrainOrderEnable Then SetLog("Default Spells Brew order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultSpellsGroup
 
 Func IsUseCustomSpellsOrder()
 	For $i = 0 To UBound($g_aiCmbCustomBrewOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomBrewOrder[$i] = -1 Then
-			If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then SetLog("Custom Spell order not used...", $COLOR_DEBUG) ;Debug
+			If $g_bDebugSetLogTrain And $g_bCustomBrewOrderEnable Then SetLog("Custom Spell order not used...", $COLOR_DEBUG) ;Debug
 			Return False
 		EndIf
 	Next
-	If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then SetLog("Custom Spell order used...", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetLogTrain And $g_bCustomBrewOrderEnable Then SetLog("Custom Spell order used...", $COLOR_DEBUG) ;Debug
 	Return True
 EndFunc   ;==>IsUseCustomSpellsOrder
 
 Func IsUseCustomTroopOrder()
 	For $i = 0 To UBound($g_aiCmbCustomTrainOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomTrainOrder[$i] = -1 Then
-			If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then SetLog("Custom train order not used...", $COLOR_DEBUG) ;Debug
+			If $g_bDebugSetLogTrain And $g_bCustomTrainOrderEnable Then SetLog("Custom train order not used...", $COLOR_DEBUG) ;Debug
 			Return False
 		EndIf
 	Next
-	If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then SetLog("Custom train order used...", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetLogTrain And $g_bCustomTrainOrderEnable Then SetLog("Custom train order used...", $COLOR_DEBUG) ;Debug
 	Return True
 EndFunc   ;==>IsUseCustomTroopOrder
 
@@ -1501,6 +1514,15 @@ Func ChkPreciseArmy()
 	EndIf
 EndFunc   ;==>ChkPreciseArmy
 
+Func ChkDoubleTrain()
+	If GUICtrlRead($g_hChkDoubleTrain) = $GUI_CHECKED Then
+		$g_bDoubleTrain = True
+	Else
+		$g_bDoubleTrain = False
+	EndIf
+	lblTotalCountSiege()
+EndFunc   ;==>ChkDoubleTrain
+
 Func RemoveAllTmpTrain($sWhat = "All")
 	If $sWhat = "All" Or $sWhat = "Troop" Then
 		For $i = 0 To UBound($g_ahPicTrainArmyTroopTmp) - 1
@@ -1531,10 +1553,10 @@ Func HideAllTroops()
 	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopMinion] To $g_ahTxtTrainArmyTroopCount[$eTroopDruid]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
-	For $i = $g_ahPicTrainArmyTroop[$eTroopBarbarian] To $g_ahPicTrainArmyTroop[$eTroopRootRider]
+	For $i = $g_ahPicTrainArmyTroop[$eTroopBarbarian] To $g_ahPicTrainArmyTroop[$eTroopThrower]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
-	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopRootRider]
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopThrower]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
 	For $i = $g_ahPicTrainArmyTroop[$eTroopSuperBarbarian] To $g_ahPicTrainArmyTroop[$eTroopSuperHogRider]
@@ -1579,10 +1601,10 @@ EndFunc   ;==>SetBtnSelector
 
 Func BtnElixirTroops()
 	HideAllTroops()
-	For $i = $g_ahPicTrainArmyTroop[$eTroopBarbarian] To $g_ahPicTrainArmyTroop[$eTroopRootRider]
+	For $i = $g_ahPicTrainArmyTroop[$eTroopBarbarian] To $g_ahPicTrainArmyTroop[$eTroopThrower]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
-	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopRootRider]
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian] To $g_ahTxtTrainArmyTroopCount[$eTroopThrower]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
 	SetBtnSelector("ElixirTroops")

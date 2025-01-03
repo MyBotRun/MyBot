@@ -7,7 +7,7 @@
 ; Return values .: True if it is, returns false if it is not a dead base
 ; Author ........:  AtoZ , DinoBot (01-2015)
 ; Modified ......: CodeSlinger69 (01-2017), Moebius14 (08-2024)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -103,7 +103,7 @@ EndFunc   ;==>checkDeadBase
 
 Func SuperchargeCheck($TestDeadBase = False)
 	; Supercharge
-	If $TestDeadBase Or ($g_iTownHallLevel >= $g_iMaxTHLevel - 2 And $g_bSupercharge) Then
+	If $TestDeadBase Or ($g_iTownHallLevel > 13 And $g_bSupercharge) Then ; Only If TH Level > 13
 		If Not FileExists($g_sImgElixirCollectorFill & "supercharge*.xml") Then
 			FileCopy($g_sImgElixirSupercharge, $g_sImgElixirCollectorFill)
 			If _Sleep($DELAYRUNBOT3) Then Return ; 200 ms
@@ -139,13 +139,13 @@ Func checkDeadBaseQuick($bForceCapture = True, $TestDeadBase = False)
 	Local $dbFound = False
 	Local $aTempArray, $aTempCoords, $aTempMultiCoords
 	Local $aTempArrayEx, $aTempCoordsEx, $aTempMultiCoordsEx
-	Local $aExclusions[0][2]
-	Local $aTempCollectors[0][2]
+	Local $aExclusions[0][2], $bFoundExclusions = False
+	Local $aTempCollectors[0][2], $bFoundTempCollectors = False
 	Local $aCollectors[0][2]
 
 	; check for any collector filling
 	Local $result = findMultiple($g_sImgElixirCollectorFill, $sCocDiamond, $redLines, $minLevel, $maxLevel, $maxReturnPoints, $returnProps, $bForceCapture)
-	Local $bFoundFilledCollectors = IsArray($result) = 1
+	Local $bFoundFilledCollectors = $result <> "" And IsArray($result)
 
 	If $bFoundFilledCollectors Then
 
@@ -157,9 +157,9 @@ Func checkDeadBaseQuick($bForceCapture = True, $TestDeadBase = False)
 			For $j = 0 To UBound($aTempMultiCoordsEx, 1) - 1
 				$aTempCoordsEx = $aTempMultiCoordsEx[$j]
 				_ArrayAdd($aExclusions, $aTempCoordsEx[0] & "|" & $aTempCoordsEx[1])
+				$bFoundExclusions = True
 			Next
 		Next
-		Local $bFoundExclusions = IsArray($aExclusions) = 1
 		If $bFoundExclusions Then
 			For $i = 0 To UBound($aExclusions) - 1
 				$aExclusions[$i][0] = Number($aExclusions[$i][0])
@@ -176,9 +176,9 @@ Func checkDeadBaseQuick($bForceCapture = True, $TestDeadBase = False)
 			For $j = 0 To UBound($aTempMultiCoords, 1) - 1
 				$aTempCoords = $aTempMultiCoords[$j]
 				_ArrayAdd($aTempCollectors, $aTempCoords[0] & "|" & $aTempCoords[1])
+				$bFoundTempCollectors = True
 			Next
 		Next
-		Local $bFoundTempCollectors = IsArray($aTempCollectors) = 1
 		If $bFoundTempCollectors Then
 			For $i = 0 To UBound($aTempCollectors) - 1
 				$aTempCollectors[$i][0] = Number($aTempCollectors[$i][0])
@@ -237,7 +237,7 @@ Func checkDeadBaseQuick($bForceCapture = True, $TestDeadBase = False)
 		Next
 	EndIf
 
-	If $g_bDebugSetlog Then
+	If $g_bDebugSetLog Then
 		If Not $bFoundFilledCollectors Then
 			SetDebugLog("IMGLOC : NOT A DEADBASE", $COLOR_INFO)
 		ElseIf Not $dbFound Then
@@ -268,8 +268,8 @@ Func checkDeadBaseFolder($directory, $executeNewCode = "checkDeadBaseQuick(True,
 	If IsArray($aFiles) = 0 Then Return False
 	If $aFiles[0] = 0 Then Return False
 
-	Local $wasDebugsetlog = $g_bDebugSetlog
-	$g_bDebugSetlog = True
+	Local $wasDebugsetlog = $g_bDebugSetLog
+	$g_bDebugSetLog = True
 
 	SetLog("Checking " & $aFiles[0] & " village screenshot" & ($aFiles[0] > 1 ? "s" : "") & " for dead base...")
 
@@ -308,7 +308,7 @@ Func checkDeadBaseFolder($directory, $executeNewCode = "checkDeadBaseQuick(True,
 	SetLog("Collectors found  : " & $iSuperNewFound)
 	SetLog("Duration in ms. : " & Round($iTotalMsSuperNew))
 
-	$g_bDebugSetlog = $wasDebugsetlog
+	$g_bDebugSetLog = $wasDebugsetlog
 	$g_bRunState = $currentRunState
 	Return True
 

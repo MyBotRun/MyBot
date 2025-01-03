@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac (03-2018)
 ; Modified ......: Moebius14 (09-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -114,7 +114,7 @@ EndFunc   ;==>GetFreeMagic
 Func OpenTraderWindow()
 	Local $Found = False
 	Local $Area[4] = [90, 100 + $g_iMidOffsetY, 210, 210 + $g_iMidOffsetY]
-	If $g_iTree = $eTreeMS Or $g_iTree = $eTreeEG Then
+	If IsCustomScenery(True, "Upper") Then
 		$Area[0] = 120
 		$Area[1] = 150 + $g_iMidOffsetY
 		$Area[2] = 240
@@ -144,13 +144,13 @@ Func OpenTraderWindow()
 				If Not _WaitForCheckPixel($aIsWeekyDealsOpen, True) Then
 					SetLog("Error : Cannot open Gems Menu. Pixel to check did not appear", $COLOR_ERROR)
 					CloseWindow()
-					Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlog)
+					Return FuncReturn(SetError(1, 0, False), $g_bDebugSetLog)
 				EndIf
 			EndIf
 		Else
 			SetDebugLog("Error when opening Gems Menu: $aTabButton is no valid Array", $COLOR_ERROR)
 			CloseWindow()
-			Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlog)
+			Return FuncReturn(SetError(1, 0, False), $g_bDebugSetLog)
 		EndIf
 	EndIf
 

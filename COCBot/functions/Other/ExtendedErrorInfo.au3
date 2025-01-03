@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-2)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -36,13 +36,13 @@ EndFunc   ;==>_logErrorDLLCall
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: _logErrorDateDiff
-; Description ...: Setlogs @error information for _DateDiff function
+; Description ...: SetLogs @error information for _DateDiff function
 ; Syntax ........: _logErrorDateDiff($ErrorCode)
 ; Parameters ....: $ErrorCode           - an unknown value.
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-2)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -63,13 +63,13 @@ EndFunc   ;==>_logErrorDateDiff
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: _logErrorDateAdd
-; Description ...: Setlogs @error information for _DateAdd function
+; Description ...: SetLogs @error information for _DateAdd function
 ; Syntax ........: _logErrorDateAdd($ErrorCode)
 ; Parameters ....: $ErrorCode           - an unknown value.
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-2)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

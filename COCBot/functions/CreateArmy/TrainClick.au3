@@ -12,7 +12,7 @@
 ; Return values .: None
 ; Author ........: KnowJack (07-2015)
 ; Modified ......: Sardo (08-2015), Boju (06-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -29,16 +29,16 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 		If $iTimes <> 1 Then
 			KeepClicks()
 			; Debug
-			If $g_bDebugClick Or $g_bDebugSetlogTrain Then SetLog("KeepClicks: " & KeepClicks(), $COLOR_DEBUG)
+			If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("KeepClicks: " & KeepClicks(), $COLOR_DEBUG)
 			If IsKeepClicksActive() Then
 				For $i = 0 To ($iTimes - 1)
 					PureClick($iX, $iY) ;Click once.
 				Next
 				If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 				Local $sLogText = Default
-				If $g_bDebugSetlogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
+				If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
 				If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
-					If $g_bDebugClick Or $g_bDebugSetlogTrain Then SetLog("Camp is FULL", $COLOR_DEBUG)
+					If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is FULL", $COLOR_DEBUG)
 					; Detected the gray [i] and will exit and return
 					ClearClicks()
 				EndIf
@@ -49,9 +49,9 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 					For $i = 0 To ($iTimes - 1)
 						If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 						Local $sLogText = Default
-						If $g_bDebugSetlogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
+						If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
 						If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
-							If $g_bDebugClick Or $g_bDebugSetlogTrain Then SetLog("Camp is FULL after " & $i & " clicks", $COLOR_DEBUG)
+							If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is FULL after " & $i & " clicks", $COLOR_DEBUG)
 							; Detected the gray [i] and will exit and return
 							ExitLoop
 						EndIf
@@ -61,9 +61,9 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 				Else
 					If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 					Local $sLogText = Default
-					If $g_bDebugSetlogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
+					If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
 					If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
-						If $g_bDebugClick Or $g_bDebugSetlogTrain Then SetLog("Camp is full", $COLOR_DEBUG)
+						If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is full", $COLOR_DEBUG)
 						Return ; Check to see if barrack full
 					EndIf
 					PureClick($iX, $iY, $iTimes, $iSpeed) ;Click $iTimes.
@@ -73,11 +73,11 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 			ReleaseClicks()
 		Else
 			Local $sLogText = Default
-			If $g_bDebugSetlogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
+			If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
 			If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
-			If $g_bDebugSetlogTrain Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], False), $COLOR_DEBUG)
+			If $g_bDebugSetLogTrain Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], False), $COLOR_DEBUG)
 			If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then
-				If $g_bDebugClick Or $g_bDebugSetlogTrain Then SetLog("Camp is FULL", $COLOR_DEBUG)
+				If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is FULL", $COLOR_DEBUG)
 				Return ; Check to see if barrack full
 			EndIf
 			PureClick($iX, $iY)

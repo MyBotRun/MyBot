@@ -4,7 +4,7 @@
 ; Syntax ........: $g_sImgxxx = @ScriptDir & "\imgxml\xxx\"
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -44,6 +44,7 @@ Global Const $g_sImgInfoButton = @ScriptDir & "\imgxml\CheckObstacles\InfoButton
 Global Const $g_sImgNoThanks = @ScriptDir & "\imgxml\CheckObstacles\NoThks*"
 Global Const $sImgPersonnalDatas = @ScriptDir & "\imgxml\CheckObstacles\PersonnalDatas*"
 Global Const $sImgDenyBtn = @ScriptDir & "\imgxml\CheckObstacles\DenyBtn*"
+Global Const $g_sImgOkayBlue = @ScriptDir & "\imgxml\other\OkayBlue*"
 #EndRegion Obstacles
 
 #Region Main Village
@@ -65,6 +66,7 @@ Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
 Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscounts*"
 Global $g_sImgBuyDealWindow = @ScriptDir & "\imgxml\FreeMagicItems\BuyDeal"
 Global Const $g_sImgUpgradeWhiteZero = @ScriptDir & "\imgxml\Main Village\Upgrade\WhiteZero*"
+Global $g_sImgCancelButton = @ScriptDir & "\imgxml\Main Village\Upgrade\CancelButton\"
 Global Const $g_sImgDonateCC = @ScriptDir & "\imgxml\DonateCC\"
 Global Const $g_sImgLabResearch = @ScriptDir & "\imgxml\Research\Laboratory\"
 Global $g_sImgGobBuilderLab = @ScriptDir & "\imgxml\Research\GobBuilder*"
@@ -80,7 +82,10 @@ Global $g_sImgGreenAssignButton = @ScriptDir & "\imgxml\Main Village\AppBuilder\
 Global $ImgLocked = @ScriptDir & "\imgxml\Main Village\AppBuilder\Locked*"
 Global $ImgConfirmButton = @ScriptDir & "\imgxml\Main Village\AppBuilder\Confirm*"
 Global $ImgJobInProgress = @ScriptDir & "\imgxml\Main Village\AppBuilder\Job*"
+Global $ImgOnGoingMini = @ScriptDir & "\imgxml\Main Village\AppBuilder\OnGoingMini*"
 Global $ImgAssignMini = @ScriptDir & "\imgxml\Main Village\AppBuilder\AssignMini*"
+Global $g_sImgMiniBuilderAppHead = @ScriptDir & "\imgxml\Main Village\AppBuilder\MiniBuilderApp*"
+Global $g_sImgMiniLabAssistHead = @ScriptDir & "\imgxml\Main Village\AppBuilder\MiniLabAssist*"
 ; Treasury Hunt
 Global $ImgHammerOnRock = @ScriptDir & "\imgxml\Main Village\TreasuryHunt\Hammer\Hammer*"
 Global $ImgHammersOnRock = @ScriptDir & "\imgxml\Main Village\TreasuryHunt\Hammer\"
@@ -148,8 +153,7 @@ Global $g_sImgDonateTroops = @ScriptDir & "\imgxml\DonateCC\Troops\"
 Global $g_sImgDonateSpells = @ScriptDir & "\imgxml\DonateCC\Spells\"
 Global $g_sImgDonateSiege = @ScriptDir & "\imgxml\DonateCC\SiegeMachines\"
 Global $g_sImgChatDivider = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdivider_0_98.xml"
-Global $g_sImgChatDividerHidden = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdividerhidden_0_98.xml"
-Global $g_sImgChatDividerWhite = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdividerwhite_0_98.xml"
+Global $g_sImgChatIUnterstand = @ScriptDir & "\imgxml\DonateCC\donateccwbl\iunderstand_0_95.xml"
 #EndRegion DonateCC
 
 #Region Auto Upgrade Normal Village
@@ -173,6 +177,7 @@ Global $g_sImgAutoUpgradeClock = @ScriptDir & "\imgxml\Resources\BuildersBase\Au
 Global $g_sImgAutoUpgradeInfo = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\NewBuildings\Slot"
 Global $g_sImgAutoUpgradeNewBldgYes = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\NewBuildings\Yes"
 Global $g_sImgAutoUpgradeNewBldgNo = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\NewBuildings\No"
+Global $ImgHeroMaxLevel = @ScriptDir & "\imgxml\Main Village\Upgrade\HeroMaxLevel\MaxLevel*.xml"
 #EndRegion Auto Upgrade Builder Base
 
 #Region Train
@@ -193,6 +198,7 @@ Global $g_sImgSwitchWardenMode = @ScriptDir & "\imgxml\SwitchWardenMode"
 Global $g_sImgIsMultiplayerTab = @ScriptDir & "\imgxml\Attack\Search\MultiplayerTab*"
 Global $g_sImgQueenBar = @ScriptDir & "\imgxml\AttackBar\Queen*"
 Global $g_sImgKingBar = @ScriptDir & "\imgxml\AttackBar\King*"
+Global $g_sImgPrinceBar = @ScriptDir & "\imgxml\AttackBar\Prince*"
 Global $g_sImgWardenBar = @ScriptDir & "\imgxml\AttackBar\Warden*"
 Global $g_sImgChampionBar = @ScriptDir & "\imgxml\AttackBar\Champion*"
 #EndRegion Attack

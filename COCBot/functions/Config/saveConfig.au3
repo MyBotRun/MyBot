@@ -6,7 +6,7 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -195,6 +195,9 @@ Func SaveBuildingConfig()
 	_Ini_Add("upgrade", "LabPosX", $g_aiLaboratoryPos[0])
 	_Ini_Add("upgrade", "LabPosY", $g_aiLaboratoryPos[1])
 
+	_Ini_Add("upgrade", "HelperHutPosX", $g_aiHelperHutPos[0])
+	_Ini_Add("upgrade", "HelperHutPosY", $g_aiHelperHutPos[1])
+
 	_Ini_Add("upgrade", "PetHousePosX", $g_aiPetHousePos[0])
 	_Ini_Add("upgrade", "PetHousePosY", $g_aiPetHousePos[1])
 
@@ -237,25 +240,14 @@ Func SaveBuildingConfig()
 	_Ini_Add("other", "xCCPos", $g_aiClanCastlePos[0])
 	_Ini_Add("other", "yCCPos", $g_aiClanCastlePos[1])
 
+	_Ini_Add("other", "CCTCap", $g_aiClanCastleTroopsCap)
+	_Ini_Add("other", "CCSCap", $g_aiClanCastleSpellsCap)
+
 	_Ini_Add("other", "totalcamp", $g_iTotalCampSpace)
 
-	;_Ini_Add("other", "xspellfactory", $SFPos[0])
-	;_Ini_Add("other", "yspellfactory", $SFPos[1])
-
-	;_Ini_Add("other", "xDspellfactory", $DSFPos[0])
-	;_Ini_Add("other", "yDspellfactory", $DSFPos[1])
-
-	_Ini_Add("other", "xKingAltarPos", $g_aiKingAltarPos[0])
-	_Ini_Add("other", "yKingAltarPos", $g_aiKingAltarPos[1])
-
-	_Ini_Add("other", "xQueenAltarPos", $g_aiQueenAltarPos[0])
-	_Ini_Add("other", "yQueenAltarPos", $g_aiQueenAltarPos[1])
-
-	_Ini_Add("other", "xWardenAltarPos", $g_aiWardenAltarPos[0])
-	_Ini_Add("other", "yWardenAltarPos", $g_aiWardenAltarPos[1])
-
-	_Ini_Add("other", "xChampionAltarPos", $g_aiChampionAltarPos[0])
-	_Ini_Add("other", "yChampionAltarPos", $g_aiChampionAltarPos[1])
+	_Ini_Add("other", "HeroHallPosX", $g_aiHeroHallPos[0])
+	_Ini_Add("other", "HeroHallPosY", $g_aiHeroHallPos[1])
+	_Ini_Add("other", "HeroHallLvl", $g_aiHeroHallPos[2])
 
 	_Ini_Add("upgrade", "xLastGoodWallPos", $g_aiLastGoodWallPos[0])
 	_Ini_Add("upgrade", "yLastGoodWallPos", $g_aiLastGoodWallPos[1])
@@ -263,6 +255,7 @@ Func SaveBuildingConfig()
 	; <><><><> Village / Upgrade - Lab <><><><>
 	ApplyConfig_600_14(GetApplyConfigSaveAction())
 	_Ini_Add("upgrade", "upgradetroops", $g_bAutoLabUpgradeEnable ? 1 : 0)
+	_Ini_Add("upgrade", "IsChkLabAssistant", _GUICtrlComboBox_GetCurSel($g_hChkLabAssistant))
 	_Ini_Add("upgrade", "upgradetroopname", $g_iCmbLaboratory)
 	;_Ini_Add("upgrade", "upgradelabelexircost", $g_iLaboratoryElixirCost)
 	;_Ini_Add("upgrade", "upgradelabdelexircost", $g_iLaboratoryDElixirCost)
@@ -440,7 +433,7 @@ Func SaveConfig_Debug()
 	; Debug
 	ApplyConfig_Debug(GetApplyConfigSaveAction())
 	; <><><><> Bot / Debug <><><><>
-	_Ini_Add("debug", "debugsetlog", $g_bDebugSetlog ? 1 : 0)
+	_Ini_Add("debug", "debugsetlog", $g_bDebugSetLog ? 1 : 0)
 	_Ini_Add("debug", "debugAndroid", $g_bDebugAndroid ? 1 : 0)
 	_Ini_Add("debug", "debugsetclick", $g_bDebugClick ? 1 : 0)
 	_Ini_Add("debug", "debugFunc", ($g_bDebugFuncTime And $g_bDebugFuncCall) ? 1 : 0)
@@ -450,7 +443,7 @@ Func SaveConfig_Debug()
 	_Ini_Add("debug", "debugocr", $g_bDebugOcr ? 1 : 0)
 	_Ini_Add("debug", "debugimagesave", $g_bDebugImageSave ? 1 : 0)
 	_Ini_Add("debug", "debugbuildingpos", $g_bDebugBuildingPos ? 1 : 0)
-	_Ini_Add("debug", "debugtrain", $g_bDebugSetlogTrain ? 1 : 0)
+	_Ini_Add("debug", "debugtrain", $g_bDebugSetLogTrain ? 1 : 0)
 	_Ini_Add("debug", "debugOCRDonate", $g_bDebugOCRdonate ? 1 : 0)
 	_Ini_Add("debug", "debugAttackCSV", $g_bDebugAttackCSV ? 1 : 0)
 	_Ini_Add("debug", "debugmakeimgcsv", $g_bDebugMakeIMGCSV ? 1 : 0)
@@ -615,10 +608,11 @@ Func SaveConfig_600_12()
 	_Ini_Add("donate", "Doncheck", $g_bChkDonate ? 1 : 0)
 	_Ini_Add("donate", "chkDonateQueueOnly[0]", $g_abChkDonateQueueOnly[0] ? 1 : 0)
 	_Ini_Add("donate", "chkDonateQueueOnly[1]", $g_abChkDonateQueueOnly[1] ? 1 : 0)
+	_Ini_Add("donate", "chkDonateQueueOnly[2]", $g_abChkDonateQueueOnly[2] ? 1 : 0)
 
-	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
+	For $i = 0 To $eTroopCount + $g_iCustomDonateConfigs - 1
 		Local $sIniName = ""
-		If $i >= $eTroopBarbarian And $i <= $eTroopAppWard Then
+		If $i >= $eTroopBarbarian And $i <= $eTroopDruid Then
 			$sIniName = StringReplace($g_asTroopNamesPlural[$i], " ", "")
 		ElseIf $i = $eCustomA Then
 			$sIniName = "CustomA"
@@ -686,9 +680,15 @@ Func SaveConfig_600_15()
 	; <><><><> Village / Upgrade - Heroes <><><><>
 	ApplyConfig_600_15(GetApplyConfigSaveAction())
 	_Ini_Add("upgrade", "UpgradeKing", $g_bUpgradeKingEnable ? 1 : 0)
+	_Ini_Add("upgrade", "RepUpgradeKing", $g_bRepUpgradeKingEnable ? 1 : 0)
 	_Ini_Add("upgrade", "UpgradeQueen", $g_bUpgradeQueenEnable ? 1 : 0)
+	_Ini_Add("upgrade", "RepUpgradeQueen", $g_bRepUpgradeQueenEnable ? 1 : 0)
+	_Ini_Add("upgrade", "UpgradePrince", $g_bUpgradePrinceEnable ? 1 : 0)
+	_Ini_Add("upgrade", "RepUpgradePrince", $g_bRepUpgradePrinceEnable ? 1 : 0)
 	_Ini_Add("upgrade", "UpgradeWarden", $g_bUpgradeWardenEnable ? 1 : 0)
+	_Ini_Add("upgrade", "RepUpgradeWarden", $g_bRepUpgradeWardenEnable ? 1 : 0)
 	_Ini_Add("upgrade", "UpgradeChampion", $g_bUpgradeChampionEnable ? 1 : 0)
+	_Ini_Add("upgrade", "RepUpgradeChampion", $g_bRepUpgradeChampionEnable ? 1 : 0)
 	_Ini_Add("upgrade", "HeroReservedBuilder", $g_iHeroReservedBuilder)
 
 	; Equipment Order
@@ -736,7 +736,7 @@ Func SaveConfig_600_17()
 	_Ini_Add("upgrade", "use-storage", $g_iUpgradeWallLootType)
 	_Ini_Add("upgrade", "savebldr", $g_bUpgradeWallSaveBuilder ? 1 : 0)
 	_Ini_Add("upgrade", "walllvl", $g_iCmbUpgradeWallsLevel)
-	For $i = 4 To 17
+	For $i = 4 To 18
 		_Ini_Add("Walls", "Wall" & StringFormat("%02d", $i), $g_aiWallsCurrentCount[$i])
 	Next
 	_Ini_Add("upgrade", "WallCost", $g_iWallCost)
@@ -849,10 +849,12 @@ Func SaveConfig_600_28_DB()
 	_Ini_Add("search", "DBEnableAfterArmyCamps", $g_aiSearchCampsPct[$DB])
 	_Ini_Add("attack", "DBKingWait", $g_iHeroWaitAttackNoBit[$DB][0])
 	_Ini_Add("attack", "DBQueenWait", $g_iHeroWaitAttackNoBit[$DB][1])
-	_Ini_Add("attack", "DBWardenWait", $g_iHeroWaitAttackNoBit[$DB][2])
-	_Ini_Add("attack", "DBChampionWait", $g_iHeroWaitAttackNoBit[$DB][3])
+	_Ini_Add("attack", "DBPrinceWait", $g_iHeroWaitAttackNoBit[$DB][2])
+	_Ini_Add("attack", "DBWardenWait", $g_iHeroWaitAttackNoBit[$DB][3])
+	_Ini_Add("attack", "DBChampionWait", $g_iHeroWaitAttackNoBit[$DB][4])
 	_Ini_Add("attack", "DBNotWaitHeroes", $g_aiSearchNotWaitHeroesEnable[$DB] ? 1 : 0)
 	_Ini_Add("search", "ChkDBSpellsWait", $g_abSearchSpellsWaitEnable[$DB] ? 1 : 0)
+	_Ini_Add("search", "ChkDBMachineWait", $g_abSearchSiegeWaitEnable[$DB] ? 1 : 0)
 	_Ini_Add("search", "ChkDBCastleWait", $g_abSearchCastleWaitEnable[$DB] ? 1 : 0)
 	; Search - Filters
 	_Ini_Add("search", "DBMeetGE", $g_aiFilterMeetGE[$DB])
@@ -905,10 +907,12 @@ Func SaveConfig_600_28_LB()
 	_Ini_Add("search", "ABEnableAfterArmyCamps", $g_aiSearchCampsPct[$LB])
 	_Ini_Add("attack", "ABKingWait", $g_iHeroWaitAttackNoBit[$LB][0])
 	_Ini_Add("attack", "ABQueenWait", $g_iHeroWaitAttackNoBit[$LB][1])
-	_Ini_Add("attack", "ABWardenWait", $g_iHeroWaitAttackNoBit[$LB][2])
-	_Ini_Add("attack", "ABChampionWait", $g_iHeroWaitAttackNoBit[$LB][3])
+	_Ini_Add("attack", "ABPrinceWait", $g_iHeroWaitAttackNoBit[$LB][2])
+	_Ini_Add("attack", "ABWardenWait", $g_iHeroWaitAttackNoBit[$LB][3])
+	_Ini_Add("attack", "ABChampionWait", $g_iHeroWaitAttackNoBit[$LB][4])
 	_Ini_Add("attack", "ABNotWaitHeroes", $g_aiSearchNotWaitHeroesEnable[$LB] ? 1 : 0)
 	_Ini_Add("search", "ChkABSpellsWait", $g_abSearchSpellsWaitEnable[$LB] ? 1 : 0)
+	_Ini_Add("search", "ChkABMachineWait", $g_abSearchSiegeWaitEnable[$LB] ? 1 : 0)
 	_Ini_Add("search", "ChkABCastleWait", $g_abSearchCastleWaitEnable[$LB] ? 1 : 0)
 	; Search - Filters
 	_Ini_Add("search", "ABMeetGE", $g_aiFilterMeetGE[$LB])
@@ -947,10 +951,12 @@ Func SaveConfig_600_29()
 	ApplyConfig_600_29(GetApplyConfigSaveAction())
 	_Ini_Add("attack", "ActivateQueen", $g_iActivateQueen)
 	_Ini_Add("attack", "ActivateKing", $g_iActivateKing)
+	_Ini_Add("attack", "ActivatePrince", $g_iActivatePrince)
 	_Ini_Add("attack", "ActivateWarden", $g_iActivateWarden)
 	_Ini_Add("attack", "ActivateChampion", $g_iActivateChampion)
 	_Ini_Add("attack", "delayActivateQueen", $g_iDelayActivateQueen)
 	_Ini_Add("attack", "delayActivateKing", $g_iDelayActivateKing)
+	_Ini_Add("attack", "delayActivatePrince", $g_iDelayActivatePrince)
 	_Ini_Add("attack", "delayActivateWarden", $g_iDelayActivateWarden)
 	_Ini_Add("attack", "delayActivateChampion", $g_iDelayActivateChampion)
 	_Ini_Add("planned", "chkAttackPlannerEnable", $g_bAttackPlannerEnable ? 1 : 0)
@@ -987,6 +993,7 @@ Func SaveConfig_600_29_DB()
 	_Ini_Add("attack", "DBSelectTroop", $g_aiAttackTroopSelection[$DB])
 	_Ini_Add("attack", "DBKingAtk", BitAND($g_aiAttackUseHeroes[$DB], $eHeroKing))
 	_Ini_Add("attack", "DBQueenAtk", BitAND($g_aiAttackUseHeroes[$DB], $eHeroQueen))
+	_Ini_Add("attack", "DBPrinceAtk", BitAND($g_aiAttackUseHeroes[$DB], $eHeroPrince))
 	_Ini_Add("attack", "DBWardenAtk", BitAND($g_aiAttackUseHeroes[$DB], $eHeroWarden))
 	_Ini_Add("attack", "DBChampionAtk", BitAND($g_aiAttackUseHeroes[$DB], $eHeroChampion))
 	_Ini_Add("attack", "DBDropCC", $g_abAttackDropCC[$DB] ? 1 : 0)
@@ -1001,6 +1008,7 @@ Func SaveConfig_600_29_DB()
 	_Ini_Add("attack", "DBCloneSpell", $g_abAttackUseCloneSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBInvisibilitySpell", $g_abAttackUseInvisibilitySpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBRecallSpell", $g_abAttackUseRecallSpell[$DB] ? 1 : 0)
+	_Ini_Add("attack", "DBReviveSpell", $g_abAttackUseReviveSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBSkeletonSpell", $g_abAttackUseSkeletonSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBBatSpell", $g_abAttackUseBatSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBOgSpell", $g_abAttackUseOvergrowthSpell[$DB] ? 1 : 0)
@@ -1049,6 +1057,7 @@ Func SaveConfig_600_29_LB()
 	_Ini_Add("attack", "ABSelectTroop", $g_aiAttackTroopSelection[$LB])
 	_Ini_Add("attack", "ABKingAtk", BitAND($g_aiAttackUseHeroes[$LB], $eHeroKing))
 	_Ini_Add("attack", "ABQueenAtk", BitAND($g_aiAttackUseHeroes[$LB], $eHeroQueen))
+	_Ini_Add("attack", "ABPrinceAtk", BitAND($g_aiAttackUseHeroes[$LB], $eHeroPrince))
 	_Ini_Add("attack", "ABWardenAtk", BitAND($g_aiAttackUseHeroes[$LB], $eHeroWarden))
 	_Ini_Add("attack", "ABChampionAtk", BitAND($g_aiAttackUseHeroes[$LB], $eHeroChampion))
 	_Ini_Add("attack", "ABDropCC", $g_abAttackDropCC[$LB] ? 1 : 0)
@@ -1060,6 +1069,7 @@ Func SaveConfig_600_29_LB()
 	_Ini_Add("attack", "ABCloneSpell", $g_abAttackUseCloneSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABInvisibilitySpell", $g_abAttackUseInvisibilitySpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABRecallSpell", $g_abAttackUseRecallSpell[$LB] ? 1 : 0)
+	_Ini_Add("attack", "ABReviveSpell", $g_abAttackUseReviveSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABPoisonSpell", $g_abAttackUsePoisonSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABEarthquakeSpell", $g_abAttackUseEarthquakeSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABHasteSpell", $g_abAttackUseHasteSpell[$LB] ? 1 : 0)

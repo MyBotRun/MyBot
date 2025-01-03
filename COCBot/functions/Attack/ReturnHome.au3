@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015), MonkeyHunter (01-2016), CodeSlinger69 (01-2017), MonkeyHunter (03-2017), Moebius14 (09-2024)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -33,7 +33,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			WEnd
 			If IsAttackPage() Then smartZap() ; Check to see if we should zap the DE Drills
 			;If Heroes were not activated: Hero Ability activation before End of Battle to restore health
-			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Or $g_bCheckChampionPower) Then
+			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckPrincePower Or $g_bCheckWardenPower Or $g_bCheckChampionPower) Then
 				;_CaptureRegion()
 				If _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False Then ; If not already at Return Homescreen
 					If $g_bCheckKingPower Then
@@ -43,6 +43,10 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 					If $g_bCheckQueenPower Then
 						SetLog("Activating Queen's power to restore some health before EndBattle", $COLOR_INFO)
 						If IsAttackPage() Then SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
+					EndIf
+					If $g_bCheckPrincePower Then
+						SetLog("Activating Prince's power to restore some health before EndBattle", $COLOR_INFO)
+						If IsAttackPage() Then SelectDropTroop($g_iPrinceSlot) ;If Prince was not activated: Boost Queen before EndBattle to restore some health
 					EndIf
 					If $g_bCheckWardenPower Then
 						SetLog("Activating Warden's power to restore some health before EndBattle", $COLOR_INFO)
@@ -66,14 +70,17 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	; Reset hero variables
 	$g_bCheckKingPower = False
 	$g_bCheckQueenPower = False
+	$g_bCheckPrincePower = False
 	$g_bCheckWardenPower = False
 	$g_bCheckChampionPower = False
 	$g_bDropKing = False
 	$g_bDropQueen = False
+	$g_bDropPrince = False
 	$g_bDropWarden = False
 	$g_bDropChampion = False
 	$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
 	$g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
+	$g_aHeroesTimerActivation[$eHeroMinionPrince] = 0
 	$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 	$g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0
 
@@ -190,7 +197,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	While 1
 		If _Sleep($DELAYRETURNHOME4) Then Return
 		Local $bIsMain = _CheckPixel($aIsMain, $g_bCapturePixel, Default, "IsMain")
-		Local $bIsMainGrayed = _CheckPixel($aIsMainGrayed, $g_bCapturePixel, Default, "IsMainGrayed")
+		Local $bIsMainGrayed = IsMainGrayed()
 		Select
 			Case Not $bIsMain And Not $bIsMainGrayed
 				If TreasureHunt($counter) Then
@@ -278,8 +285,9 @@ Func ReturnfromDropTrophies()
 EndFunc   ;==>ReturnfromDropTrophies
 
 Func CheckStreakEvent()
+	SetDebugLog("Begin Steak Event window check", $COLOR_DEBUG1)
 	If Not $g_bRunState Then Return
-	Local $bret = False
+	Local $bRet = False
 	Local $sAllCoordsString, $aAllCoordsTemp, $aTempCoords
 	Local $aAllCoords[0][2]
 	If _Sleep($DELAYSTARBONUS100) Then Return
@@ -288,8 +296,11 @@ Func CheckStreakEvent()
 		ClickP($aContinueButton, 1, 120, "#0433")
 		If _Sleep(2500) Then Return
 	EndIf
-	If Not _ColorCheck(_GetPixelColor(290, 120 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) And Not _ColorCheck(_GetPixelColor(560, 150 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) Then Return $bret
-	$bret = True
+	If Not _ColorCheck(_GetPixelColor(290, 120 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) And Not _ColorCheck(_GetPixelColor(560, 150 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) Then
+		SetDebugLog("Streak Event window not found?", $COLOR_DEBUG)
+		Return $bRet
+	EndIf
+	$bRet = True
 	Local $SearchArea = GetDiamondFromRect("20,260(820,140)")
 	Local $aResult = findMultiple(@ScriptDir & "\imgxml\DailyChallenge\", $SearchArea, $SearchArea, 0, 1000, 10, "objectname,objectpoints", True)
 	If $aResult <> "" And IsArray($aResult) Then
@@ -312,7 +323,7 @@ Func CheckStreakEvent()
 		Next
 	EndIf
 	CloseWindow2()
-	Return $bret
+	Return $bRet
 EndFunc   ;==>CheckStreakEvent
 
 Func TreasureHunt($counter = 0)

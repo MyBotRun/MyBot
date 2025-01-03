@@ -13,7 +13,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017), MikeD (04-2021)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -161,7 +161,7 @@ Func SetDebugLog($sLogMessage, $sColor = $COLOR_DEBUG, $bSilentSetLog = Default,
 	Local $sLog = $sLogPrefix & TimeDebug() & $sLogMessage
 	If $bSilentSetLog = Default Then $bSilentSetLog = $g_bSilentSetDebugLog
 
-	If $g_bDebugSetlog And Not $bSilentSetLog Then
+	If $g_bDebugSetLog And Not $bSilentSetLog Then
 		_SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, Default, Default, $sLogPrefix)
 	Else
 		If $sLogMessage <> "" Then _ConsoleWrite(GetLogLevel($sColor) & $sLog) ; Always write any log to console

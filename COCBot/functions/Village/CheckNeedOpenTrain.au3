@@ -6,7 +6,7 @@
 ; Return values .: True/False
 ; Author ........: Boju (01-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -33,7 +33,7 @@ Func CheckNeedOpenTrain($TimeBeforeTrain)
 	If $TimeBeforeTrain = "" Then $TimeBeforeTrain = $sNowTime
 	$iTimeBeforeTrain1 = _DateAdd("s", Int(($g_aiTimeTrain[0] * 60) * ($QuickArmyCamps / 100)), $TimeBeforeTrain)
 	$iTimeBeforeTrain2 = _DateDiff("s", $sNowTime, $iTimeBeforeTrain1)
-	If $g_bDebugSetlogTrain Then
+	If $g_bDebugSetLogTrain Then
 		SetLog("Start Train: " & $TimeBeforeTrain)
 		SetLog("Now: " & $sNowTime)
 		SetLog("Train end time: " & $iTimeBeforeTrain1)

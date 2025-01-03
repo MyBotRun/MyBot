@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: LunaEclipse(April 2016)
 ; Modified ......: MonkeyHunter (04-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -93,7 +93,7 @@ EndFunc   ;==>displayWeakBaseLog
 Func getTHDefenseMax($levelTownHall, $iDefenseType)
 
 	; replace orginal weak base code with dictionary function used by any attack method
-	If $levelTownHall = 0 Or $levelTownHall = "-" Then $levelTownHall = 15 ; ; If something went wrong with TH search and returned 0, set to max TH level
+	If $levelTownHall = 0 Or $levelTownHall = "-" Then $levelTownHall = 17 ; ; If something went wrong with TH search and returned 0, set to max TH level
 
 	Local $maxLevel = _ObjGetValue($g_oBldgLevels, $iDefenseType + 7)[$levelTownHall - 1] ; add 6 to weakbase enum to equal building enum
 	If @error Then
@@ -204,7 +204,7 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 			If $aResult[0][0] = "" Then $aResult[0][0] = $aDefenseResult[6]
 			; Check to see if further searches are required, $performSearch is passed ByRef, so this will update the value in the calling function
 			If Number($aDefenseResult[2]) > getMaxUISetting($settingArray, $iDefenseType) Then $performSearch = False
-			If $g_bDebugSetlog Then
+			If $g_bDebugSetLog Then
 				SetDebugLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " - " & Round(__TimerDiff($defenseTimer) / 1000, 2) & " seconds")
 				For $i = 0 To UBound($aDefenseResult) - 2
 					SetDebugLog("$aDefenseResult[" & $i & "]: " & $aDefenseResult[$i])
@@ -221,7 +221,7 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 	Return $aDefenseResult
 EndFunc   ;==>defenseSearch
 
-Func weakBaseCheck($townHallLevel = 15, $redlines = "", $bForceCaptureRegion = True)
+Func weakBaseCheck($townHallLevel = 17, $redlines = "", $bForceCaptureRegion = True)
 	; Setup default return coords of 0,0
 	Local $defaultCoords[1][2] = [[0, 0]]
 	; Setup Empty Results in case to avoid errors, levels are set to max level of each type
@@ -295,9 +295,9 @@ Func IsWeakBase($townHallLevel = $g_iMaxTHLevel, $redlines = "", $bForceCaptureR
 	; Forces the display of the various statistical displays, if set to true
 	; displayWeakBaseLog($aResult, true)
 	; Displays the various statistical displays, if debug logging is enabled
-	displayWeakBaseLog($aResult, $g_bDebugSetlog)
+	displayWeakBaseLog($aResult, $g_bDebugSetLog)
 
-	If $g_bDebugSetlog Then
+	If $g_bDebugSetLog Then
 		_LogObjList($g_oBldgAttackInfo) ; raw debug only!
 		Local $text = _ArrayToString($aResult, ",", 0, UBound($aResult, 1) - 1, "|", 0, UBound($aResult, 2) - 1)
 		If @error Then SetDebugLog("Error _ArrayToString, code:" & @error, $COLOR_ERROR)
@@ -356,7 +356,7 @@ EndFunc   ;==>IsWeakBase
 ; Return values .: 1D array with highest level matched data found
 ; Author ........: MonkeyHunter (04-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -434,7 +434,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 		$redlines = "DCD"
 	EndIf
 
-	If $g_bDebugSetlog Then
+	If $g_bDebugSetLog Then
 		SetDebugLog("> " & $g_sBldgNames[$iDefenseType + 7] & " Max Level: " & $maxLevel & " Max Search Level: " & $maxLevelSearch, $COLOR_DEBUG)
 		SetDebugLog("> Max return points: " & $maxReturnPoints, $COLOR_DEBUG)
 		SetDebugLog("> Red Line Exists:" & $bRedLineExists & " , redlines=" & $redlines, $COLOR_DEBUG)
@@ -552,7 +552,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 		Local $aBldgCoord = decodeMultipleCoords($sLocCoord) ; change building location string into array
 		If IsArray($aBldgCoord) Then $return[5] = $aBldgCoord ; store in return array
 
-		If $g_bDebugSetlog Or $g_bDebugBuildingPos Then
+		If $g_bDebugSetLog Or $g_bDebugBuildingPos Then
 			SetLog($g_sBldgNames[$iDefenseType + 7] & " Coordinates: " & $sLocCoord, $COLOR_DEBUG)
 			Local $sText
 			Select

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: summoner
 ; Modified ......: KnowJack (06/2015), Sardo (08/2015), Monkeyhunter(04/2016), MMHK(06/2018), Chilly-Chill (12/2019)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -73,7 +73,8 @@ Func Laboratory($debug = False)
 	If Not FindResearchButton() Then Return False ; cant start because we cannot find the research button
 
 	If Not $GobBuilderPresent Then ; Just in case
-		If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilderLab, 510, 140 + $g_iMidOffsetY, 575, 195 + $g_iMidOffsetY, True))) > 1 Then
+		If UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilderLab, 510, 140 + $g_iMidOffsetY, 575, 195 + $g_iMidOffsetY, True))) > 1 Or _
+				UBound(decodeSingleCoord(FindImageInPlace2("GobBuilder", $g_sImgGobBuilder, 420, 115 + $g_iMidOffsetY, 490, 160 + $g_iMidOffsetY, True))) > 1 Then
 			$GobBuilderPresent = True
 			$GobBuilderOffsetRunning = 355
 		EndIf
@@ -292,7 +293,7 @@ Func LabNextPage($iCurPage, $iPages, $iYMidPoint)
 	SetDebugLog("Drag to next full page.")
 	If $iCurPage = 4 Then
 		SetDebugLog("Drag to last page.")
-		ClickDrag(680, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 550, $iYMidPoint, 300)
+		ClickDrag(680, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 455, $iYMidPoint, 300)
 	Else
 		SetDebugLog("Drag to next full page.")
 		ClickDrag(720, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 83, $iYMidPoint, 300)
@@ -321,7 +322,7 @@ Func ChkLabUpgradeInProgress($name = "")
 			$g_iLaboratoryElixirCost = 0
 			$g_iLaboratoryDElixirCost = 0
 			LabStatusGUIUpdate() ; Update GUI flag
-		ElseIf $g_bDebugSetlog Then
+		ElseIf $g_bDebugSetLog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats

@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: xbebenk (08/2021)
 ; Modified ......: Moebius14 (04/2024)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,6 +18,10 @@ Func BoostSuperTroop($bTest = False)
 	Local $bRet = False
 
 	If Not $g_bSuperTroopsEnable Then Return $bRet
+
+	If $g_iTownHallLevel < 11 Then
+		Return $bRet
+	EndIf
 
 	If $g_iCommandStop = 0 Or $g_iCommandStop = 3 Then ;halt attack.. do not boost now
 		If $g_bSkipBoostSuperTroopOnHalt Then
@@ -77,7 +81,7 @@ Func BoostSuperTroop($bTest = False)
 							Click($g_iQuickMISX, $g_iQuickMISY, 1)
 							If _Sleep(1500) Then Return
 							If $g_bSuperTroopsBoostUsePotionFirst Then
-								Setlog("Using Super Potion...", $COLOR_INFO)
+								SetLog("Using Super Potion...", $COLOR_INFO)
 								If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 500, 530 + $g_iMidOffsetY, 535, 570 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion
 									Click($g_iQuickMISX - 50, $g_iQuickMISY - 10, 1)
 									If _Sleep(1500) Then Return
@@ -88,17 +92,17 @@ Func BoostSuperTroop($bTest = False)
 												CancelBoost("Using Potion")
 											Else
 												Click($g_iQuickMISX - 40, $g_iQuickMISY, 1)
-												Setlog("Using Potion, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
+												SetLog("Using Potion, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 												$bRet = True
 											EndIf
 										Else
-											Setlog("Could not find Potion button for final upgrade " & $sTroopName, $COLOR_ERROR)
+											SetLog("Could not find Potion button for final upgrade " & $sTroopName, $COLOR_ERROR)
 											CloseWindow()
 										EndIf
 									EndIf
 								Else ;try to use dark elixir because potion not found
 									If _Sleep(1500) Then Return
-									Setlog("Cannot Find Potion, Using Dark Elixir...", $COLOR_INFO)
+									SetLog("Cannot Find Potion, Using Dark Elixir...", $COLOR_INFO)
 									If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 700, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
 										Click($g_iQuickMISX - 55, $g_iQuickMISY, 1)
 										If _Sleep(1500) Then Return
@@ -109,11 +113,11 @@ Func BoostSuperTroop($bTest = False)
 													CancelBoost("Using Dark Elixir")
 												Else
 													Click($g_iQuickMISX - 70, $g_iQuickMISY, 1)
-													Setlog("Using Dark Elixir, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
+													SetLog("Using Dark Elixir, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 													$bRet = True
 												EndIf
 											Else
-												Setlog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
+												SetLog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
 												CloseWindow()
 											EndIf
 										Else
@@ -121,11 +125,11 @@ Func BoostSuperTroop($bTest = False)
 											If _Sleep(1500) Then Return
 										EndIf
 									Else
-										Setlog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
+										SetLog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
 									EndIf
 								EndIf
 							Else
-								Setlog("Using Dark Elixir...", $COLOR_INFO)
+								SetLog("Using Dark Elixir...", $COLOR_INFO)
 								If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 700, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
 									Click($g_iQuickMISX - 55, $g_iQuickMISY, 1)
 									If _Sleep(1500) Then Return
@@ -136,11 +140,11 @@ Func BoostSuperTroop($bTest = False)
 												CancelBoost("Using Dark Elixir")
 											Else
 												Click($g_iQuickMISX - 70, $g_iQuickMISY, 1)
-												Setlog("Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
+												SetLog("Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 												$bRet = True
 											EndIf
 										Else
-											Setlog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
+											SetLog("Could not find dark elixir button for final upgrade " & $sTroopName, $COLOR_ERROR)
 											CloseWindow()
 										EndIf
 									Else
@@ -148,11 +152,11 @@ Func BoostSuperTroop($bTest = False)
 										If _Sleep(1500) Then Return
 									EndIf
 								Else
-									Setlog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
+									SetLog("Could not find dark elixir button for upgrade " & $sTroopName, $COLOR_ERROR)
 								EndIf
 							EndIf
 						Else
-							Setlog("Cannot find " & $sTroopName & ", Troop Not Unlocked yet?", $COLOR_ERROR)
+							SetLog("Cannot find " & $sTroopName & ", Troop Not Unlocked yet?", $COLOR_ERROR)
 						EndIf
 					Else
 						SetLog("Double Check Image for Icon " & $sTroopName & " Not Found", $COLOR_ERROR)
@@ -170,7 +174,7 @@ EndFunc   ;==>BoostSuperTroop
 Func OpenBarrel($bTest = False)
 
 	Local $Area[4] = [30, 90 + $g_iMidOffsetY, 180, 240 + $g_iMidOffsetY]
-	If $g_iTree = $eTreeMS Or $g_iTree = $eTreeEG Then
+	If IsCustomScenery(True, "Upper") Then
 		$Area[0] = 90
 		$Area[1] = 160 + $g_iMidOffsetY
 		$Area[2] = 200
@@ -255,11 +259,11 @@ Func OpenBarrel($bTest = False)
 				If $g_bFirstStartBarrel Then ;First Start to check if the selected troop(s) <> boosted troop(s)
 					$g_bFirstStartBarrel = 0
 				Else
-					Local $bSetlog = 0
+					Local $bSetLog = 0
 					For $i = 0 To $iMaxSupersTroop - 1
-						If $g_iCmbSuperTroops[$i] > 0 Then $bSetlog += 1
+						If $g_iCmbSuperTroops[$i] > 0 Then $bSetLog += 1
 					Next
-					If $bSetlog > 0 Then SetLog("Troop" & ($bSetlog > 1 ? "s" : "") & " Already boosted", $COLOR_INFO)
+					If $bSetLog > 0 Then SetLog("Troop" & ($bSetLog > 1 ? "s" : "") & " Already boosted", $COLOR_INFO)
 					$bOpenBarrel = False
 				EndIf
 			Else

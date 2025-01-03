@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,7 +16,7 @@
 
 Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = True, $bSetLog = True, $bNeedCapture = True)
 
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmySpellCapacity():", $COLOR_DEBUG1)
+	If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("getArmySpellCapacity():", $COLOR_DEBUG1)
 
 	If $bCheckWindow Then
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
@@ -48,7 +48,7 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 			If _Sleep($DELAYCHECKARMYCAMP5) Then Return ; Wait 250ms
 		WEnd
 
-		If $g_bDebugSetlogTrain Then SetLog("$sSpellsInfo= " & $sSpellsInfo, $COLOR_DEBUG)
+		If $g_bDebugSetLogTrain Then SetLog("$sSpellsInfo= " & $sSpellsInfo, $COLOR_DEBUG)
 		$aGetSpellCap = StringSplit($sSpellsInfo, "#") ; split the existen Spells from the total Spell factory capacity
 
 		If IsArray($aGetSpellCap) Then

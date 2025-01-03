@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -28,10 +28,12 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 	If Not $bRemaining Then ; reset Hero variables before attack if not checking remaining troops
 		$g_bDropKing = False ; reset hero dropped flags
 		$g_bDropQueen = False
+		$g_bDropPrince = False
 		$g_bDropWarden = False
 		$g_bDropChampion = False
 		If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
 		If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
+		If $g_iActivatePrince = 1 Or $g_iActivatePrince = 2 Then $g_aHeroesTimerActivation[$eHeroMinionPrince] = 0
 		If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then $g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 		If $g_iActivateChampion = 1 Or $g_iActivateChampion = 2 Then $g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0
 
@@ -63,6 +65,8 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 					$bDropped = $g_bDropKing
 				Case $eQueen
 					$bDropped = $g_bDropQueen
+				Case $ePrince
+					$bDropped = $g_bDropPrince
 				Case $eWarden
 					$bDropped = $g_bDropWarden
 				Case $eChampion
@@ -126,7 +130,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 						EndIf
 						$iTroopNumber += $avAttackBar[$j][2]
 
-						Local $sDebugText = $g_bDebugSetlog ? " (X:" & $avAttackBar[$j][3] & "|Y:" & $avAttackBar[$j][4] & "|OCR-X:" & $avAttackBar[$j][5] & "|OCR-Y:" & $avAttackBar[$j][6] & ")" : ""
+						Local $sDebugText = $g_bDebugSetLog ? " (X:" & $avAttackBar[$j][3] & "|Y:" & $avAttackBar[$j][4] & "|OCR-X:" & $avAttackBar[$j][5] & "|OCR-Y:" & $avAttackBar[$j][6] & ")" : ""
 						SetLog($avAttackBar[$j][1] & ": " & $avAttackBar[$j][2] & " " & GetTroopName($avAttackBar[$j][0], $avAttackBar[$j][2]) & $sLogExtension & $sDebugText, $COLOR_SUCCESS)
 					Else
 						SetDebugLog("Discard use of " & GetTroopName($avAttackBar[$j][0]) & " (" & $avAttackBar[$j][0] & ")", $COLOR_ERROR)
@@ -208,7 +212,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			If $g_bDebugImageSave Then SaveDebugDiamondImage("SelectCastleOrSiege", $sSearchArea)
 
 			Local $aSearchResult = findMultiple($g_sImgSwitchSiegeMachine, $sSearchArea, $sSearchArea, 0, 1000, 5, "objectname,objectpoints", True)
-			If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+			If $g_bDebugSetLog Then SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 			$hStarttime = _Timer_Init()
 
 			If $aSearchResult <> "" And IsArray($aSearchResult) Then
@@ -256,7 +260,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 						Next
 					EndIf
 				Next
-				If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Levels: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+				If $g_bDebugSetLog Then SetDebugLog("Benchmark Switch Siege Levels: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 				$hStarttime = _Timer_Init()
 
 				If ($iTroopIndex = $ToUse Or $bAnySiege) And $g_iSiegeLevel >= $iFinalLevel Then
@@ -274,13 +278,13 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			Else
 				If $g_bDebugImageSave Then SaveDebugImage("PrepareAttack_SwitchSiege")
 				; If was not detectable lets click again on green icon to hide the window!
-				Setlog("Undetected " & ($bAnySiege ? "any siege machine " : GetTroopName($ToUse)) & " after click on switch btn!", $COLOR_DEBUG)
+				SetLog("Undetected " & ($bAnySiege ? "any siege machine " : GetTroopName($ToUse)) & " after click on switch btn!", $COLOR_DEBUG)
 				Click($iLastX, $iLastY, 1)
 			EndIf
 			If _Sleep(750) Then Return
 		EndIf
 	EndIf
-	If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+	If $g_bDebugSetLog Then SetDebugLog("Benchmark Switch Siege Detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 
 EndFunc   ;==>SelectCastleOrSiege
 
@@ -299,7 +303,7 @@ Func SelectWardenMode($iMode, $XCoord)
 		If Not IsArray($aCurrentModeArray) Or UBound($aCurrentModeArray) < 2 Then Return $sLogText
 
 		SetDebugLog("SelectWardenMode() $aCurrentMode[0]: " & _ArrayToString($aCurrentModeArray))
-		If $g_bDebugSetlog Then SetLog("Benchmark G. Warden mode detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms", $COLOR_DEBUG)
+		If $g_bDebugSetLog Then SetLog("Benchmark G. Warden mode detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms", $COLOR_DEBUG)
 
 		If $aCurrentModeArray[0] = $aSelectMode[$iMode] Then
 			$sLogText = " (" & $aCurrentModeArray[0] & " mode)"
@@ -322,7 +326,7 @@ Func SelectWardenMode($iMode, $XCoord)
 					EndIf
 				Next
 				If $sLogText = "" Then ClickP($aArrowCoords, 1, 0)
-				If $g_bDebugSetlog Then SetLog("Benchmark G. Warden mode selection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms", $COLOR_DEBUG)
+				If $g_bDebugSetLog Then SetLog("Benchmark G. Warden mode selection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms", $COLOR_DEBUG)
 			EndIf
 		EndIf
 	EndIf
@@ -346,6 +350,8 @@ Func IsUnitUsed($iMatchMode, $iTroopIndex)
 					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroKing) = $eHeroKing) Then Return True
 				Case $eQueen
 					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroQueen) = $eHeroQueen) Then Return True
+				Case $ePrince
+					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroPrince) = $eHeroPrince) Then Return True
 				Case $eWarden
 					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroWarden) = $eHeroWarden) Then Return True
 				Case $eChampion
@@ -374,6 +380,8 @@ Func IsUnitUsed($iMatchMode, $iTroopIndex)
 					If $g_abAttackUseInvisibilitySpell[$iMatchMode] Then Return True
 				Case $eReSpell
 					If $g_abAttackUseRecallSpell[$iMatchMode] Then Return True
+				Case $eRvSpell
+					If $g_abAttackUseReviveSpell[$iMatchMode] Then Return True
 				Case $eSkSpell
 					If $g_abAttackUseSkeletonSpell[$iMatchMode] Then Return True
 				Case $eBtSpell

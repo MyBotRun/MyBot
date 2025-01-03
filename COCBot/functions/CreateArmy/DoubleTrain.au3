@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Demen
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,7 +18,7 @@
 Func DoubleTrain()
 
 	If Not $g_bDoubleTrain Then Return
-	Local $bDebug = $g_bDebugSetlogTrain Or $g_bDebugSetlog
+	Local $bDebug = $g_bDebugSetLogTrain Or $g_bDebugSetLog
 
 	If $bDebug Then SetLog(" == Double Train Army == ", $COLOR_ACTION)
 

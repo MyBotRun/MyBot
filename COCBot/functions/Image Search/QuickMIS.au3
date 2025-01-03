@@ -50,11 +50,11 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						$g_iQuickMISX = $coord[0]
 						$g_iQuickMISY = $coord[1]
 						$g_iQuickMISName = $files[$i]
-						If $g_bDebugSetlog Then SetDebugLog("BFI Found : " & $g_iQuickMISName & " [" & $g_iQuickMISX & "," & $g_iQuickMISY & "]")
+						If $g_bDebugSetLog Then SetDebugLog("BFI Found : " & $g_iQuickMISName & " [" & $g_iQuickMISX & "," & $g_iQuickMISY & "]")
 						Return True
 					EndIf
 				Else
-					If $g_bDebugSetlog Then SetDebugLog("BFI No result")
+					If $g_bDebugSetLog Then SetDebugLog("BFI No result")
 				EndIf
 			Next
 		EndIf
@@ -73,7 +73,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 
 	If IsArray($Res) Then
 		;_ArrayDisplay($Res)
-		If $g_bDebugSetlog Then SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
+		If $g_bDebugSetLog Then SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
 
 		If $Res[0] = "" Or $Res[0] = "0" Then
 			SetDebugLog($ValueReturned & ", Image not found in " & $directory)
@@ -125,7 +125,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 					$Name = RetrieveImglocProperty($KeyValue[0], "objectname")
 					$g_iQuickMISName = $Name
 
-					If $g_bDebugSetlog Or $Debug Then
+					If $g_bDebugSetLog Or $Debug Then
 						SetDebugLog($ValueReturned & " Found: " & $Name & ", using " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_PURPLE)
 						If $g_bDebugImageSave Then DebugQuickMIS($Left, $Top, "BC1_detected[" & $Name & "_" & $g_iQuickMISX & "x" & $g_iQuickMISY & "]")
 					EndIf
@@ -141,7 +141,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						If UBound(decodeSingleCoord($DLLRes[0])) > 1 Then $Result &= $DLLRes[0] & "|"
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
-					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
+					If $g_bDebugSetLog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
 					Local $CoordsInArray = StringSplit($Result, "|", $STR_NOCOUNT)
 					Return $CoordsInArray
 
@@ -159,7 +159,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 							EndIf
 						Next
 					Next
-					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & _ArrayToString($Result), $COLOR_PURPLE)
+					If $g_bDebugSetLog Then SetDebugLog($ValueReturned & " Found: " & _ArrayToString($Result), $COLOR_PURPLE)
 					Return $Result
 
 				Case "CNX"
@@ -177,7 +177,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 							EndIf
 						Next
 					Next
-					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & _ArrayToString($Result), $COLOR_PURPLE)
+					If $g_bDebugSetLog Then SetDebugLog($ValueReturned & " Found: " & _ArrayToString($Result), $COLOR_PURPLE)
 					Return $Result
 
 				Case "N1" ; name of first file found
@@ -206,7 +206,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						$Result &= $DLLRes[0] & "|"
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
-					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
+					If $g_bDebugSetLog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
 					Local $QuantityInArray = StringSplit($Result, "|", $STR_NOCOUNT)
 					Return $QuantityInArray[0]
 

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015), CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -45,27 +45,6 @@ Func ZoomOut() ;Zooms out
 	Return $Result
 EndFunc   ;==>ZoomOut
 
-Func ZoomOutBlueStacks() ;Zooms out
-	; ctrl click is best and most stable for BlueStacks
-	Return ZoomOutCtrlClick(False, False, False, 250)
-	;Return DefaultZoomOut("{DOWN}", 0)
-	; ZoomOutCtrlClick doesn't cause moving buildings, but uses global Ctrl-Key and has taking focus problems
-	;Return ZoomOutCtrlClick(False, False, False)
-EndFunc   ;==>ZoomOutBlueStacks
-
-Func ZoomOutBlueStacks2()
-	If $__BlueStacks2Version_2_5_or_later = False Then
-		; ctrl click is best and most stable for BlueStacks, but not working after 2.5.55.6279 version
-		Return ZoomOutCtrlClick(False, False, False, 250)
-	Else
-		; newer BlueStacks versions don't work with Ctrl-Click, so fall back to original arrow key
-		Return DefaultZoomOut("{DOWN}", 0, ($g_iAndroidZoomoutMode <> 3))
-	EndIf
-	;Return DefaultZoomOut("{DOWN}", 0)
-	; ZoomOutCtrlClick doesn't cause moving buildings, but uses global Ctrl-Key and has taking focus problems
-	;Return ZoomOutCtrlClick(False, False, False)
-EndFunc   ;==>ZoomOutBlueStacks2
-
 Func ZoomOutBlueStacks5()
 	; newer BlueStacks versions don't work with Ctrl-Click, so fall back to original arrow key
 	Return DefaultZoomOut("{DOWN}", 0, ($g_iAndroidZoomoutMode <> 3))
@@ -90,7 +69,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 
 	If StringInStr($aPicture[0], "zoomou") = 0 Then
-		If $g_bDebugSetlog Then
+		If $g_bDebugSetLog Then
 			SetDebugLog("Zooming Out (" & $sFunc & ")", $COLOR_INFO)
 		Else
 			SetLog("Zooming Out", $COLOR_INFO)
@@ -115,7 +94,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 			EndIf
 			If Not $bAndroidZoomOut Then
 				; original windows based zoom-out
-				If $g_bDebugSetlog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
+				If $g_bDebugSetLog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 				If _Sleep($DELAYZOOMOUT2) Then Return True
 				If $g_bChkBackgroundMode = False And $g_bNoFocusTampering = False Then
 					$result0 = ControlFocus($g_hAndroidWindow, "", "")
@@ -123,7 +102,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 					$result0 = 1
 				EndIf
 				$result1 = ControlSend($g_hAndroidWindow, "", "", $ZoomOutKey)
-				If $g_bDebugSetlog Then SetDebugLog("ControlFocus Result = " & $result0 & ", ControlSend Result = " & $result1 & "|" & "@error= " & @error, $COLOR_DEBUG)
+				If $g_bDebugSetLog Then SetDebugLog("ControlFocus Result = " & $result0 & ", ControlSend Result = " & $result1 & "|" & "@error= " & @error, $COLOR_DEBUG)
 				If $result1 = 1 Then
 					$i += 1
 				Else
@@ -168,7 +147,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 
 	If StringInStr($aPicture[0], "zoomou") = 0 Then
 
-		If $g_bDebugSetlog Then
+		If $g_bDebugSetLog Then
 			SetDebugLog("Zooming Out (" & $sFunc & ")", $COLOR_INFO)
 		Else
 			SetLog("Zooming Out", $COLOR_INFO)
@@ -195,7 +174,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 			EndIf
 			If Not $AndroidZoomOut Then
 				; original windows based zoom-out
-				If $g_bDebugSetlog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
+				If $g_bDebugSetLog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 				If _Sleep($DELAYZOOMOUT2) Then ExitLoop
 				If ($g_bChkBackgroundMode = False And $g_bNoFocusTampering = False) Or $AlwaysControlFocus Then
 					$Result[0] = ControlFocus($hWin, "", "")
@@ -220,7 +199,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 				If _Sleep($ClickDelay) Then ExitLoop
 				$Result[3] = ControlSend($hWin, "", "", "{CTRLUP}{SPACE}")
 
-				If $g_bDebugSetlog Then SetDebugLog("ControlFocus Result = " & $Result[0] & _
+				If $g_bDebugSetLog Then SetDebugLog("ControlFocus Result = " & $Result[0] & _
 						", " & $ZoomActions[1] & " = " & $Result[1] & _
 						", " & $ZoomActions[2] & " = " & $Result[2] & _
 						", " & $ZoomActions[3] & " = " & $Result[3] & _
@@ -272,7 +251,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 
 	If StringInStr($aPicture[0], "zoomou") = 0 Then
 
-		If $g_bDebugSetlog Then
+		If $g_bDebugSetLog Then
 			SetDebugLog("Zooming Out (" & $sFunc & ")", $COLOR_INFO)
 		Else
 			SetLog("Zooming Out", $COLOR_INFO)
@@ -296,7 +275,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 			EndIf
 			If Not $AndroidZoomOut Then
 				; original windows based zoom-out
-				If $g_bDebugSetlog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
+				If $g_bDebugSetLog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 				If _Sleep($DELAYZOOMOUT2) Then ExitLoop
 				If ($g_bChkBackgroundMode = False And $g_bNoFocusTampering = False) Or $AlwaysControlFocus Then
 					$Result[0] = ControlFocus($g_hAndroidWindow, "", "")
@@ -312,7 +291,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 				$Result[3] = ControlSend($g_hAndroidWindow, "", "", "{CTRLUP}{SPACE}")
 				$SendCtrlUp = False
 
-				If $g_bDebugSetlog Then SetDebugLog("ControlFocus Result = " & $Result[0] & _
+				If $g_bDebugSetLog Then SetDebugLog("ControlFocus Result = " & $Result[0] & _
 						", " & $ZoomActions[1] & " = " & $Result[1] & _
 						", " & $ZoomActions[2] & " = " & $Result[2] & _
 						", " & $ZoomActions[3] & " = " & $Result[3] & _
@@ -361,7 +340,7 @@ Func AndroidOnlyZoomOut() ;Zooms out
 
 	If StringInStr($aPicture[0], "zoomout") = 0 Then
 
-		If $g_bDebugSetlog Then
+		If $g_bDebugSetLog Then
 			SetDebugLog("Zooming Out (" & $sFunc & ")", $COLOR_INFO)
 		Else
 			SetLog("Zooming Out", $COLOR_INFO)
@@ -404,7 +383,7 @@ EndFunc   ;==>AndroidOnlyZoomOut
 ; 2 = Current Village Y Offset (after centering village)
 ; 3 = Difference of previous Village X Offset and current (after centering village)
 ; 4 = Difference of previous Village Y Offset and current (after centering village)
-Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag, $UpdateMyVillage = True, $sSource = "", $CaptureRegion = True, $DebugLog = $g_bDebugSetlog)
+Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag, $UpdateMyVillage = True, $sSource = "", $CaptureRegion = True, $DebugLog = $g_bDebugSetLog)
 	FuncEnter(SearchZoomOut)
 	If $sSource <> "" Then $sSource = " (" & $sSource & ")"
 	Local $bCenterVillage = $CenterVillageBoolOrScrollPos

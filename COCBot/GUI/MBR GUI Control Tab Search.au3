@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), CodeSlinger69 [2017], MonkeyHunter (03-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -161,6 +161,7 @@ Func EnableSearchPanels($iMatchMode)
 			   GUICtrlRead($g_hChkDBActivateCamps) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBPrinceWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBChampionWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBNotWaitHeroes) = $GUI_CHECKED Or _
@@ -182,6 +183,7 @@ Func EnableSearchPanels($iMatchMode)
 			   GUICtrlRead($g_hChkABActivateCamps) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABPrinceWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABChampionWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABNotWaitHeroes) = $GUI_CHECKED Or _
@@ -259,13 +261,22 @@ Func chkDBKingWait()
 EndFunc   ;==>chkDBKingWait
 
 Func chkDBQueenWait()
-	If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then ; Must be TH9 or above to have Queen
+	If $g_iTownHallLevel > 7 Or $g_iTownHallLevel = 0 Then ; Must be TH8 or above to have Queen
 		_GUI_Value_STATE("ENABLE", $g_hChkDBQueenWait & "#" & $g_hChkDBQueenAttack)
 	Else
 		GUICtrlSetState($g_hChkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 		GUICtrlSetState($g_hChkDBQueenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkDBQueenWait
+
+Func chkDBPrinceWait()
+	If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then ; Must be TH9 or above to have Prince
+		_GUI_Value_STATE("ENABLE", $g_hChkDBPrinceWait & "#" & $g_hChkDBPrinceAttack)
+	Else
+		GUICtrlSetState($g_hChkDBPrinceWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBPrinceAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+	EndIf
+EndFunc   ;==>chkDBPrinceWait
 
 Func chkDBWardenWait()
 	If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then ; Must be TH11 to have warden
@@ -295,13 +306,22 @@ Func chkABKingWait()
 EndFunc   ;==>chkABKingWait
 
 Func chkABQueenWait()
-	If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then ; Must be TH9 or above to have Queen
+	If $g_iTownHallLevel > 7 Or $g_iTownHallLevel = 0 Then ; Must be TH8 or above to have Queen
 		_GUI_Value_STATE("ENABLE", $g_hChkABQueenWait & "#" & $g_hChkABQueenAttack)
 	Else
 		GUICtrlSetState($g_hChkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 		GUICtrlSetState($g_hChkABQueenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkABQueenWait
+
+Func chkABPrinceWait()
+	If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then ; Must be TH9 or above to have Prince
+		_GUI_Value_STATE("ENABLE", $g_hChkABPrinceWait & "#" & $g_hChkABPrinceAttack)
+	Else
+		GUICtrlSetState($g_hChkABPrinceWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABPrinceAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+	EndIf
+EndFunc   ;==>chkABPrinceWait
 
 Func chkABWardenWait()
 	If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then ; Must be TH11 to have warden

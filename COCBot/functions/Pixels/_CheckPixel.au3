@@ -11,7 +11,7 @@
 ; Return values .: True when the referenced pixel is found, False if not found
 ; Author ........: FastFrench (2015)
 ; Modified ......: Hervidero (2015), MonkeyHunter (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,7 @@
 
 Func _CheckPixel($aScreenCode, $bNeedCapture = Default, $Ignore = Default, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	If $bNeedCapture = Default Then $bNeedCapture = False
-	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then
+	If $g_bDebugSetLog And $sLogText <> Default And IsString($sLogText) Then
 		$sLogText &= ", Expected: " & Hex($aScreenCode[2], 6) & ", Tolerance: " & $aScreenCode[3]
 	Else
 		$sLogText = Default

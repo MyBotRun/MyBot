@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: Fliegerfaust(06-2018)
 ; Modified ......: Moebius14 (04-2024)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,7 @@ Func getArmyCCSiegeCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 		Return
 	EndIf
 
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyCCSiegeCapacity:", $COLOR_DEBUG1)
+	If $g_bDebugSetLogTrain Or $g_bDebugSetLog Then SetLog("Begin getArmyCCSiegeCapacity:", $COLOR_DEBUG1)
 
 	If $bCheckWindow Then
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
@@ -37,7 +37,7 @@ Func getArmyCCSiegeCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 
 	; Get CC Siege Capacities
 	Local $sSiegeInfo = getCCSiegeCampCap(578, 428 + $g_iMidOffsetY, $bNeedCapture) ; OCR read Siege built and total
-	If $g_bDebugSetlogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
+	If $g_bDebugSetLogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
 	Local $aGetSiegeCap = StringSplit($sSiegeInfo, "#", $STR_NOCOUNT) ; split the built Siege number from the total Siege number
 	If $bSetLog And UBound($aGetSiegeCap) = 2 Then SetLog("Clan Castle Siege" & ($aGetSiegeCap[1] > 1 ? "s" : "") & ": " & $aGetSiegeCap[0] & "/" & $aGetSiegeCap[1])
 
@@ -49,7 +49,7 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 
 	Local $aSiegeWSlot[1][4] = [[0, "", 0, 0]] ; Page, Siege Name index, Quantity, X Coord for Remove
 
-	If $g_bDebugSetlogTrain Then SetLog("getArmyCCSiegeMachines():", $COLOR_DEBUG)
+	If $g_bDebugSetLogTrain Then SetLog("getArmyCCSiegeMachines():", $COLOR_DEBUG)
 
 	If Not $bOpenArmyWindow Then
 		If $bCheckWindow And Not IsTrainPage() Then ; check for train page

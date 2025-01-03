@@ -7,7 +7,7 @@
 ; Author ........: Code Monkey #6
 ; Modified ......: kaganus (Jun/Aug 2015), Sardo 2015-07, KnowJack(Aug 2015) , The Master (2015), MonkeyHunter (02/08-2016),
 ;				   CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -42,7 +42,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	Local $logwrited = False
 	Local $iSkipped = 0
 	Local $bReturnToPickupHero = False
-	Local $abHeroUse[$eHeroCount] = [False, False, False, False]
+	Local $abHeroUse[$eHeroCount] = [False, False, False, False, False]
 	For $i = 0 To $eHeroCount - 1
 		$abHeroUse[$i] = ($g_abSearchSearchesEnable[$DB] ? IsUnitUsed($DB, $eKing + $i) : False) _
 				Or ($g_abSearchSearchesEnable[$LB] ? IsUnitUsed($LB, $eKing + $i) : False)
@@ -328,14 +328,14 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		If $g_bSearchRestartPickupHero Then
-			For $i = 0 To $eHeroCount - 1 ; check all heros
-				If Not $abHeroUse[$i] Or Not _DateIsValid($g_asHeroHealTime[$i]) Then ContinueLoop
+			For $i = 0 To $eHeroSlots - 1 ; check slots
+				If Not $abHeroUse[$g_aiCmbCustomHeroOrder[$i]] Or Not _DateIsValid($g_asHeroHealTime[$i]) Then ContinueLoop
 				Local $iTimeTillHeroHealed = Int(_DateDiff('s', _NowCalc(), $g_asHeroHealTime[$i])) ; hero time in seconds
-				SetDebugLog($g_asHeroNames[$i] & " will be ready in " & $iTimeTillHeroHealed & " seconds")
+				SetDebugLog($g_asHeroNames[$g_aiCmbCustomHeroOrder[$i]] & " will be ready in " & $iTimeTillHeroHealed & " seconds")
 				If $iTimeTillHeroHealed <= 0 Then
 					$bReturnToPickupHero = True
 					$g_asHeroHealTime[$i] = ""
-					SetLog($g_asHeroNames[$i] & " is ready. Return home to pick " & ($i <> 1 ? "him" : "her") & " up to join the attack")
+					SetLog($g_asHeroNames[$g_aiCmbCustomHeroOrder[$i]] & " is ready. Return home to pick " & ($g_aiCmbCustomHeroOrder[$i] <> 1 ? "him" : "her") & " up to join the attack")
 					ExitLoop ; found 1 Hero is ready, skip checking other heros
 				EndIf
 			Next
@@ -519,7 +519,7 @@ Func WriteLogVillageSearch($x)
 	If $g_abFilterMeetTH[$x] Then $MeetTHtext = "- Max TH " & $g_aiMaxTH[$x] ;$g_aiFilterMeetTHMin
 	If $g_abFilterMeetTHOutsideEnable[$x] Then $MeetTHOtext = "- TH Outside"
 	If IsWeakBaseActive($x) Then $MeetWeakBasetext = "- Weak Base"
-	If Not ($g_bIsSearchLimit) And $g_bDebugSetlog Then
+	If Not ($g_bIsSearchLimit) And $g_bDebugSetLog Then
 		SetLogCentered(" Searching For " & $g_asModeText[$x] & " ", Default, $COLOR_INFO)
 		SetLog("Enable " & $g_asModeText[$x] & " search IF ", $COLOR_INFO)
 		If $g_abSearchSearchesEnable[$x] Then SetLog("- Numbers of searches range " & $g_aiSearchSearchesMin[$x] & " - " & $g_aiSearchSearchesMax[$x], $COLOR_INFO)

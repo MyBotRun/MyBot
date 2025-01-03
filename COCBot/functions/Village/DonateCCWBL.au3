@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016-09)
 ; Modified ......: MR.ViPER (27-12-2016), Moebius14 (2024-03)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -24,7 +24,7 @@ Func donateCCWBLUserImageCollect($x, $y)
 	If IsArray($asDividerResult) And UBound($asDividerResult) = 2 Then
 		$g_TopDividerSearch = $asDividerResult[1] - 24
 		If $g_bDebugImageSave Then SaveDebugImage("donateCCWBLDebugImage")
-		If $g_bDebugSetlog Then SetDebugLog("$g_TopDividerSearch = " & $g_TopDividerSearch, $COLOR_DEBUG)
+		If $g_bDebugSetLog Then SetDebugLog("$g_TopDividerSearch = " & $g_TopDividerSearch, $COLOR_DEBUG)
 	Else
 		If $g_bDebugImageSave Then SaveDebugImage("donateCCWBLDebugImage")
 		Return True ; <=== return DONATE
@@ -70,7 +70,7 @@ Func donateCCWBLUserImageCollect($x, $y)
 			For $i = 1 To UBound($xyzw) - 1
 				Local $resultxyzw = FindImageInPlace("DCCWBL", $g_sProfileDonateCapturePath & $xyzw[$i], "40," & $g_TopDividerSearch & "," & $x - 30 & "," & $g_TopDividerSearch + 26, True)
 				If StringInStr($resultxyzw, ",") > 0 Then
-					If $g_iCmbDonateFilter = 1 Or $g_bDebugSetlog Then SetLog("IMAGES TO ASSIGN: image match! " & $xyzw[$i], $COLOR_SUCCESS)
+					If $g_iCmbDonateFilter = 1 Or $g_bDebugSetLog Then SetLog("IMAGES TO ASSIGN: image match! " & $xyzw[$i], $COLOR_SUCCESS)
 					$imagematch = True
 					ExitLoop
 				EndIf

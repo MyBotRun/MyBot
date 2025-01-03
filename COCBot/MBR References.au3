@@ -44,54 +44,15 @@ Func ReferenceFunctions()
 	_SysTrayIconVisible(0)
 	_SysTrayIconHide(0, 0)
 	_SysTrayIconMove(0, 0)
-	ZoomOutBlueStacks()
-	ZoomOutBlueStacks2()
 	ZoomOutBlueStacks5()
 	ZoomOutMEmu()
 	ZoomOutNox()
 	DefaultZoomOut()
 	ZoomOutCtrlWheelScroll()
 	ZoomOutCtrlClick()
-	OpenBS()
-	OpenBlueStacks()
-	OpenBlueStacks2()
 	OpenBlueStacks5()
-	InitBlueStacksX()
 	InitBlueStacks5X()
-	InitBlueStacks()
-	InitBlueStacks2()
 	InitBlueStacks5()
-	RestartBlueStacksXCoC()
-	RestartBlueStacksCoC()
-	RestartBlueStacks2CoC()
-	CheckScreenBlueStacksX()
-	CheckScreenBlueStacks()
-	CheckScreenBlueStacks2()
-	SetScreenBlueStacks()
-	SetScreenBlueStacks2()
-	RebootBlueStacksSetScreen()
-	ConfigBlueStacks2WindowManager()
-	RebootBlueStacks2SetScreen()
-	GetBlueStacksRunningInstance()
-	GetBlueStacks2RunningInstance()
-	GetBlueStacksProgramParameter()
-	GetBlueStacks2ProgramParameter()
-	BlueStacksBotStartEvent()
-	BlueStacksBotStopEvent()
-	BlueStacks2BotStartEvent()
-	BlueStacks2BotStopEvent()
-	BlueStacksAdjustClickCoordinates($a1, $a2)
-	BlueStacks2AdjustClickCoordinates($a1, $a2)
-	GetBlueStacksAdbPath()
-	GetBlueStacks2AdbPath()
-	DisableBS(0, 0)
-	EnableBS(0, 0)
-	GetBlueStacksSvcPid()
-	CloseBlueStacks()
-	CloseBlueStacks2()
-	KillBSProcess()
-	ServiceStop(0)
-	CloseUnsupportedBlueStacks2()
 	RestartBlueStacks5CoC()
 	CheckScreenBlueStacks5()
 	SetScreenBlueStacks5()
@@ -105,6 +66,7 @@ Func ReferenceFunctions()
 	GetBlueStacks5AdbPath()
 	GetBlueStacks5SvcPid()
 	CloseBlueStacks5()
+	CloseUnsupportedBlueStacksX()
 	OpenMEmu()
 	GetMEmuProgramParameter()
 	GetMEmuPath()
@@ -148,12 +110,8 @@ Func ReferenceFunctions()
 	returnLowestLevelSingleMatch(0)
 	updateGlobalVillageOffset(0, 0)
 	GemClickR(0, 0, 0)
-	GetBlueStacksBackgroundMode()
-	GetBlueStacks2BackgroundMode()
 	GetMEmuBackgroundMode()
 	GetNoxBackgroundMode()
-	ConfigureSharedFolderBlueStacks()
-	ConfigureSharedFolderBlueStacks2()
 	; DonateCC.au3
 	getChatString(0, 0, 0)
 	getChatStringChinese(0, 0)
@@ -246,6 +204,13 @@ Func ReferenceGlobals()
 	$a1 = $eIcnHourGlass
 	$a1 = $eIcnTH1
 	$a1 = $eIcnTH10
+	$a1 = $eIcnTH11
+	$a1 = $eIcnTH12
+	$a1 = $eIcnTH13
+	$a1 = $eIcnTH14
+	$a1 = $eIcnTH15
+	$a1 = $eIcnTH16
+	$a1 = $eIcnTH17
 	$a1 = $eIcnTrophy
 	$a1 = $eIcnValkyrie
 	$a1 = $eIcnDonValkyrie
@@ -383,6 +348,7 @@ Func ReferenceGlobals()
 	$a1 = $eHdV14
 	$a1 = $eHdV15
 	$a1 = $eHdV16
+	$a1 = $eHdV17
 	$a1 = $eUnranked
 	$a1 = $eBronze
 	$a1 = $eSilver
@@ -437,7 +403,6 @@ Func ReferenceGlobals()
 	$a1 = $eTroopGoblin
 	$a1 = $eTroopWallBreaker
 	$a1 = $eTroopBalloon
-
 	$a1 = $eTroopWizard
 	$a1 = $eTroopHealer
 	$a1 = $eTroopDragon
@@ -450,6 +415,7 @@ Func ReferenceGlobals()
 	$a1 = $eTroopDragonRider
 	$a1 = $eTroopElectroTitan
 	$a1 = $eTroopRootRider
+	$a1 = $eTroopThrower
 
 	$a1 = $eTroopMinion
 	$a1 = $eTroopHogRider
@@ -457,7 +423,6 @@ Func ReferenceGlobals()
 	$a1 = $eTroopValkyrie
 	$a1 = $eTroopGolem
 	$a1 = $eTroopWitch
-
 	$a1 = $eTroopLavaHound
 	$a1 = $eTroopBowler
 	$a1 = $eTroopIceGolem
@@ -465,6 +430,7 @@ Func ReferenceGlobals()
 	$a1 = $eTroopAppWard
 	$a1 = $eTroopDruid
 	$a1 = $eTroopCount
+
 	$a1 = $eSpellLightning
 	$a1 = $eSpellHeal
 	$a1 = $eSpellRage
@@ -473,7 +439,7 @@ Func ReferenceGlobals()
 	$a1 = $eSpellClone
 	$a1 = $eSpellInvisibility
 	$a1 = $eSpellRecall
-
+	$a1 = $eSpellRevive
 	$a1 = $eSpellPoison
 	$a1 = $eSpellEarthquake
 	$a1 = $eSpellHaste
@@ -481,6 +447,7 @@ Func ReferenceGlobals()
 	$a1 = $eSpellBat
 	$a1 = $eSpellOvergrowth
 	$a1 = $eSpellCount
+
 	$a1 = $eBarb
 	$a1 = $eArch
 	$a1 = $eGiant
@@ -513,6 +480,7 @@ Func ReferenceGlobals()
 	$a1 = $eHunt
 	$a1 = $eAppWard
 	$a1 = $eDruid
+	$a1 = $eThrower
 	$a1 = $eKing
 	$a1 = $eQueen
 	$a1 = $eWarden
@@ -526,6 +494,7 @@ Func ReferenceGlobals()
 	$a1 = $eCSpell
 	$a1 = $eISpell
 	$a1 = $eReSpell
+	$a1 = $eRvSpell
 	$a1 = $ePSpell
 	$a1 = $eESpell
 	$a1 = $eHaSpell

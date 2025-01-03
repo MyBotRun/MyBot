@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Promac (2015-04), KnowJack(2015-08), Hervidero (2016-01), MonkeyHunter (2016-01,05)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -39,7 +39,7 @@ Func DropTrophy()
 		For $i = 0 To UBound($g_avDTtroopsToBeUsed, 1) - 1
 			If $g_avDTtroopsToBeUsed[$i][1] > 0 Then
 				$bHaveTroops = True
-				If $g_bDebugSetlog Then
+				If $g_bDebugSetLog Then
 					SetDebugLog("Drop Trophy Found " & StringFormat("%3s", $g_avDTtroopsToBeUsed[$i][1]) & " " & $g_avDTtroopsToBeUsed[$i][0], $COLOR_DEBUG)
 					ContinueLoop ; display all troop counts if debug flag set
 				Else
@@ -49,7 +49,8 @@ Func DropTrophy()
 		Next
 		; if heroes enabled, check them and reset drop trophy disable
 		If $g_bDropTrophyUseHeroes And $g_iHeroAvailable > 0 Then
-			SetDebugLog("Drop Trophy Found Hero BK|AQ|GW|RC: " & BitOR($g_iHeroAvailable, $eHeroKing) & "|" & BitOR($g_iHeroAvailable, $eHeroQueen) & "|" & BitOR($g_iHeroAvailable, $eHeroWarden) & "|" & BitOR($g_iHeroAvailable, $eHeroChampion), $COLOR_DEBUG)
+			SetDebugLog("Drop Trophy Found Hero BK|AQ|MP|GW|RC: " & BitOR($g_iHeroAvailable, $eHeroKing) & "|" & BitOR($g_iHeroAvailable, $eHeroQueen) & "|" & BitOR($g_iHeroAvailable, $eHeroPrince) & "|" & _
+					BitOR($g_iHeroAvailable, $eHeroWarden) & "|" & BitOR($g_iHeroAvailable, $eHeroChampion), $COLOR_DEBUG)
 			$bHaveTroops = True
 		EndIf
 
@@ -62,9 +63,9 @@ Func DropTrophy()
 		Local $iCount, $aRandomEdge, $iRandomXY
 		Local Const $DTArmyPercent = Round(Int($g_iDropTrophyArmyMinPct) / 100, 2)
 		Local $g_iDropTrophyMaxNeedCheck = $g_iDropTrophyMax ; set trophy target to max trophy
-		Local Const $iWaitTime = 3 ; wait time for base recheck during long drop times in minutes (3 minutes ~5-10 drop attacks)
+		Local Const $iWaitTime = 3 * 60 ; wait time for base recheck during long drop times in minutes (3 minutes ~5-10 drop attacks)
 		Local $iDateCalc, $sWaitToDate
-		$sWaitToDate = _DateAdd('n', Int($iWaitTime), _NowCalc()) ; find delay time for checkbasequick
+		$sWaitToDate = _DateAdd('s', Int($iWaitTime), _NowCalc()) ; find delay time for checkbasequick
 		SetDebugLog("ChkBaseQuick delay time= " & $sWaitToDate & " Now= " & _NowCalc() & " Diff= " & _DateDiff('s', _NowCalc(), $sWaitToDate), $COLOR_DEBUG)
 
 		While Number($g_aiCurrentLoot[$eLootTrophy]) > Number($g_iDropTrophyMaxNeedCheck)
@@ -93,7 +94,6 @@ Func DropTrophy()
 				$g_iDropTrophyMaxNeedCheck = $g_iDropTrophyMin ; already checked above max trophy, so set target to min trophy value
 				SetLog("Dropping Trophies to " & $g_iDropTrophyMin, $COLOR_INFO)
 				If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
-				ZoomOut()
 				PrepareSearch($DT)
 				If $g_bOutOfGold Then Return
 				If $g_bRestart Then
@@ -186,29 +186,30 @@ Func DropTrophy()
 
 
 					;c) check if hero avaiable and drop according to priority
-					If ($g_iQueenSlot <> -1 Or $g_iKingSlot <> -1 Or $g_iWardenSlot <> -1 Or $g_iChampionSlot <> -1) Then
+					If ($g_iQueenSlot <> -1 Or $g_iKingSlot <> -1 Or $g_iPrinceSlot <> -1 Or $g_iWardenSlot <> -1 Or $g_iChampionSlot <> -1) Then
 						Local $sHeroPriority
 						Switch $g_iDropTrophyHeroesPriority
 							Case 0
-								$sHeroPriority = "QKWC"
+								$sHeroPriority = "QKPWC"
 							Case 1
-								$sHeroPriority = "QWKC"
+								$sHeroPriority = "QWPKC"
 							Case 2
-								$sHeroPriority = "KQWC"
+								$sHeroPriority = "KPQWC"
 							Case 3
-								$sHeroPriority = "KWQC"
+								$sHeroPriority = "PKWQC"
 							Case 4
-								$sHeroPriority = "WKQC"
+								$sHeroPriority = "WKQPC"
 							Case 5
-								$sHeroPriority = "WQKC"
+								$sHeroPriority = "WPQKC"
 							Case 6
-								$sHeroPriority = "CWQK"
+								$sHeroPriority = "CWQKP"
 							Case 7
-								$sHeroPriority = "CQWK"
+								$sHeroPriority = "CQWPK"
 						EndSwitch
 
 						Local $t
-						For $i = 1 To 4
+						Local $DELAYDROPTROPHYHERO = _Sleep(Random(850, 1350, 1))
+						For $i = 1 To 5
 							$t = StringMid($sHeroPriority, $i, 1)
 							Switch $t
 								Case "Q"
@@ -218,7 +219,7 @@ Func DropTrophy()
 										SelectDropTroop($g_iQueenSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0180") ;Drop Queen
-										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
+										If _Sleep($DELAYDROPTROPHYHERO) Then ExitLoop
 										SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
 										ReturnfromDropTrophies()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
@@ -231,12 +232,25 @@ Func DropTrophy()
 										SelectDropTroop($g_iKingSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0178") ;Drop King
-										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
+										If _Sleep($DELAYDROPTROPHYHERO) Then ExitLoop
 										SelectDropTroop($g_iKingSlot) ;If King was not activated: Boost King before EndBattle to restore some health
 										ReturnfromDropTrophies()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										ExitLoop
 									EndIf
+								Case "P"
+									If $g_iPrinceSlot <> -1 Then
+										SetTrophyLoss()
+										SetLog("Deploying Prince", $COLOR_INFO)
+										SelectDropTroop($g_iPrinceSlot)
+										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
+										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0180") ;Drop Prince
+										If _Sleep($DELAYDROPTROPHYHERO) Then ExitLoop
+										SelectDropTroop($g_iPrinceSlot) ;If Prince was not activated: Boost Prince before EndBattle to restore some health
+										ReturnfromDropTrophies()
+										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
+										ExitLoop
+									EndIf	
 								Case "W"
 									If $g_iWardenSlot <> -1 Then
 										SetTrophyLoss()
@@ -244,7 +258,7 @@ Func DropTrophy()
 										SelectDropTroop($g_iWardenSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0000") ;Drop Warden
-										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
+										If _Sleep($DELAYDROPTROPHYHERO) Then ExitLoop
 										SelectDropTroop($g_iWardenSlot) ;If Warden was not activated: Boost Warden before EndBattle to restore some health
 										ReturnfromDropTrophies()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
@@ -257,7 +271,7 @@ Func DropTrophy()
 										SelectDropTroop($g_iChampionSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 120, "#0000") ;Drop Champion
-										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
+										If _Sleep($DELAYDROPTROPHYHERO) Then ExitLoop
 										SelectDropTroop($g_iChampionSlot) ;If Champion was not activated: Boost Champion before EndBattle to restore some health
 										ReturnfromDropTrophies()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
@@ -267,7 +281,7 @@ Func DropTrophy()
 						Next
 					EndIf
 				EndIf
-				If ($g_iQueenSlot = -1 And $g_iKingSlot = -1 And $g_iWardenSlot = -1 And $g_iChampionSlot = -1) Or Not $g_bDropTrophyUseHeroes Then
+				If ($g_iQueenSlot = -1 And $g_iKingSlot = -1 And $g_iPrinceSlot = -1 And $g_iWardenSlot = -1 And $g_iChampionSlot = -1) Or $g_bDropTrophyUseHeroes = 0 Then
 					$aRandomEdge = $g_aaiEdgeDropPoints[Round(Random(0, 3))]
 					$iRandomXY = Round(Random(0, 4))
 					SetDebugLog("Troop Loc = " & $iRandomXY & ", X:Y= " & $aRandomEdge[$iRandomXY][0] & "|" & $aRandomEdge[$iRandomXY][1], $COLOR_DEBUG)
@@ -295,7 +309,7 @@ Func DropTrophy()
 				If $iDateCalc <= 0 Then ; check length of time in drop trophy
 					SetLog(" Checking base during long drop cycle", $COLOR_INFO)
 					CheckBaseQuick() ; check base during long drop times
-					$sWaitToDate = _DateAdd('n', Int($iWaitTime), _NowCalc()) ; create new delay date/time
+					$sWaitToDate = _DateAdd('s', Int($iWaitTime), _NowCalc()) ; create new delay date/time
 					SetDebugLog("ChkBaseQuick new delay time= " & $sWaitToDate, $COLOR_DEBUG)
 				EndIf
 			Else

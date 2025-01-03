@@ -3,7 +3,7 @@
 ; Description ...: Daily Challenges
 ; Author ........: TripleM (04/2019), Demen (07/2019)
 ; Modified ......: Moebius14 (04-2024)
-; Remarks .......: This file is part of MyBot Copyright 2015-2024
+; Remarks .......: This file is part of MyBot Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -31,7 +31,7 @@ Func DailyChallenges()
 		EndIf
 	Next
 
-	Local $bCheckDiscount = $bGoldPass And ($g_bUpgradeKingEnable Or $g_bUpgradeQueenEnable Or $g_bUpgradeWardenEnable Or $g_bUpgradeChampionEnable Or $g_bAutoUpgradeWallsEnable Or $bUpgradePets)
+	Local $bCheckDiscount = $bGoldPass And ($g_bUpgradeKingEnable Or $g_bUpgradeQueenEnable Or $g_bUpgradePrinceEnable Or $g_bUpgradeWardenEnable Or $g_bUpgradeChampionEnable Or $g_bAutoUpgradeWallsEnable Or $bUpgradePets)
 
 	If Not $g_bChkCollectRewards And Not $bCheckDiscount Then Return
 	Local $bRedSignal = _CheckPixel($aPersonalChallengeOpenButton3, $g_bCapturePixel)
@@ -120,7 +120,7 @@ Func CollectDailyRewards($bGoldPass = False)
 				Click($aAllCoords[$j][0], $aAllCoords[$j][1], 1, 120, "Claim " & $j + 1)         ; Click Claim button
 				If WaitforPixel(329, 390 + $g_iMidOffsetY, 331, 392 + $g_iMidOffsetY, Hex(0xFFC877, 6), 20, 3) Then         ; wait for Cancel Button popped up in 1.5 second
 					If $g_bChkSellRewards Then
-						Setlog("Selling extra reward for gems", $COLOR_SUCCESS)
+						SetLog("Selling extra reward for gems", $COLOR_SUCCESS)
 						ClickP($aPersonalChallengeOkBtn, 1, 120, "Okay Btn")         ; Click the Okay
 						$iClaim += 1
 					Else
@@ -170,13 +170,15 @@ Func CheckDiscountPerks()
 		Local $aDiscount = StringSplit($sDiscount, "%", $STR_NOCOUNT)
 		$g_iBuilderBoostDiscount = Number($aDiscount[0])
 		SetLog($g_iBuilderBoostDiscount > 0 ? "Current Builder boost: " & $g_iBuilderBoostDiscount & "%" : "Keep working hard on challenges", $COLOR_SUCCESS)
+		cmbWalls()
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
 	Else
 		SetLog("Cannot read builder boost", $COLOR_ERROR)
 	EndIf
 EndFunc   ;==>CheckDiscountPerks
 
 Func ClosePersonalChallenges()
-	If $g_bDebugSetlog Then SetLog("Closing personal challenges", $COLOR_INFO)
+	If $g_bDebugSetLog Then SetLog("Closing personal challenges", $COLOR_INFO)
 
 	CloseWindow()
 

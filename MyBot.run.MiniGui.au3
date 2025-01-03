@@ -3,7 +3,7 @@
 ; Description ...: This file contains the initialization and main loop sequences f0r the MBR Bot
 ; Author ........: cosote (2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -85,7 +85,7 @@ Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $DELAYSLEEP = 10
 Global $DELAYWINDOWSARRANGE1 = 100
-Global $g_iDebugSetlog = 0
+Global $g_iDebugSetLog = 0
 
 Global $g_hFrmBotEmbeddedMouse = 0
 
@@ -211,9 +211,6 @@ Func ProcessCommandLine()
 	; Handle Command Line Parameters
 	If $g_asCmdLine[0] > 0 Then
 		$g_sProfileCurrentName = StringRegExpReplace($g_asCmdLine[1], '[/:*?"<>|]', '_')
-		If $g_asCmdLine[0] >= 2 Then
-			If StringInStr($g_asCmdLine[2], "BlueStacks3") Then $g_asCmdLine[2] = "BlueStacks2"
-		EndIf
 	ElseIf FileExists($g_sProfilePath & "\profile.ini") Then
 		$g_sProfileCurrentName = StringRegExpReplace(IniRead($g_sProfilePath & "\profile.ini", "general", "defaultprofile", ""), '[/:*?"<>|]', '_')
 		If $g_sProfileCurrentName = "" Or Not FileExists($g_sProfilePath & "\" & $g_sProfileCurrentName) Then $g_sProfileCurrentName = "<No Profiles>"
@@ -1238,7 +1235,7 @@ Func LaunchBotBackend($bNoGUI = True)
 				SetLog("Cannot launch My Bot backend process", $COLOR_RED)
 				Return 0
 			EndIf
-			If $g_iDebugSetlog Then
+			If $g_iDebugSetLog Then
 				SetDebugLog("My Bot backend process launched, PID = " & $pid)
 			Else
 				SetLog("My Bot backend process launched")
@@ -1349,7 +1346,7 @@ _GDIPlus_Startup() ; Start GDI+ Engine (incl. a new thread)
 $g_iGuiMode = 2
 $g_bGuiRemote = True ; GUI Remote flag
 $g_WatchDogLogStatusBar = True
-$g_iDebugSetlog = 1
+$g_iDebugSetLog = 1
 ;$g_iDebugWindowMessages = 1
 
 #cs

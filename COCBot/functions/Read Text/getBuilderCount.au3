@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (06-2016)
 ; Modified ......: Fliegerfaust (06-2017), Moebius14 (07-2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -46,11 +46,11 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 				If $ExtraBuilderCount = 1 And Number($aGetBuilders[0]) = 0 Then $g_iFreeBuilderCount = 0
 				If $g_iTestFreeBuilderCount <> -1 Then $g_iFreeBuilderCount = $g_iTestFreeBuilderCount ; used for test cases
 				$g_iTotalBuilderCount = Int($aGetBuilders[1] - $ExtraBuilderCount)
-				If $g_bDebugSetlog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCount & "/" & $g_iTotalBuilderCount, $COLOR_DEBUG)
+				If $g_bDebugSetLog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCount & "/" & $g_iTotalBuilderCount, $COLOR_DEBUG)
 			Else
 				$g_iFreeBuilderCountBB = Int($aGetBuilders[0]) ; update global values
 				$g_iTotalBuilderCountBB = Int($aGetBuilders[1])
-				If $g_bDebugSetlog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB, $COLOR_DEBUG)
+				If $g_bDebugSetLog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB, $COLOR_DEBUG)
 			EndIf
 			$g_iGfxErrorCount = 0
 			Return True ; Happy Monkey returns!
@@ -68,7 +68,7 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 		SetLog("Unable to read Builders info at this time", $COLOR_ERROR)
 		; drop down to error handling code
 	EndIf
-	If $g_bDebugSetlog Or $g_bDebugImageSave Then SaveDebugImage("getBuilderCount_")
+	If $g_bDebugSetLog Or $g_bDebugImageSave Then SaveDebugImage("getBuilderCount_")
 	If checkObstacles() Then checkMainScreen() ; trap common error messages
 	Return False
 

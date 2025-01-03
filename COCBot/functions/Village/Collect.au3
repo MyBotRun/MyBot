@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Sardo (08/2015), KnowJack(10/2015), kaganus (10/2015), ProMac (04/2016), Codeslinger69 (01/2017), Fliegerfaust (11/2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -62,7 +62,7 @@ Func Collect($bCheckTreasury = True)
 			EndSwitch
 			If IsArray($aCollectXY) Then ; found array of locations
 				$t = Random(0, UBound($aCollectXY) - 1, 1) ; SC May 2017 update only need to pick one of each to collect all
-				If $g_bDebugSetlog Then SetDebugLog($sFileName & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_GREEN)
+				If $g_bDebugSetLog Then SetDebugLog($sFileName & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_GREEN)
 				If IsMainPage() Then Click($aCollectXY[$t][0], $aCollectXY[$t][1], 1, 120, "#0430")
 				If _Sleep($DELAYCOLLECT2) Then Return
 			EndIf
@@ -94,7 +94,14 @@ Func CollectLootCart()
 	If $g_iTree = $eTreeEG Then
 		If _ColorCheck(_GetPixelColor(54, 278 + $g_iMidOffsetY, True), Hex(0xE90914, 6), 20) Then ; If Egypt Scenery, Open/Close Chat To remove red warning.
 			If ClickB("ClanChat") Then
-				If _Sleep(1000) Then Return
+				If _Sleep(2000) Then Return
+				; check for "I Understand" button
+				Local $aCoord = decodeSingleCoord(FindImageInPlace2("I Understand", $g_sImgChatIUnterstand, 50, 370 + $g_iMidOffsetY, 280, 520 + $g_iMidOffsetY, True))
+				If UBound($aCoord) > 1 Then
+					SetLog('Clicking "I Understand" button', $COLOR_ACTION)
+					ClickP($aCoord)
+					If _Sleep($DELAYDONATECC2) Then Return
+				EndIf
 				If Not ClickB("ClanChat") Then
 					If _ColorCheck(_GetPixelColor(390, 340 + $g_iMidOffsetY, True), Hex(0xEA8A3B, 6), 20) Then ; close chat
 						If Not ClickB("ClanChat") Then
@@ -111,7 +118,7 @@ Func CollectLootCart()
 	EndIf
 
 	Local $Area[4] = [0, 180 + $g_iMidOffsetY, 120, 280 + $g_iMidOffsetY]
-	If $g_iTree = $eTreeMS Or $g_iTree = $eTreeEG Then
+	If IsCustomScenery(True, "Upper") Then
 		$Area[0] = 40
 		$Area[1] = 220 + $g_iMidOffsetY
 		$Area[2] = 150

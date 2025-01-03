@@ -13,7 +13,7 @@
 ; Return values .: None
 ; Author ........: Your Name
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -159,6 +159,7 @@ Func WaitForClanMessage($bType, $bTopCoords = 0, $bBottomCoords = 0)
 				If _Sleep($DELAYRUNBOT1) Then Return
 			EndIf
 		Case "ClanGames"
+			If $bBottomCoords > 0 Then $aReceivedTroopsCG[4] = Abs($bBottomCoords - $aReceivedTroopsCG[1])
 			If IsArray(_PixelSearch($aReceivedTroopsCG[0], $aReceivedTroopsCG[1], $aReceivedTroopsCG[0], $aReceivedTroopsCG[1] + $aReceivedTroopsCG[4], Hex($aReceivedTroopsCG[2], 6), $aReceivedTroopsCG[3], True)) Then
 				SetDebugLog("Detected Clan Castle Message. Waiting until it's gone", $COLOR_INFO)
 				Local $Safetyexit = 0
@@ -183,15 +184,15 @@ Func WaitForClanMessage($bType, $bTopCoords = 0, $bBottomCoords = 0)
 			EndSelect
 			Local $bArrayToSearch = _PixelSearch($aReceivedTroopsDonate[0], $aReceivedTroopsDonate[1], $aReceivedTroopsDonate[0], $aReceivedTroopsDonate[1] + $aReceivedTroopsDonate[4], Hex($aReceivedTroopsDonate[2], 6), $aReceivedTroopsDonate[3], True)
 			If IsArray($bArrayToSearch) Then
-				If _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] - 10, True), Hex(0x95C334, 6), 20) And _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] + 10, True), Hex(0x95C334, 6), 20) Then
+				If _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] - 15, True), Hex(0x95C334, 6), 20) And _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] + 15, True), Hex(0x95C334, 6), 20) Then
 					If _Sleep($DELAYRUNBOT1) Then Return
 					Return
 				EndIf
 				SetDebugLog("Detected Clan Castle Message. Waiting until it's gone", $COLOR_INFO)
 				Local $Safetyexit = 0
-				While IsArray($bArrayToSearch)
+				While IsArray(_PixelSearch($aReceivedTroopsDonate[0], $aReceivedTroopsDonate[1], $aReceivedTroopsDonate[0], $aReceivedTroopsDonate[1] + $aReceivedTroopsDonate[4], Hex($aReceivedTroopsDonate[2], 6), $aReceivedTroopsDonate[3], True))
 					If _Sleep($DELAYRUNBOT1) Then Return
-					If _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] - 10, True), Hex(0x95C334, 6), 20) And _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] + 10, True), Hex(0x95C334, 6), 20) Then ExitLoop
+					If _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] - 15, True), Hex(0x95C334, 6), 20) And _ColorCheck(_GetPixelColor($bArrayToSearch[0], $bArrayToSearch[1] + 15, True), Hex(0x95C334, 6), 20) Then ExitLoop
 					$Safetyexit += 1
 					If $Safetyexit > 20 Then ExitLoop ; If waiting longer than 20 secs, something is wrong
 				WEnd

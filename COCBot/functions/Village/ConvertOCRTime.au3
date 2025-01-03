@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Boju (11-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -55,7 +55,7 @@ Func ConvertOCRTime($sCaller, $sConvertTo, $bSetLog = True, $sReturnFormat = "mi
 				Return $iRemainTimer
 		EndSwitch
 
-		If $iRemainTimer = 0 And $g_bDebugSetlog Then SetDebugLog($sCaller & ": Bad OCR string", $COLOR_ERROR)
+		If $iRemainTimer = 0 And $g_bDebugSetLog Then SetDebugLog($sCaller & ": Bad OCR string", $COLOR_ERROR)
 
 		If $bSetLog Then SetLog($sCaller & " Time: " & $iRemainTimer & " " & $sReturnFormat, $COLOR_INFO)
 	Else

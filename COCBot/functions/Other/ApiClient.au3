@@ -3,7 +3,7 @@
 ; Description ...: Register Windows Message and provides functions to communicate between bots and manage bot application
 ; Author ........: cosote (12-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ;                  Read/write memory: https://www.autoitscript.com/forum/topic/104117-shared-memory-variables-demo/
 ; Related .......:
@@ -226,7 +226,7 @@ Func LaunchWatchdog()
 		SetLog("Cannot launch watchdog", $COLOR_RED)
 		Return 0
 	EndIf
-	If $g_bDebugSetlog Then
+	If $g_bDebugSetLog Then
 		SetDebugLog("Watchdog launched, PID = " & $pid)
 	Else
 		SetLog("Watchdog launched")

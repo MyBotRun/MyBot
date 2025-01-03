@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: TripleM
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -45,7 +45,7 @@ Func StarLaboratory($bTestRun = False)
 
 	If $g_sStarLabUpgradeTime <> "" Then $TimeDiff = _DateDiff("n", _NowCalc(), $g_sStarLabUpgradeTime) ; what is difference between end time and now in minutes?
 	If @error Then _logErrorDateDiff(@error)
-	If $g_bDebugSetlog Then SetDebugLog($g_avStarLabTroops[$g_iCmbStarLaboratory][3] & " Lab end time: " & $g_sStarLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
+	If $g_bDebugSetLog Then SetDebugLog($g_avStarLabTroops[$g_iCmbStarLaboratory][3] & " Lab end time: " & $g_sStarLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
 
 	If Not $g_bRunState Then Return
 	If $TimeDiff <= 0 Then
@@ -97,7 +97,7 @@ Func StarLaboratory($bTestRun = False)
 			$iStarLabFinishTimeMod = $iLabFinishTime
 			If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime for instantly displaying in multi-stats
 			StarLabStatusGUIUpdate() ; Update GUI flag
-		ElseIf $g_bDebugSetlog Then
+		ElseIf $g_bDebugSetLog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
 		CloseWindow()
@@ -118,9 +118,9 @@ Func StarLaboratory($bTestRun = False)
 				Local $iCurrentTroop = 2 * Int(($aTempArray[0] - 90) / 127) + Int(($aTempArray[1] - 375) / 127) + 1 ; calculating troop index from found elixir coords
 				$g_avStarLabTroops[$iCurrentTroop][0] = $aTempArray[0] - 98 ; setting troop position relativ to found elixir coords
 				$g_avStarLabTroops[$iCurrentTroop][1] = $aTempArray[1] - 101 ; setting troop position relativ to found elixir coords
-				If $g_bDebugSetlog Then
-					Setlog("New icon X position of " & $g_avStarLabTroops[$iCurrentTroop][3] & " : " & $g_avStarLabTroops[$iCurrentTroop][0], $COLOR_DEBUG)
-					Setlog("New icon Y position of " & $g_avStarLabTroops[$iCurrentTroop][3] & " : " & $g_avStarLabTroops[$iCurrentTroop][1], $COLOR_DEBUG)
+				If $g_bDebugSetLog Then
+					SetLog("New icon X position of " & $g_avStarLabTroops[$iCurrentTroop][3] & " : " & $g_avStarLabTroops[$iCurrentTroop][0], $COLOR_DEBUG)
+					SetLog("New icon Y position of " & $g_avStarLabTroops[$iCurrentTroop][3] & " : " & $g_avStarLabTroops[$iCurrentTroop][1], $COLOR_DEBUG)
 				EndIf
 			EndIf
 		Next
@@ -130,21 +130,21 @@ Func StarLaboratory($bTestRun = False)
 		Return False
 	EndIf
 
-	If $g_bDebugSetlog Then StarLabTroopImages(1, 10)
+	If $g_bDebugSetLog Then StarLabTroopImages(1, 10)
 	For $i = 1 To UBound($aUpgradeValue) - 1
 		If $g_avStarLabTroops[$i][0] = -1 Or $g_avStarLabTroops[$i][1] = -1 Then
 			$aUpgradeValue[$i] = -1
-			If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " is not upgradeable, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+			If $g_bDebugSetLog Then SetLog($g_avStarLabTroops[$i][3] & " is not upgradeable, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 		Else
 			$aUpgradeValue[$i] = getStarLabUpgrdResourceRed($g_avStarLabTroops[$i][0] + 2, $g_avStarLabTroops[$i][1] + 93)
-			If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+			If $g_bDebugSetLog Then SetLog($g_avStarLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 			If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 3000 Then ; check if blank or below min value for any upgrade
 				$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avStarLabTroops[$i][0] + 2, $g_avStarLabTroops[$i][1] + 93)
-				If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+				If $g_bDebugSetLog Then SetLog($g_avStarLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 			EndIf
 			If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 3000 Then ; check if blank or below min value for any upgrade
 				$aUpgradeValue[$i] = 0
-				If $g_bDebugSetlog Then SetLog("Failed to read cost of " & $g_avStarLabTroops[$i][3], $COLOR_DEBUG)
+				If $g_bDebugSetLog Then SetLog("Failed to read cost of " & $g_avStarLabTroops[$i][3], $COLOR_DEBUG)
 				StarLabTroopImages($i, $i) ; Make Troop capture, when elixir icon was found, but cost not
 			EndIf
 		EndIf
@@ -161,7 +161,7 @@ Func StarLaboratory($bTestRun = False)
 		EndIf
 		For $i = 1 To UBound($aUpgradeValue) - 1
 			If $aUpgradeValue[$i] > 0 Then ; is upgradeable
-				If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " is upgradeable, Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+				If $g_bDebugSetLog Then SetLog($g_avStarLabTroops[$i][3] & " is upgradeable, Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				If $iCheapestCost = 0 Or $aUpgradeValue[$i] < $iCheapestCost Then
 					$iSelectedUpgrade = $i
 					$iCheapestCost = $aUpgradeValue[$i]
@@ -252,7 +252,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $bTestRun = False)
 				Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
 				SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 				$StartTime = _NowCalc() ; what is date:time now
-				If $g_bDebugSetlog Then SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
+				If $g_bDebugSetLog Then SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
 				If $iLabFinishTime > 0 Then
 					$g_sStarLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), $StartTime)
 					SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Finishes @ " & $Result & " (" & $g_sStarLabUpgradeTime & ")", $COLOR_SUCCESS)
@@ -503,7 +503,7 @@ Func StarLabGuiDisplay()
 			If @error Then _logErrorDateAdd(@error)
 			SetLog("Research will finish in " & $sLabTimeOCR & " (" & $g_sStarLabUpgradeTime & ")")
 			StarLabStatusGUIUpdate() ; Update GUI flag
-		ElseIf $g_bDebugSetlog Then
+		ElseIf $g_bDebugSetLog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 			If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime for instantly displaying in multi-stats
 			CloseWindow()

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Sardo (08-2015), KnowJack(08-2015). ProMac (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,7 +23,7 @@ EndFunc   ;==>checkArmyCamp
 Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetLog)
 	If $g_bDebugFuncTime Then StopWatchStart("checkArmyCamp")
 
-	If $g_bDebugSetlogTrain Then SetLog("Begin checkArmyCamp:", $COLOR_DEBUG1)
+	If $g_bDebugSetLogTrain Then SetLog("Begin checkArmyCamp:", $COLOR_DEBUG1)
 
 	If $g_bDebugFuncTime Then StopWatchStart("IsTrainPage/openArmyOverview")
 	If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
@@ -108,7 +108,7 @@ Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetL
 
 	If $bCloseArmyWindow Then CloseWindow()
 
-	If $g_bDebugSetlogTrain Then SetLog("End checkArmyCamp: canRequestCC= " & $g_bCanRequestCC & ", fullArmy= " & $g_bFullArmy, $COLOR_DEBUG)
+	If $g_bDebugSetLogTrain Then SetLog("End checkArmyCamp: canRequestCC= " & $g_bCanRequestCC & ", fullArmy= " & $g_bFullArmy, $COLOR_DEBUG)
 
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 	Return $HeroesRegenTime

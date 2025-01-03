@@ -10,7 +10,7 @@
 ; Return values .: None
 ; Author ........: Malkey from https://www.autoitscript.com/forum/topic/89034-check-if-a-point-is-within-various-defined-closed-shapes/
 ; Modified ......: MonkeyHunter (05-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -45,7 +45,7 @@ EndFunc   ;==>_IsPointInPoly
 ; Return values .: True if inside polygon
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -83,7 +83,7 @@ EndFunc   ;==>IsPointOnSide
 ; Return values .: New count of locations in string
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -97,7 +97,7 @@ Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 	Local $aLoc1, $aLoc2, $bRemovedDuplicate = False
 	Local $sTmpVector = ""
 #comments-start
-	If $g_bDebugSetlog Then ; debug log values till know code is working...
+	If $g_bDebugSetLog Then ; debug log values till know code is working...
 		Local $sText = "INPUT $aCoord"
 		SetLog("INPUT $aCoord count= " & $aCoord[0], $COLOR_DEBUG)
 		SetLog("INPUT $sLocCoord= " & $sLocCoord, $COLOR_DEBUG)
@@ -163,7 +163,7 @@ Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 			EndIf
 		EndIf
 
-		If $g_bDebugSetlog And $aCoord[0] <> $aCoord2[0] Then
+		If $g_bDebugSetLog And $aCoord[0] <> $aCoord2[0] Then
 			SetDebugLog("Duplicate objectpoints found, removed: " & $aCoord[0] - $aCoord2[0], $COLOR_INFO)
 			SetDebugLog("Final Coords count= " & $aCoord2[0], $COLOR_DEBUG)
 		EndIf
@@ -194,7 +194,7 @@ EndFunc   ;==>RemoveDupNearby
 ; Return values .: Returns new count of locations in $sLoc1Coord - adds new points to Existing location string by reference
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -202,14 +202,14 @@ EndFunc   ;==>RemoveDupNearby
 ; ===============================================================================================================================
 Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $iDistance = 8)
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
+	If $g_bDebugSetLog Then SetDebugLog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
 
 	Local $aCoord1 = StringSplit($sLoc1Coord, "|")
 	Local $aCoord2 = StringSplit($sLoc2Coord, "|")
 	Local $aLoc1, $aLoc2
 	Local $iPointsAdded = 0
 #comments-start
-	If $g_bDebugSetlog Then ; debug log values till know code is working...
+	If $g_bDebugSetLog Then ; debug log values till know code is working...
 		Local $sText = "INPUT $aCoord1"
 		SetLog("INPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
 		For $p = 1 To $aCoord1[0]
@@ -246,7 +246,7 @@ Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $
 			EndIf
 		Next
 #comments-start
-		If $g_bDebugSetlog Then ; debug log values till know code is working...
+		If $g_bDebugSetLog Then ; debug log values till know code is working...
 			Local $sText = "OUTPUT $aCoord1"
 			SetLog("OUTPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
 			For $p = 1 To $aCoord1[0]
@@ -300,7 +300,7 @@ EndFunc   ;==>AddPoints_RemoveDuplicate
 ; Return values .: FALSE if any location is on outside when $sSide - "IN"  or FALSE when any location is on inside when $sSide = "OUT", TRUE when all locations met conditions
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

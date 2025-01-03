@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Xbebenk, Moebius14
 ; Modified ......: Moebius14 (14.12.2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -36,8 +36,8 @@ Func CollectCCGold($bTest = False)
 		Next
 		If $bWindowOpened Then
 			$aCollect = QuickMIS("CNX", $g_sImgCCGoldCollect, 60, 350 + $g_iMidOffsetY, 770, 415 + $g_iMidOffsetY)
-			_ArraySort($aCollect, 0, 0, 0, 1)
 			If IsArray($aCollect) And UBound($aCollect) > 0 And UBound($aCollect, $UBOUND_COLUMNS) > 1 Then
+				_ArraySort($aCollect, 0, 0, 0, 1)
 				For $i = 0 To UBound($aCollect) - 1
 					If Not $bTest Then
 						$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 75, $aCollect[$i][2] - 15, 60, 18, True)
@@ -79,8 +79,8 @@ Func CollectCCGold($bTest = False)
 					ClickDrag(770, 290 + $g_iMidOffsetY, 490, 290 + $g_iMidOffsetY)
 					If _Sleep(2000) Then Return
 					$aCollect = QuickMIS("CNX", $g_sImgCCGoldCollect, 450, 350 + $g_iMidOffsetY, 800, 415 + $g_iMidOffsetY)
-					_ArraySort($aCollect, 0, 0, 0, 1)
 					If IsArray($aCollect) And UBound($aCollect) > 0 And UBound($aCollect, $UBOUND_COLUMNS) > 1 Then
+						_ArraySort($aCollect, 0, 0, 0, 1)
 						For $i = 0 To UBound($aCollect) - 1
 							If Not $bTest Then
 								$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 75, $aCollect[$i][2] - 15, 60, 18, True)
@@ -299,8 +299,9 @@ Func ForgeClanCapitalGold($bTest = False)
 	Else
 		Local $iActiveForge = QuickMIS("CNX", $g_sImgActiveForge, 415, 285 + $g_iMidOffsetY, 770, 340 + $g_iMidOffsetY)
 	EndIf
-	RemoveDupCNX($iActiveForge)
+
 	If IsArray($iActiveForge) And UBound($iActiveForge) > 0 Then
+		RemoveDupCNX($iActiveForge)
 		If UBound($iActiveForge) >= $iBuilderToUse Then
 			SetLog("We have All Builder Active for Forge", $COLOR_INFO)
 			CloseWindow()
@@ -322,11 +323,12 @@ Func ForgeClanCapitalGold($bTest = False)
 	Else
 		Local $aCraft = QuickMIS("CNX", $g_sImgCCGoldCraft, 415, 350 + $g_iMidOffsetY, 770, 410 + $g_iMidOffsetY)
 	EndIf
-	RemoveDupCNX($aCraft)
-	_ArraySort($aCraft, 0, 0, 0, 1) ;sort by column 1 (x coord)
-	SetDebugLog("Count of Craft Button : " & UBound($aCraft), $COLOR_DEBUG)
 
 	If IsArray($aCraft) And UBound($aCraft) > 0 And UBound($aCraft, $UBOUND_COLUMNS) > 1 Then
+
+		RemoveDupCNX($aCraft)
+		_ArraySort($aCraft, 0, 0, 0, 1) ;sort by column 1 (x coord)
+		SetDebugLog("Count of Craft Button : " & UBound($aCraft), $COLOR_DEBUG)
 
 		Local $iBuilderToAssign = 0
 		Local $UnactiveCraftToStart = $iBuilderToUse - $iBuilder
@@ -905,7 +907,7 @@ EndFunc   ;==>AutoForgeSlot
 Func IsCCBuilderMenuOpen()
 	Local $bRet = False
 	For $i = 0 To 3
-		If IsArray(_PixelSearch(399, 72, 401, 74, Hex(0xFFFFFF, 6), 15, True)) Then
+		If IsArray(_PixelSearch(399, 72, 401, 74, Hex(0xFFFFFF, 6), 30, True)) Then
 			SetDebugLog("Found White Border Color", $COLOR_ACTION)
 			$bRet = True ;got correct color for border
 			ExitLoop

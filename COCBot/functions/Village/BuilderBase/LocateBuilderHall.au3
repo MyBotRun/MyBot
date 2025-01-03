@@ -184,7 +184,7 @@ Func _LocateDoubleCannon($bCollect = False)
 		If @error Then SetError(0, 0, 0)
 
 		If IsArray($sInfo) Then
-			If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+			If $g_bDebugSetLog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 			If @error Then Return SetError(0, 0, 0)
 			If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 				If StringInStr($sInfo[1], "uble") = 0 Then
@@ -425,7 +425,7 @@ Func _LocateArcherTower($bCollect = False)
 		If @error Then SetError(0, 0, 0)
 
 		If IsArray($sInfo) Then
-			If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+			If $g_bDebugSetLog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 			If @error Then Return SetError(0, 0, 0)
 			If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 				If StringInStr($sInfo[1], "Archer") = 0 Then
@@ -668,7 +668,7 @@ Func _LocateMultiMortar($bCollect = False)
 		If @error Then SetError(0, 0, 0)
 
 		If IsArray($sInfo) Then
-			If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+			If $g_bDebugSetLog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 			If @error Then Return SetError(0, 0, 0)
 			If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 				If StringInStr($sInfo[1], "Multi") = 0 Then
@@ -910,7 +910,7 @@ Func _LocateAnyDef($bCollect = False)
 		If @error Then SetError(0, 0, 0)
 
 		If IsArray($sInfo) Then
-			If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+			If $g_bDebugSetLog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 			If @error Then Return SetError(0, 0, 0)
 			If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 				If StringInStr($sInfo[1], "Cann") = 0 Or StringInStr($sInfo[1], "uble") <> 0 Then

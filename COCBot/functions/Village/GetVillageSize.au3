@@ -22,7 +22,7 @@
 ;                      9 = tree image file name
 ; Author ........: Cosote (Oct 17th 2016)
 ; Modified ......: GrumpyHog (05-2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -159,7 +159,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			Next
 		EndIf
 
-		SetDeBugLog("Scenery search (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+		SetDeBugLog("Scenery search (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 		$hTimer = __TimerInit()
 
 		If Not $bMeasureOnly Then
@@ -178,7 +178,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		EndIf
 	EndIf
 
-	SetDeBugLog("Scenery routines completed (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+	SetDeBugLog("Scenery routines completed (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 	$hTimer = __TimerInit()
 
 	If $scenery[0] = 0 Then
@@ -187,7 +187,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & "*.*", $FLTA_FILES)
 	Else
 		SetDeBugLog("Loading Stone Scenery: " & $sScenery, $COLOR_INFO)
-		If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+		If IsCustomScenery($bIsOnMainBase, "Scenery", $sScenery) Then
 			Local $aStoneFiles = _FileListToArray($sDirectory2, $sStonePrefix & $sScenery & "*.*", $FLTA_FILES)
 		Else
 			Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & $sScenery & "*.*", $FLTA_FILES)
@@ -214,7 +214,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			$bottom = $y0 + $iAdditionalY
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			SetDebugLog("GetVillageSize check for image " & $findImage)
-			If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+			If IsCustomScenery($bIsOnMainBase, "Scenery", $sScenery) Then
 				$a = decodeSingleCoord(findImage($findImage, $sDirectory2 & "\" & $findImage, $sArea, 1, $bForceCapture))
 			Else
 				$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, $bForceCapture))
@@ -249,7 +249,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		;Return $aResult
 	EndIf
 
-	SetDeBugLog("Stone search (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+	SetDeBugLog("Stone search (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 	$hTimer = __TimerInit()
 
 	If $stone[0] = 0 Then
@@ -258,7 +258,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	ElseIf $asStoneScenery = "DS" Then
 		Local $aTreeFiles = _FileListToArray($sDirectory, $sTreePrefix & "D*.*", $FLTA_FILES)
 	Else
-		If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+		If IsCustomScenery($bIsOnMainBase, "Scenery", $sScenery) Then
 			Local $aTreeFiles = _FileListToArray($sDirectory2, $sTreePrefix & $asStoneScenery & "*.*", $FLTA_FILES)
 		Else
 			Local $aTreeFiles = _FileListToArray($sDirectory, $sTreePrefix & $asStoneScenery & "*.*", $FLTA_FILES)
@@ -285,7 +285,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			$bottom = $y0 + $iAdditionalY
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			SetDebugLog("GetVillageSize check for image " & $findImage)
-			If $sScenery = "EG" Or $sScenery = "MS" Or $sScenery = "PG" Then
+			If IsCustomScenery($bIsOnMainBase, "Scenery", $sScenery) Then
 				$a = decodeSingleCoord(findImage($findImage, $sDirectory2 & "\" & $findImage, $sArea, 1, False))
 			Else
 				$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
@@ -326,7 +326,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		;Return $aResult
 	EndIf
 
-	SetDeBugLog("Tree search (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+	SetDeBugLog("Tree search (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 	$hTimer = __TimerInit()
 
 	Local $iX_Exp = 0
@@ -354,12 +354,10 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$b = $stone[1] - $tree[1]
 		$c = Sqrt($a * $a + $b * $b) - $stone[4] - $tree[4]
 
-		If $sScenery = "MS" Then
-			$iRefSize = $g_afRefCustomMainVillage[0][4]
-		ElseIf $sScenery = "PG" Then
-			$iRefSize = $g_afRefCustomMainVillage[1][4]
-		ElseIf $sScenery = "EG" Then
-			$iRefSize = $g_afRefCustomMainVillage[2][4]
+		If IsCustomScenery($bIsOnMainBase) Then
+			For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
+				If $g_iTree = $g_afRefCustomMainVillage[$i][5] Then $iRefSize = $g_afRefCustomMainVillage[$i][4]
+			Next
 		Else
 			$iRefSize = $g_afRefVillage[$g_iTree][$iTreeIndex]
 		EndIf
@@ -403,7 +401,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	$g_aVillageSize[8] = $aResult[8]
 	$g_aVillageSize[9] = $aResult[9]
 
-	SetDeBugLog("GetVillageSize calculations (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+	SetDeBugLog("GetVillageSize calculations (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 
 	Return FuncReturn($aResult)
 EndFunc   ;==>GetVillageSize
@@ -462,7 +460,7 @@ Func CenterVillage($iX, $iY, $iOffsetX, $iOffsetY)
 		$aScrollPos[1] = $aCenterHomeVillageClickDrag[1]
 	EndIf
 
-	If $g_bDebugSetlog Then SetDebugLog("CenterVillage at point : " & $aScrollPos[0] & ", " & $aScrollPos[1] & " Offset : " & $iOffsetX & ", " & $iOffsetY, $COLOR_INFO)
+	If $g_bDebugSetLog Then SetDebugLog("CenterVillage at point : " & $aScrollPos[0] & ", " & $aScrollPos[1] & " Offset : " & $iOffsetX & ", " & $iOffsetY, $COLOR_INFO)
 	If $g_bDebugImageSave Then SaveDebugPointImage("CenterVillage", $aScrollPos)
 	ClearScreen()
 	ClickDrag($aScrollPos[0], $aScrollPos[1], $aScrollPos[0] - $iOffsetX, $aScrollPos[1] - $iOffsetY)
@@ -477,16 +475,16 @@ Func IsCoordSafe($x, $y)
 	SetDeBugLog("Testing Coords : " & $x & "," & $y)
 
 	If $x < 82 And $y > 427 + $g_iBottomOffsetY And $bIsOnMainBase Then ; coordinates where the game will click on the War Button (safe margin)
-		If $g_bDebugSetlog Then SetDebugLog("Too close to War Button")
+		If $g_bDebugSetLog Then SetDebugLog("Too close to War Button")
 		$bResult = False
 	ElseIf $x < 72 And ($y > 270 + $g_iMidOffsetY And $y < 345 + $g_iMidOffsetY) Then ; coordinates where the game will click on the CHAT tab (safe margin)
-		If $g_bDebugSetlog Then SetDebugLog("Too close to CHAT Tab")
+		If $g_bDebugSetLog Then SetDebugLog("Too close to CHAT Tab")
 		$bResult = False
 	ElseIf $y < 63 Then ; coordinates where the game will click on the BUILDER button or SHIELD button (safe margin)
-		If $g_bDebugSetlog Then SetDebugLog("Too close to Builder and Shield")
+		If $g_bDebugSetLog Then SetDebugLog("Too close to Builder and Shield")
 		$bResult = False
 	ElseIf $x > 692 And $y > 126 + $g_iMidOffsetY And $y < 180 + $g_iMidOffsetY And $bIsOnMainBase Then ; coordinates where the game will click on the GEMS button (safe margin)
-		If $g_bDebugSetlog Then SetDebugLog("Too close to GEMS")
+		If $g_bDebugSetLog Then SetDebugLog("Too close to GEMS")
 		$bResult = False
 	EndIf
 
@@ -494,3 +492,24 @@ Func IsCoordSafe($x, $y)
 
 	Return $bResult
 EndFunc   ;==>IsCoordSafe
+
+Func IsCustomScenery($bIsOnMainBase = True, $bZone = "All", $bScenery = "")
+	If Not $bIsOnMainBase Then Return False
+	Switch $bZone
+		Case "All"
+			For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
+				If $g_iTree = $g_afRefCustomMainVillage[$i][5] Then Return True
+			Next
+		Case "Upper"
+			For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
+				If $g_iTree = $g_afRefCustomMainVillage[$i][5] Then
+					If $g_afRefCustomMainVillage[$i][6] = True Then Return True
+				EndIf
+			Next
+		Case "Scenery"
+			For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
+				If StringInStr($g_asSceneryCodes[$g_afRefCustomMainVillage[$i][5]], $bScenery, $STR_NOCASESENSEBASIC) Then Return True
+			Next
+	EndSwitch
+	Return False
+EndFunc   ;==>IsCustomScenery

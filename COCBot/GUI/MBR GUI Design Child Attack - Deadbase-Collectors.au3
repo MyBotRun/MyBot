@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -33,7 +33,7 @@ Func CreateAttackSearchDeadBaseCollectors()
 	GUICtrlSetState(-1, $GUI_UNCHECKED)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "chkSupercharge_Info_01", "Also look for Supercharge collectors") & @CRLF & _
 			GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "chkSupercharge_Info_02", "Will slightly increase collector detection time") & @CRLF & _
-			GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "chkSupercharge_Info_03", "Will Be Useful From TH" & $g_iMaxTHLevel - 2))
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "chkSupercharge_Info_03", "Will Be Useful From TH14"))
 
 	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblMinCollectorMatches", "Collectors required"), $x + 202, $y + 30, -1, -1)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "CmbMinCollectorMatches_Info_01", 'Select how many collectors are needed to consider village "dead"')

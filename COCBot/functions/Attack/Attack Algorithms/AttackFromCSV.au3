@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......: CodeSlinger69 (01-2017) GrumpyHog (05-2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -41,13 +41,15 @@ Global $g_aiDeployableLRTB = [0, $g_iGAME_WIDTH - 1, 0, 626] ; used by another i
 
 Func ConvertInternalExternArea()
 	; set the diamond shape based on reference village
-	If isOnMainVillage(True) And ($g_iTree = $eTreeEG Or $g_iTree = $eTreeMS Or $g_iTree = $eTreePG) Then
+	Local $bIsOnMainBase = isOnMainVillage(True)
+	If IsCustomScenery($bIsOnMainBase) Then
 		For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
-			If $g_iTree <> $g_afRefCustomMainVillage[$i][5] Then ContinueLoop
-			Local $InnerDiamondLeft = $g_afRefCustomMainVillage[$i][0]
-			Local $InnerDiamondRight = $g_afRefCustomMainVillage[$i][1]
-			Local $InnerDiamondTop = $g_afRefCustomMainVillage[$i][2]
-			Local $InnerDiamondBottom = $g_afRefCustomMainVillage[$i][3]
+			If $g_iTree = $g_afRefCustomMainVillage[$i][5] Then
+				Local $InnerDiamondLeft = $g_afRefCustomMainVillage[$i][0]
+				Local $InnerDiamondRight = $g_afRefCustomMainVillage[$i][1]
+				Local $InnerDiamondTop = $g_afRefCustomMainVillage[$i][2]
+				Local $InnerDiamondBottom = $g_afRefCustomMainVillage[$i][3]
+			EndIf
 		Next
 	Else
 		Local $InnerDiamondLeft = $g_afRefVillage[$g_iTree][1]
@@ -530,7 +532,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 
 	If $g_bCSVLocateStorageElixir Then
 		$aResult = GetLocationBuilding($eBldgElixirS, $g_iSearchTH, False)
-		If @error And $g_bDebugSetlog Then _logErrorGetBuilding(@error)
+		If @error And $g_bDebugSetLog Then _logErrorGetBuilding(@error)
 		If $aResult <> -1 Then ; check if Monkey ate bad banana
 			If $aResult = 1 Then
 				SetLog("> " & $g_sBldgNames[$eBldgElixirS] & " Not found", $COLOR_WARNING)
@@ -857,7 +859,7 @@ Func FindWallCSV(ByRef $aCSVExternalWall, ByRef $aCSVInternalWall)
 			EndIf
 		Next
 
-		Setlog("External Wall: " & _ArrayToString($aOuterWall) & " , Internal Wall: " & _ArrayToString($aInnerWall))
+		SetLog("External Wall: " & _ArrayToString($aOuterWall) & " , Internal Wall: " & _ArrayToString($aInnerWall))
 		If $aOuterWall[0] <> "" Then
 			$aCSVExternalWall[0] = $aOuterWall
 			$aCSVInternalWall[0] = $aInnerWall

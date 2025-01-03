@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MMHK (11-2016)
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -163,12 +163,6 @@ Func getAllEmulators()
 	GUICtrlSetData($g_hCmbAndroidEmulator, '')
 
 	; Bluestacks :
-	$__BlueStacks_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "Version")
-	If Not @error Then
-		If GetVersionNormalized($__BlueStacks_Version) < GetVersionNormalized("0.10") Then $sEmulatorString &= "BlueStacks|"
-		If GetVersionNormalized($__BlueStacks_Version) > GetVersionNormalized("1.0") Then $sEmulatorString &= "BlueStacks2|"
-	EndIf
-
 	$__BlueStacks5_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "Version")
     If Not @error Then
         If GetVersionNormalized($__BlueStacks5_Version) > GetVersionNormalized("5.0") Then $sEmulatorString &= "BlueStacks5|"
@@ -187,17 +181,16 @@ Func getAllEmulators()
 
 	Local $aEmulator = StringSplit($sEmulatorString, "|", $STR_NOCOUNT)
 	If $sEmulatorString <> "" Then
-		Setlog("Emulator" & (UBound($aEmulator) > 1 ? "s" : "") & " Found In Your Machine :")
+		SetLog("Emulator" & (UBound($aEmulator) > 1 ? "s" : "") & " Found In Your Machine :")
 		For $i = 0 To UBound($aEmulator) - 1
 			Local $emuVer = ""
-			If StringInStr($aEmulator[$i], "BlueStacks") Then $emuVer = $__BlueStacks_Version
 			If StringInStr($aEmulator[$i], "BlueStacks5") Then $emuVer = $__BlueStacks5_Version
 			If StringInStr($aEmulator[$i], "Memu") Then $emuVer = $__MEmu_Version
 			If StringInStr($aEmulator[$i], "nox") Then $emuVer = $__Nox_Version
 			SetLog("  - " & $aEmulator[$i] & " version: " & $emuVer, $COLOR_SUCCESS)
 		Next
 	Else
-		Setlog("No Emulator found in your machine")
+		SetLog("No Emulator found in your machine")
 		Return
 	EndIf
 
@@ -220,14 +213,6 @@ Func getAllEmulatorsInstances()
 	Local $sEmulatorPath = 0
 
 	Switch $emulator
-		Case "BlueStacks"
-			GUICtrlSetData($g_hCmbAndroidInstance, "Android", "Android")
-			Return
-		Case "BlueStacks2"
-			GUICtrlSetData($g_hCmbAndroidInstance, "Android", "Android")
-			Local $VMsBlueStacks = ""
-			$VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "DataDir")
-			$sEmulatorPath = $VMsBlueStacks ; C:\ProgramData\BlueStacks\Engine
 		Case "BlueStacks5"
             Local $VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_nxt\", "DataDir")
             $sEmulatorPath = $VMsBlueStacks ; C:\ProgramData\BlueStacks\Engine
@@ -244,7 +229,7 @@ Func getAllEmulatorsInstances()
 	$sEmulatorPath = StringReplace($sEmulatorPath, "\\", "\")
 
 	; BS Multi Instance
-	Local $sBlueStacksFolder = ($Emulator = "BlueStacks2" Or $Emulator = "BlueStacks5") ? ("Pie*;Oreo*;Nougat*;Android*") : ("*")
+	Local $sBlueStacksFolder = ($Emulator = "BlueStacks5") ? ("Pie*;Oreo*;Nougat*;Android*") : ("*")
 
 	; Getting all VM Folders
 	Local $eError = 0

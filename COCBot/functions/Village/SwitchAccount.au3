@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: chalicucu (6/2016), demen (4/2017)
 ; Modified ......: Moebius14 (08/2023)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -150,13 +150,13 @@ Func CheckSwitchAcc()
 			$nMinRemainTrain = CheckTroopTimeAllAccount($bForceSwitch)
 
 			If $nMinRemainTrain <= 1 And Not $bForceSwitch And Not $g_bDonateLikeCrazy Then ; Active (force switch shall give priority to Donate Account)
-				If $g_bDebugSetlog Then SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
+				If $g_bDebugSetLog Then SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
 				$g_iDonateSwitchCounter = 0
 			Else
 				If $g_iDonateSwitchCounter < UBound($aDonateAccount) Then ; Donate
 					$g_iNextAccount = $aDonateAccount[$g_iDonateSwitchCounter]
 					$g_iDonateSwitchCounter += 1
-					If $g_bDebugSetlog Then SetDebugLog("Switch to Donate Account " & $g_iNextAccount + 1 & ". $g_iDonateSwitchCounter = " & $g_iDonateSwitchCounter, $COLOR_DEBUG)
+					If $g_bDebugSetLog Then SetDebugLog("Switch to Donate Account " & $g_iNextAccount + 1 & ". $g_iDonateSwitchCounter = " & $g_iDonateSwitchCounter, $COLOR_DEBUG)
 					SetSwitchAccLog(" - Donate Acc [" & $g_iNextAccount + 1 & "]")
 				Else ; Active
 					$g_iDonateSwitchCounter = 0
@@ -370,6 +370,12 @@ Func SwitchCOCAcc($NextAccount)
 	SetLog("Switch Account Load Town Hall Level : " & $g_iTownHallLevel)
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName)
 
+	;Display Level TH in Stats
+	GUICtrlSetData($g_hLblTHLevels, "")
+	_GUI_Value_STATE("HIDE", $g_aGroupListTHLevels)
+	GUICtrlSetState($g_ahPicTHLevels[$g_iTownHallLevel], $GUI_SHOW)
+	GUICtrlSetData($g_hLblTHLevels, $g_iTownHallLevel)
+
 	runBot()
 
 EndFunc   ;==>SwitchCOCAcc
@@ -422,11 +428,11 @@ EndFunc   ;==>SwitchCOCAcc_ClickAccount
 
 Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 	For $i = 0 To 20 ; Checking Blue Reload button continuously in 20sec
-		Local $aSuperCellIDReload = decodeSingleCoord(findImage("SupercellID Reload", $g_sImgSupercellIDReload, GetDiamondFromRect("300,145,360,200"), 1, True, Default))
+		Local $aSuperCellIDReload = decodeSingleCoord(findImage("SupercellID Reload", $g_sImgSupercellIDReload, GetDiamondFromRect("560,145,635,200"), 1, True, Default))
 		If IsArray($aSuperCellIDReload) And UBound($aSuperCellIDReload, 1) >= 2 Then
 			Click($aSuperCellIDReload[0], $aSuperCellIDReload[1], 1, 120, "Click Reload SC_ID")
-			Setlog("   1. Click Reload Supercell ID")
-			If $g_bDebugSetlog Then SetSwitchAccLog("   1. Click Reload Supercell ID")
+			SetLog("   1. Click Reload Supercell ID")
+			If $g_bDebugSetLog Then SetSwitchAccLog("   1. Click Reload Supercell ID")
 			If _Sleep(3000) Then Return "Exit"
 			If Not $g_bRunState Then Return "Exit"
 			Return "OK"
@@ -442,7 +448,7 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 	Return "" ; should never get here
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
-Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
+Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetLog, $bDebugImageSave = $g_bDebugImageSave)
 	Local $sAccountDiamond = GetDiamondFromRect("540,353,580,725") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 	Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
@@ -481,7 +487,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 				Return "Error"
 			EndIf
 
-			If $g_bDebugSetlog Then SetSwitchAccLog("Switching to Account: " & $NextAccount + 1, $COLOR_DEBUG)
+			If $g_bDebugSetLog Then SetSwitchAccLog("Switching to Account: " & $NextAccount + 1, $COLOR_DEBUG)
 
 			If $bDebugImageSave Then SaveDebugDiamondImage("ClickAccountSCID", $sAccountDiamond)
 
@@ -492,7 +498,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 				SetDebugLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
 				SetLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
 
-				If $g_bDebugSetlog Then SetSwitchAccLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
+				If $g_bDebugSetLog Then SetSwitchAccLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
 
 				; Correct Index for Profile if needs to drag
 				If $NextAccount >= 3 And UBound($aSearchForAccount) == 4 Then $iIndexSCID = 3 ; based on drag logic, the account will always be the bottom one
@@ -512,12 +518,14 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 
 					For $j = 0 To UBound($aCoordinates) - 1
 						SetDebugLog("[" & $j + 1 & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$NextAccount - $iIndexSCID + $j])
-						If $g_bDebugSetlog Then SetSwitchAccLog("[" & $j + 1 & "] A/C coord: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " Profile: " & $g_asProfileName[$NextAccount - $iIndexSCID + $j])
+						If $g_bDebugSetLog Then SetSwitchAccLog("[" & $j + 1 & "] A/C coord: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " Profile: " & $g_asProfileName[$NextAccount - $iIndexSCID + $j])
 					Next
 
 					SetLog("   " & $iStep & ". Click Account [" & $NextAccount + 1 & "] Supercell ID with Profile: " & $g_asProfileName[$NextAccount])
 
-					Click($aCoordinates[$iIndexSCID][0], $aCoordinates[$iIndexSCID][1], 1)
+					Local $AccountX = Random($aCoordinates[$iIndexSCID][0] - 20, $aCoordinates[$iIndexSCID][0] + 190, 1)
+					Local $AccountY = Random($aCoordinates[$iIndexSCID][1] - 20, $aCoordinates[$iIndexSCID][1] + 25, 1)
+					Click($AccountX, $AccountY, 1, 120, "#0155") ;Click Account
 					If _Sleep(750) Then Return "Exit"
 					SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
 					$bResult = True
@@ -539,21 +547,34 @@ EndFunc   ;==>SwitchCOCAcc_ClickAccountSCID
 
 Func CheckWaitHero() ; get hero regen time remaining if enabled
 	Local $iActiveHero
-	Local $aHeroResult[$eHeroCount]
+	Local $aHeroResult[$eHeroSlots]
 	$g_aiTimeTrain[2] = 0
 
 	$aHeroResult = getArmyHeroTime("all")
-	If UBound($aHeroResult) < $eHeroCount Then Return ; OCR error
+	If UBound($aHeroResult) < $eHeroSlots Then Return ; OCR error
 
 	If _Sleep($DELAYRESPOND) Then Return
 	If Not $g_bRunState Then Return
 	If $aHeroResult[0] > 0 Or $aHeroResult[1] > 0 Or $aHeroResult[2] > 0 Or $aHeroResult[3] > 0 Then ; check if hero is enabled to use/wait and set wait time
-		For $pTroopType = $eKing To $eChampion ; check all 4 hero
+		Local $pTroopType
+		For $i = 0 To $eHeroSlots - 1
+			Switch $g_aiCmbCustomHeroOrder[$i]
+				Case 0
+					$pTroopType = $eKing
+				Case 1
+					$pTroopType = $eQueen
+				Case 2
+					$pTroopType = $ePrince
+				Case 3
+					$pTroopType = $eWarden
+				Case 4
+					$pTroopType = $eChampion
+			EndSwitch
 			For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
 				$iActiveHero = -1
 				If IsUnitUsed($pMatchMode, $pTroopType) And _
 						BitOR($g_aiAttackUseHeroes[$pMatchMode], $g_aiSearchHeroWaitEnable[$pMatchMode]) = $g_aiAttackUseHeroes[$pMatchMode] Then ; check if Hero enabled to wait
-					$iActiveHero = $pTroopType - $eKing ; compute array offset to active hero
+					$iActiveHero = $i ; compute array offset to active hero
 				EndIf
 				If $iActiveHero <> -1 And $aHeroResult[$iActiveHero] > 0 Then ; valid time?
 					; check exact time & existing time is less than new time

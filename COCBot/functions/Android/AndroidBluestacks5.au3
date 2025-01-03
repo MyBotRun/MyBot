@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: xbebenk (2020)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -196,8 +196,6 @@ Func InitBlueStacks5($bCheckOnly = False)
 			; tcp forward not working in BS4
 			$g_iAndroidAdbMinitouchMode = 1
 		EndIf
-
-		CheckBlueStacksVersionMod()
 	EndIf
 
 	Return $bInstalled
@@ -239,7 +237,13 @@ Func GetBlueStacks5BackgroundMode()
 EndFunc   ;==>GetBlueStacks5BackgroundMode
 
 Func RestartBlueStacks5CoC()
-	Return RestartBlueStacksXCoC()
+	If Not $g_bRunState Then Return False
+	Local $cmdOutput
+	If Not InitAndroid() Then Return False
+	If WinGetAndroidHandle() = 0 Then Return False
+	$cmdOutput = AndroidAdbSendShellCommand("am start -W -n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, 60000) ; timeout of 1 Minute ; disabled -S due to long wait after 2017 Dec. Update
+	SetLog("Please wait for CoC restart......", $COLOR_INFO) ; Let user know we need time...
+	Return True
 EndFunc   ;==>RestartBlueStacks5CoC
 
 Func CheckScreenBlueStacks5($bSetLog = True)
@@ -325,8 +329,6 @@ EndFunc   ;==>ConfigBlueStacks5WindowManager
 
 Func RebootBlueStacks5SetScreen($bOpenAndroid = True)
 
-	;RebootAndroidSetScreenDefault()
-
 	If Not InitAndroid() Then Return False
 
 	ConfigBlueStacks5WindowManager()
@@ -381,8 +383,8 @@ Func CloseBlueStacks5()
 
 	If Not InitAndroid() Then Return
 
-	If Not CloseUnsupportedBlueStacksX(False) And GetVersionNormalized($g_sAndroidVersion) > GetVersionNormalized("2.10") Then
-		; BlueStacks 3 supports multiple instance
+	If Not CloseUnsupportedBlueStacksX(False) Then
+		; BlueStacks 5 supports multiple instance
 		Local $aFiles = ["HD-Frontend.exe", "HD-Plus-Service.exe", "HD-Service.exe"]
 
 		Local $bError = False
@@ -420,5 +422,23 @@ Func CloseBlueStacks5()
 EndFunc   ;==>CloseBlueStacks5
 
 Func BlueStacks5AdjustClickCoordinates(ByRef $x, ByRef $y)
-	Return BlueStacksAdjustClickCoordinates($x, $y)
+	$x = Round(32767.0 / $g_iAndroidClientWidth * $x)
+	$y = Round(32767.0 / $g_iAndroidClientHeight * $y)
 EndFunc   ;==>BlueStacks5AdjustClickCoordinates
+
+Func CloseUnsupportedBlueStacksX($bClose = True)
+	Local $WinTitleMatchMode = Opt("WinTitleMatchMode", -3) ; in recent 2.3.x can be also "BlueStacks App Player"
+	Local $sPartnerExePath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Config\", "PartnerExePath")
+	If IsArray(ControlGetPos("Bluestacks App Player", "", "")) Or ($sPartnerExePath And ProcessExists2($sPartnerExePath)) Then ; $g_avAndroidAppConfig[1][4]
+		Opt("WinTitleMatchMode", $WinTitleMatchMode)
+		; Offical "Bluestacks App Player" v2.0 not supported because it changes the Android Screen!!!
+		If $bClose = True Then
+			SetLog("MyBot doesn't work with " & $g_sAndroidEmulator & " App Player", $COLOR_ERROR)
+			SetLog("Please let MyBot start " & $g_sAndroidEmulator & " automatically", $COLOR_INFO)
+			RebootBlueStacks5SetScreen(False)
+		EndIf
+		Return True
+	EndIf
+	Opt("WinTitleMatchMode", $WinTitleMatchMode)
+	Return False
+EndFunc   ;==>CloseUnsupportedBlueStacksX

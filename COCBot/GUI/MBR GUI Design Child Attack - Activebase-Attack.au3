@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,15 +17,16 @@
 ; Attack with
 Global $g_hCmbABAlgorithm = 0, $g_hCmbABSelectTroop = 0, $g_hChkABKingAttack = 0, $g_hChkABQueenAttack = 0, $g_hChkABWardenAttack = 0, $g_hChkABDropCC = 0
 Global $g_hChkABLightSpell = 0, $g_hChkABHealSpell = 0, $g_hChkABRageSpell = 0, $g_hChkABJumpSpell = 0, $g_hChkABFreezeSpell = 0, $g_hChkABCloneSpell = 0, _
-		$g_hChkABInvisibilitySpell = 0, $g_hChkABRecallSpell = 0, $g_hChkABPoisonSpell = 0, $g_hChkABEarthquakeSpell = 0, $g_hChkABHasteSpell = 0, $g_hChkABSkeletonSpell = 0, $g_hChkABBatSpell = 0, _
+		$g_hChkABInvisibilitySpell = 0, $g_hChkABRecallSpell = 0, $g_hChkABReviveSpell = 0, $g_hChkABPoisonSpell = 0, $g_hChkABEarthquakeSpell = 0, $g_hChkABHasteSpell = 0, $g_hChkABSkeletonSpell = 0, $g_hChkABBatSpell = 0, _
 		$g_hChkABOvergrowthSpell = 0
 
 Global $g_hGrpABAttack = 0, $g_hPicABKingAttack = 0, $g_hPicABQueenAttack = 0, $g_hPicABWardenAttack = 0, $g_hPicABDropCC = 0
 Global $g_hPicABLightSpell = 0, $g_hPicABHealSpell = 0, $g_hPicABRageSpell = 0, $g_hPicABJumpSpell = 0, $g_hPicABFreezeSpell = 0, $g_hPicABCloneSpell = 0, _
-		$g_hPicABInvisibilitySpell = 0, $g_hPicABRecallSpell = 0, $g_hPicABPoisonSpell = 0, $g_hPicABEarthquakeSpell = 0, $g_hPicABHasteSpell = 0, $g_hPicABSkeletonSpell = 0, $g_hPicABBatSpell = 0, _
+		$g_hPicABInvisibilitySpell = 0, $g_hPicABRecallSpell = 0, $g_hPicABReviveSpell = 0, $g_hPicABPoisonSpell = 0, $g_hPicABEarthquakeSpell = 0, $g_hPicABHasteSpell = 0, $g_hPicABSkeletonSpell = 0, $g_hPicABBatSpell = 0, _
 		$g_hPicABOvergrowthSpell = 0
 
 Global $g_hCmbABSiege = 0, $g_hCmbABWardenMode = 0, $g_hChkABChampionAttack = 0, $g_hPicABChampionAttack = 0
+Global $g_hChkABPrinceAttack = 0, $g_hPicABPrinceAttack = 0
 
 Func CreateAttackSearchActiveBaseAttack()
 	Local $sTxtTip = ""
@@ -71,11 +72,11 @@ Func CreateAttackSearchActiveBaseAttack()
 	_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 46
-	$g_hPicABChampionAttack = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x, $y, 24, 24)
-	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Champion_Info_01", -1) & @CRLF & _
-			GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Champion_Info_02", -1)
+	$g_hPicABPrinceAttack = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnPrince, $x, $y, 24, 24)
+	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Prince_Info_01", -1) & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Prince_Info_02", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
-	$g_hChkABChampionAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+	$g_hChkABPrinceAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
 	$y += 27
@@ -98,6 +99,14 @@ Func CreateAttackSearchActiveBaseAttack()
 
 	$y += 27
 	$x -= 46
+	$g_hPicABChampionAttack = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x, $y, 24, 24)
+	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Champion_Info_01", -1) & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Champion_Info_02", -1)
+	_GUICtrlSetTip(-1, $sTxtTip)
+	$g_hChkABChampionAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+	_GUICtrlSetTip(-1, $sTxtTip)
+
+	$y += 27
 	$g_hPicABDropCC = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x, $y, 24, 24)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Clan Castle_Info_01", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -180,14 +189,21 @@ Func CreateAttackSearchActiveBaseAttack()
 	_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 46
+	$g_hPicABReviveSpell = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnReviveSpell, $x, $y, 24, 24)
+	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Revive_Info_01", -1)
+	_GUICtrlSetTip(-1, $sTxtTip)
+	$g_hChkABReviveSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+	_GUICtrlSetTip(-1, $sTxtTip)
+
+	$y += 27
+	$x -= 92
 	$g_hPicABPoisonSpell = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnPoisonSpell, $x, $y, 24, 24)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Poison_Info_01", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
 	$g_hChkABPoisonSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$y += 27
-	$x -= 92
+	$x += 46
 	$g_hPicABEarthquakeSpell = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnEarthquakeSpell, $x, $y, 24, 24)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Earthquake_Info_01", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -201,15 +217,15 @@ Func CreateAttackSearchActiveBaseAttack()
 	$g_hChkABHasteSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x += 46
+	$y += 27
+	$x -= 92
 	$g_hPicABSkeletonSpell = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSkeletonSpell, $x, $y, 24, 24)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Skeleton_Info_01", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)
 	$g_hChkABSkeletonSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$y += 27
-	$x -= 92
+	$x += 46
 	$g_hPicABBatSpell = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnBatSpell, $x, $y, 24, 24)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Bat_Info_01", -1)
 	_GUICtrlSetTip(-1, $sTxtTip)

@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: Didipe (2015)
 ; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -105,7 +105,7 @@ Func debugMBRFunctions($iDebugSearchArea = 0, $iDebugRedArea = 0, $iDebugOcr = 0
 	EndIf
 	;dll return 0 on success, -1 on error
 	If IsArray($result) Then
-		If $g_bDebugSetlog And $result[0] = -1 Then SetLog($g_sMBRLib & " error setting Global vars.", $COLOR_DEBUG)
+		If $g_bDebugSetLog And $result[0] = -1 Then SetLog($g_sMBRLib & " error setting Global vars.", $COLOR_DEBUG)
 	Else
 		SetDebugLog($g_sMBRLib & " not found.", $COLOR_ERROR)
 	EndIf
@@ -235,7 +235,7 @@ Func ConvertVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
 	If $g_hLibMyBot = -1 Then Return ; Bot didn't finish launch yet
 	Local $result = DllCall($g_hLibMyBot, "str", "ConvertVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
 	If IsArray($result) = False Then
-		If $g_bDebugSetlog Then SetDebugLog("ConvertVillagePos result error", $COLOR_ERROR)
+		If $g_bDebugSetLog Then SetDebugLog("ConvertVillagePos result error", $COLOR_ERROR)
 		Return ;exit if
 	EndIf
 	Local $a = StringSplit($result[0], "|")
@@ -248,7 +248,7 @@ Func ConvertToVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
 	If $g_hLibMyBot = -1 Then Return ; Bot didn't finish launch yet
 	Local $result = DllCall($g_hLibMyBot, "str", "ConvertToVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
 	If IsArray($result) = False Then
-		If $g_bDebugSetlog Then SetDebugLog("ConvertToVillagePos result error", $COLOR_ERROR)
+		If $g_bDebugSetLog Then SetDebugLog("ConvertToVillagePos result error", $COLOR_ERROR)
 		Return ;exit if
 	EndIf
 	Local $a = StringSplit($result[0], "|")
@@ -261,7 +261,7 @@ Func ConvertFromVillagePos(ByRef $x, ByRef $y)
 	If $g_hLibMyBot = -1 Then Return ; Bot didn't finish launch yet
 	Local $result = DllCall($g_hLibMyBot, "str", "ConvertFromVillagePos", "int", $x, "int", $y)
 	If IsArray($result) = False Then
-		If $g_bDebugSetlog Then SetDebugLog("ConvertVillagePos result error", $COLOR_ERROR)
+		If $g_bDebugSetLog Then SetDebugLog("ConvertVillagePos result error", $COLOR_ERROR)
 		Return ;exit if
 	EndIf
 	Local $a = StringSplit($result[0], "|")

@@ -3,13 +3,13 @@
 ; Description ...: Equipment Upgrade V1
 ; Author ........: Moebius (2023-12)
 ; Modified ......: Moebius (2024-10)
-; Remarks .......: This file is part of MyBot Copyright 2015-2024
+; Remarks .......: This file is part of MyBot Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......:
 ; ===============================================================================================================================
-Local $sSearchEquipmentDiamond = GetDiamondFromRect2(90, 375 + $g_iMidOffsetY, 480, 570 + $g_iMidOffsetY) ; Until 8 Equipment (4 columns)
+Local $sSearchEquipmentDiamond = GetDiamondFromRect2(125, 370 + $g_iMidOffsetY, 430, 520 + $g_iMidOffsetY) ; Until 8 Equipment (4 columns)
 
 Func Blacksmith($bTest = False)
 
@@ -100,9 +100,6 @@ Func Blacksmith($bTest = False)
 	If Not $g_bRunState Then Return
 	If _Sleep(500) Then Return
 
-	OresReport()
-	If _Sleep(3000) Then Return
-
 	Local $GetOutNow = False
 
 	For $i = 0 To $eEquipmentCount - 1
@@ -114,59 +111,60 @@ Func Blacksmith($bTest = False)
 		SetLog("Try to upgrade " & $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][0], $COLOR_SUCCESS)
 		If _Sleep(500) Then Return
 
-		Switch $g_aiCmbCustomEquipmentOrder[$i]
-			Case 3 ; Vampstache
+		Switch $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][0]
+			Case "Vampstache"
 				If $BuildingInfo[2] < 3 Then
-					SetLog("BlackSmith level 3 needed, looking next", $COLOR_SUCCESS)
+					SetLog("BlackSmith level 3 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
-			Case 7 ; Giant Arrow
+			Case "Giant Arrow"
 				If $BuildingInfo[2] < 2 Then
-					SetLog("BlackSmith level 2 needed, looking next", $COLOR_SUCCESS)
+					SetLog("BlackSmith level 2 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
-			Case 8 ; Healer Puppet
+			Case "Healer Puppet"
 				If $BuildingInfo[2] < 5 Then
-					SetLog("BlackSmith level 5 needed, looking next", $COLOR_SUCCESS)
+					SetLog("BlackSmith level 5 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
-			Case 12 ; Rage Gem
+			Case "Rage Gem"
 				If $BuildingInfo[2] < 4 Then
-					SetLog("BlackSmith level 4 needed, looking next", $COLOR_SUCCESS)
+					SetLog("BlackSmith level 4 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
-			Case 13 ; Healing Tome
+			Case "Healing Tome"
 				If $BuildingInfo[2] < 6 Then
-					SetLog("BlackSmith level 6 needed, looking next", $COLOR_SUCCESS)
+					SetLog("BlackSmith level 6 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
-			Case 17 ; Hog Rider Puppet
+			Case "Hog Rider Puppet"
 				If $BuildingInfo[2] < 7 Then
-					SetLog("BlackSmith level 7 needed, looking next", $COLOR_SUCCESS)
+					SetLog("BlackSmith level 7 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
-			Case 18 ; Haste Vial
+			Case "Haste Vial"
 				If $BuildingInfo[2] < 8 Then
-					SetLog("BlackSmith level 8 needed, looking next", $COLOR_SUCCESS)
+					SetLog("BlackSmith level 8 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
 		EndSwitch
 
-		Local $ToClickOnHero = False
-		If $i = 0 Then
-			$ToClickOnHero = True
+		Local $aTempArray, $ToClickOnHero = True
+		Local $sSearchDiamond = GetDiamondFromRect2(135, 330 + $g_iMidOffsetY, 290, 365 + $g_iMidOffsetY)
+		Local $result = findMultiple($g_sImgHeroEquipement, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
+		If $result <> "" And IsArray($result) Then
+			For $t = 0 To UBound($result, 1) - 1
+				If UBound($result, 1) > 1 Then ExitLoop
+				$aTempArray = $result[$t]
+				If $aTempArray[0] = $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][2] Then
+					$ToClickOnHero = False
+					ExitLoop
+				EndIf
+			Next
 		Else
-			If Not IsBlacksmithPage() Then
-				SetLog("Blacksmith Window not found", $COLOR_ERROR)
-				If $g_bDebugImageSave Then SaveDebugImage("Blacksmith_Window")
-				ClickAway()
-				If _Sleep(500) Then Return
-				ClickAway()
-				Return
-			EndIf
-			If QuickMIS("BC1", $g_sImgHeroEquipement, 100, 310 + $g_iMidOffsetY, 275, 360 + $g_iMidOffsetY) Then
-				If $g_iQuickMISName <> $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][2] Then $ToClickOnHero = True
-			Else
+			If $g_aiHeroHallPos[2] = 1 Then     ; Hero Hall Lvl 1 : King Only, No Hero Head
+				$ToClickOnHero = False
+			ElseIf $g_aiHeroHallPos[2] > 1 Then
 				SetLog("No Hero head image found", $COLOR_ERROR)
 				If $g_bDebugImageSave Then SaveDebugImage("Blacksmith_HeroHead")
 				CloseWindow()
@@ -176,7 +174,7 @@ Func Blacksmith($bTest = False)
 
 		If $ToClickOnHero Then
 			SetDebugLog("Click On " & $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][2] & " [" & $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][3] & ",375]", $COLOR_DEBUG)
-			Click($g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][3], 345 + $g_iMidOffsetY) ; Click on corresponding Hero
+			Click($g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][3], 350 + $g_iMidOffsetY) ; Click on corresponding Hero
 		EndIf
 
 		If Not $g_bRunState Then ExitLoop
@@ -185,7 +183,7 @@ Func Blacksmith($bTest = False)
 		Local $bLoopNew = 0
 		While 1
 			If Not $g_bRunState Then ExitLoop
-			Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("NewEquipment", $g_sImgEquipmentNew, 90, 375 + $g_iMidOffsetY, 390, 570 + $g_iMidOffsetY, True)) ; Looking for "New" on Equipment
+			Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("NewEquipment", $g_sImgEquipmentNew, 125, 370 + $g_iMidOffsetY, 430, 520 + $g_iMidOffsetY, True)) ; Looking for "New" on Equipment
 			If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
 				Click($asSearchResult[0] + 20, $asSearchResult[1] + 40)
 				If _Sleep(2000) Then ExitLoop
@@ -208,7 +206,7 @@ Func Blacksmith($bTest = False)
 				Local $aTempEquipmentArray = $aEquipmentUpgrades[$t] ; Declare Array to Temp Array
 				If $aTempEquipmentArray[0] = $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][1] Then ; if this is the file we want
 					Local $aCoords = decodeSingleCoord($aTempEquipmentArray[1])
-					Local $bLoop = 0, $Updated = False
+					Local $bLoop = 0
 					ClickP($aCoords) ; click equipment
 					If Not $g_bRunState Then ExitLoop
 					If _Sleep(2000) Then Return
@@ -269,7 +267,7 @@ Func Blacksmith($bTest = False)
 							SetLog("Not enough resource to upgrade " & $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][0], $COLOR_DEBUG2)
 							If _Sleep(1500) Then Return
 							CloseWindow2()
-							If $g_bChkFinishCurrentEquipmentFirst Then ; New : Try next equipment only when current one upgrade is impossible (Maxed or BS up needed).
+							If $g_bChkFinishCurrentEquipmentFirst Then ; Try next equipment only when current one upgrade is impossible (Maxed or BS up needed).
 								$GetOutNow = True
 								ExitLoop 2
 							Else
@@ -285,8 +283,13 @@ Func Blacksmith($bTest = False)
 							SetLog("Not enough resource to upgrade " & $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][0], $COLOR_DEBUG2)
 							If _Sleep(1500) Then Return
 							CloseWindow2()
-							$Exitloop = True
-							ExitLoop
+							If $g_bChkFinishCurrentEquipmentFirst Then ; Try next equipment only when current one upgrade is impossible (Maxed or BS up needed).
+								$GetOutNow = True
+								ExitLoop 2
+							Else
+								$Exitloop = True
+								ExitLoop
+							EndIf
 						EndIf
 						Click(705, 545 + $g_iMidOffsetY, 1, 120, "#0299")     ; Click upgrade buttton (Confirm)
 						If isGemOpen(True) Then
@@ -298,7 +301,6 @@ Func Blacksmith($bTest = False)
 							ExitLoop
 						EndIf
 						SetLog("Equipment successfully upgraded", $COLOR_SUCCESS1)
-						$Updated = True
 						If _Sleep(2000) Then Return
 						If _ColorCheck(_GetPixelColor(800, 385 + $g_iMidOffsetY, True), Hex(0x808080, 6), 15) Then
 							SetDebugLog("Equipment animation detected", $COLOR_DEBUG)
@@ -322,10 +324,6 @@ Func Blacksmith($bTest = False)
 					If Not $g_bRunState Then ExitLoop
 					If $Exitloop Then
 						If _Sleep(1500) Then Return
-						If $Updated Then
-							OresReport()
-							If _Sleep(3000) Then Return
-						EndIf
 						ContinueLoop 2
 					EndIf
 				EndIf
@@ -333,7 +331,6 @@ Func Blacksmith($bTest = False)
 				If $t = UBound($aEquipmentUpgrades, 1) - 1 Then SetLog($g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][0] & " unavailable", $COLOR_WARNING)
 			Next
 			If $GetOutNow Then
-				If $Updated Then OresReport()
 				If _Sleep(1500) Then Return
 				ExitLoop
 			EndIf
@@ -371,55 +368,6 @@ Func FindBSButton($bSetLog = True)
 	EndIf
 EndFunc   ;==>FindBSButton
 
-Func OresReport()
-
-	Local $ReadShiny = getOresValues(186, 600 + $g_iMidOffsetY)
-	Local $aTempReadReadShiny = StringSplit($ReadShiny, "#")
-	If IsArray($aTempReadReadShiny) And UBound($aTempReadReadShiny) = 3 Then
-		Local $g_ReadCorrect = StringRight($aTempReadReadShiny[2], 3)
-		If $aTempReadReadShiny[2] = 0 Or $aTempReadReadShiny[2] = "" Or $aTempReadReadShiny[2] < 10000 Or StringInStr($g_ReadCorrect, 1) Then
-			$ReadShiny = getOresValues2(186, 600 + $g_iMidOffsetY)
-			$aTempReadReadShiny = StringSplit($ReadShiny, "#")
-		EndIf
-	Else
-		$ReadShiny = getOresValues2(186, 600 + $g_iMidOffsetY)
-		$aTempReadReadShiny = StringSplit($ReadShiny, "#")
-	EndIf
-	Local $ShinyValueActal = 0, $ShinyValueCap = 0
-	If IsArray($aTempReadReadShiny) And UBound($aTempReadReadShiny) = 3 Then
-		If $aTempReadReadShiny[0] >= 2 Then
-			$ShinyValueActal = $aTempReadReadShiny[1]
-			$ShinyValueCap = $aTempReadReadShiny[2]
-		EndIf
-	EndIf
-
-	Local $ReadGlowy = getOresValues(375, 600 + $g_iMidOffsetY)
-	Local $aTempReadReadGlowy = StringSplit($ReadGlowy, "#")
-	Local $GlowyValueActal = 0, $GlowyValueCap = 0
-	If IsArray($aTempReadReadGlowy) And UBound($aTempReadReadGlowy) = 3 Then
-		If $aTempReadReadGlowy[0] >= 2 Then
-			$GlowyValueActal = $aTempReadReadGlowy[1]
-			$GlowyValueCap = $aTempReadReadGlowy[2]
-		EndIf
-	EndIf
-
-	Local $ReadStarry = getOresValues(567, 600 + $g_iMidOffsetY)
-	Local $aTempReadReadStarry = StringSplit($ReadStarry, "#")
-	Local $StarryValueActal = 0, $StarryValueCap = 0
-	If IsArray($aTempReadReadStarry) And UBound($aTempReadReadStarry) = 3 Then
-		If $aTempReadReadStarry[0] >= 2 Then
-			$StarryValueActal = $aTempReadReadStarry[1]
-			$StarryValueCap = $aTempReadReadStarry[2]
-		EndIf
-	EndIf
-
-	SetLog("Ores Report")
-	SetLog("[Shiny]: " & $ShinyValueActal & "/" & $ShinyValueCap, $COLOR_INFO)
-	SetLog("[Glowy]: " & $GlowyValueActal & "/" & $GlowyValueCap, $COLOR_DEBUG)
-	SetLog("[Starry]: " & $StarryValueActal & "/" & $StarryValueCap, $COLOR_ACTION)
-
-EndFunc   ;==>OresReport
-
 Func BlacksmithUpTime()
 	Local $RemainingTimeMinutes = 0
 	Local $BlackSmithUp = FindButton("FinishNow")
@@ -427,10 +375,10 @@ Func BlacksmithUpTime()
 		If ClickB("Info") Then
 			If _Sleep(2000) Then Return ; Wait for info window to open
 			If _ColorCheck(_GetPixelColor(802, 118, True), Hex(0xF38E8D, 6), 20) Then ; Info window found
-				Local $RemainingTime = getBldgUpgradeTime(717, 544 + $g_iMidOffsetY) ; get duration
+				Local $RemainingTime = getBldgUpgradeTime(715, 544 + $g_iMidOffsetY) ; get duration
 				$RemainingTimeMinutes = ConvertOCRTime("BSUpgrade", $RemainingTime, False)
 				If $RemainingTimeMinutes = 0 Then
-					$RemainingTime = getBldgUpgradeTime2(717, 544 + $g_iMidOffsetY) ; get duration
+					$RemainingTime = getBldgUpgradeTime2(715, 544 + $g_iMidOffsetY) ; get duration
 					$RemainingTimeMinutes = ConvertOCRTime("BSUpgrade", $RemainingTime, False)
 				EndIf
 				Local $StartTime = _NowCalc()

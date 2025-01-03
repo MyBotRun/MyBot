@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: KnowJack
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -24,6 +24,7 @@ Func BuildingInfo($iXstart, $iYstart)
 		$sBldgText = getNameBuilding($iXstart, $iYstart) ; Get Unit name and level with OCR
 	EndIf
 	SetDebugLog("Read building Name String = " & $sBldgText, $COLOR_DEBUG) ;debug
+	If StringInStr($sBldgText, "Helper") Then $sBldgText &= " (FakeLevel 105)"
 	If StringInStr($sBldgText, "B.O.B") Then $sBldgText &= " (FakeLevel 104)"
 	If StringInStr($sBldgText, "Cake") Then $sBldgText &= " (FakeLevel 103)"
 	If StringInStr($sBldgText, "Cart") Then $sBldgText &= " (FakeLevel 102)"
@@ -37,19 +38,19 @@ Func BuildingInfo($iXstart, $iYstart)
 	EndIf
 	$aString = StringSplit($sBldgText, "(") ; Spilt the name and building level
 	If $aString[0] = 2 Then ; If we have name and level then use it
-		If $g_bDebugSetlog Then SetDebugLog("1st $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
+		If $g_bDebugSetLog Then SetDebugLog("1st $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
 		If $aString[1] <> "" Then $aResult[1] = StringStripWS($aString[1], 7) ; check for bad read and store name in result[]
 		If $aString[2] <> "" Then ; check for bad read of level
 			$sBldgLevel = $aString[2] ; store level text
 			$aString = StringSplit($sBldgLevel, ")") ;split off the closing parenthesis
 			If $aString[0] = 2 Then ; Check If we have "level XX" cleaned up
 				If StringInStr($aString[1], "Broken") Then $aString[1] &= " 200" ; Broken Clan Castle/Clock Tower (not rebuild yet): add fake level
-				If $g_bDebugSetlog Then SetDebugLog("2nd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
+				If $g_bDebugSetLog Then SetDebugLog("2nd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
 				If $aString[1] <> "" Then $sBldgLevel = $aString[1] ; store "level XX"
 			EndIf
 			$aString = StringSplit($sBldgLevel, " ") ;split off the level number
 			If $aString[0] = 2 Then ; If we have level number then use it
-				If $g_bDebugSetlog Then SetDebugLog("3rd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
+				If $g_bDebugSetLog Then SetDebugLog("3rd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
 				If $aString[2] <> "" Then $aResult[2] = Number($aString[2]) ; store bldg level
 			EndIf
 		EndIf

@@ -7,7 +7,7 @@
 ; Return values .: True or False
 ; Author ........: Hervidero (2015-may-21)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -26,13 +26,15 @@ Func isInsideDiamond($aCoords)
 	Local $x = $aCoords[0], $y = $aCoords[1], $xD, $yD
 	;Local $Left = 15, $Right = 835, $Top = 30, $Bottom = 645 ; set the diamond shape 860x780
 	; set the diamond shape based on reference village
-	If isOnMainVillage(True) And ($g_iTree = $eTreeEG Or $g_iTree = $eTreeMS Or $g_iTree = $eTreePG) Then
+	Local $bIsOnMainBase = isOnMainVillage(True)
+	If IsCustomScenery($bIsOnMainBase) Then
 		For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
-			If $g_iTree <> $g_afRefCustomMainVillage[$i][5] Then ContinueLoop
-			Local $Left = $g_afRefCustomMainVillage[$i][0]
-			Local $Right = $g_afRefCustomMainVillage[$i][1]
-			Local $Top = $g_afRefCustomMainVillage[$i][2]
-			Local $Bottom = $g_afRefCustomMainVillage[$i][3]
+			If $g_iTree = $g_afRefCustomMainVillage[$i][5] Then
+				Local $Left = $g_afRefCustomMainVillage[$i][0]
+				Local $Right = $g_afRefCustomMainVillage[$i][1]
+				Local $Top = $g_afRefCustomMainVillage[$i][2]
+				Local $Bottom = $g_afRefCustomMainVillage[$i][3]
+			EndIf
 		Next
 	Else
 		Local $Left = $g_afRefVillage[$g_iTree][1]
@@ -66,7 +68,7 @@ Func isInsideDiamond($aCoords)
 	ConvertToVillagePos($xD, $yD)
 	$Right = $xD
 
-	;If $g_bDebugSetlog Then SetDebugLog("isInsideDiamond coordinates updated by offset: " & $Left & ", " & $Right & ", " & $Top & ", " & $Bottom, $COLOR_DEBUG)
+	;If $g_bDebugSetLog Then SetDebugLog("isInsideDiamond coordinates updated by offset: " & $Left & ", " & $Right & ", " & $Top & ", " & $Bottom, $COLOR_DEBUG)
 
 	Local $aDiamond[2][2] = [[$Left, $Top], [$Right, $Bottom]]
 	Local $aMiddle = [($aDiamond[0][0] + $aDiamond[1][0]) / 2, ($aDiamond[0][1] + $aDiamond[1][1]) / 2]
@@ -77,33 +79,35 @@ Func isInsideDiamond($aCoords)
 
 	If ($DX / $aSize[0] + $DY / $aSize[1] <= 1) Then
 		If $x < 68 And $y > 316 Then ; coordinates where the game will click on the CHAT tab (safe margin)
-			If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village, but Exclude CHAT")
+			If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village, but Exclude CHAT")
 			Return False
 		ElseIf $y < 63 Then ; coordinates where the game will click on the BUILDER button or SHIELD button (safe margin)
-			If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village, but Exclude BUILDER")
+			If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village, but Exclude BUILDER")
 			Return False
 		ElseIf $x > 692 And $y > 156 And $y < 210 Then ; coordinates where the game will click on the GEMS button (safe margin)
-			If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village, but Exclude GEMS")
+			If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village, but Exclude GEMS")
 			Return False
 		EndIf
-		;If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village", $COLOR_DEBUG)
+		;If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village", $COLOR_DEBUG)
 		Return True ; Inside Village
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("Coordinate Outside Village")
+		If $g_bDebugSetLog Then SetDebugLog("Coordinate Outside Village")
 		Return False ; Outside Village
 	EndIf
 
 EndFunc   ;==>isInsideDiamond
 
 Func GetReduceDiamond($iPercent = 100)
-	If isOnMainVillage(True) And ($g_iTree = $eTreeEG Or $g_iTree = $eTreeMS Or $g_iTree = $eTreePG) Then
+	Local $bIsOnMainBase = isOnMainVillage(True)
+	If IsCustomScenery($bIsOnMainBase) Then
 		For $i = 0 To UBound($g_afRefCustomMainVillage) - 1
-			If $g_iTree <> $g_afRefCustomMainVillage[$i][5] Then ContinueLoop
-			Local $InnerDiamondLeft = $g_afRefCustomMainVillage[$i][0]
-			Local $InnerDiamondRight = $g_afRefCustomMainVillage[$i][1]
-			Local $InnerDiamondTop = $g_afRefCustomMainVillage[$i][2]
-			Local $InnerDiamondBottom = $g_afRefCustomMainVillage[$i][3]
-			Local $iSize = $g_afRefCustomMainVillage[$i][4] * 0.5
+			If $g_iTree = $g_afRefCustomMainVillage[$i][5] Then
+				Local $InnerDiamondLeft = $g_afRefCustomMainVillage[$i][0]
+				Local $InnerDiamondRight = $g_afRefCustomMainVillage[$i][1]
+				Local $InnerDiamondTop = $g_afRefCustomMainVillage[$i][2]
+				Local $InnerDiamondBottom = $g_afRefCustomMainVillage[$i][3]
+				Local $iSize = $g_afRefCustomMainVillage[$i][4] * 0.5
+			EndIf
 		Next
 	Else
 		Local $InnerDiamondLeft = $g_afRefVillage[$g_iTree][1]

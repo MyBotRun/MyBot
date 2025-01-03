@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: ProMac (07-2018)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -47,15 +47,15 @@ Func GetVectorPixelOnEachSide2($arrPixel, $vectorDirection, $slotsPerEdge)
 		Local $maxPixel = $arrPixel[UBound($arrPixel) - 1]
 		Local $min = $minPixel[$vectorDirection]
 		Local $max = $maxPixel[$vectorDirection]
-		If $g_bDebugSmartFarm Then Setlog("Min pixel coord: " & $min & ", Max Pixel coord: " & $max)
+		If $g_bDebugSmartFarm Then SetLog("Min pixel coord: " & $min & ", Max Pixel coord: " & $max)
 		Local $posSide = Floor(($max - $min) / $slotsPerEdge)
 
 		For $i = 0 To $slotsPerEdge - 1
 			$pixelSearch[$vectorDirection] = $min + Floor(($posSide * ($i + 1)) - ($posSide / 2))
 			Local $coordinate = ($vectorDirection = 0) ? "X" : "Y"
-			If $g_bDebugSmartFarm Then Setlog("Deploy point number[" & $i + 1 & "] at " &  $coordinate & ": " & $min + Floor(($posSide * ($i + 1)) - ($posSide / 2)))
+			If $g_bDebugSmartFarm Then SetLog("Deploy point number[" & $i + 1 & "] at " &  $coordinate & ": " & $min + Floor(($posSide * ($i + 1)) - ($posSide / 2)))
 			Local $arrPixelCloser = _FindPixelCloser($arrPixel, $pixelSearch, 1)
-			If $g_bDebugSmartFarm Then Setlog("Deploy point Closer[" & $i + 1 & "] at: " & _ArrayToString($arrPixelCloser[0]))
+			If $g_bDebugSmartFarm Then SetLog("Deploy point Closer[" & $i + 1 & "] at: " & _ArrayToString($arrPixelCloser[0]))
 			$vectorPixelEachSide[$i] = $arrPixelCloser[0]
 		Next
 

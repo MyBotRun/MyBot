@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run team
 ; Modified ......: MonkeyHunter (07-2016), CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,7 +17,7 @@
 Global $g_aiDonIcons[$eTroopCount + 1] = [$eIcnDonBarbarian, $eIcnSuperBarbarian, $eIcnDonArcher, $eIcnSuperArcher, $eIcnDonGiant, $eIcnSuperGiant, $eIcnDonGoblin, $eIcnSneakyGoblin, _
 							$eIcnDonWallBreaker, $eIcnSuperWallBreaker, $eIcnDonBalloon, $eIcnRocketBalloon, $eIcnDonWizard, $eIcnSuperWizard, _
 							$eIcnDonHealer, $eIcnDonDragon, $eIcnSuperDragon, $eIcnDonPekka, $eIcnDonBabyDragon, _
-							$eIcnInfernoDragon, $eIcnDonMiner, $eIcnSuperMiner, $eIcnElectroDragon, $eIcnYeti, $eIcnDragonRider, $eIcnElectroTitan, $eIcnRootRider, _
+							$eIcnInfernoDragon, $eIcnDonMiner, $eIcnSuperMiner, $eIcnElectroDragon, $eIcnYeti, $eIcnDragonRider, $eIcnElectroTitan, $eIcnRootRider, $eIcnThrower, _
 							$eIcnDonMinion, $eIcnSuperMinion, $eIcnDonHogRider, $eIcnSuperHogRider, $eIcnDonValkyrie, $eIcnSuperValkyrie, $eIcnDonGolem, _
 							$eIcnDonWitch, $eIcnSuperWitch, $eIcnDonLavaHound, $eIcnIceHound, $eIcnDonBowler, $eIcnSuperBowler, $eIcnIceGolem, $eIcnHeadhunter, $eIcnAppWard, $eIcnDruid, $eIcnDonBlank]
 
@@ -30,6 +30,7 @@ Func btnDonateTroop()
 			GUICtrlSetState($g_hChkDonateQueueSpellOnly, $GUI_HIDE)
 			If $i <= $eTroopCount - 1 + $g_iCustomDonateConfigs Then
 				GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_SHOW)
+				GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_HIDE)
 				If GUICtrlRead($g_ahChkDonateTroop[$i]) = $GUI_CHECKED Or GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_CHECKED Then
 					GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_ENABLE)
 				Else
@@ -37,6 +38,12 @@ Func btnDonateTroop()
 				EndIf
 			Else
 				GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_HIDE)
+				GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_SHOW)
+				If GUICtrlRead($g_ahChkDonateTroop[$i]) = $GUI_CHECKED Or GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_CHECKED Then
+					GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_ENABLE)
+				Else
+					GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_DISABLE)
+				EndIf
 			EndIf
 			ExitLoop
 		EndIf
@@ -51,6 +58,7 @@ Func btnDonateSpell()
 			EndIf
 			GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_HIDE)
 			GUICtrlSetState($g_hChkDonateQueueSpellOnly, $GUI_SHOW)
+			GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_HIDE)
 			If GUICtrlRead($g_ahChkDonateSpell[$i]) = $GUI_CHECKED Or GUICtrlRead($g_ahChkDonateAllSpell[$i]) = $GUI_CHECKED Then
 				GUICtrlSetState($g_hChkDonateQueueSpellOnly, $GUI_ENABLE)
 			Else
@@ -67,17 +75,26 @@ Func btnDonateBlacklist()
 	EndIf
 	GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_HIDE)
 	GUICtrlSetState($g_hChkDonateQueueSpellOnly, $GUI_HIDE)
+	GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_HIDE)
 EndFunc   ;==>btnDonateBlacklist
 
 Func chkDonateTroop()
-	For $i = 0 To $eTroopCount-1 + $g_iCustomDonateConfigs + $eSiegeMachineCount
+	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs + $eSiegeMachineCount
 		If @GUI_CtrlId = $g_ahChkDonateTroop[$i] Then
 			If GUICtrlRead($g_ahChkDonateTroop[$i]) = $GUI_CHECKED Then
 				_DonateControls($i)
-				If $i <= $eTroopCount - 1 + $g_iCustomDonateConfigs Then GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_ENABLE)
+				If $i <= $eTroopCount - 1 + $g_iCustomDonateConfigs Then
+					GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_ENABLE)
+				Else
+					GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_ENABLE)
+				EndIf
 			Else
 				GUICtrlSetBkColor($g_ahLblDonateTroop[$i], $GUI_BKCOLOR_TRANSPARENT)
-				If $i <= $eTroopCount - 1 + $g_iCustomDonateConfigs And GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_UNCHECKED Then GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_DISABLE)
+				If $i <= $eTroopCount - 1 + $g_iCustomDonateConfigs And GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_UNCHECKED Then
+					GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_DISABLE)
+				Else
+					GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_DISABLE)
+				EndIf
 			EndIf
 			SetStateTxtGeneralBlacklist()
 		EndIf
@@ -90,8 +107,14 @@ Func chkDonateAllTroop()
 			If $i <= $eTroopCount - 1 + $g_iCustomDonateConfigs Then
 				If GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_CHECKED Then
 					GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_ENABLE)
-				ElseIf GUICtrlRead($g_ahChkDonateTroop[$i]) = $GUI_UNCHECKED Then
+				Else
 					GUICtrlSetState($g_hChkDonateQueueTroopOnly, $GUI_DISABLE)
+				EndIf
+			Else
+				If GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_CHECKED Then
+					GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_ENABLE)
+				Else
+					GUICtrlSetState($g_hChkDonateQueueMachineOnly, $GUI_DISABLE)
 				EndIf
 			EndIf
 			_DonateAllControls($i, GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_CHECKED ? True : False)

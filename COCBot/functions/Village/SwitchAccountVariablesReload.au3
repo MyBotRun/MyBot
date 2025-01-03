@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Demen
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -19,9 +19,12 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Local $aiZero[8] = [0, 0, 0, 0, 0, 0, 0, 0], $aiTrue[8] = [1, 1, 1, 1, 1, 1, 1, 1], $aiMinus[8] = [-1, -1, -1, -1, -1, -1, -1, -1]
 	Local $aiZero83[8][3] = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 	Local $aiZero84[8][4] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+	Local $aiZero85[8][5] = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
 	Local $asEmpty[8] = ["", "", "", "", "", "", "", ""]
-	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiMinusOneTrue[8][2] = [[-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True]]
+	Local $aiNonAvailable[8] = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
 
 	; FirstRun
 	Static $abFirstStart = $aiTrue
@@ -76,6 +79,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Static $aiHeroAvailable = $aiZero
 	Static $aiHeroUpgradingBit = $aiZero
 	Static $aiHeroUpgrading = $aiZero83
+	Static $aiFirstStartForHiddenHero = $aiTrue
+	Static $g_aiSHeroUpgradeFinishDate = $aiZero85
+	Static $g_aiSHeroNeededResource = $aiZero85
+	Static $bSCheckValuesForWarden = $aiZero
 
 	; QuickTrain comp
 	Static $aaArmyQuickTroops[8] = [$aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop]
@@ -95,6 +102,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Static $abNotNeedAllTime1 = $aiTrue
 
 	;Clan Games
+	Static $Sg_sClanGamesScore = $aiNonAvailable
+	Static $Sg_sClanGamesTimeRemaining = $aiNonAvailable
+	Static $SYourAccScore = $aiMinusOneTrue
 	Static $gSbClanGamesCompleted = $aiZero
 	Static $gSbIsBBevent = $aiZero
 	Static $SIsCGEventRunning = $aiZero
@@ -106,6 +116,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	;Builder's Apprentice
 	Static $gaSsAvailableAppBuilder = $aiZero
 	Static $aSTimeDiffAppBuilder = $aiZero
+
+	;Lab Assistant
+	Static $gaSsAvailableLabAssistant = $aiZero
+	Static $aSTimeDiffLabAssistant = $aiZero
+	Static $SbLabAssistantUsedTime = $aiZero
 
 	; First time switch account
 	Switch $sType
@@ -191,8 +206,15 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiHeroAvailable = $aiZero
 			$aiHeroUpgradingBit = $aiZero
 			$aiHeroUpgrading = $aiZero83
+			$aiFirstStartForHiddenHero = $aiTrue
+			$g_aiSHeroUpgradeFinishDate = $aiZero85
+			$g_aiSHeroNeededResource = $aiZero85
+			$bSCheckValuesForWarden = $aiZero
 
 			;Clan Games
+			$Sg_sClanGamesScore = $aiNonAvailable
+			$Sg_sClanGamesTimeRemaining = $aiNonAvailable
+			$SYourAccScore = $aiMinusOneTrue
 			$gSbClanGamesCompleted = $aiZero
 			$gSbIsBBevent = $aiZero
 			$SIsCGEventRunning = $aiZero
@@ -233,6 +255,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			;Builder's Apprentice
 			$gaSsAvailableAppBuilder = $aiZero
 			$aSTimeDiffAppBuilder = $aiZero
+
+			;Lab Assistant
+			$gaSsAvailableLabAssistant = $aiZero
+			$aSTimeDiffLabAssistant = $aiZero
+			$SbLabAssistantUsedTime = $aiZero
 
 		Case "Save"
 			$abFirstStart[$iAccount] = $g_bFirstStart
@@ -347,6 +374,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			For $i = 0 To 2
 				$aiHeroUpgrading[$iAccount][$i] = $g_iHeroUpgrading[$i]
 			Next
+			$aiFirstStartForHiddenHero[$iAccount] = $g_bFirstStartForHiddenHero
+			For $i = 0 To 4
+				$g_aiSHeroUpgradeFinishDate[$iAccount][$i] = $g_aiHeroUpgradeFinishDate[$i]
+			Next
+			For $i = 0 To 4
+				$g_aiSHeroNeededResource[$iAccount][$i] = $g_aiHeroNeededResource[$i]
+			Next
+			$bSCheckValuesForWarden[$iAccount] = $bCheckValuesForWarden
 
 			; QuickTrain comp
 			$aaArmyQuickTroops[$iAccount] = $g_aiArmyQuickTroops
@@ -360,6 +395,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiAllBarracksUpgd[$iAccount] = $g_bAllBarracksUpgd
 
 			;ClanGames
+			$Sg_sClanGamesScore[$iAccount] = $g_sClanGamesScore
+			$Sg_sClanGamesTimeRemaining[$iAccount] = $g_sClanGamesTimeRemaining
+			For $i = 0 To UBound($YourAccScore) - 1
+				$SYourAccScore[$iAccount][$i] = $YourAccScore[$i]
+			Next
 			$gSbClanGamesCompleted[$iAccount] = $g_bClanGamesCompleted
 			$gSbIsBBevent[$iAccount] = $g_bIsBBevent
 			$SIsCGEventRunning[$iAccount] = $IsCGEventRunning
@@ -375,6 +415,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			;Builder's Apprentice
 			$gaSsAvailableAppBuilder[$iAccount] = $g_sAvailableAppBuilder
 			$aSTimeDiffAppBuilder[$iAccount] = $TimeDiffAppBuilder
+
+			;Lab Assistant
+			$gaSsAvailableLabAssistant[$iAccount] = $g_sAvailableLabAssistant
+			$aSTimeDiffLabAssistant[$iAccount] = $TimeDiffLabAssistant
+			$SbLabAssistantUsedTime[$iAccount] = $bLabAssistantUsedTime
 
 		Case "Load"
 			$g_bFirstStart = $abFirstStart[$iAccount]
@@ -497,6 +542,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$g_sBSmithUpgradeTime = $asBSmithUpgradeTime[$iAccount]
 
 			;Clan Games
+			$g_sClanGamesScore = $Sg_sClanGamesScore[$iAccount]
+			$g_sClanGamesTimeRemaining = $Sg_sClanGamesTimeRemaining[$iAccount]
+			For $i = 0 To UBound($YourAccScore) - 1
+				$YourAccScore[$i] = $SYourAccScore[$iAccount][$i]
+			Next
 			$g_bClanGamesCompleted = $gSbClanGamesCompleted[$iAccount]
 			$g_bIsBBevent = $gSbIsBBevent[$iAccount]
 			$IsCGEventRunning = $SIsCGEventRunning[$iAccount]
@@ -511,6 +561,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			For $i = 0 To 2
 				$g_iHeroUpgrading[$i] = $aiHeroUpgrading[$iAccount][$i]
 			Next
+			$g_bFirstStartForHiddenHero = $aiFirstStartForHiddenHero[$iAccount]
+			For $i = 0 To 4
+				$g_aiHeroUpgradeFinishDate[$i] = $g_aiSHeroUpgradeFinishDate[$iAccount][$i]
+			Next
+			For $i = 0 To 4
+				$g_aiHeroNeededResource[$i] = $g_aiSHeroNeededResource[$iAccount][$i]
+			Next
+			$bCheckValuesForWarden = $bSCheckValuesForWarden[$iAccount]
 
 			; QuickTrain comp
 			$g_aiArmyQuickTroops = $aaArmyQuickTroops[$iAccount]
@@ -538,6 +596,11 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			;Builder's Apprentice
 			$g_sAvailableAppBuilder = $gaSsAvailableAppBuilder[$iAccount]
 			$TimeDiffAppBuilder = $aSTimeDiffAppBuilder[$iAccount]
+
+			;Lab Assistant
+			$g_sAvailableLabAssistant = $gaSsAvailableLabAssistant[$iAccount]
+			$TimeDiffLabAssistant = $aSTimeDiffLabAssistant[$iAccount]
+			$bLabAssistantUsedTime = $SbLabAssistantUsedTime[$iAccount]
 
 		Case "UpdateStats"
 			For $i = 0 To 3

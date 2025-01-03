@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: cosote (2016)
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -97,6 +97,10 @@ Func BotStart($bAutostartDelay = 0)
 		_SleepStatus($bAutostartDelay)
 	EndIf
 
+	$g_sClanGamesScore = "N/A"
+	$g_sClanGamesTimeRemaining = "N/A"
+	$YourAccScore[0] = -1
+	$YourAccScore[1] = True
 	$IsCGEventRunning = 0
 	$g_bIsBBevent = 0
 	$g_bClanGamesCompleted = 0
@@ -104,6 +108,16 @@ Func BotStart($bAutostartDelay = 0)
 	CloseHeroEquipment()
 	$g_bFirstStartBarrel = 1
 	$g_sAvailableAppBuilder = 0
+	$g_sAvailableLabAssistant = 0
+	$g_iBuilderBoostDiscount = 0
+	$g_bFirstStartForHiddenHero = 1
+	$g_iHeroAvailable = $eHeroNone
+	For $i = 0 To 4
+		$g_aiHeroUpgradeFinishDate[$i] = 0
+	Next
+	For $i = 0 To 4
+		$g_aiHeroNeededResource[$i] = 0
+	Next
 
 	CleanSuperchargeTemplates()
 

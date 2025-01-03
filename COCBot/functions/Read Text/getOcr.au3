@@ -3,23 +3,16 @@
 ; Description ...: Gets complete value of gold/Elixir/DarkElixir/Trophy/Gem xxx,xxx
 ; Author ........: Didipe (2015)
 ; Modified ......: ProMac (2015), Hervidero (2015-12), MMHK (2016-12), MR.ViPER (2017-4), Moebius14 (2023-06)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func getOresValues($x_start, $y_start, $bNeedCapture = True) ;  -> Get least upgradetime on builder menu
-	Return getOcrAndCapture("coc-ores", $x_start, $y_start, 149, 16, $bNeedCapture)
-EndFunc   ;==>getOresValues
-
-Func getOresValues2($x_start, $y_start, $bNeedCapture = True) ;  -> Get least upgradetime on builder menu
-	Return getOcrAndCapture("coc-ores2", $x_start, $y_start, 149, 16, $bNeedCapture)
-EndFunc   ;==>getOresValues2
-
 Func getNameBuilding($x_start, $y_start) ; getNameBuilding(242,Y) -> Gets complete name and level of the buildings, bottom of screen
-	Local $b_Obstacles[9] = ["Broken", "Cart", "Tree", "Mush", "Trunk", "Bush", "Bark", "Gem", "Cake"]
+	Local $b_Obstacles[10] = ["Broken", "Cart", "Tree", "Mush", "Trunk", "Bush", "Bark", "Gem", "Cake", "Groove"]
 	Local $bResult = getOcrAndCapture("coc-build", $x_start, $y_start, 420, 27)
+	If StringInStr($bResult, "Helper", $STR_NOCASESENSEBASIC) Then Return $bResult
 	If StringInStr($bResult, "O T T O", $STR_CASESENSE) Then
 		$bResult = StringReplace($bResult, "O T T O", "O.T.T.O")
 		Return $bResult
@@ -28,7 +21,7 @@ Func getNameBuilding($x_start, $y_start) ; getNameBuilding(242,Y) -> Gets comple
 		Return $bResult
 	Else
 		For $i = 0 To UBound($b_Obstacles) - 1
-			If StringInStr($bResult, $b_Obstacles[$i]) Then Return $bResult
+			If StringInStr($bResult, $b_Obstacles[$i], $STR_NOCASESENSEBASIC) Then Return $bResult
 		Next
 	EndIf
 	If $bResult = "" Or Not StringInStr($bResult, "Level") Then $bResult = getOcrAndCapture("coc-build2", $x_start, $y_start - 27, 420, 27)
@@ -114,12 +107,12 @@ Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of 
 EndFunc   ;==>getStarLabUpgrdResourceRed
 
 Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Local $Result = StringReplace(getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True), "b", "")
+	Local $Result = StringRegExpReplace(getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True), "[bc]", "")
 	Return $Result
 EndFunc   ;==>getBldgUpgradeTime
 
 Func getBldgUpgradeTime2($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 105, 18, True) ; "12d 19h"
+	Return getOcrAndCapture("coc-uptime3", $x_start, $y_start, 110, 18, True) ; "12d 19h"
 EndFunc   ;==>getBldgUpgradeTime2
 
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V3 for Dec2022 update
@@ -135,9 +128,14 @@ Func getPetUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade
 EndFunc   ;==>getPetUpgradeTime
 
 Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 595, 490 + $g_iMidOffsetY
-	Local $Result = StringReplace(getOcrAndCapture("coc-uptime", $x_start, $y_start, 105, 18, True), "b", "")
+	Local $Result = StringReplace(getOcrAndCapture("coc-uptime", $x_start, $y_start, 110, 18, True), "b", "")
 	Return $Result
 EndFunc   ;==>getHeroUpgradeTime
+
+Func getHeroUpgradeTime2($x_start, $y_start) ; -> Gets complete upgrade time for heroes 595, 490 + $g_iMidOffsetY
+	Local $Result = StringReplace(getOcrAndCapture("coc-uptime3", $x_start, $y_start, 110, 18, True), "b", "")
+	Return $Result
+EndFunc   ;==>getHeroUpgradeTime2
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
 	Return getOcrAndCapture($language, $x_start, $y_start, 320, 16)
@@ -345,7 +343,7 @@ Func getOcrReloadMessage($x_start, $y_start, $sLogText = Default, $LogTextColor 
 	Else
 		$String = $sLogText & " " & $Result
 	EndIf
-	If $g_bDebugSetlog Then ; if enabled generate debug log message
+	If $g_bDebugSetLog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	ElseIf $Result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
@@ -362,7 +360,7 @@ Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColo
 	Else
 		$String = $sLogText & " " & $Result
 	EndIf
-	If $g_bDebugSetlog Then ; if enabled generate debug log message
+	If $g_bDebugSetLog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	ElseIf $Result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
@@ -395,7 +393,7 @@ Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Defa
 	Else
 		$String = $sLogText & " " & $Result
 	EndIf
-	If $g_bDebugSetlog Then ; if enabled generate debug log message
+	If $g_bDebugSetLog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	ElseIf $Result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
@@ -428,7 +426,7 @@ Func getCloudTextShort($x_start, $y_start, $sLogText = Default, $LogTextColor = 
 	; Get 3 characters of yellow text in center of attack search window during extended cloud waiting (388,378)
 	; Full text length is 316 pixels, some is covered by chat window when open
 	Local $Result = getOcrAndCapture("coc-cloudsearch", $x_start, $y_start, 51, 27)
-	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
+	If $g_bDebugSetLog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
 		Local $String = $sLogText & $Result
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	EndIf
@@ -439,7 +437,7 @@ Func getCloudFailShort($x_start, $y_start, $sLogText = Default, $LogTextColor = 
 	; Get 6 characters of pink text in center of attack search window during failed attack search (271, 381)
 	; Full text length is 318 pixels, on checking for 1st 6 characters
 	Local $Result = getOcrAndCapture("coc-cloudfail", $x_start, $y_start, 72, 24)
-	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
+	If $g_bDebugSetLog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
 		Local $String = $sLogText & $Result
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	EndIf

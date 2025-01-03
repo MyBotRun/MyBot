@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Trlopes (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -112,10 +112,10 @@ Func checkImglocError(ByRef $imglocvalue, $funcName, $sTileSource = "", $sImageA
 	;Return true if there is an error in imgloc return string
 	If IsArray($imglocvalue) Then ;despite beeing a string, AutoIt receives a array[0]
 		If $imglocvalue[0] = "0" Or $imglocvalue[0] = "" Then
-			If $g_bDebugSetlog Then SetDebugLog($funcName & " imgloc search returned no results" & ($sImageArea ? " in " & $sImageArea : "") & ($sTileSource ? " for '" & $sTileSource & "' !" : "!"), $COLOR_WARNING)
+			If $g_bDebugSetLog Then SetDebugLog($funcName & " imgloc search returned no results" & ($sImageArea ? " in " & $sImageArea : "") & ($sTileSource ? " for '" & $sTileSource & "' !" : "!"), $COLOR_WARNING)
 			Return True
 		ElseIf StringLeft($imglocvalue[0], 2) = "-1" Then ;error
-			If $g_bDebugSetlog Then SetDebugLog($funcName & " - Imgloc DLL Error: " & $imglocvalue[0], $COLOR_ERROR)
+			If $g_bDebugSetLog Then SetDebugLog($funcName & " - Imgloc DLL Error: " & $imglocvalue[0], $COLOR_ERROR)
 			Return True
 		ElseIf StringLeft($imglocvalue[0], 2) = "-2" Then ;critical error
 			SetLog($funcName & " - Imgloc DLL Critical Error", $COLOR_RED)
@@ -131,7 +131,7 @@ Func checkImglocError(ByRef $imglocvalue, $funcName, $sTileSource = "", $sImageA
 			Return False
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog($funcName & " - Imgloc  Error: Not an Array Result", $COLOR_ERROR)
+		If $g_bDebugSetLog Then SetDebugLog($funcName & " - Imgloc  Error: Not an Array Result", $COLOR_ERROR)
 		Return True
 	EndIf
 EndFunc   ;==>checkImglocError
@@ -162,7 +162,7 @@ EndFunc   ;==>ClickButton
 ; $buttonTileArrayOrPatternOrFullPath = image path
 ; Capture = FV
 ; Test : findButton($sButtonName, Default,1,1,1,1)
-Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $maxReturnPoints = 1, $bForceCapture = True, $bDebuglog = $g_bDebugSetlog, $bDebugImageSave = $g_bDebugImageSave)
+Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $maxReturnPoints = 1, $bForceCapture = True, $bDebuglog = $g_bDebugSetLog, $bDebugImageSave = $g_bDebugImageSave)
 
 	If $buttonTileArrayOrPatternOrFullPath = Default Then $buttonTileArrayOrPatternOrFullPath = $sButtonName & "*"
 
@@ -220,7 +220,7 @@ Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $ma
 		; Perform the search
 		If $bForceCapture Then _CaptureRegion2() ;to have FULL screen image to work with
 
-		If $g_bDebugSetlog Then SetDebugLog(" imgloc searching for: " & $sButtonName & " : " & $buttonTile)
+		If $g_bDebugSetLog Then SetDebugLog(" imgloc searching for: " & $sButtonName & " : " & $buttonTile)
 
 		Local $result = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $buttonTile, "str", $searchArea, "Int", $maxReturnPoints)
 		$error = @error ; Store error values as they reset at next function call
@@ -232,7 +232,7 @@ Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $ma
 		EndIf
 
 		If $result[0] <> "" And checkImglocError($result, "imglocFindButton", $buttonTile) = False Then
-			If $g_bDebugSetlog Then SetDebugLog($sButtonName & " Button Image Found in: " & $result[0])
+			If $g_bDebugSetLog Then SetDebugLog($sButtonName & " Button Image Found in: " & $result[0])
 			$aCoords = StringSplit($result[0], "|", $STR_NOCOUNT)
 			;[0] - total points found
 			;[1] -  coordinates
@@ -266,11 +266,12 @@ Func GetButtonDiamond($sButtonName)
 		Case "AttackButton", "RescueATKButton" ;Main Window Screen
 			$btnDiamond = GetDiamondFromRect2(0, 540 + $g_iBottomOffsetY, 160, 660 + $g_iBottomOffsetY)
 		Case "TrashEvent"
-			$btnDiamond = GetDiamondFromRect2(100, 170 + $g_iMidOffsetY, 840, 510 + $g_iMidOffsetY)
+			$btnDiamond = GetDiamondFromRect2(430, 280 + $g_iMidOffsetY, 800, 380 + $g_iMidOffsetY)
 		Case "EventFailed"
-			$btnDiamond = GetDiamondFromRect2(230, 150 + $g_iMidOffsetY, 777, 530 + $g_iMidOffsetY)
-		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Pets", "THWeapon", "MagicItems", "Equipment", "BuildersApp" ; Buttons at the bottom
-			$btnDiamond = GetDiamondFromRect2(140, 500 + $g_iBottomOffsetY, 720, 590 + $g_iBottomOffsetY)
+			$btnDiamond = GetDiamondFromRect2(280, 155 + $g_iMidOffsetY, 400, 260 + $g_iMidOffsetY)
+		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart", "Info", "FinishNow", "Pets", "THWeapon", "MagicItems", "Equipment", _
+				"BuildersApp", "LabAssist", "HeroHallButton" ; Buttons at the bottom
+			$btnDiamond = GetDiamondFromRect2(140, 500 + $g_iBottomOffsetY, 740, 590 + $g_iBottomOffsetY)
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			$btnDiamond = GetDiamondFromRect2(340, 370 + $g_iMidOffsetY, 525, 495 + $g_iMidOffsetY)
 		Case "EnterShop"
@@ -345,7 +346,7 @@ Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bFo
 		EndIf
 		Local $files = _FileListToArray($dir, $pat, $FLTA_FILES, True)
 		If @error Or UBound($files) < 2 Then
-			If $g_bDebugSetlog Then SetDebugLog("findImage files not found : " & $sImageTile, $COLOR_ERROR)
+			If $g_bDebugSetLog Then SetDebugLog("findImage files not found : " & $sImageTile, $COLOR_ERROR)
 			SetError(1, 0, $aCoords) ; Set external error code = 1 for bad input values
 			Return
 		EndIf
@@ -361,7 +362,7 @@ Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bFo
 
 	; Check function parameters
 	If Not FileExists($sImageTile) Then
-		If $g_bDebugSetlog Then SetDebugLog("findImage file not found : " & $sImageTile, $COLOR_ERROR)
+		If $g_bDebugSetLog Then SetDebugLog("findImage file not found : " & $sImageTile, $COLOR_ERROR)
 		SetError(1, 1, $aCoords) ; Set external error code = 1 for bad input values
 		Return
 	EndIf
@@ -376,18 +377,18 @@ Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bFo
 	$extError = @extended
 	If $error Then
 		_logErrorDLLCall($g_sLibMyBotPath, $error)
-		If $g_bDebugSetlog Then SetDebugLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError)
+		If $g_bDebugSetLog Then SetDebugLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError)
 		SetError(2, $extError, $aCoords) ; Set external error code = 2 for DLL error
 		Return
 	EndIf
 
 	If checkImglocError($result, "findImage", $sImageTile, $sImageArea) Then
-		If $g_bDebugSetlog And $g_bDebugImageSave Then SaveDebugImage("findImage_" & $sImageName, True)
+		If $g_bDebugSetLog And $g_bDebugImageSave Then SaveDebugImage("findImage_" & $sImageName, True)
 		Return $aCoords
 	EndIf
 
 	If $result[0] <> "" Then ;despite being a string, AutoIt receives a array[0]
-		If $g_bDebugSetlog Then SetDebugLog("findImage : " & $sImageName & " Found in: " & $result[0])
+		If $g_bDebugSetLog Then SetDebugLog("findImage : " & $sImageName & " Found in: " & $result[0])
 		$aCoords = StringSplit($result[0], "|", $STR_NOCOUNT)
 		;[0] - total points found
 		;[1] -  coordinates
@@ -397,8 +398,8 @@ Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bFo
 			Return $result[0] ; return full string with count and points
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("findImage : " & $sImageName & " NOT FOUND " & $sImageTile)
-		If $g_bDebugSetlog And $g_bDebugImageSave Then SaveDebugImage("findImage_" & $sImageName, True)
+		If $g_bDebugSetLog Then SetDebugLog("findImage : " & $sImageName & " NOT FOUND " & $sImageTile)
+		If $g_bDebugSetLog And $g_bDebugImageSave Then SaveDebugImage("findImage_" & $sImageName, True)
 		Return $aCoords
 	EndIf
 
@@ -410,13 +411,13 @@ Func GetDeployableNextTo($sPoints, $distance = 3, $redlineoverride = "")
 	Local $extError = @extended
 	If $error Then
 		_logErrorDLLCall($g_sLibMyBotPath, $error)
-		If $g_bDebugSetlog Then SetDebugLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError)
+		If $g_bDebugSetLog Then SetDebugLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError)
 		SetError(2, $extError, "") ; Set external error code = 2 for DLL error
 		Return ""
 	EndIf
 
 	If UBound($result) = 0 Then Return ""
-	If $g_bDebugSetlog Then SetDebugLog("GetDeployableNextTo : " & $sPoints & ", dist. = " & $distance & " : " & $result[0], $COLOR_OLIVE)
+	If $g_bDebugSetLog Then SetDebugLog("GetDeployableNextTo : " & $sPoints & ", dist. = " & $distance & " : " & $result[0], $COLOR_OLIVE)
 	Return $result[0]
 EndFunc   ;==>GetDeployableNextTo
 
@@ -426,20 +427,20 @@ Func GetOffsetRedline($sArea = "TL", $distance = 3)
 	Local $extError = @extended
 	If $error Then
 		_logErrorDLLCall($g_sLibMyBotPath, $error)
-		If $g_bDebugSetlog Then SetDebugLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError)
+		If $g_bDebugSetLog Then SetDebugLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError)
 		SetError(2, $extError, "") ; Set external error code = 2 for DLL error
 		Return ""
 	EndIf
 
 	If UBound($result) = 0 Then Return ""
-	If $g_bDebugSetlog Then SetDebugLog("GetOffSetRedline : " & $sArea & ", dist. = " & $distance & " : " & $result[0], $COLOR_OLIVE)
+	If $g_bDebugSetLog Then SetDebugLog("GetOffSetRedline : " & $sArea & ", dist. = " & $distance & " : " & $result[0], $COLOR_OLIVE)
 	Return $result[0]
 EndFunc   ;==>GetOffsetRedline
 
 Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel = 1000, $maxReturnPoints = 0, $returnProps = "objectname,objectlevel,objectpoints", $bForceCapture = True)
 	; same has findButton, but allow custom area instead of button area decoding
 	; nice for dinamic locations
-	If $g_bDebugSetlog Then
+	If $g_bDebugSetLog Then
 		SetDebugLog("******** findMultiple *** START ***", $COLOR_OLIVE)
 		SetDebugLog("findMultiple : directory : " & $directory, $COLOR_OLIVE)
 		SetDebugLog("findMultiple : sCocDiamond : " & $sCocDiamond, $COLOR_OLIVE)
@@ -468,17 +469,17 @@ Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel 
 	$extError = @extended
 	If $error Then
 		_logErrorDLLCall($g_sLibMyBotPath, $error)
-		If $g_bDebugSetlog Then SetDebugLog(" imgloc DLL Error : " & $error & " --- " & $extError)
+		If $g_bDebugSetLog Then SetDebugLog(" imgloc DLL Error : " & $error & " --- " & $extError)
 		SetError(2, $extError, $aCoords) ; Set external error code = 2 for DLL error
 		Return ""
 	EndIf
 
 	If checkImglocError($result, "findMultiple", $directory) = True Then
-		If $g_bDebugSetlog Then SetDebugLog("findMultiple Returned Error or No values : ", $COLOR_DEBUG)
-		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
+		If $g_bDebugSetLog Then SetDebugLog("findMultiple Returned Error or No values : ", $COLOR_DEBUG)
+		If $g_bDebugSetLog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
 		Return ""
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("findMultiple found : " & $result[0])
+		If $g_bDebugSetLog Then SetDebugLog("findMultiple found : " & $result[0])
 	EndIf
 
 	If $result[0] <> "" Then ;despite being a string, AutoIt receives a array[0]
@@ -492,12 +493,12 @@ Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel 
 					; validate object points
 					If StringInStr($returnLine[$rD], ",") = 0 Then
 						; no valid coordinate, skip values
-						If $g_bDebugSetlog Then SetDebugLog("findMultiple : Invalid objectpoint in result in " & $rD & ": " & $result[0])
+						If $g_bDebugSetLog Then SetDebugLog("findMultiple : Invalid objectpoint in result in " & $rD & ": " & $result[0])
 						$iErr += 1
 						ContinueLoop 2
 					EndIf
 				EndIf
-				If $g_bDebugSetlog Then SetDebugLog("findMultiple : " & $resultArr[$rs] & "->" & $returnData[$rD] & " -> " & $returnLine[$rD])
+				If $g_bDebugSetLog Then SetDebugLog("findMultiple : " & $resultArr[$rs] & "->" & $returnData[$rD] & " -> " & $returnLine[$rD])
 			Next
 			$returnValues[$rs - $iErr] = $returnLine
 		Next
@@ -506,14 +507,14 @@ Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel 
 		;;lets check if we should get redlinedata
 		If $redLines = "" Then
 			$g_sImglocRedline = RetrieveImglocProperty("redline", "") ;global var set in imgltocTHSearch
-			If $g_bDebugSetlog Then SetDebugLog("findMultiple : Redline argument is emty, setting global Redlines")
+			If $g_bDebugSetLog Then SetDebugLog("findMultiple : Redline argument is emty, setting global Redlines")
 		EndIf
-		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
+		If $g_bDebugSetLog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
 		Return $returnValues
 
 	Else
-		If $g_bDebugSetlog Then SetDebugLog(" ***  findMultiple has no result **** ", $COLOR_OLIVE)
-		If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
+		If $g_bDebugSetLog Then SetDebugLog(" ***  findMultiple has no result **** ", $COLOR_OLIVE)
+		If $g_bDebugSetLog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_OLIVE)
 		Return ""
 	EndIf
 
@@ -608,7 +609,7 @@ EndFunc   ;==>GetDiamondFromRect2
 Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = True, $AndroidTag = Default)
 	;creates a reduced capture of the place area a finds the image in that area
 	;returns string with X,Y of ACTUALL FULL SCREEN coordinates or Empty if not found
-	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : > " & $sImageName & " - " & $sImageTile & " - " & $place, $COLOR_INFO)
+	If $g_bDebugSetLog Then SetDebugLog("FindImageInPlace : > " & $sImageName & " - " & $sImageTile & " - " & $place, $COLOR_INFO)
 	Local $returnvalue = ""
 	Local $aPlaces = GetRectArray($place)
 	Local $sImageArea = GetDiamondFromRect($aPlaces)
@@ -619,7 +620,7 @@ Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = T
 	Local $coords = findImage($sImageName, $sImageTile, $sImageArea, 1, False, $AndroidTag) ; reduce capture full image
 	Local $aCoords = decodeSingleCoord($coords)
 	If UBound($aCoords) < 2 Then
-		If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : " & $sImageName & " NOT Found", $COLOR_INFO)
+		If $g_bDebugSetLog Then SetDebugLog("FindImageInPlace : " & $sImageName & " NOT Found", $COLOR_INFO)
 		Return ""
 	EndIf
 	If $bForceCaptureRegion Then
@@ -627,7 +628,7 @@ Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = T
 	Else
 		$returnvalue = Number($aCoords[0]) & "," & Number($aCoords[1])
 	EndIf
-	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
+	If $g_bDebugSetLog Then SetDebugLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
 	Return $returnvalue
 EndFunc   ;==>FindImageInPlace
 
@@ -635,7 +636,7 @@ EndFunc   ;==>FindImageInPlace
 Func FindImageInPlace2($sImageName, $sImageTile, $iX1 = -1, $iY1 = -1, $iX2 = -1, $iY2 = -1, $bForceCaptureRegion = True, $AndroidTag = Default)
 	;creates a reduced capture of the place area a finds the image in that area
 	;returns string with X,Y of ACTUALL FULL SCREEN coordinates or Empty if not found
-	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace2 : > " & $sImageName & " - " & $sImageTile, $COLOR_INFO)
+	If $g_bDebugSetLog Then SetDebugLog("FindImageInPlace2 : > " & $sImageName & " - " & $sImageTile, $COLOR_INFO)
 
 	If $iX1 = -1 Or $iX2 = -1 Or $iY1 = -1 Or $iY2 = -1 Then
 		SetLog("FindImageInPlace2 : One or more bad input coordinates!", $COLOR_ERROR)
@@ -652,7 +653,7 @@ Func FindImageInPlace2($sImageName, $sImageTile, $iX1 = -1, $iY1 = -1, $iX2 = -1
 	Local $coords = findImage($sImageName, $sImageTile, $sImageArea, 1, False, $AndroidTag) ; reduce capture full image
 	Local $aCoords = decodeSingleCoord($coords)
 	If UBound($aCoords) < 2 Then
-		If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : " & $sImageName & " NOT Found", $COLOR_INFO)
+		If $g_bDebugSetLog Then SetDebugLog("FindImageInPlace : " & $sImageName & " NOT Found", $COLOR_INFO)
 		Return ""
 	EndIf
 	If $bForceCaptureRegion Then
@@ -660,7 +661,7 @@ Func FindImageInPlace2($sImageName, $sImageTile, $iX1 = -1, $iY1 = -1, $iX2 = -1
 	Else
 		$returnvalue = Number($aCoords[0]) & "," & Number($aCoords[1])
 	EndIf
-	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
+	If $g_bDebugSetLog Then SetDebugLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
 
 	;	SetLog("FindImageInPlace : < " & $sImageName & " Found in " & $returnvalue, $COLOR_INFO)
 
@@ -674,16 +675,16 @@ Func SearchRedLines($sCocDiamond = $CocDiamondECD)
 	Local $extError = @extended
 	If $error Then
 		_logErrorDLLCall($g_sLibMyBotPath, $error)
-		If $g_bDebugSetlog Then SetDebugLog(" imgloc DLL Error : " & $error & " --- " & $extError)
+		If $g_bDebugSetLog Then SetDebugLog(" imgloc DLL Error : " & $error & " --- " & $extError)
 		SetError(2, $extError) ; Set external error code = 2 for DLL error
 		Return ""
 	EndIf
 	If checkImglocError($result, "SearchRedLines") = True Then
-		If $g_bDebugSetlog Then SetDebugLog("SearchRedLines Returned Error or No values : ", $COLOR_DEBUG)
-		If $g_bDebugSetlog Then SetDebugLog("******** SearchRedLines *** END ***", $COLOR_OLIVE)
+		If $g_bDebugSetLog Then SetDebugLog("SearchRedLines Returned Error or No values : ", $COLOR_DEBUG)
+		If $g_bDebugSetLog Then SetDebugLog("******** SearchRedLines *** END ***", $COLOR_OLIVE)
 		Return ""
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("SearchRedLines found : " & $result[0])
+		If $g_bDebugSetLog Then SetDebugLog("SearchRedLines found : " & $result[0])
 	EndIf
 	$g_sImglocRedline = $result[0]
 	Return $g_sImglocRedline

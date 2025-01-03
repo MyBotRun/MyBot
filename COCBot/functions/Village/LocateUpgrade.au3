@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (Jun/Aug-2015),Sardo 2015-08,Monkeyhunter(2106-2)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -80,7 +80,7 @@ Func LocateUpgrades()
 				ContinueLoop
 			EndIf
 			AndroidShieldForceDown(True, True)
-			$stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_01", "Click 'Locate Building' button then click on your Building/Hero to upgrade.") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_02", "Click 'Finished' button when done locating all upgrades.") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_03", "Click on Cancel to exit finding buildings.") & @CRLF & @CRLF
+			$stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_01", "Click 'Locate Building' button then click on your Building to upgrade.") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_02", "Click 'Finished' button when done locating all upgrades.") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_03", "Click on Cancel to exit finding buildings.") & @CRLF & @CRLF
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
 			$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_04", "Locate Building|Finished|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_05", "Locate Upgrades"), $stext, 0, $g_hFrmBot)
 			Switch $MsgBox
@@ -197,14 +197,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			If _Sleep($DELAYUPGRADEVALUE4) Then Return
 		EndIf
 		; check for upgrade in process
-		Local $offColors[3][3] = [[0x0D0D0D, 39, 29], [0x904F31, 67, 34], [0xFFFFFF, 81, 0]] ; 2nd pixel black broken hammer, 3rd pixel lt brown handle, 4th pixel white edge of button
-		Local $ButtonPixel = _MultiPixelSearch(284, 572, 580, 615, 1, 1, Hex(0x0D0D0D, 6), $offColors, 40) ; first black pixel on side of button
-		SetDebugLog("Pixel Color #1: " & _GetPixelColor(390, 572, True) & ", #2: " & _GetPixelColor(429, 601, True) & ", #3: " & _GetPixelColor(457, 606, True) & ", #4: " & _GetPixelColor(471, 572, True), $COLOR_DEBUG)
-		If IsArray($ButtonPixel) Then
-			If $g_bDebugSetlog Or $bOopsFlag Then
-				SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-				SetLog("Pixel Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 39, $ButtonPixel[1] + 19, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 68, $ButtonPixel[1] + 34, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 81, $ButtonPixel[1], True), $COLOR_DEBUG)
-			EndIf
+		If QuickMIS("BC1", $g_sImgCancelButton, 140, 500 + $g_iBottomOffsetY, 740, 590 + $g_iBottomOffsetY) Then
 			SetLog("Selection #" & $inum + 1 & " Upgrade in process - Skipped!", $COLOR_WARNING)
 			ClearScreen()
 			Return False
@@ -267,6 +260,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					$g_avBuildingUpgrades[$inum][4] = "Giga Inferno"
 				Case 16
 					$g_avBuildingUpgrades[$inum][4] = "Giga Inferno"
+				Case 17
+					$g_avBuildingUpgrades[$inum][4] = "Inferno Artillery"
 			EndSwitch
 			GUICtrlSetData($g_hTxtUpgradeName[$inum], $g_avBuildingUpgrades[$inum][4])
 			$aUpgradeButton = $aTmpUpgradeButton
@@ -281,8 +276,9 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		CloseSuperchargeWindow()
 
 		If $IsTHWeapon Then
-			Local $THWLevelUp = getOcrAndCapture("coc-THWeapon", 503, 113 + $g_iMidOffsetY, 18, 17)
-			If $THWLevelUp > 0 And $THWLevelUp <= 5 Then $g_avBuildingUpgrades[$inum][5] = Number($THWLevelUp - 1)
+			Local $THWLevelUp = getOcrAndCapture("coc-YellowLevel", 503, 116, 190, 20)
+			$THWLevelUp = StringReplace($THWLevelUp, "1", "")
+			If $THWLevelUp > 1 And $THWLevelUp <= 5 Then $g_avBuildingUpgrades[$inum][5] = Number($THWLevelUp - 1)
 			GUICtrlSetData($g_hTxtUpgradeLevel[$inum], $g_avBuildingUpgrades[$inum][5])
 		EndIf
 
@@ -337,8 +333,6 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				Return False
 
 		EndSelect
-
-		If StringInStr($g_avBuildingUpgrades[$inum][4], "Warden") > 0 Then $g_avBuildingUpgrades[$inum][3] = "Elixir"
 
 		; Failsafe fix for upgrade value read problems if needed.
 		If $g_avBuildingUpgrades[$inum][3] <> "" And $bOopsFlag = True And $bRepeat = False Then ;check if upgrade type value to not waste time and for text read oops flag

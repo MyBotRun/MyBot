@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run team
 ; Modified ......: CodeSlinger69 (2017), MMHK (01-2008)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -268,12 +268,12 @@ Func ApplyScriptDB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
 	Local $iSlot = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
-	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0]]
+	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 	Local $aiCSVWardenMode = -1
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
 	Local $sCSVCCReq = ""
@@ -331,6 +331,9 @@ Func ApplyScriptDB()
 					Case $eHeroArcherQueen
 						$g_iActivateQueen = $aiCSVHeros[$h][0] - 1
 						$g_iDelayActivateQueen = $aiCSVHeros[$h][1]
+					Case $eHeroMinionPrince
+						$g_iActivatePrince = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivatePrince = $aiCSVHeros[$h][1]
 					Case $eHeroGrandWarden
 						$g_iActivateWarden = $aiCSVHeros[$h][0] - 1
 						$g_iDelayActivateWarden = $aiCSVHeros[$h][1]
@@ -345,6 +348,7 @@ Func ApplyScriptDB()
 
 		GUICtrlSetState($g_hChkDBKingAttack, $aiCSVHeros[$eHeroBarbarianKing][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBKingAttack))
 		GUICtrlSetState($g_hChkDBQueenAttack, $aiCSVHeros[$eHeroArcherQueen][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBQueenAttack))
+		GUICtrlSetState($g_hChkDBPrinceAttack, $aiCSVHeros[$eHeroMinionPrince][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBPrinceAttack))
 		GUICtrlSetState($g_hChkDBWardenAttack, $aiCSVHeros[$eHeroGrandWarden][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBWardenAttack))
 		chkDBWardenAttack()
 		GUICtrlSetState($g_hChkDBChampionAttack, $aiCSVHeros[$eHeroRoyalChampion][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBChampionAttack))
@@ -422,12 +426,12 @@ Func ApplyScriptAB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
 	Local $iSlot = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0]
-	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0]
-	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0]
+	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0]
+	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
-	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0]]
+	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 	Local $aiCSVWardenMode = -1
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
 	Local $sCSVCCReq = ""
@@ -485,6 +489,9 @@ Func ApplyScriptAB()
 					Case $eHeroArcherQueen
 						$g_iActivateQueen = $aiCSVHeros[$h][0] - 1
 						$g_iDelayActivateQueen = $aiCSVHeros[$h][1]
+					Case $eHeroMinionPrince
+						$g_iActivatePrince = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivatePrince = $aiCSVHeros[$h][1]
 					Case $eHeroGrandWarden
 						$g_iActivateWarden = $aiCSVHeros[$h][0] - 1
 						$g_iDelayActivateWarden = $aiCSVHeros[$h][1]
@@ -499,6 +506,7 @@ Func ApplyScriptAB()
 
 		GUICtrlSetState($g_hChkABKingAttack, $aiCSVHeros[$eHeroBarbarianKing][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABKingAttack))
 		GUICtrlSetState($g_hChkABQueenAttack, $aiCSVHeros[$eHeroArcherQueen][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABQueenAttack))
+		GUICtrlSetState($g_hChkABPrinceAttack, $aiCSVHeros[$eHeroMinionPrince][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABPrinceAttack))
 		GUICtrlSetState($g_hChkABWardenAttack, $aiCSVHeros[$eHeroGrandWarden][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABWardenAttack))
 		chkABWardenAttack()
 		GUICtrlSetState($g_hChkABChampionAttack, $aiCSVHeros[$eHeroRoyalChampion][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABChampionAttack))
@@ -648,14 +656,17 @@ Func AttackNow()
 	; Reset hero variables
 	$g_bCheckKingPower = False
 	$g_bCheckQueenPower = False
+	$g_bCheckPrincePower = False
 	$g_bCheckWardenPower = False
 	$g_bCheckChampionPower = False
 	$g_bDropKing = False
 	$g_bDropQueen = False
+	$g_bDropPrince = False
 	$g_bDropWarden = False
 	$g_bDropChampion = False
 	$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
 	$g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
+	$g_aHeroesTimerActivation[$eHeroMinionPrince] = 0
 	$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 	$g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0
 

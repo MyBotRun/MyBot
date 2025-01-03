@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (Jun/Aug-2015),Sardo 2015-08,Monkeyhunter(2106-2)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,7 +23,7 @@ Func UpgradeBuilding()
 	Local $iAvailBldr, $iAvailGold, $iAvailElixir, $iAvailDark
 	Local $Endtime, $Endperiod, $TimeAdd
 	Local $iUpGrdEndTimeDiff = 0
-	Local $aCheckFrequency[14] = [5, 15, 20, 30, 60, 60, 120, 240, 240, 240, 240, 300, 300, 300] ; Dwell Time in minutes between each repeat upgrade check TH3-15.  TH reference are game TH level - 3.  So TH16 = 13 in this array.
+	Local $aCheckFrequency[15] = [5, 15, 20, 30, 60, 60, 120, 240, 240, 240, 240, 280, 280, 300, 300] ; Dwell Time in minutes between each repeat upgrade check TH3-17.  TH reference are game TH level - 3.  So TH17 = 14 in this array.
 	Local $iDTDiff
 	Local $bChkAllRptUpgrade = False
 	Local $sTime
@@ -64,7 +64,7 @@ Func UpgradeBuilding()
 
 	For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 
-		If $g_bDebugSetlog Then SetlogUpgradeValues($iz) ; massive debug data dump for each upgrade
+		If $g_bDebugSetLog Then SetLogUpgradeValues($iz) ; massive debug data dump for each upgrade
 
 		If Not $g_abBuildingUpgradeEnable[$iz] Then ContinueLoop ; Is the upgrade checkbox selected?
 
@@ -83,7 +83,7 @@ Func UpgradeBuilding()
 			If $bChkAllRptUpgrade = False Then
 				$iDTDiff = Int(_DateDiff("n", _NowCalc(), $sNextCheckTime)) ; get date/time difference for repeat upgrade check
 				If @error Then _logErrorDateDiff(@error)
-				If $g_bDebugSetlog Then
+				If $g_bDebugSetLog Then
 					SetDebugLog("Delay time between repeat upgrade checks = " & $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)] & " Min", $COLOR_DEBUG)
 					SetDebugLog("Delay time remaining = " & $iDTDiff & " Min", $COLOR_DEBUG)
 				EndIf
@@ -106,7 +106,7 @@ Func UpgradeBuilding()
 
 			If $bChkAllRptUpgrade = True Or $iUpGrdEndTimeDiff < 0 Then ; when past delay time or past end time for previous upgrade then check status
 				If UpgradeValue($iz, True) = False Then ; try to get new upgrade values
-					If $g_bDebugSetlog Then SetlogUpgradeValues($iz) ; Debug data for when upgrade is not ready or done repeating
+					If $g_bDebugSetLog Then SetLogUpgradeValues($iz) ; Debug data for when upgrade is not ready or done repeating
 					SetLog("Repeat upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " not ready yet", $COLOR_ERROR)
 					ContinueLoop ; Not ready yet..
 				ElseIf ($iAvailBldr <= 0) Then
@@ -164,10 +164,6 @@ Func UpgradeBuilding()
 					If UpgradeNormal($iz) = False Then ContinueLoop ; UpgradeNormal For Megalith
 					$g_iNbrOfBuildingsUppedDElixir += 1
 					$g_iCostDElixirBuilding += $g_avBuildingUpgrades[$iz][2]
-				Else
-					If UpgradeHero($iz) = False Then ContinueLoop
-					$g_iNbrOfHeroesUpped += 1
-					$g_iCostDElixirHero += $g_avBuildingUpgrades[$iz][2]
 				EndIf
 				$iUpgradeAction += 2 ^ ($iz + 1)
 				SetLog("Dark Elixir used = " & _NumberFormat($g_avBuildingUpgrades[$iz][2], True), $COLOR_INFO)
@@ -247,6 +243,8 @@ Func UpgradeNormal($iUpgradeNumber)
 					$aResult[1] = "Giga Inferno"
 				Case 16
 					$aResult[1] = "Giga Inferno"
+				Case 17
+					$aResult[1] = "Inferno Artillery"
 			EndSwitch
 			$aUpgradeButton = $aTmpUpgradeButton
 		EndIf
@@ -277,6 +275,8 @@ Func UpgradeNormal($iUpgradeNumber)
 							$aResult[1] = "Giga Inferno"
 						Case 16
 							$aResult[1] = "Giga Inferno"
+						Case 17
+							$aResult[1] = "Inferno Artillery"
 					EndSwitch
 					$aUpgradeButton = $aTmpUpgradeButton
 				EndIf
@@ -359,91 +359,7 @@ Func UpgradeNormal($iUpgradeNumber)
 	EndIf
 EndFunc   ;==>UpgradeNormal
 
-Func UpgradeHero($iUpgradeNumber)
-	ClearScreen()
-	If _Sleep($DELAYUPGRADENORMAL1) Then Return
-
-	BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0304") ; Select the item to be upgrade
-	If _Sleep($DELAYUPGRADENORMAL4) Then Return ; Wait for window to open
-
-	Local $aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY)
-	If UBound($aResult) < 2 Then Return False
-	Local $aUpgradeButton = findButton("Upgrade", Default, 1, True)
-
-	If StringStripWS($aResult[1], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) <> StringStripWS($g_avBuildingUpgrades[$iUpgradeNumber][4], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) Then ; check bldg names
-		SetLog("#" & $iUpgradeNumber + 1 & ":" & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ": Not same as :" & $aResult[1] & ":? Retry now...", $COLOR_INFO)
-		ClearScreen()
-		If _Sleep($DELAYUPGRADENORMAL4) Then Return
-
-		BuildingClick($g_avBuildingUpgrades[$iUpgradeNumber][0], $g_avBuildingUpgrades[$iUpgradeNumber][1], "#0296") ; Select the item to be upgrade again in case full collector/mine
-		If _Sleep($DELAYUPGRADENORMAL4) Then Return ; Wait for window to open
-
-		$aResult = BuildingInfo(242, 475 + $g_iBottomOffsetY) ; read building name/level to check we have right bldg or if collector was not full
-		If $aResult[0] > 1 Then
-			$aUpgradeButton = findButton("Upgrade", Default, 1, True)
-			If StringStripWS($aResult[1], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) <> StringStripWS($g_avBuildingUpgrades[$iUpgradeNumber][4], BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)) Then ; check bldg names
-				SetLog("Found #" & $iUpgradeNumber + 1 & ":" & $g_avBuildingUpgrades[$iUpgradeNumber][4] & ": Not same as : " & $aResult[1] & ":, May need new location?", $COLOR_ERROR)
-				ClearScreen()
-				Return False
-			EndIf
-		EndIf
-	EndIf
-
-	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
-		If _Sleep($DELAYUPGRADEHERO2) Then Return
-		ClickP($aUpgradeButton, 1, 120, "#0305") ; Click Upgrade Button
-		If _Sleep(2000) Then Return ; Wait for window to open
-		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
-			Local $RedSearch = _PixelSearch(610, 548 + $g_iMidOffsetY, 650, 552 + $g_iMidOffsetY, Hex(0xFF887F, 6), 20)
-			Local $OrangeSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFF7A0D, 6), 20)
-			If IsArray($RedSearch) Or IsArray($OrangeSearch) Then ; Check for Red Zero = means not enough loot!
-				SetLog("Hero Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No DE!", $COLOR_ERROR)
-				CloseWindow2()
-				Return False
-			Else
-				Click(630, 540 + $g_iMidOffsetY, 1, 120, "#0299") ; Click upgrade buttton
-				If _Sleep($DELAYUPGRADENORMAL3) Then Return
-				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
-				If isGemOpen(True) Then ; Redundant Safety Check if the use Gem window opens; Redundant Safety Check if the use Gem window opens
-					SetLog("Hero Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No DE!", $COLOR_ERROR)
-					ClickAway()
-					Return False
-				EndIf
-				SetLog("Hero Upgrade #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " started", $COLOR_SUCCESS)
-				_GUICtrlSetImage($g_hPicUpgradeStatus[$iUpgradeNumber], $g_sLibIconPath, $eIcnGreenLight) ; Change GUI upgrade status to done
-				$g_aiPicUpgradeStatus[$iUpgradeNumber] = $eIcnGreenLight ; Change GUI upgrade status to done
-				GUICtrlSetData($g_hTxtUpgradeValue[$iUpgradeNumber], -($g_avBuildingUpgrades[$iUpgradeNumber][2])) ; Show Negative Upgrade value in GUI
-				GUICtrlSetData($g_hTxtUpgradeLevel[$iUpgradeNumber], $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+") ; Set GUI level to match $g_avBuildingUpgrades variable
-				$g_aiUpgradeLevel[$iUpgradeNumber] = $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+" ; Set GUI level to match $g_avBuildingUpgrades variable
-				If Not $g_abUpgradeRepeatEnable[$iUpgradeNumber] Then ; Check for repeat upgrade
-					GUICtrlSetState($g_hChkUpgrade[$iUpgradeNumber], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
-					$g_abBuildingUpgradeEnable[$iUpgradeNumber] = False ; Change upgrade selection box to unchecked
-					$g_avBuildingUpgrades[$iUpgradeNumber][0] = -1 ;Reset $UpGrade position coordinate variable to blank to show its completed
-					$g_avBuildingUpgrades[$iUpgradeNumber][1] = -1
-					$g_avBuildingUpgrades[$iUpgradeNumber][3] = "" ; Reset loot type
-					GUICtrlSetData($g_hTxtUpgradeLevel[$iUpgradeNumber], $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+") ; Set GUI level to match $g_avBuildingUpgrades variable
-					$g_avBuildingUpgrades[$iUpgradeNumber][5] = $g_avBuildingUpgrades[$iUpgradeNumber][5] & "+" ; Set GUI level to match $g_avBuildingUpgrades variable
-				ElseIf $g_abUpgradeRepeatEnable[$iUpgradeNumber] Then
-					GUICtrlSetState($g_hChkUpgrade[$iUpgradeNumber], $GUI_CHECKED) ; Ensure upgrade selection box is checked
-					$g_abBuildingUpgradeEnable[$iUpgradeNumber] = True ; Ensure upgrade selection box is checked
-				EndIf
-				ClearScreen()
-				If _Sleep($DELAYUPGRADEHERO2) Then Return ; Wait for window to close
-				Return True
-			EndIf
-		Else
-			SetLog("Upgrade #" & $iUpgradeNumber + 1 & " window open fail", $COLOR_ERROR)
-			ClickAway()
-		EndIf
-	Else
-		SetLog("Upgrade #" & $iUpgradeNumber + 1 & " Error finding button", $COLOR_ERROR)
-		ClearScreen()
-		Return False
-	EndIf
-EndFunc   ;==>UpgradeHero
-
-Func SetlogUpgradeValues($i)
+Func SetLogUpgradeValues($i)
 	Local $j
 	For $j = 0 To UBound($g_avBuildingUpgrades, 2) - 1
 		SetLog("$g_avBuildingUpgrades[" & $i & "][" & $j & "]= " & $g_avBuildingUpgrades[$i][$j], $COLOR_DEBUG)
@@ -456,4 +372,4 @@ Func SetlogUpgradeValues($i)
 	SetLog("$g_hTxtUpgradeTime= " & $g_avBuildingUpgrades[$i][6], $COLOR_DEBUG) ; Upgrade time
 	SetLog("$g_hTxtUpgradeEndTime= " & $g_avBuildingUpgrades[$i][7], $COLOR_DEBUG) ; Upgrade End time
 	SetLog("$g_hChkUpgradeRepeat= " & $g_abUpgradeRepeatEnable, $COLOR_DEBUG) ; repeat box
-EndFunc   ;==>SetlogUpgradeValues
+EndFunc   ;==>SetLogUpgradeValues

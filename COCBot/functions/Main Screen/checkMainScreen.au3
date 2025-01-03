@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015) , TheMaster1st(2015), Fliegerfaust (06-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkObstacles(), waitMainScreen()
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -128,10 +128,9 @@ EndFunc   ;==>_checkMainScreenImage
 
 Func checkChatTabPixel()
 	SetDebugLog("Checking chat tab pixel exists to ensure images have loaded correctly")
-	ZoomOut()
 	If _Sleep(500) Then Return
-	Local $aChatTabPixel = decodeSingleCoord(findImage("ChatTabPixel", $g_sImgChatTabPixel, GetDiamondFromRect("5,315,30,360"), 1, True))
-	If UBound($aChatTabPixel) > 0 Then
+	Local $aChatTabPixel = decodeSingleCoord(findImage("ChatTabPixel", $g_sImgChatTabPixel, GetDiamondFromRect2(5, 285 + $g_iMidOffsetY, 30, 330 + $g_iMidOffsetY), 1, True))
+	If UBound($aChatTabPixel) = 2 Then
 		SetDebugLog("ChatTabPixel found", $COLOR_SUCCESS)
 		Return True
 	Else

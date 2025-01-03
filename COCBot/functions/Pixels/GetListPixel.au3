@@ -3,7 +3,7 @@
 ; Description ...: Pixel and Locate Image functions
 ; Author ........: HungLe (april-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -68,7 +68,7 @@ EndFunc   ;==>GetPixelListDistance
 
 ; USES OLD OPENCV DETECTION
 Func GetLocationItem($functionName)
-	If $g_bDebugSetlog Or $g_bDebugBuildingPos Then
+	If $g_bDebugSetLog Or $g_bDebugBuildingPos Then
 		Local $hTimer = __TimerInit()
 		SetLog("GetLocationItem(" & $functionName & ")", $COLOR_DEBUG)
 	EndIf

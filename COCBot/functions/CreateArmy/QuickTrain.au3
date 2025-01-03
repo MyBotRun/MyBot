@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Demen
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,7 +15,7 @@
 #include-once
 
 Func QuickTrain()
-	Local $bDebug = $g_bDebugSetlogTrain Or $g_bDebugSetlog
+	Local $bDebug = $g_bDebugSetLogTrain Or $g_bDebugSetLog
 	Local $bNeedRecheckTroop = False, $bNeedRecheckSpell = False
 	Local $iTroopStatus = -1, $iSpellStatus = -1 ; 0 = empty, 1 = full camp, 2 = full queue
 
@@ -320,7 +320,7 @@ Func CheckQuickTrainTroop()
 						Next
 						For $j = 0 To $eTroopCount - 1
 							If $aiGUITroop[$j] <> $aiInGameTroop[$j] Then
-								Setlog("Wrong troop preset, let's create again. (" & $g_asTroopNames[$j] & ": " & $aiGUITroop[$j] & "/" & $aiInGameTroop[$j] & ")" & ($g_bDebugSetlog ? " - Retry: " & $Step : ""))
+								SetLog("Wrong troop preset, let's create again. (" & $g_asTroopNames[$j] & ": " & $aiGUITroop[$j] & "/" & $aiInGameTroop[$j] & ")" & ($g_bDebugSetLog ? " - Retry: " & $Step : ""))
 								$Step += 1
 								CreateQuickTrainPreset($i)
 								ContinueLoop 2
@@ -328,7 +328,7 @@ Func CheckQuickTrainTroop()
 						Next
 						For $j = 0 To $eSpellCount - 1
 							If $aiGUISpell[$j] <> $aiInGameSpell[$j] Then
-								Setlog("Wrong spell preset, let's create again (" & $g_asSpellNames[$j] & ": " & $aiGUISpell[$j] & "/" & $aiInGameSpell[$j] & ")" & ($g_bDebugSetlog ? " - Retry: " & $Step : ""))
+								SetLog("Wrong spell preset, let's create again (" & $g_asSpellNames[$j] & ": " & $aiGUISpell[$j] & "/" & $aiInGameSpell[$j] & ")" & ($g_bDebugSetLog ? " - Retry: " & $Step : ""))
 								$Step += 1
 								CreateQuickTrainPreset($i)
 								ContinueLoop 2

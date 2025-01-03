@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Kychera (5-2017)
 ; Modified ......: NguyenAnhHD [12-2017]
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -190,7 +190,7 @@ Func IsUseCustomDropOrder()
 EndFunc   ;==>IsUseCustomDropOrder
 
 Func ChangeDropOrder()
-	If $g_bDebugSetlog Then SetDebugLog("Begin Func ChangeDropOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetLog Then SetDebugLog("Begin Func ChangeDropOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewDropOrder[$eDropOrderCount]
 	Local $iUpdateCount = 0

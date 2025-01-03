@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (06/2015) Sardo (08/2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -98,6 +98,44 @@ Func LocateClanCastle($bCollect = True)
 				SetLog("You did not rebuild your Clan Castle yet", $COLOR_ACTION)
 			Else
 				SetLog("Your Clan Castle is at level: " & $sInfo[2], $COLOR_SUCCESS)
+				Switch $sInfo[2]
+					Case 1
+						$g_aiClanCastleTroopsCap = 10
+						$g_aiClanCastleSpellsCap = 0
+					Case 2
+						$g_aiClanCastleTroopsCap = 15
+						$g_aiClanCastleSpellsCap = 0
+					Case 3
+						$g_aiClanCastleTroopsCap = 20
+						$g_aiClanCastleSpellsCap = 0
+					Case 4
+						$g_aiClanCastleTroopsCap = 25
+						$g_aiClanCastleSpellsCap = 1
+					Case 5
+						$g_aiClanCastleTroopsCap = 30
+						$g_aiClanCastleSpellsCap = 1
+					Case 6
+						$g_aiClanCastleTroopsCap = 35
+						$g_aiClanCastleSpellsCap = 1
+					Case 7
+						$g_aiClanCastleTroopsCap = 35
+						$g_aiClanCastleSpellsCap = 2
+					Case 8
+						$g_aiClanCastleTroopsCap = 40
+						$g_aiClanCastleSpellsCap = 2
+					Case 9
+						$g_aiClanCastleTroopsCap = 45
+						$g_aiClanCastleSpellsCap = 2
+					Case 10
+						$g_aiClanCastleTroopsCap = 45
+						$g_aiClanCastleSpellsCap = 3
+					Case 11, 12
+						$g_aiClanCastleTroopsCap = 50
+						$g_aiClanCastleSpellsCap = 3
+					Case 13
+						$g_aiClanCastleTroopsCap = 55
+						$g_aiClanCastleSpellsCap = 3
+				EndSwitch
 			EndIf
 		Else
 			SetLog(" Operator Error - Bad Clan Castle Location: " & "(" & $g_aiClanCastlePos[0] & "," & $g_aiClanCastlePos[1] & ")", $COLOR_ERROR)

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: (2014)
 ; Modified ......: HungLe (may-2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkMainscreen, isProblemAffect
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -294,6 +294,25 @@ Func AttackClick($x, $y, $times = 1, $speed = 120, $afterDelay = 0, $debugtxt = 
 	If IsKeepClicksActive() = False And $delay > 0 Then _Sleep($delay, False)
 	Return $result
 EndFunc   ;==>AttackClick
+
+Func AttackClickCSV($x, $y, $times = 1, $speed = 120, $afterDelay = 0, $debugtxt = "")
+	If $speed = 0 Then $speed = 120
+	Local $timer = __TimerInit()
+	; Protect the Attack Bar
+	If $y > 555 + $g_iBottomOffsetY Then
+		$y = Random(553, 555, 1) + $g_iBottomOffsetY
+		If $x > ($g_iGAME_WIDTH / 2) Then
+			$x = Random(($g_iGAME_WIDTH / 2) + 60, ($g_iGAME_WIDTH / 2) + 100, 1)
+		Else
+			$x = Random(($g_iGAME_WIDTH / 2) - 100, ($g_iGAME_WIDTH / 2) - 60, 1)
+		EndIf
+	EndIf
+	AttackRemainingTime(False) ; flag attack started
+	Local $result = PureClickTrain($x, $y, $times, $speed, $debugtxt)
+	Local $delay = $times * $speed + $afterDelay - __TimerDiff($timer)
+	If IsKeepClicksActive() = False And $delay > 0 Then _Sleep($delay, False)
+	Return $result
+EndFunc   ;==>AttackClickCSV
 
 Func ClickAway($Region = Default )
 	Local $aiRegionToUse = Random(0, 1, 1) > 0 ? $aiClickAwayRegionLeft : $aiClickAwayRegionRight

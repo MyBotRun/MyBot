@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run Team
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -338,8 +338,8 @@ EndFunc   ;==>cmbSwitchAccProfileX
 ; #DEBUG FUNCTION# ==============================================================================================================
 
 Func chkDebugSetLog()
-	$g_bDebugSetlog = (GUICtrlRead($g_hChkDebugSetlog) = $GUI_CHECKED) ;
-	SetDebugLog("DebugSetlog " & ($g_bDebugSetlog ? "enabled" : "disabled"))
+	$g_bDebugSetLog = (GUICtrlRead($g_hChkDebugSetLog) = $GUI_CHECKED) ;
+	SetDebugLog("DebugSetLog " & ($g_bDebugSetLog ? "enabled" : "disabled"))
 EndFunc   ;==>chkDebugSetLog
 
 Func chkDebugAndroid()
@@ -390,8 +390,8 @@ Func chkDebugBuildingPos()
 EndFunc   ;==>chkDebugBuildingPos
 
 Func chkDebugTrain()
-	$g_bDebugSetlogTrain = (GUICtrlRead($g_hChkdebugTrain) = $GUI_CHECKED)
-	SetDebugLog("DebugTrain " & ($g_bDebugSetlogTrain ? "enabled" : "disabled"))
+	$g_bDebugSetLogTrain = (GUICtrlRead($g_hChkdebugTrain) = $GUI_CHECKED)
+	SetDebugLog("DebugTrain " & ($g_bDebugSetLogTrain ? "enabled" : "disabled"))
 EndFunc   ;==>chkDebugTrain
 
 Func chkdebugOCRDonate()
@@ -423,7 +423,7 @@ EndFunc   ;==>btnTestTrain
 
 Func btnTestDonateCC()
 	Local $currentRunState = $g_bRunState
-	Local $currentSetlog = $g_bDebugSetlog
+	Local $currentSetLog = $g_bDebugSetLog
 	_GUICtrlTab_ClickTab($g_hTabMain, 0)
 	$g_bRunState = True
 
@@ -441,7 +441,7 @@ Func btnTestDonateCC()
 	SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_INFO)
 
 	$g_bRunState = $currentRunState
-	$g_bDebugSetlog = $currentSetlog
+	$g_bDebugSetLog = $currentSetLog
 EndFunc   ;==>btnTestDonateCC
 
 Func btnTestRequestCC()
@@ -686,13 +686,13 @@ Func btnTestAttackCSV()
 	Local $currentDebugAttackCSV = $g_bDebugAttackCSV
 	Local $currentMakeIMGCSV = $g_bDebugMakeIMGCSV
 	Local $currentiMatchMode = $g_iMatchMode
-	Local $currentdebugsetlog = $g_bDebugSetlog
+	Local $currentdebugsetlog = $g_bDebugSetLog
 	Local $currentDebugBuildingPos = $g_bDebugBuildingPos
 
 	$g_bRunState = True
 	$g_bDebugAttackCSV = True
 	$g_bDebugMakeIMGCSV = True
-	$g_bDebugSetlog = True
+	$g_bDebugSetLog = True
 	$g_bDebugBuildingPos = True
 
 	$g_iMatchMode = $DB ; define which script to use
@@ -722,7 +722,7 @@ Func btnTestAttackCSV()
 	$g_bDebugAttackCSV = $currentDebugAttackCSV
 	$g_bDebugMakeIMGCSV = $currentMakeIMGCSV
 	$g_iMatchMode = $currentiMatchMode
-	$g_bDebugSetlog = $currentdebugsetlog
+	$g_bDebugSetLog = $currentdebugsetlog
 	$g_bDebugBuildingPos = $currentDebugBuildingPos
 
 EndFunc   ;==>btnTestAttackCSV
@@ -736,10 +736,10 @@ Func btnTestGetLocationBuilding()
 	; Store variables changed, set test values
 	Local $currentRunState = $g_bRunState
 	Local $currentDebugBuildingPos = $g_bDebugBuildingPos
-	Local $currentdebugsetlog = $g_bDebugSetlog
+	Local $currentdebugsetlog = $g_bDebugSetLog
 	$g_bRunState = True
 	$g_bDebugBuildingPos = True
-	$g_bDebugSetlog = True
+	$g_bDebugSetLog = True
 
 	; reset village measures
 	setVillageOffset(0, 0, 1)
@@ -783,7 +783,7 @@ Func btnTestGetLocationBuilding()
 	; restore changed variables
 	$g_bRunState = $currentRunState
 	$g_bDebugBuildingPos = $currentDebugBuildingPos
-	$g_bDebugSetlog = $currentdebugsetlog
+	$g_bDebugSetLog = $currentdebugsetlog
 
 EndFunc   ;==>btnTestGetLocationBuilding
 
@@ -974,12 +974,12 @@ Func btnRunFunction()
 
 	Local $saExecResult = Execute($sFunc)
 	If $saExecResult = "" And @error <> 0 Then
-		Setlog("Result : Error", $COLOR_ERROR)
+		SetLog("Result : Error", $COLOR_ERROR)
 	ElseIf IsArray($saExecResult) Then
-		Setlog("Result (IsArray) : " & _ArrayToString($saExecResult, ","), $COLOR_INFO)
+		SetLog("Result (IsArray) : " & _ArrayToString($saExecResult, ","), $COLOR_INFO)
 		_ArrayDisplay($saExecResult, "Debug Func. Result")
 	Else
-		Setlog("Result : " & $saExecResult, $COLOR_INFO)
+		SetLog("Result : " & $saExecResult, $COLOR_INFO)
 	EndIf
 
 	$g_bRunState = $currentRunState
@@ -1133,12 +1133,12 @@ EndFunc   ;==>chkSQLite
 Func SQLiteExport()
 
 	If Not $g_bUseStatistics Then
-		Setlog("")
+		SetLog("")
 		Return
 	EndIf
-	Setlog("Exporting data from SQlite, please wait!", $COLOR_ACTION)
+	SetLog("Exporting data from SQlite, please wait!", $COLOR_ACTION)
 	ExportDataBase(False)
-	Setlog("Export successfully completed.", $COLOR_SUCCESS)
+	SetLog("Export successfully completed.", $COLOR_SUCCESS)
 
 EndFunc   ;==>SQLiteExport
 

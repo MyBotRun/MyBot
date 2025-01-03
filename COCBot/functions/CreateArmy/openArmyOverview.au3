@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (01-2016)
 ; Modified ......: GrumpyHog (11/2022)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,7 +23,7 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 	EndIf
 
 	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 15, 10) Then
-		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
+		If $g_bDebugSetLogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
 		ClickP($aArmyTrainButton, 1, 120, "#0293") ; Button Army Overview
 	EndIf
 
@@ -31,6 +31,8 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 	If Not IsTrainPage() Then
 		SetError(1)
 		Return False ; exit if I'm not in train page
+	Else
+		CheckHeroOrder()
 	EndIf
 	Return True
 
@@ -61,13 +63,13 @@ Func OpenQuickTrainTab($bSetLog = True, $sWhereFrom = "Undefined")
 EndFunc   ;==>OpenQuickTrainTab
 
 Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
-	FuncEnter(OpenTrainTab, $g_bDebugSetlogTrain)
+	FuncEnter(OpenTrainTab, $g_bDebugSetLogTrain)
 
 	WaitForClanMessage("Tabs")
 
 	If Not IsTrainPage() Then
 		SetDebugLog("Error in OpenTrainTab: Cannot find the Army Overview Window", $COLOR_ERROR)
-		Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlogTrain)
+		Return FuncReturn(SetError(1, 0, False), $g_bDebugSetLogTrain)
 	EndIf
 
 	Local $bIsCleanArea = False
@@ -94,20 +96,20 @@ Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
 				$aIsTabOpen[0] = 730
 		EndSwitch
 		If Not _CheckPixel($aIsTabOpen, True) Then
-			If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Open " & $sTab & ($g_bDebugSetlogTrain ? " (Called from " & $sWhereFrom & ")" : ""), $COLOR_INFO)
+			If $bSetLog Or $g_bDebugSetLogTrain Then SetLog("Open " & $sTab & ($g_bDebugSetLogTrain ? " (Called from " & $sWhereFrom & ")" : ""), $COLOR_INFO)
 			ClickP($aTabButton)
 			If Not _WaitForCheckPixel($aIsTabOpen, True) Then
 				SetLog("Error in OpenTrainTab: Cannot open " & $sTab & ". Pixel to check did not appear", $COLOR_ERROR)
-				Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlogTrain)
+				Return FuncReturn(SetError(1, 0, False), $g_bDebugSetLogTrain)
 			EndIf
 		EndIf
 	Else
 		SetDebugLog("Error in OpenTrainTab: $aTabButton is no valid Array", $COLOR_ERROR)
-		Return FuncReturn(SetError(1, 0, False), $g_bDebugSetlogTrain)
+		Return FuncReturn(SetError(1, 0, False), $g_bDebugSetLogTrain)
 	EndIf
 
 	If _Sleep(200) Then Return
-	Return FuncReturn(True, $g_bDebugSetlogTrain)
+	Return FuncReturn(True, $g_bDebugSetLogTrain)
 EndFunc   ;==>OpenTrainTab
 
 Func UpdateNextPageTroop()
@@ -230,7 +232,7 @@ Func UpdateNextPageTroop()
 							If _Sleep(200) Then Return
 							Return
 						EndIf
-						
+
 					EndIf
 
 				EndIf
@@ -250,3 +252,61 @@ Func PointInRect($iBLx, $iBLy, $iTRx, $iTRy, $iPTx, $iPTy)
 
 	Return False
 EndFunc   ;==>PointInRect
+
+Func IsDarkTroopOffset()
+
+	If $g_iNextPageTroop > $eRDrag Then
+		$g_iDarkTroopOffset = False
+		Return
+	EndIf
+
+	If _DateIsValid($g_iDarkTroopOffsetCheckTimer) Then
+		Local $iLastCheck = _DateDiff('s', $g_iDarkTroopOffsetCheckTimer, _NowCalc())
+		SetDebugLog("Dark Troops Positions LastCheck: " & $g_iDarkTroopOffsetCheckTimer & ", Check DateCalc: " & $iLastCheck)
+		If $iLastCheck < 60 Then Return ; Check every 60 seconds.
+	EndIf
+
+	$g_iDarkTroopOffset = False
+	$g_iDarkTroopOffsetCheckTimer = _NowCalc()
+
+	Local $aSlot1[4] = [523, 545, 606, 465] ; Ice Golem Pos 1
+	Local $aSlot2[4] = [523, 460, 606, 375] ; Ice Golem Pos 2
+	Local $aSlot3[4] = [270, 460, 353, 375] ; Minion Pos 1
+	Local $aSlot4[4] = [185, 460, 268, 375] ; Minion Pos 1
+
+	Local $sIceGolemTile = @ScriptDir & "\imgxml\Train\Train_Train\IceG*"
+	Local $sMinionTile = @ScriptDir & "\imgxml\Train\Train_Train\Mini*"
+
+	Local $aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageDarkTroop", $sIceGolemTile, GetDiamondFromRect("520,375,692,550"), 1, True))
+
+	If IsArray($aiTileCoord) And UBound($aiTileCoord, 1) = 2 And _ColorCheck(_GetPixelColor(777, 385 + $g_iMidOffsetY, True), Hex(0xD3D3CB, 6), 5) Then
+		SetDebugLog("Found Ice Golem at " & $aiTileCoord[0] & ", " & $aiTileCoord[1])
+
+		If PointInRect($aSlot1[0], $aSlot1[1], $aSlot1[2], $aSlot1[3], $aiTileCoord[0], $aiTileCoord[1]) Then
+			Local $aiTileCoord2 = decodeSingleCoord(findImage("UpdateNextPageDarkTroop", $sMinionTile, GetDiamondFromRect("185,375,350,460"), 1, True))
+			If IsArray($aiTileCoord2) And UBound($aiTileCoord2, 1) = 2 Then
+				SetDebugLog("Found Minion at " & $aiTileCoord2[0] & ", " & $aiTileCoord2[1])
+				If PointInRect($aSlot3[0], $aSlot3[1], $aSlot3[2], $aSlot3[3], $aiTileCoord2[0], $aiTileCoord2[1]) Then
+					$g_iDarkTroopOffset = False
+					SetDebugLog("Found Ice Golem at original position")
+				ElseIf PointInRect($aSlot4[0], $aSlot4[1], $aSlot4[2], $aSlot4[3], $aiTileCoord2[0], $aiTileCoord2[1]) Then ; 2 Super Dark Troops -> MicroDrag Left For $eRDrag and $eETitan
+					$g_iDarkTroopOffset = True
+					SetDebugLog("Found Ice Golem moved 2 Slots")
+				EndIf
+			EndIf
+			If _Sleep(100) Then Return
+			Return
+		EndIf
+
+		If PointInRect($aSlot2[0], $aSlot2[1], $aSlot2[2], $aSlot2[3], $aiTileCoord[0], $aiTileCoord[1]) Then ; 1 Super Dark Troop
+			$g_iDarkTroopOffset = True
+			SetDebugLog("Found Ice Golem moved 1 Slots")
+			If _Sleep(100) Then Return
+			Return
+		EndIf
+
+	EndIf
+
+	If _Sleep(100) Then Return
+
+EndFunc   ;==>IsDarkTroopOffset

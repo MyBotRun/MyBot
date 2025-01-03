@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Sardo (06-2015), Fliegerfaust (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:v
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -140,7 +140,7 @@ Func GoldElixirChangeEBO()
 		If $NoResourceOCR Then
 			SetLog("Exit now, [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage, $COLOR_INFO)
 		Else
-			If $g_bDebugSetlog Then
+			If $g_bDebugSetLog Then
 				SetDebugLog("Exit in " & $txtDiff & ", [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage & ", Suspend-Time: " & $g_iSuspendAndroidTime & ", Suspend-Count: " & $g_iSuspendAndroidTimeCount & ", Offset: " & $iSuspendAndroidTimeOffset, $COLOR_INFO)
 			Else
 				SetLog("Exit in " & $txtDiff & ", [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage, $COLOR_INFO)
@@ -151,15 +151,15 @@ Func GoldElixirChangeEBO()
 
 		If Number($CurDamage) >= 92 Then
 
-			If $g_iKingSlot >= 11 Or $g_iQueenSlot >= 11 Or $g_iWardenSlot >= 11 Or $g_iChampionSlot >= 11 Then
+			If $g_iKingSlot >= 11 Or $g_iQueenSlot >= 11 Or $g_iPrinceSlot >= 11 Or $g_iWardenSlot >= 11 Or $g_iChampionSlot >= 11 Then
 				If Not $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, False) ; drag forward
 			Else
-				If $g_iKingSlot >= 0 Or $g_iQueenSlot >= 0 Or $g_iWardenSlot >= 0 Or $g_iChampionSlot >= 0 Then
+				If $g_iKingSlot >= 0 Or $g_iQueenSlot >= 0 Or $g_iPrinceSlot >= 0 Or $g_iWardenSlot >= 0 Or $g_iChampionSlot >= 0 Then
 					If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
 				EndIf
 			EndIf
 
-			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Or $g_bCheckChampionPower) Then
+			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckPrincePower Or $g_bCheckWardenPower Or $g_bCheckChampionPower) Then
 				If $g_bCheckKingPower And $g_iActivateKing = 0 Then
 					SetLog("Activating King's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iKingSlot) ;If King was not activated: Boost King before Battle ends with a 3 Star
@@ -169,6 +169,11 @@ Func GoldElixirChangeEBO()
 					SetLog("Activating Queen's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before Battle ends with a 3 Star
 					$g_bCheckQueenPower = False
+				EndIf
+				If $g_bCheckPrincePower And $g_iActivatePrince = 0 Then
+					SetLog("Activating Prince's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
+					If IsAttackPage() Then SelectDropTroop($g_iPrinceSlot) ;If Prince was not activated: Boost Prince before Battle ends with a 3 Star
+					$g_bCheckPrincePower = False
 				EndIf
 				If $g_bCheckWardenPower And $g_iActivateWarden = 0 Then
 					SetLog("Activating Warden's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
@@ -290,7 +295,7 @@ Func GoldElixirChangeEBO()
 			SetLog("Gold & Elixir & DE no change detected, waiting...", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_bDebugSetlog Then
+		If $g_bDebugSetLog Then
 			SetDebugLog("Gold1: " & Number($Gold1) & "  Gold2: " & Number($Gold2), $COLOR_DEBUG)
 			SetDebugLog("Elixir1: " & Number($Elixir1) & "  Elixir2: " & Number($Elixir2), $COLOR_DEBUG)
 			SetDebugLog("Dark Elixir1: " & Number($DarkElixir1) & "  Dark Elixir2: " & Number($DarkElixir2), $COLOR_DEBUG)

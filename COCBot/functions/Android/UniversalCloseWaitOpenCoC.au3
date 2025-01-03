@@ -11,7 +11,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (04-2016)
 ; Modified ......: Cosote (06-2016), MonkeyHunter (07-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2024
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2025
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -80,7 +80,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "Unknown", $StopEmulat
 			OpenCoC()
 		Case 1 ; close CoC app only (after 2017/Dec. only jump to home-screen to avoid CoC launch delay)
 			; Local $bSendHome = ($g_sAndroidEmulator <> "MEmu")
-			Local $bSendHome = False ; MEmu and BlueStacks 4 have issues with CoC running in background: it crashes... to avoid that use polite close
+			Local $bSendHome = False ; MEmu has issues with CoC running in background: it crashes... to avoid that use polite close
 			If $bSendHome Then
 				AndroidHomeButton()
 			Else
