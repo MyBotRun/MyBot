@@ -1,4 +1,7 @@
-* v8.1.8
+* v8.1.9 **
+* Fixed Icon File
+
+* v8.1.8 **
 * Improved Shield Time OCR (Partially Hidden "M" is now read).
 * Improved Donate System (Requests with Pictures).
 * Updated Close While Training/Without Shield Option.
