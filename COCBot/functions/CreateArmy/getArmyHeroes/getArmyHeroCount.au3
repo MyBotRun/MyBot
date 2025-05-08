@@ -44,7 +44,24 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 	Local $sResult
 	Local $sMessage = ""
 
+	If Not HeroHallValuesCheck() Then
+		SetLog("Please check Hero Hall Values Now !", $COLOR_ERROR)
+		SetLog("MBR cannot run correctly without Hero Hall Values : LOCATE !", $COLOR_ERROR)
+	EndIf
+
 	For $i = 0 To $eHeroSlots - 1
+		Switch $g_aiHeroHallPos[2]
+			Case 1, 2
+				If $i = 1 Then ExitLoop
+			Case 3, 4
+				If $i = 2 Then ExitLoop
+			Case 5, 6
+				If $i = 3 Then ExitLoop
+			Case 7 To 11
+				;Do nothing
+			Case Else
+				;Do nothing but should not happen
+		EndSwitch
 		$sResult = ArmyHeroStatus($i)
 		If $sResult <> "" Then ; we found something, figure out what?
 			Select
@@ -677,111 +694,121 @@ Func ArmyHeroStatus($i)
 		EndSwitch
 	EndIf
 
-	Local Const $aHeroesRect[$eHeroSlots][4] = [[525, 315 + $g_iMidOffsetY, 589, 375 + $g_iMidOffsetY], _
-			[590, 315 + $g_iMidOffsetY, 653, 375 + $g_iMidOffsetY], _
-			[654, 315 + $g_iMidOffsetY, 717, 375 + $g_iMidOffsetY], _
-			[718, 315 + $g_iMidOffsetY, 780, 375 + $g_iMidOffsetY]]                                     ; Review
+	If Not HeroHallValuesCheck() Then
+		SetLog("Please check Hero Hall Values Now !", $COLOR_ERROR)
+		SetLog("MBR cannot run correctly without Hero Hall Values : LOCATE !", $COLOR_ERROR)
+	EndIf
+
+	Switch $g_aiHeroHallPos[2]
+		Case 1, 2
+			Local $aHeroesRect[$eHeroSlots][4] = [[175, 230 + $g_iMidOffsetY, 210, 255 + $g_iMidOffsetY], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0]]
+		Case 3, 4
+			Local $aHeroesRect[$eHeroSlots][4] = [[129, 230 + $g_iMidOffsetY, 154, 255 + $g_iMidOffsetY], _
+					[235, 230 + $g_iMidOffsetY, 260, 255 + $g_iMidOffsetY], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0]]
+		Case 5, 6
+			Local $aHeroesRect[$eHeroSlots][4] = [[105, 230 + $g_iMidOffsetY, 128, 255 + $g_iMidOffsetY], _
+					[184, 230 + $g_iMidOffsetY, 206, 255 + $g_iMidOffsetY], _
+					[263, 230 + $g_iMidOffsetY, 285, 255 + $g_iMidOffsetY], _
+					[0, 0, 0, 0]]
+		Case 7 To 11
+			Local $aHeroesRect[$eHeroSlots][4] = [[105, 230 + $g_iMidOffsetY, 128, 255 + $g_iMidOffsetY], _
+					[184, 230 + $g_iMidOffsetY, 206, 255 + $g_iMidOffsetY], _
+					[263, 230 + $g_iMidOffsetY, 285, 255 + $g_iMidOffsetY], _
+					[342, 230 + $g_iMidOffsetY, 365, 255 + $g_iMidOffsetY]]
+		Case Else
+			Local $aHeroesRect[$eHeroSlots][4] = [[105, 230 + $g_iMidOffsetY, 128, 255 + $g_iMidOffsetY], _
+					[184, 230 + $g_iMidOffsetY, 206, 255 + $g_iMidOffsetY], _
+					[263, 230 + $g_iMidOffsetY, 285, 255 + $g_iMidOffsetY], _
+					[342, 230 + $g_iMidOffsetY, 365, 255 + $g_iMidOffsetY]]
+	EndSwitch
 
 	; Perform the search
-	Local $aTempArray
+	Local $aTempArray, $aTempArray2
 	Local $sSearchDiamond = GetDiamondFromRect2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
-	Local $result = findMultiple($g_sImgArmyOverviewHeroes, $sSearchDiamond, $sSearchDiamond, 50, 1000, 0, "objectname,objectpoints", True)
+	Local $result = findMultiple($g_sImgArmyOverviewHeroes, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
 	If $result <> "" And IsArray($result) Then
 		For $t = 0 To UBound($result, 1) - 1
 			$aTempArray = $result[$t]
 			If $g_aiCmbCustomHeroOrder[$i] = 0 Then
 				Switch $aTempArray[0]
-					Case "heal"     ; Blue
-						GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicKingGreen, $GUI_HIDE)
-						GUICtrlSetState($g_hPicKingRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicKingBlue, $GUI_SHOW)
 					Case "upgrade"     ; Red
 						GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
 						GUICtrlSetState($g_hPicKingGreen, $GUI_HIDE)
 						GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
 						GUICtrlSetState($g_hPicKingRed, $GUI_SHOW)
-					Case "king"     ; Green
-						GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicKingRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
-						GUICtrlSetState($g_hPicKingGreen, $GUI_SHOW)
 				EndSwitch
 			ElseIf $g_aiCmbCustomHeroOrder[$i] = 1 Then
 				Switch $aTempArray[0]
-					Case "heal"     ; Blue
-						GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicQueenGreen, $GUI_HIDE)
-						GUICtrlSetState($g_hPicQueenRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicQueenBlue, $GUI_SHOW)
 					Case "upgrade"     ; Red
 						GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
 						GUICtrlSetState($g_hPicQueenGreen, $GUI_HIDE)
 						GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
 						GUICtrlSetState($g_hPicQueenRed, $GUI_SHOW)
-					Case "Queen"     ; Green
-						GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicQueenRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
-						GUICtrlSetState($g_hPicQueenGreen, $GUI_SHOW)
 				EndSwitch
 			ElseIf $g_aiCmbCustomHeroOrder[$i] = 2 Then
 				Switch $aTempArray[0]
-					Case "heal"     ; Blue
-						GUICtrlSetState($g_hPicPrinceGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPrinceGreen, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPrinceRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPrinceBlue, $GUI_SHOW)
 					Case "upgrade"     ; Red
 						GUICtrlSetState($g_hPicPrinceGray, $GUI_HIDE)
 						GUICtrlSetState($g_hPicPrinceGreen, $GUI_HIDE)
 						GUICtrlSetState($g_hPicPrinceBlue, $GUI_HIDE)
 						GUICtrlSetState($g_hPicPrinceRed, $GUI_SHOW)
-					Case "Prince"     ; Green
-						GUICtrlSetState($g_hPicPrinceGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPrinceRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPrinceBlue, $GUI_HIDE)
-						GUICtrlSetState($g_hPicPrinceGreen, $GUI_SHOW)
 				EndSwitch
 			ElseIf $g_aiCmbCustomHeroOrder[$i] = 3 Then
 				Switch $aTempArray[0]
-					Case "heal"     ; Blue
-						GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicWardenGreen, $GUI_HIDE)
-						GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicWardenBlue, $GUI_SHOW)
 					Case "upgrade"     ; Red
 						GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
 						GUICtrlSetState($g_hPicWardenGreen, $GUI_HIDE)
 						GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
 						GUICtrlSetState($g_hPicWardenRed, $GUI_SHOW)
-					Case "warden"     ; Green
-						GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
-						GUICtrlSetState($g_hPicWardenGreen, $GUI_SHOW)
 				EndSwitch
 			ElseIf $g_aiCmbCustomHeroOrder[$i] = 4 Then
 				Switch $aTempArray[0]
-					Case "heal"     ; Blue
-						GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicChampionGreen, $GUI_HIDE)
-						GUICtrlSetState($g_hPicChampionRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicChampionBlue, $GUI_SHOW)
 					Case "upgrade"     ; Red
 						GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
 						GUICtrlSetState($g_hPicChampionGreen, $GUI_HIDE)
 						GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
 						GUICtrlSetState($g_hPicChampionRed, $GUI_SHOW)
-					Case "Champion"     ; Green
-						GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
-						GUICtrlSetState($g_hPicChampionRed, $GUI_HIDE)
-						GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
-						GUICtrlSetState($g_hPicChampionGreen, $GUI_SHOW)
 				EndSwitch
 			EndIf
 			Return $aTempArray[0]
 		Next
+	Else
+		If $g_aiCmbCustomHeroOrder[$i] = 0 Then
+			GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
+			GUICtrlSetState($g_hPicKingRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicKingGreen, $GUI_SHOW)
+			Return "king"
+		ElseIf $g_aiCmbCustomHeroOrder[$i] = 1 Then
+			GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
+			GUICtrlSetState($g_hPicQueenRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicQueenGreen, $GUI_SHOW)
+			Return "queen"
+		ElseIf $g_aiCmbCustomHeroOrder[$i] = 2 Then
+			GUICtrlSetState($g_hPicPrinceGray, $GUI_HIDE)
+			GUICtrlSetState($g_hPicPrinceRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicPrinceBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicPrinceGreen, $GUI_SHOW)
+			Return "prince"
+		ElseIf $g_aiCmbCustomHeroOrder[$i] = 3 Then
+			GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
+			GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicWardenGreen, $GUI_SHOW)
+			Return "warden"
+		ElseIf $g_aiCmbCustomHeroOrder[$i] = 4 Then
+			GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
+			GUICtrlSetState($g_hPicChampionRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicChampionGreen, $GUI_SHOW)
+			Return "champion"
+		EndIf
 	EndIf
 
 	;return 'none' if there was a problem with the search ; or no Hero slot
@@ -821,6 +848,16 @@ Func ArmyHeroStatus($i)
 EndFunc   ;==>ArmyHeroStatus
 
 Func HiddenSlotstatus()
+
+	If $g_iTownHallLevel < 7 Then
+		SetDebugLog("Townhall Lvl " & $g_iTownHallLevel & " has no Hero Hall", $COLOR_DEBUG)
+		Return
+	EndIf
+	If Not HeroHallValuesCheck() Then
+		SetLog("Please check Hero Hall Values Now !", $COLOR_ERROR)
+		SetLog("MBR cannot run correctly without Hero Hall Values : LOCATE !", $COLOR_ERROR)
+	EndIf
+
 	If $g_aiHeroHallPos[2] = 1 Then
 
 		Switch $g_aiCmbCustomHeroOrder[4]
@@ -950,6 +987,7 @@ Func HiddenSlotstatus()
 					GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
 					GUICtrlSetState($g_hPicChampionGreen, $GUI_HIDE)
 			EndSwitch
+			Return
 		EndIf
 
 		$iLastTimeCheckedHidden[$g_iCurAccount] = _NowCalc()
@@ -1329,6 +1367,9 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		If $iLabFinishTime > 0 Then
 			$g_sLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), _NowCalc())
 			SetLog("Research will finish in " & $sLabTimeOCR & " (" & $g_sLabUpgradeTime & ")")
+			$g_iLaboratoryElixirCost = 0
+			$g_iLaboratoryDElixirCost = 0
+			LabStatusGUIUpdate() ; Update GUI flag
 		EndIf
 
 		If _Sleep(500) Then Return
@@ -1387,24 +1428,91 @@ EndFunc   ;==>HideShields
 
 Func CheckHeroOrder()
 
+	If $bCheckHeroOrder[$g_iCurAccount] Then Return
+
+	If Not HeroHallValuesCheck() Then
+		SetLog("Please check Hero Hall Values Now !", $COLOR_ERROR)
+		SetLog("MBR cannot run correctly without Hero Hall Values : LOCATE !", $COLOR_ERROR)
+	EndIf
+
+	Switch $g_aiHeroHallPos[2]
+		Case 1, 2
+			Local $aHeroesRect[$eHeroSlots][4] = [[225, 150 + $g_iMidOffsetY, 300, 245 + $g_iMidOffsetY], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0]]
+			Local $aHeroesClick[$eHeroSlots][4] = [[100, 260 + $g_iMidOffsetY, 170, 380 + $g_iMidOffsetY], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0]]
+		Case 3, 4
+			Local $aHeroesRect[$eHeroSlots][4] = [[181, 150 + $g_iMidOffsetY, 253, 245 + $g_iMidOffsetY], _
+					[285, 150 + $g_iMidOffsetY, 358, 245 + $g_iMidOffsetY], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0]]
+			Local $aHeroesClick[$eHeroSlots][4] = [[90, 260 + $g_iMidOffsetY, 135, 380 + $g_iMidOffsetY], _
+					[195, 260 + $g_iMidOffsetY, 235, 380 + $g_iMidOffsetY], _
+					[0, 0, 0, 0], _
+					[0, 0, 0, 0]]
+		Case 5, 6
+			Local $aHeroesRect[$eHeroSlots][4] = [[160, 150 + $g_iMidOffsetY, 230, 245 + $g_iMidOffsetY], _
+					[238, 150 + $g_iMidOffsetY, 310, 245 + $g_iMidOffsetY], _
+					[317, 150 + $g_iMidOffsetY, 390, 245 + $g_iMidOffsetY], _
+					[0, 0, 0, 0]]
+			Local $aHeroesClick[$eHeroSlots][4] = [[85, 260 + $g_iMidOffsetY, 105, 380 + $g_iMidOffsetY], _
+					[165, 260 + $g_iMidOffsetY, 185, 380 + $g_iMidOffsetY], _
+					[240, 260 + $g_iMidOffsetY, 260, 380 + $g_iMidOffsetY], _
+					[0, 0, 0, 0]]
+		Case 7 To 11
+			Local $aHeroesRect[$eHeroSlots][4] = [[160, 150 + $g_iMidOffsetY, 230, 245 + $g_iMidOffsetY], _
+					[238, 150 + $g_iMidOffsetY, 310, 245 + $g_iMidOffsetY], _
+					[317, 150 + $g_iMidOffsetY, 390, 245 + $g_iMidOffsetY], _
+					[396, 150 + $g_iMidOffsetY, 469, 245 + $g_iMidOffsetY]]
+			Local $aHeroesClick[$eHeroSlots][4] = [[80, 260 + $g_iMidOffsetY, 110, 380 + $g_iMidOffsetY], _
+					[160, 260 + $g_iMidOffsetY, 190, 380 + $g_iMidOffsetY], _
+					[240, 260 + $g_iMidOffsetY, 270, 380 + $g_iMidOffsetY], _
+					[320, 260 + $g_iMidOffsetY, 350, 380 + $g_iMidOffsetY]]
+		Case Else
+			Local $aHeroesRect[$eHeroSlots][4] = [[160, 150 + $g_iMidOffsetY, 230, 245 + $g_iMidOffsetY], _
+					[238, 150 + $g_iMidOffsetY, 310, 245 + $g_iMidOffsetY], _
+					[317, 150 + $g_iMidOffsetY, 390, 245 + $g_iMidOffsetY], _
+					[396, 150 + $g_iMidOffsetY, 469, 245 + $g_iMidOffsetY]]
+			Local $aHeroesClick[$eHeroSlots][4] = [[80, 260 + $g_iMidOffsetY, 110, 380 + $g_iMidOffsetY], _
+					[160, 260 + $g_iMidOffsetY, 190, 380 + $g_iMidOffsetY], _
+					[240, 260 + $g_iMidOffsetY, 270, 380 + $g_iMidOffsetY], _
+					[320, 260 + $g_iMidOffsetY, 350, 380 + $g_iMidOffsetY]]
+	EndSwitch
+
 	Local $aTempArray
-	Local Const $aHeroesRect[$eHeroSlots][4] = [[525, 315 + $g_iMidOffsetY, 589, 375 + $g_iMidOffsetY], _
-			[590, 315 + $g_iMidOffsetY, 653, 375 + $g_iMidOffsetY], _
-			[654, 315 + $g_iMidOffsetY, 717, 375 + $g_iMidOffsetY], _
-			[718, 315 + $g_iMidOffsetY, 780, 375 + $g_iMidOffsetY]]
 
 	For $i = 0 To $eHeroSlots - 1 ; Reset
 		$g_aiCmbCustomHeroOrder[$i] = -1
 	Next
 
 	For $i = 0 To $eHeroSlots - 1
+		Switch $g_aiHeroHallPos[2]
+			Case 1, 2
+				If $i = 1 Then ExitLoop
+			Case 3, 4
+				If $i = 2 Then ExitLoop
+			Case 5, 6
+				If $i = 3 Then ExitLoop
+			Case 7 To 11
+				;Do nothing
+			Case Else
+				;Do nothing but should not happen
+		EndSwitch
 		; Perform the search
+		Local $HeroClickOpen[2] = [Random($aHeroesClick[$i][0], $aHeroesClick[$i][2], 1), Random($aHeroesClick[$i][1], $aHeroesClick[$i][3], 1)]
+		ClickP($HeroClickOpen, 1, 120)
+		SetDebugLog("Click : " & $i & " : " & $HeroClickOpen[0] & "," & $HeroClickOpen[1])
+		If _Sleep(Random(500, 2000, 1)) Then Return
 		Local $sSearchDiamond = GetDiamondFromRect2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
 		Local $result = findMultiple($g_sImgArmyOverviewHeroes, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
 		If $result <> "" And IsArray($result) Then
 			For $t = 0 To UBound($result, 1) - 1
 				$aTempArray = $result[$t]
-				If StringInStr($aTempArray[0], "heal", $STR_NOCASESENSEBASIC) Or StringInStr($aTempArray[0], "upgrade", $STR_NOCASESENSEBASIC) Then ContinueLoop
+				If StringInStr($aTempArray[0], "upgrade", $STR_NOCASESENSEBASIC) Then ContinueLoop
 				Switch $aTempArray[0]
 					Case "king"
 						$g_aiCmbCustomHeroOrder[$i] = 0
@@ -1418,6 +1526,10 @@ Func CheckHeroOrder()
 						$g_aiCmbCustomHeroOrder[$i] = 4
 				EndSwitch
 			Next
+			Local $HeroClickClose[2] = [Random($aHeroesClick[$i][0], $aHeroesClick[$i][2], 1), Random($aHeroesClick[$i][1], $aHeroesClick[$i][3], 1)]
+			ClickP($HeroClickClose, 1, 120)
+			SetDebugLog("Click : " & $i & " : " & $HeroClickClose[0] & "," & $HeroClickClose[1])
+			If _Sleep(250) Then Return
 		EndIf
 	Next
 
@@ -1661,4 +1773,26 @@ Func CheckHeroOrder()
 	SetDebugLog("Hero Custom Order : " & $HeroSlotsInfos[$g_aiCmbCustomHeroOrder[0]] & "|" & $HeroSlotsInfos[$g_aiCmbCustomHeroOrder[1]] & "|" _
 			 & $HeroSlotsInfos[$g_aiCmbCustomHeroOrder[2]] & "|" & $HeroSlotsInfos[$g_aiCmbCustomHeroOrder[3]] & "|" & $HeroSlotsInfos[$g_aiCmbCustomHeroOrder[4]])
 
+	$bCheckHeroOrder[$g_iCurAccount] = True
+
 EndFunc   ;==>CheckHeroOrder
+
+Func HeroHallValuesCheck()
+	If $g_iTownHallLevel > 6 Then
+		If $g_aiHeroHallPos[1] = "" Or $g_aiHeroHallPos[1] = -1 Or $g_aiHeroHallPos[2] = -1 Then
+			Local $BackToMain = False
+			If IsMainGrayed() Then
+				$BackToMain = True
+				CloseWindow2()
+			EndIf
+			If ImgLocateHeroHall() Then
+				SetLog("Hero Hall: (" & $g_aiHeroHallPos[0] & "," & $g_aiHeroHallPos[1] & "), Level : " & $g_aiHeroHallPos[2], $COLOR_DEBUG)
+				ClearScreen()
+				If $BackToMain Then OpenArmyOverview(True, "HeroHallValuesCheck()")
+				Return True
+			EndIf
+			Return False
+		EndIf
+		Return True
+	EndIf
+EndFunc   ;==>HeroHallValuesCheck

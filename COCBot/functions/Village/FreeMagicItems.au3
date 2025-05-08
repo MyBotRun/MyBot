@@ -116,7 +116,7 @@ Func OpenTraderWindow()
 	Local $Area[4] = [90, 100 + $g_iMidOffsetY, 210, 210 + $g_iMidOffsetY]
 	If IsCustomScenery(True, "Upper") Then
 		$Area[0] = 120
-		$Area[1] = 150 + $g_iMidOffsetY
+		$Area[1] = 145 + $g_iMidOffsetY
 		$Area[2] = 240
 		$Area[3] = 230 + $g_iMidOffsetY
 	EndIf

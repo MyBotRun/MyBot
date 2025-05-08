@@ -36,7 +36,7 @@ Global $groupPoison = "", $groupEarthquake = "", $groupHaste = "", $groupSkeleto
 Global $groupListSpells = ""
 
 ;Sieges
-Global $groupWallWrecker = "", $groupBattleBlimp = "", $groupStoneSlammer = "", $groupSiegeBarracks = "", $groupLogLauncher = "", $groupFlameFlinger = "", $groupBattleDrill = "", $groupListSieges = ""
+Global $groupWallWrecker = "", $groupBattleBlimp = "", $groupStoneSlammer = "", $groupSiegeBarracks = "", $groupLogLauncher = "", $groupFlameFlinger = "", $groupBattleDrill = "", $groupTroopLauncher = "", $groupListSieges = ""
 
 ;TH Level
 Global $g_aGroupListTHLevels = ""
@@ -143,8 +143,7 @@ Func InitializeControlVariables()
 	$groupWardenSleeping = $g_hPicDBWardenSleepWait & "#" & $g_hPicABWardenSleepWait & "#" & $g_hPicChkWardenSleepWait
 	$groupChampionSleeping = $g_hPicDBChampionSleepWait & "#" & $g_hPicABChampionSleepWait & "#" & $g_hPicChkChampionSleepWait
 
-	$groupCloseWhileTraining = $g_hChkCloseWithoutShield & "#" & $g_hChkCloseEmulator & "#" & $g_hChkSuspendComputer & "#" & $g_hPicCloseWaitTrain & "#" & $g_hChkRandomClose & "#" & $g_hPicCloseWaitStop & "#" & _
-			$g_hRdoCloseWaitExact & "#" & $g_hPicCloseWaitExact & "#" & $g_hRdoCloseWaitRandom & "#" & $g_hCmbCloseWaitRdmPercent & "#" & $g_hLblCloseWaitRdmPercent
+	$groupCloseWhileTraining = $g_hLbAttackconsecutiveTitle & "#" & $g_hCmbAttackconsecutiveMin & "#" & $g_hLbAttackconsecutiveLimit & "#" & $g_hCmbAttackconsecutiveMax & "#" & $g_hChkCloseEmulator & "#" & $g_hChkSuspendComputer & "#" & $g_hPicCloseWaitTrain & "#" & $g_hPicCloseWaitStop
 
 	$grpTrainTroops = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopSuperBarbarian] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopArcher] & "#" & _
 			$g_ahTxtTrainArmyTroopCount[$eTroopSuperArcher] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopGiant] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopSuperGiant] & "#" & _
@@ -159,7 +158,7 @@ Func InitializeControlVariables()
 			$g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopIceGolem] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopYeti] & "#" & _
 			$g_ahTxtTrainArmyTroopCount[$eTroopDragonRider] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopElectroTitan] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopHeadhunter] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopSuperBowler] & "#" & _
 			$g_ahTxtTrainArmyTroopCount[$eTroopRootRider] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopThrower] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopSuperHogRider] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopAppWard] & "#" & _
-			$g_ahTxtTrainArmyTroopCount[$eTroopDruid]
+			$g_ahTxtTrainArmyTroopCount[$eTroopDruid] & "#" & $g_ahTxtTrainArmyTroopCount[$eTroopFurnace]
 
 	$grpCookSpell = $g_ahTxtTrainArmySpellCount[$eSpellLightning] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellHeal] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellRage] & "#" & _
 			$g_ahTxtTrainArmySpellCount[$eSpellJump] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellFreeze] & "#" & $g_ahTxtTrainArmySpellCount[$eSpellClone] & "#" & _
@@ -197,7 +196,8 @@ Func InitializeControlVariables()
 	$groupLogLauncher = $g_ahPicTrainArmySiege[$eSiegeLogLauncher] & "#" & $g_ahTxtTrainArmySiegeCount[$eSiegeLogLauncher]
 	$groupFlameFlinger = $g_ahPicTrainArmySiege[$eSiegeFlameFlinger] & "#" & $g_ahTxtTrainArmySiegeCount[$eSiegeFlameFlinger]
 	$groupBattleDrill = $g_ahPicTrainArmySiege[$eSiegeBattleDrill] & "#" & $g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill]
-	$groupListSieges = $groupWallWrecker & "#" & $groupBattleBlimp & "#" & $groupStoneSlammer & "#" & $groupSiegeBarracks & "#" & $groupLogLauncher & "#" & $groupFlameFlinger & "#" & $groupBattleDrill
+	$groupTroopLauncher = $g_ahPicTrainArmySiege[$eSiegeTroopLauncher] & "#" & $g_ahTxtTrainArmySiegeCount[$eSiegeTroopLauncher]
+	$groupListSieges = $groupWallWrecker & "#" & $groupBattleBlimp & "#" & $groupStoneSlammer & "#" & $groupSiegeBarracks & "#" & $groupLogLauncher & "#" & $groupFlameFlinger & "#" & $groupBattleDrill & "#" & $groupTroopLauncher
 
 	;TH Level
 	$g_aGroupListTHLevels = $g_ahPicTHLevels[4] & "#" & $g_ahPicTHLevels[5] & "#" & $g_ahPicTHLevels[6] & "#" & $g_ahPicTHLevels[7] & "#" & $g_ahPicTHLevels[8] & "#" & _

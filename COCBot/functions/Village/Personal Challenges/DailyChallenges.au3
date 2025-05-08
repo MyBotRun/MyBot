@@ -71,6 +71,14 @@ Func OpenPersonalChallenges()
 		$counter += 1
 		If $counter > 40 Then Return False
 	WEnd
+
+	Local $OkayButton = decodeSingleCoord(FindImageInPlace2("OkayButton", $g_sImgOkayDailyChallenge, 370, 520 + $g_iMidOffsetY, 490, 590 + $g_iMidOffsetY, True))
+	If IsArray($OkayButton) And UBound($OkayButton) = 2 Then
+		SetDebugLog("Detected Okay Button", $COLOR_INFO)
+		ClickP($OkayButton)
+		If _Sleep(1000) Then Return
+	EndIf
+
 	Return True
 
 EndFunc   ;==>OpenPersonalChallenges

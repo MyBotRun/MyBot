@@ -25,8 +25,8 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 120, "#0347") ; Click Button Army Overview
 		If _Sleep($DELAYCHECKFULLARMY2) Then Return
 		Local $j = 0
-		While Not _ColorCheck(_GetPixelColor(180, 145 + $g_iMidOffsetY, True), Hex(0xECECE5, 6), 20) ; "ARMY tab"
-			If $g_bDebugSetLogTrain Then SetLog("OverView TabColor=" & _GetPixelColor(180, 145 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+		While Not _ColorCheck(_GetPixelColor(795, 146 + $g_iMidOffsetY, True), Hex(0xFF8D95, 6), 20) ; "ARMY tab"
+			If $g_bDebugSetLogTrain Then SetLog("OverView TabColor=" & _GetPixelColor(795, 146 + $g_iMidOffsetY, True), $COLOR_DEBUG)
 			If _Sleep($DELAYCHECKFULLARMY1) Then Return ; wait for Train Window to be ready.
 			$j += 1
 			If $j > 15 Then ExitLoop
@@ -38,18 +38,26 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	EndIf
 
 	If _sleep($DELAYCHECKFULLARMY2) Then Return
-	Local $Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(89, 179 + $g_iMidOffsetY, True), Hex(0x87BA26, 6), 20)
-	If Not $Pixel Then
+	Local $IsAfull = False
+	Local $sArmyInfo = getArmyCampCap($aArmyCampSize[0], $aArmyCampSize[1], True)
+	If StringInStr($sArmyInfo, "#", 0, 1) >= 2 Then
+		Local $aArmyInfoCap = StringSplit($sArmyInfo, "#")
 		If _sleep($DELAYCHECKFULLARMY2) Then Return
-		$Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(89, 179 + $g_iMidOffsetY, True), Hex(0x87BA26, 6), 20)
+		If IsArray($aArmyInfoCap) Then
+			If $aArmyInfoCap[0] > 1 Then ; check if the OCR was valid and returned both values
+				If Number($aArmyInfoCap[0]) = Number($aArmyInfoCap[1]) Then $IsAfull = True
+			EndIf
+		EndIf
+	Else
+		If $g_bDebugSetLogTrain Then SetLog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_DEBUG)
 	EndIf
 
-	If $g_bDebugSetLogTrain Then SetLog("Checking Overview for full army [!] " & $Pixel & ", " & _GetPixelColor(40, 150 + $g_iMidOffsetY, True), $COLOR_DEBUG)
-	If $Pixel Then
+	If $g_bDebugSetLogTrain Then SetLog("Checking Overview for full army [!] " & $IsAfull)
+	If $IsAfull Then
 		$g_bFullArmy = True
 	EndIf
 
-	$g_bCanRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 10, True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) And _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5])
+	$g_bCanRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) And _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 30, True), Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5])
 	SetDebugLog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
 
 	If $bCloseArmyWindow Then

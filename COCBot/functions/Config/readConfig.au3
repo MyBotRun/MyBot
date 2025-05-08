@@ -688,7 +688,7 @@ Func ReadConfig_600_12()
 
 	For $i = 0 To $eTroopCount + $g_iCustomDonateConfigs - 1
 		Local $sIniName = ""
-		If $i >= $eTroopBarbarian And $i <= $eTroopDruid Then
+		If $i >= $eTroopBarbarian And $i <= $eTroopFurnace Then
 			$sIniName = StringReplace($g_asTroopNamesPlural[$i], " ", "")
 		ElseIf $i = $eCustomA Then
 			$sIniName = "CustomA"
@@ -748,8 +748,6 @@ Func ReadConfig_600_13()
 		$g_abDonateHours[$i] = ($g_abDonateHours[$i] = "1")
 	Next
 	$g_iCmbDonateFilter = Int(IniRead($g_sProfileConfigPath, "donate", "cmbFilterDonationsCC", 0))
-	$g_iDonateSkipNearFullPercent = Int(IniRead($g_sProfileConfigPath, "donate", "SkipDonateNearFulLTroopsPercentual", 90))
-	$g_bDonateSkipNearFullEnable = (IniRead($g_sProfileConfigPath, "donate", "SkipDonateNearFulLTroopsEnable", "1") = "1")
 	IniReadS($g_bUseCCBalanced, $g_sProfileConfigPath, "donate", "BalanceCC", False, "Bool")
 	IniReadS($g_iCCDonated, $g_sProfileConfigPath, "donate", "BalanceCCDonated", 1, "int")
 	IniReadS($g_iCCReceived, $g_sProfileConfigPath, "donate", "BalanceCCReceived", 1, "int")
@@ -1333,10 +1331,9 @@ Func ReadConfig_SwitchAccounts()
 		$g_bChkSwitchAcc = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "0") = "1"
 		$g_bChkSuperCellID = IniRead($sSwitchAccFile, "SwitchAccount", "SuperCellID", "0") = "1"
 		$g_bChkSharedPrefs = IniRead($sSwitchAccFile, "SwitchAccount", "SharedPrefs", "0") = "1"
-		$g_bChkSmartSwitch = IniRead($sSwitchAccFile, "SwitchAccount", "SmartSwitch", "0") = "1"
 		$g_bDonateLikeCrazy = IniRead($sSwitchAccFile, "SwitchAccount", "DonateLikeCrazy", "0") = "1"
 		$g_iTotalAcc = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", "-1"))
-		$g_iTrainTimeToSkip = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TrainTimeToSkip", "1"))
+		IniWrite($sSwitchAccFile, "SwitchAccount", "CmbMaxInARow", $g_iCmbMaxInARow)
 		For $i = 1 To 8
 			$g_abAccountNo[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, "") = "1"
 			$g_asProfileName[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, "")
@@ -1382,8 +1379,8 @@ Func ReadConfig_600_52_2()
 	IniReadS($g_iTotalSpellValue, $g_sProfileConfigPath, "Spells", "SpellFactory", 0, "int")
 	$g_iTotalSpellValue = Int($g_iTotalSpellValue)
 	; DoubleTrain - Demen
-	$g_bDoubleTrain = (IniRead($g_sProfileConfigPath, "troop", "DoubleTrain", "0") = "1")
-	$g_bPreciseArmy = (IniRead($g_sProfileConfigPath, "troop", "PreciseArmy", "0") = "1")
+	$g_bDoubleTrain = 0
+	$g_bPreciseArmy = 0
 EndFunc   ;==>ReadConfig_600_52_2
 
 Func ReadConfig_600_54()
@@ -1416,18 +1413,15 @@ EndFunc   ;==>ReadConfig_600_56
 Func ReadConfig_641_1()
 	; <><><><> Attack Plan / Train Army / Options <><><><>
 	IniReadS($g_bCloseWhileTrainingEnable, $g_sProfileConfigPath, "other", "chkCloseWaitEnable", True, "Bool")
+	IniReadS($g_iAttackconsecutiveMin, $g_sProfileConfigPath, "other", "AttackconsecutiveMin", $g_iAttackconsecutiveMin, "Int")
+	IniReadS($g_iAttackconsecutiveMax, $g_sProfileConfigPath, "other", "AttackconsecutiveMax", $g_iAttackconsecutiveMax, "Int")
+	IniReadS($g_iCloseMinimumTimeMin, $g_sProfileConfigPath, "other", "MinimumTimeToCloseMin", $g_iCloseMinimumTimeMin, "int")
+	IniReadS($g_iCloseMinimumTimeMax, $g_sProfileConfigPath, "other", "MinimumTimeToCloseMax", $g_iCloseMinimumTimeMax, "int")
 	IniReadS($g_bCloseWithoutShield, $g_sProfileConfigPath, "other", "chkCloseWaitTrain", False, "Bool")
 	IniReadS($g_bCloseEmulator, $g_sProfileConfigPath, "other", "btnCloseWaitStop", False, "Bool")
 	IniReadS($g_bSuspendComputer, $g_sProfileConfigPath, "other", "btnCloseWaitSuspendComputer", False, "Bool")
-	IniReadS($g_bCloseRandom, $g_sProfileConfigPath, "other", "btnCloseWaitStopRandom", False, "Bool")
-	IniReadS($g_bCloseExactTime, $g_sProfileConfigPath, "other", "btnCloseWaitExact", False, "Bool")
-	IniReadS($g_bCloseRandomTime, $g_sProfileConfigPath, "other", "btnCloseWaitRandom", True, "Bool")
-	IniReadS($g_iCloseRandomTimePercent, $g_sProfileConfigPath, "other", "CloseWaitRdmPercent", 10, "int")
-	IniReadS($g_iCloseMinimumTime, $g_sProfileConfigPath, "other", "MinimumTimeToClose", 2, "int")
 	IniReadS($g_iTrainClickDelay, $g_sProfileConfigPath, "other", "TrainITDelay", 100, "int")
 	IniReadS($g_bTrainAddRandomDelayEnable, $g_sProfileConfigPath, "other", "chkAddIdleTime", $g_bTrainAddRandomDelayEnable, "Bool")
-	IniReadS($g_iTrainAddRandomDelayMin, $g_sProfileConfigPath, "other", "txtAddDelayIdlePhaseTimeMin", $g_iTrainAddRandomDelayMin, "Int")
-	IniReadS($g_iTrainAddRandomDelayMax, $g_sProfileConfigPath, "other", "txtAddDelayIdlePhaseTimeMax", $g_iTrainAddRandomDelayMax, "Int")
 EndFunc   ;==>ReadConfig_641_1
 
 Func IniReadS(ByRef $variable, $PrimaryInputFile, $section, $key, $defaultvalue, $valueType = Default)

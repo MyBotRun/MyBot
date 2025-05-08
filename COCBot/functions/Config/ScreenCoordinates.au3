@@ -40,15 +40,15 @@ Global $aEndFightSceneBtn[4] = [429, 529 + $g_iMidOffsetY, 0xE1F989, 20] ; Victo
 Global $aEndFightSceneAvl[4] = [241, 196 + $g_iMidOffsetY, 0xFFF098, 20] ; Victory or defeat scene left side ribbon = light gold
 Global $aEndFightSceneReportGold = $aEndFightSceneAvl ; Missing... TripleM ???
 Global $aReturnHomeButton[4] = [430, 566 + $g_iMidOffsetY, 0x6CBB1F, 15] ; Return Home Button, End Battle Screen
-Global $aRewardButton[4] = [430, 573 + $g_iMidOffsetY, 0x6CBB1F, 15] ; Claim Reward Button, End Battle Screen
+Global $aRewardButton[4] = [430, 573 + $g_iMidOffsetY, 0x6BBF23, 15] ; Claim Reward Button, End Battle Screen
 Global $aChatTab[4] = [392, 290 + $g_iMidOffsetY, 0xF3AB28, 20] ; Chat Window Open, Main Screen
 Global $aChatTab2[4] = [391, 310 + $g_iMidOffsetY, 0xFFFFFF, 20] ; Chat Window Open, Main Screen
 Global $aChatTab3[4] = [392, 335 + $g_iMidOffsetY, 0xEA8A3B, 20] ; Chat Window Open, Main Screen
-Global $aArmyCampSize[2] = [153, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
+Global $aArmyCampSize[2] = [393, 212 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Size/Total Size
 Global $aSiegeMachineSize[2] = [707, 168 + $g_iMidOffsetY] ; Training Window, Overview screen, Current Number/Total Number
-Global $aArmySpellSize[2] = [143, 296 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
-Global $g_aArmyCCSpellSize[2] = [461, 428 + $g_iMidOffsetY] ; Training Window, Overview Screen, Current CC Spell number/total cc spell capacity
-Global $aArmyCCRemainTime[2] = [730, 526 + $g_iMidOffsetY] ; Training Window Overviewscreen, Minutes & Seconds remaining till can request again
+Global $aArmySpellSize[2] = [399, 321 + $g_iMidOffsetY] ; Training Window Overviewscreen, current number/total capacity
+Global $g_aArmyCCSpellSize[2] = [475, 436 + $g_iMidOffsetY] ; Training Window, Overview Screen, Current CC Spell number/total cc spell capacity
+Global $aArmyCCRemainTime[2] = [780, 470 + $g_iMidOffsetY] ; Training Window Overviewscreen, Minutes & Seconds remaining till can request again
 Global $aIsCampFull[4] = [82, 177 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full
 Global $aBuildersDigits[2] = [424, 21] ; Main Screen, Free/Total Builders
 Global $aBuildersDigitsBuilderBase[2] = [0, 21] ; Main Screen on Builders Base Free/Total Builders
@@ -67,7 +67,8 @@ Global $aIsGemWindow1[4] = [608, 240 + $g_iMidOffsetY, 0xEB1617, 20] ; Main Scre
 Global $aIsGemWindow2[4] = [610, 246 + $g_iMidOffsetY, 0xCD161A, 20] ; Main Screen, pixel below Red X to close gem window
 Global $aIsGemWindow3[4] = [625, 246 + $g_iMidOffsetY, 0xCE1519, 20] ; Main Screen, pixel below Red X to close gem window
 Global $aIsGemWindow4[4] = [640, 246 + $g_iMidOffsetY, 0xCD151C, 20] ; Main Screen, pixel below Red X to close gem window
-Global $aIsTrainPgChk1[4] = [760, 120 + $g_iMidOffsetY, 0xFF8D95, 10] ; Main Screen, Train page open - left upper corner of x button. Updated 16.0.4
+Global $aIsTrainPgChk1[4] = [785, 146 + $g_iMidOffsetY, 0xFF8D95, 15] ; Main Screen, Train page open - left upper corner of x button. Updated 17.126.6
+Global $aIsTrainPgChk2[4] = [785, 146 + $g_iMidOffsetY, 0x80474B, 15] ; Main Screen, Train page open with Train bars - left upper corner of x button. Updated 17.126.6
 Global $aRtnHomeCloud1[4] = [56, 592 + $g_iBottomOffsetY, 0x0A223F, 15] ; Cloud Screen, during search, blue pixel in left eye
 Global $aRtnHomeCloud2[4] = [72, 592 + $g_iBottomOffsetY, 0x103F7E, 15] ; Cloud Screen, during search, blue pixel in right eye
 Global $aDetectLang[2] = [16, 634 + $g_iBottomOffsetY] ; Detect Language, bottom left Attack button must read "Attack"
@@ -85,8 +86,8 @@ Global $aCheckTopProfile2[4] = [160, 455 + $g_iMidOffsetY, 0x4E4D79, 5]
 
 Global $aIsTabOpen[4] = [0, 145 + $g_iMidOffsetY, 0xECECE5, 25] ;Check if specific Tab is opened, X Coordinate is a dummy
 
-Global $aReceivedTroops[5] = [567, 200 + $g_iMidOffsetY, 0xFFFFFF, 20, 60] ; Y of You have received blabla from xx!
-Global $aReceivedTroopsOCR[5] = [400, 158 + $g_iMidOffsetY, 0xFFFFFF, 20, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroops[5] = [360, 150 + $g_iMidOffsetY, 0xFFFFFF, 20, 20] ; Y of You have received blabla from xx!
+Global $aReceivedTroopsOCR[5] = [485, 200 + $g_iMidOffsetY, 0xFFFFFF, 20, 25] ; Y of You have received blabla from xx!
 Global $aReceivedTroopsDouble[5] = [380, 210 + $g_iMidOffsetY, 0xFFFFFF, 20, 15] ; Y of You have received blabla from xx!
 Global $aReceivedTroopsTab[5] = [342, 120 + $g_iMidOffsetY, 0xFFFFFF, 20, 25] ; Y of You have received blabla from xx!
 Global $aReceivedTroopsTreasury[5] = [560, 140 + $g_iMidOffsetY, 0xFFFFFF, 20, 30] ; Y of You have received blabla from xx!
@@ -121,8 +122,8 @@ Global $aTroopIsDeployed[4] = [0, 0, 0x404040, 20] ; Attackbar Remain Check X an
 Global Const $aIsAttackPage[4] = [50, 548 + $g_iBottomOffsetY, 0xD10D0E, 20] ; red button "end battle" - left portion
 Global Const $aIsAttackPage2[4] = [50, 548 + $g_iBottomOffsetY, 0x5E0606, 20] ; red button "end battle" hidden by empty siege - left portion
 
-; 1 - Dark Gray : Castle filled/No Castle | 2 - Light Green : Available or Already made | 3 - White : Available or Castle filled/No Castle
-Global $aRequestTroopsAO[6] = [714, 538 + $g_iMidOffsetY, 0x919191, 0x6DB630, 0xFFFFFF, 25] ; Button Request Troops in Army Overview  (x,y, Gray - Full/No Castle, Green - Available or Already, White - Available or Full)
+; 1 - Gray : Castle filled/No Castle | 2 - Light Green : Available or Already made | 3 - White : Available or Castle filled/No Castle
+Global $aRequestTroopsAO[6] = [746, 463 + $g_iMidOffsetY, 0xD0D0D0, 0xBBE988, 0xFFFFFF, 25] ; Button Request Troops in Army Overview  (x,y, Gray - Full/No Castle, Green - Available And Already, White - Available or Full)
 
 ;attackreport
 Global Const $aAtkRprtDECheck[4] = [459, 372 + $g_iMidOffsetY, 0x2F1F37, 20] ; August 23 update
@@ -180,6 +181,4 @@ Global Const $aPersonalChallengeCancelBtn[4] = [288, 391 + $g_iMidOffsetY, 0xFFC
 Global Const $aPersonalChallengeOkBtn[4] = [500, 391 + $g_iMidOffsetY, 0xDFF887, 20] ; Personal Challenge Window - Okay button at Storage Full msg
 
 ;BB Attack 2.0
-Global $aBBGoldEnd[4] = [632, 400 + $g_iMidOffsetY, 0xFEFE4F, 20] ; Gold At the end Of BB attack
-Global $aOkayButton[2] = [430, 540 + $g_iMidOffsetY]    ; Return Home after BB attack
-Global $aOkayButtonRND[4] = [372, 530 + $g_iMidOffsetY, 484, 565 + $g_iMidOffsetY]    ; Okay button after BB attack, RND
+Global $aBBGoldEnd[4] = [632, 406 + $g_iMidOffsetY, 0xFFE649, 20] ; Gold At the end Of BB attack

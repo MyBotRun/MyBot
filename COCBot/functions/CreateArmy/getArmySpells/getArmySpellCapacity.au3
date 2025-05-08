@@ -38,11 +38,11 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 
 	; Verify spell current and total capacity
 	If $g_iTotalSpellValue > 0 Then ; only use this code if the user had input spells to brew ... and assign the spells quantity
-		$sSpellsInfo = getArmyCampCap($aArmySpellSize[0], $aArmySpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
+		$sSpellsInfo = getSpellsCap($aArmySpellSize[0], $aArmySpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 
 		$iCount = 0 ; reset OCR loop counter
 		While $sSpellsInfo = "" ; In case the CC donations received msg are blocking, need to keep checking numbers till valid
-			$sSpellsInfo = getArmyCampCap($aArmySpellSize[0], $aArmySpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
+			$sSpellsInfo = getSpellsCap($aArmySpellSize[0], $aArmySpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 			$iCount += 1
 			If $iCount > 10 Then ExitLoop ; try reading 30 times for 250+150ms OCR for 4 sec
 			If _Sleep($DELAYCHECKARMYCAMP5) Then Return ; Wait 250ms

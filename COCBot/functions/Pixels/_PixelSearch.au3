@@ -44,7 +44,7 @@ Func _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $sColor, $iColorVariation, $
 	Return 0
 EndFunc   ;==>_PixelSearch
 
-Func WaitForClanMessage($bType, $bTopCoords = 0, $bBottomCoords = 0)
+Func WaitForClanMessage($bType, $bTopCoords = 0, $bBottomCoords = 0, $DonateWOpen = True)
 	Switch $bType
 		Case "DonatedTroops"
 			If IsArray(_PixelSearch($aReceivedTroopsOCR[0], $aReceivedTroopsOCR[1], $aReceivedTroopsOCR[0], $aReceivedTroopsOCR[1] + $aReceivedTroopsOCR[4], Hex($aReceivedTroopsOCR[2], 6), $aReceivedTroopsOCR[3], True)) Then
@@ -171,9 +171,10 @@ Func WaitForClanMessage($bType, $bTopCoords = 0, $bBottomCoords = 0)
 				If _Sleep($DELAYRUNBOT1) Then Return
 			EndIf
 		Case "Donate"
-			Local $aReceivedTroopsDonate[5] = [333, 100, 0xFFFFFF, 15, 215]
+			Local $aReceivedTroopsDonate[5] = [356, 100, 0xFFFFFF, 15, 215]
 			If $bTopCoords > 90 Then $aReceivedTroopsDonate[1] = $bTopCoords
 			If $bTopCoords > 340 Then Return
+			If $DonateWOpen Then $aReceivedTroopsDonate[0] -= 46
 			Select
 				Case $bTopCoords > 90 And $bBottomCoords = 0
 					$aReceivedTroopsDonate[4] = Abs($aReceivedTroopsDonate[4] - ($bTopCoords - 100))

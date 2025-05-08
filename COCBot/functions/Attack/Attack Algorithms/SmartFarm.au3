@@ -554,7 +554,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	SetDebugLog("Giants : " & $GiantComp & "  , per side: " & ($GiantComp / $nbSides) & " / deploy points per side: " & $g_iSlotsGiants)
 
 	If $g_bCustomDropOrderEnable Then
-		Local $listInfoDeploy[47][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+		Local $listInfoDeploy[48][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 				[MatchTroopDropName(1), MatchSidesDrop(1), MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 				[MatchTroopDropName(2), MatchSidesDrop(2), MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 				[MatchTroopDropName(3), MatchSidesDrop(3), MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -600,9 +600,10 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(43), MatchSidesDrop(43), MatchTroopWaveNb(43), 1, MatchSlotsPerEdge(43)], _
 				[MatchTroopDropName(44), MatchSidesDrop(44), MatchTroopWaveNb(44), 1, MatchSlotsPerEdge(44)], _
 				[MatchTroopDropName(45), MatchSidesDrop(45), MatchTroopWaveNb(45), 1, MatchSlotsPerEdge(45)], _
-				[MatchTroopDropName(46), MatchSidesDrop(46), MatchTroopWaveNb(46), 1, MatchSlotsPerEdge(46)]]
+				[MatchTroopDropName(46), MatchSidesDrop(46), MatchTroopWaveNb(46), 1, MatchSlotsPerEdge(46)], _
+				[MatchTroopDropName(47), MatchSidesDrop(47), MatchTroopWaveNb(47), 1, MatchSlotsPerEdge(47)]]
 	Else
-		Local $listInfoDeploy[47][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[48][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
 				, [$eIceH, $nbSides, 1, 1, 2] _
 				, [$eIceG, $nbSides, 1, 1, 2] _
@@ -647,6 +648,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eHunt, $nbSides, 1, 1, 0] _
 				, [$eAppWard, $nbSides, 1, 1, 1] _
 				, [$eDruid, $nbSides, 1, 1, 1] _
+				, [$eFurn, $nbSides, 1, 1, 1] _
 				, ["CC", 1, 1, 1, 1] _
 				, ["HEROES", 1, 2, 1, 1]]
 	EndIf
@@ -671,7 +673,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 			If $g_bDebugSetLog Then SetDebugLog("No Wast time... exit, no troops usable left", $COLOR_DEBUG)
 			ExitLoop ;Check remaining quantities
 		EndIf
-		For $i = $eBarb To $eAppWard
+		For $i = $eBarb To $eFurn
 			; launch remaining troops
 			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
 				CheckHeroesHealth()

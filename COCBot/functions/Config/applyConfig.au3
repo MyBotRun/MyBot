@@ -862,9 +862,6 @@ Func ApplyConfig_600_13($TypeReadSave)
 				GUICtrlSetState($g_ahChkDonateHours[$i], $g_abDonateHours[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
 			_GUICtrlComboBox_SetCurSel($g_hCmbFilterDonationsCC, $g_iCmbDonateFilter)
-			GUICtrlSetState($g_hChkSkipDonateNearFullTroopsEnable, $g_bDonateSkipNearFullEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtSkipDonateNearFullTroopsPercentage, $g_iDonateSkipNearFullPercent)
-			chkskipDonateNearFulLTroopsEnable()
 
 			GUICtrlSetState($g_hChkUseCCBalanced, $g_bUseCCBalanced = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbCCDonated, $g_iCCDonated - 1)
@@ -878,8 +875,6 @@ Func ApplyConfig_600_13($TypeReadSave)
 				$g_abDonateHours[$i] = (GUICtrlRead($g_ahChkDonateHours[$i]) = $GUI_CHECKED)
 			Next
 			$g_iCmbDonateFilter = _GUICtrlComboBox_GetCurSel($g_hCmbFilterDonationsCC)
-			$g_bDonateSkipNearFullEnable = (GUICtrlRead($g_hChkSkipDonateNearFullTroopsEnable) = $GUI_CHECKED)
-			$g_iDonateSkipNearFullPercent = Number(GUICtrlRead($g_hTxtSkipDonateNearFullTroopsPercentage))
 			$g_bUseCCBalanced = (GUICtrlRead($g_hChkUseCCBalanced) = $GUI_CHECKED)
 			$g_iCCDonated = _GUICtrlComboBox_GetCurSel($g_hCmbCCDonated) + 1
 			$g_iCCReceived = _GUICtrlComboBox_GetCurSel($g_hCmbCCReceived) + 1
@@ -2218,7 +2213,6 @@ Func ApplyConfig_600_35_2($TypeReadSave)
 			GUICtrlSetState($g_hChkSwitchAcc, $g_bChkSwitchAcc ? $GUI_CHECKED : $GUI_UNCHECKED)
 			If $g_bChkSuperCellID Then GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_CHECKED)
 			If $g_bChkSharedPrefs Then GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_CHECKED)
-			GUICtrlSetState($g_hChkSmartSwitch, $g_bChkSmartSwitch ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDonateLikeCrazy, $g_bDonateLikeCrazy ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbTotalAccount, $g_iTotalAcc - 1)
 			For $i = 0 To 7
@@ -2226,7 +2220,7 @@ Func ApplyConfig_600_35_2($TypeReadSave)
 				_GUICtrlComboBox_SetCurSel($g_ahCmbProfile[$i], _GUICtrlComboBox_FindStringExact($g_ahCmbProfile[$i], $g_asProfileName[$i]))
 				GUICtrlSetState($g_ahChkDonate[$i], $g_abDonateOnly[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
-			_GUICtrlComboBox_SetCurSel($g_hCmbTrainTimeToSkip, $g_iTrainTimeToSkip)
+			_GUICtrlComboBox_SetCurSel($g_hCmbMaxInARow, $g_iCmbMaxInARow)
 			_cmbSwitchAcc(False)
 
 		Case "Save"
@@ -2234,7 +2228,6 @@ Func ApplyConfig_600_35_2($TypeReadSave)
 			$g_bChkSwitchAcc = (GUICtrlRead($g_hChkSwitchAcc) = $GUI_CHECKED)
 			$g_bChkSuperCellID = (GUICtrlRead($g_hRadSwitchSuperCellID) = $GUI_CHECKED)
 			$g_bChkSharedPrefs = (GUICtrlRead($g_hRadSwitchSharedPrefs) = $GUI_CHECKED)
-			$g_bChkSmartSwitch = (GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED)
 			$g_bDonateLikeCrazy = (GUICtrlRead($g_hChkDonateLikeCrazy) = $GUI_CHECKED)
 			$g_iTotalAcc = _GUICtrlComboBox_GetCurSel($g_hCmbTotalAccount) + 1 ; at least 2 accounts needed
 			For $i = 0 To 7
@@ -2242,7 +2235,7 @@ Func ApplyConfig_600_35_2($TypeReadSave)
 				$g_asProfileName[$i] = GUICtrlRead($g_ahCmbProfile[$i])
 				$g_abDonateOnly[$i] = (GUICtrlRead($g_ahChkDonate[$i]) = $GUI_CHECKED)
 			Next
-			$g_iTrainTimeToSkip = _GUICtrlComboBox_GetCurSel($g_hCmbTrainTimeToSkip)
+			$g_iCmbMaxInARow = _GUICtrlComboBox_GetCurSel($g_hCmbMaxInARow)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_35_2
 
@@ -2420,33 +2413,23 @@ Func ApplyConfig_641_1($TypeReadSave)
 				GUICtrlSetState($g_hChkCloseWhileTraining, $GUI_CHECKED)
 				_GUI_Value_STATE("ENABLE", $groupCloseWhileTraining)
 				GUICtrlSetState($g_hLblCloseWaitingTroops, $GUI_ENABLE)
-				GUICtrlSetState($g_hCmbMinimumTimeClose, $GUI_ENABLE)
 				GUICtrlSetState($g_hLblSymbolWaiting, $GUI_ENABLE)
 				GUICtrlSetState($g_hLblWaitingInMinutes, $GUI_ENABLE)
+				GUICtrlSetData($g_hCmbAttackconsecutiveMin, $g_iAttackconsecutiveMin)
+				GUICtrlSetData($g_hCmbAttackconsecutiveMax, $g_iAttackconsecutiveMax)
+				_cmbAttackconsecutive()
+				GUICtrlSetData($g_hCmbMinimumTimeCloseMin, $g_iCloseMinimumTimeMin)
+				GUICtrlSetData($g_hCmbMinimumTimeCloseMax, $g_iCloseMinimumTimeMax)
 			Else
 				GUICtrlSetState($g_hChkCloseWhileTraining, $GUI_UNCHECKED)
 				_GUI_Value_STATE("DISABLE", $groupCloseWhileTraining)
 				GUICtrlSetState($g_hLblCloseWaitingTroops, $GUI_DISABLE)
-				GUICtrlSetState($g_hCmbMinimumTimeClose, $GUI_DISABLE)
 				GUICtrlSetState($g_hLblSymbolWaiting, $GUI_DISABLE)
 				GUICtrlSetState($g_hLblWaitingInMinutes, $GUI_DISABLE)
 			EndIf
 			GUICtrlSetState($g_hChkCloseWithoutShield, $g_bCloseWithoutShield ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCloseEmulator, $g_bCloseEmulator ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkSuspendComputer, $g_bSuspendComputer ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkRandomClose, $g_bCloseRandom ? $GUI_CHECKED : $GUI_UNCHECKED)
-			btnCloseWaitStopRandom()
-			If $g_bCloseExactTime Then
-				GUICtrlSetState($g_hRdoCloseWaitExact, $GUI_CHECKED)
-				GUICtrlSetState($g_hRdoCloseWaitRandom, $GUI_UNCHECKED)
-			EndIf
-			If $g_bCloseRandomTime Then
-				GUICtrlSetState($g_hRdoCloseWaitRandom, $GUI_CHECKED)
-				GUICtrlSetState($g_hRdoCloseWaitExact, $GUI_UNCHECKED)
-			EndIf
-			_GUICtrlComboBox_SetCurSel($g_hCmbCloseWaitRdmPercent, $g_iCloseRandomTimePercent)
-			btnCloseWaitRandom()
-			GUICtrlSetData($g_hCmbMinimumTimeClose, $g_iCloseMinimumTime)
 			; Train click timing
 			GUICtrlSetData($g_hSldTrainITDelay, $g_iTrainClickDelay)
 			sldTrainITDelay()
@@ -2459,14 +2442,13 @@ Func ApplyConfig_641_1($TypeReadSave)
 		Case "Save"
 			; Training idle time
 			$g_bCloseWhileTrainingEnable = (GUICtrlRead($g_hChkCloseWhileTraining) = $GUI_CHECKED)
+			$g_iAttackconsecutiveMin = Int(GUICtrlRead($g_hCmbAttackconsecutiveMin))
+			$g_iAttackconsecutiveMax = Int(GUICtrlRead($g_hCmbAttackconsecutiveMax))
+			$g_iCloseMinimumTimeMin = GUICtrlRead($g_hCmbMinimumTimeCloseMin)
+			$g_iCloseMinimumTimeMax = GUICtrlRead($g_hCmbMinimumTimeCloseMax)
 			$g_bCloseWithoutShield = (GUICtrlRead($g_hChkCloseWithoutShield) = $GUI_CHECKED)
 			$g_bCloseEmulator = (GUICtrlRead($g_hChkCloseEmulator) = $GUI_CHECKED)
 			$g_bSuspendComputer = (GUICtrlRead($g_hChkSuspendComputer) = $GUI_CHECKED)
-			$g_bCloseRandom = (GUICtrlRead($g_hChkRandomClose) = $GUI_CHECKED)
-			$g_bCloseExactTime = (GUICtrlRead($g_hRdoCloseWaitExact) = $GUI_CHECKED)
-			$g_bCloseRandomTime = (GUICtrlRead($g_hRdoCloseWaitRandom) = $GUI_CHECKED)
-			$g_iCloseRandomTimePercent = _GUICtrlComboBox_GetCurSel($g_hCmbCloseWaitRdmPercent)
-			$g_iCloseMinimumTime = GUICtrlRead($g_hCmbMinimumTimeClose)
 			; Train click timing
 			$g_iTrainClickDelay = GUICtrlRead($g_hSldTrainITDelay)
 			; Training add random delay

@@ -191,6 +191,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 		Return True ; return true as if we really started an upgrade
 	Else
 		Click(630, 545 + $g_iMidOffsetY, 1, 120, "#0202") ; Everything is good - Click the upgrade button
+		If _Sleep(500) Then Return
 		If isGemOpen(True) = False Then ; check for gem window
 			; success
 			SetLog("Upgrade " & $name & " in your laboratory started with success...", $COLOR_SUCCESS)
@@ -293,7 +294,7 @@ Func LabNextPage($iCurPage, $iPages, $iYMidPoint)
 	SetDebugLog("Drag to next full page.")
 	If $iCurPage = 4 Then
 		SetDebugLog("Drag to last page.")
-		ClickDrag(680, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 455, $iYMidPoint, 300)
+		ClickDrag(680, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 350, $iYMidPoint, 300)
 	Else
 		SetDebugLog("Drag to next full page.")
 		ClickDrag(720, Random($iYMidPoint - 50, $iYMidPoint + 50, 1), 83, $iYMidPoint, 300)

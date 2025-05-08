@@ -268,11 +268,11 @@ Func ApplyScriptDB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
 	Local $iSlot = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
-	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 	Local $aiCSVWardenMode = -1
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
@@ -308,7 +308,7 @@ Func ApplyScriptDB()
 		lblTotalCountSiege()
 		SetLog("CSV Train settings applied", $COLOR_SUCCESS)
 	EndIf
-			
+
 	If IsArray($aiCSVSieges) And $iApplySieges > 0 Then
 		Local $aMachine = _ArrayMaxIndex($aiCSVSieges)
 		_GUICtrlComboBox_SetCurSel($g_hCmbDBSiege, $aMachine + 1)
@@ -354,14 +354,14 @@ Func ApplyScriptDB()
 		GUICtrlSetState($g_hChkDBChampionAttack, $aiCSVHeros[$eHeroRoyalChampion][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBChampionAttack))
 		SetLog("CSV 'Attack with' Hero settings applied", $COLOR_SUCCESS)
 	EndIf
-	
-	If $aiCSVWardenMode >= 0 And $aiCSVWardenMode < 3 Then;	0 = Ground / 1 = Air / 2 = Default
+
+	If $aiCSVWardenMode >= 0 And $aiCSVWardenMode < 3 Then ;	0 = Ground / 1 = Air / 2 = Default
 		_GUICtrlComboBox_SetCurSel($g_hCmbDBWardenMode, $aiCSVWardenMode)
 		SetLog("CSV 'Warden Mode' settings applied", $COLOR_SUCCESS)
 	Else
 		If $aiCSVWardenMode <> -1 Then SetLog("CSV 'Warden Mode' settings out of bounds", $COLOR_ERROR)
 	EndIf
-	
+
 	If $sCSVCCReq <> "" Then
 		GUICtrlSetState($g_hChkDBDropCC, $GUI_CHECKED)
 		SetLog("CSV 'Attack with' CC settings applied", $COLOR_SUCCESS)
@@ -377,14 +377,14 @@ Func ApplyScriptDB()
 		Next
 		If $iApply > 0 Then SetLog("CSV 'Attack with' Spell settings applied", $COLOR_SUCCESS)
 	EndIf
-	
+
 	For $t = 0 To UBound($sCSVCCSpl) - 1
 		If $sCSVCCSpl[$t] = 1 Then $iSlot += 1
 	Next
 	If $iSlot > 0 Then
 		GUICtrlSetState($g_hChkRequestType_Spells, $GUI_CHECKED)
 		For $x = 0 To UBound($g_ahCmbClanCastleSpell) - 1
-			_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$x], 0);Reset To Any
+			_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$x], 0) ;Reset To Any
 		Next
 		chkRequestCountCC()
 	EndIf
@@ -392,7 +392,7 @@ Func ApplyScriptDB()
 		If $i > $iSlot - 1 Then ExitLoop
 		For $z = 0 To UBound($sCSVCCSpl) - 1
 			If $sCSVCCSpl[$z] = 1 And $z <> $ToIgnore[$z] Then
-				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $z+1)
+				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $z + 1)
 				If $ToIgnore[$z] = -1 Then $ToIgnore[$z] = $z
 				ExitLoop
 			EndIf
@@ -426,11 +426,11 @@ Func ApplyScriptAB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
 	Local $iSlot = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0]
-	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
-	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 	Local $aiCSVWardenMode = -1
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
@@ -512,8 +512,8 @@ Func ApplyScriptAB()
 		GUICtrlSetState($g_hChkABChampionAttack, $aiCSVHeros[$eHeroRoyalChampion][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABChampionAttack))
 		SetLog("CSV 'Attack with' Hero settings applied", $COLOR_SUCCESS)
 	EndIf
-	
-	If $aiCSVWardenMode >= 0 And $aiCSVWardenMode < 3 Then;	0 = Ground / 1 = Air / 2 = Default
+
+	If $aiCSVWardenMode >= 0 And $aiCSVWardenMode < 3 Then ;	0 = Ground / 1 = Air / 2 = Default
 		_GUICtrlComboBox_SetCurSel($g_hCmbABWardenMode, $aiCSVWardenMode)
 		SetLog("CSV 'Warden Mode' settings applied", $COLOR_SUCCESS)
 	Else
@@ -535,14 +535,14 @@ Func ApplyScriptAB()
 		Next
 		If $iApply > 0 Then SetLog("CSV 'Attack with' Spell settings applied", $COLOR_SUCCESS)
 	EndIf
-	
+
 	For $t = 0 To UBound($sCSVCCSpl) - 1
 		If $sCSVCCSpl[$t] = 1 Then $iSlot += 1
 	Next
 	If $iSlot > 0 Then
 		GUICtrlSetState($g_hChkRequestType_Spells, $GUI_CHECKED)
 		For $x = 0 To UBound($g_ahCmbClanCastleSpell) - 1
-			_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$x], 0);Reset To Any
+			_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$x], 0) ;Reset To Any
 		Next
 		chkRequestCountCC()
 	EndIf
@@ -550,7 +550,7 @@ Func ApplyScriptAB()
 		If $i > $iSlot - 1 Then ExitLoop
 		For $z = 0 To UBound($sCSVCCSpl) - 1
 			If $sCSVCCSpl[$z] = 1 And $z <> $ToIgnore[$z] Then
-				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $z+1)
+				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $z + 1)
 				If $ToIgnore[$z] = -1 Then $ToIgnore[$z] = $z
 				ExitLoop
 			EndIf
@@ -582,22 +582,22 @@ EndFunc   ;==>ApplyScriptAB
 
 Func cmbScriptRedlineImplDB()
 	$g_aiAttackScrRedlineRoutine[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptRedlineImplDB)
-    If $g_aiAttackScrRedlineRoutine[$DB] = 3 then
-        GUICtrlSetState($g_hCmbScriptDroplineDB, $GUI_HIDE)
-        $g_aiAttackScrDroplineEdge[$DB] = $DROPLINE_FULL_EDGE_FIXED
-    Else
-        GUICtrlSetState($g_hCmbScriptDroplineDB, $GUI_SHOW)
-    Endif
+	If $g_aiAttackScrRedlineRoutine[$DB] = 3 Then
+		GUICtrlSetState($g_hCmbScriptDroplineDB, $GUI_HIDE)
+		$g_aiAttackScrDroplineEdge[$DB] = $DROPLINE_FULL_EDGE_FIXED
+	Else
+		GUICtrlSetState($g_hCmbScriptDroplineDB, $GUI_SHOW)
+	EndIf
 EndFunc   ;==>cmbScriptRedlineImplDB
 
 Func cmbScriptRedlineImplAB()
 	$g_aiAttackScrRedlineRoutine[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptRedlineImplAB)
-    If $g_aiAttackScrRedlineRoutine[$LB] = 3 then
-        GUICtrlSetState($g_hCmbScriptDroplineAB, $GUI_HIDE)
-        $g_aiAttackScrDroplineEdge[$LB] = $DROPLINE_FULL_EDGE_FIXED
-    Else
-        GUICtrlSetState($g_hCmbScriptDroplineAB, $GUI_SHOW)
-    EndIf
+	If $g_aiAttackScrRedlineRoutine[$LB] = 3 Then
+		GUICtrlSetState($g_hCmbScriptDroplineAB, $GUI_HIDE)
+		$g_aiAttackScrDroplineEdge[$LB] = $DROPLINE_FULL_EDGE_FIXED
+	Else
+		GUICtrlSetState($g_hCmbScriptDroplineAB, $GUI_SHOW)
+	EndIf
 EndFunc   ;==>cmbScriptRedlineImplAB
 
 Func cmbScriptDroplineDB()
@@ -618,9 +618,10 @@ Func AttackNow()
 	$g_aiCurrentSiegeMachines[$eSiegeLogLauncher] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeFlameFlinger] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeBattleDrill] = 1
-	$g_aiAttackAlgorithm[$LB] = 1										; Select Scripted Attack
-	$g_sAttackScrScriptName[$LB] = GuiCtrlRead($g_hCmbScriptNameAB)		; Select Scripted Attack File From The Combo Box, Cos it wasn't refreshing until pressing Start button
-	$g_iMatchMode = $LB													; Select Live Base As Attack Type
+	$g_aiCurrentSiegeMachines[$eSiegeTroopLauncher] = 1
+	$g_aiAttackAlgorithm[$LB] = 1                                        ; Select Scripted Attack
+	$g_sAttackScrScriptName[$LB] = GUICtrlRead($g_hCmbScriptNameAB)        ; Select Scripted Attack File From The Combo Box, Cos it wasn't refreshing until pressing Start button
+	$g_iMatchMode = $LB                                                    ; Select Live Base As Attack Type
 	$g_bRunState = True
 
 	_GUICtrlTab_ClickTab($g_hTabMain, 0)
@@ -640,13 +641,13 @@ Func AttackNow()
 
 	If Not CheckZoomOut("AttackNow", True, False) Then SaveDebugImage("VillageSearchMeasureFailed", False)
 
-	PrepareAttack($g_iMatchMode)										;
+	PrepareAttack($g_iMatchMode)                                        ;
 
 	If _Sleep(1000) Then Return
 
-	Attack()			; Fire xD
+	Attack()            ; Fire xD
 
-	For $i = 0 to 10
+	For $i = 0 To 10
 		CheckHeroesHealth()
 
 		If _Sleep(100) Then Return
@@ -674,6 +675,6 @@ Func AttackNow()
 
 	$g_aiCurrentSiegeMachines = $tempSieges
 	$g_bRunState = $tempbRunState
-	
+
 	SetLog("AttackNow completed!")
 EndFunc   ;==>AttackNow

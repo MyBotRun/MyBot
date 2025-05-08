@@ -271,15 +271,6 @@ Func cmbTotalAcc()
 	Next
 EndFunc   ;==>cmbTotalAcc
 
-Func chkSmartSwitch()
-	If GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_UNCHECKED)
-		GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkSmartSwitch
-
 Func chkAccount($i)
 	If GUICtrlRead($g_ahChkAccount[$i]) = $GUI_CHECKED Then
 		_GUI_Value_STATE("ENABLE", $g_ahCmbProfile[$i] & "#" & $g_ahChkDonate[$i])
@@ -362,7 +353,7 @@ EndFunc   ;==>chkDebugFunc
 Func chkDebugDisableZoomOut()
 	$g_bDebugDisableZoomout = (GUICtrlRead($g_hChkDebugDisableZoomout) = $GUI_CHECKED)
 	SetDebugLog("DebugDisableZoomout " & ($g_bDebugDisableZoomout ? "enabled" : "disabled"))
-EndFunc   ;==>chkDebugDisableZoomout
+EndFunc   ;==>chkDebugDisableZoomOut
 
 Func chkDebugDisableVillageCentering()
 	$g_bDebugDisableVillageCentering = (GUICtrlRead($g_hChkDebugDisableVillageCentering) = $GUI_CHECKED)
@@ -429,14 +420,6 @@ Func btnTestDonateCC()
 
 	SetLog(_PadStringCenter(" Test DonateCC begin (" & $g_sBotVersion & ")", 54, "="), $COLOR_INFO)
 	PrepareDonateCC()
-	$g_iCurrentSpells = 11
-	$g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 1
-	$g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 1
-	$g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 1
-	$g_aiCurrentSiegeMachines[$eSiegeBarracks] = 1
-	$g_aiCurrentSiegeMachines[$eSiegeLogLauncher] = 1
-	$g_aiCurrentSiegeMachines[$eSiegeFlameFlinger] = 1
-	$g_aiCurrentSiegeMachines[$eSiegeBattleDrill] = 1
 	DonateCC(False)
 	SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_INFO)
 
@@ -470,12 +453,12 @@ Func btnTestAttackBar()
 	_GUICtrlTab_ClickTab($g_hTabMain, 0)
 
 	$g_bDebugOcr = True
-    $g_bDebugImageSave = True
+	$g_bDebugImageSave = True
 	$g_bRunState = True
 
 	If MsgBox($MB_YESNO, "Screenshot or Live Image", "Do you want to use a Screenshot instead of a Live Image?") = $IDYES Then
-	 Local $sImageFile = BeginImageTest() ; get image for testing
-	 If $sImageFile = False Then $sImageFile = "Live Screenshot"
+		Local $sImageFile = BeginImageTest() ; get image for testing
+		If $sImageFile = False Then $sImageFile = "Live Screenshot"
 	EndIf
 
 
@@ -484,10 +467,10 @@ Func btnTestAttackBar()
 	Local $avAttackBar = GetAttackBar(False, $DB, True)
 
 	If IsArray($avAttackBar) And UBound($avAttackBar, 1) >= 1 Then
-	SetLog("Found " & UBound($avAttackBar, 1) & " Slots", $COlOR_SUCCESS)
-	For $i = 0 To UBound($avAttackBar, 1) - 1
-		SetLog("- Slot " & $avAttackBar[$i][1] & ": " & $avAttackBar[$i][2] & " " & GetTroopName($avAttackBar[$i][0], $avAttackBar[$i][2]) & " (X: " & $avAttackBar[$i][3] & "|Y: " & $avAttackBar[$i][4] & "|OCR X: " & $avAttackBar[$i][5] & "|OCR Y: " & $avAttackBar[$i][6] & ")", $COLOR_SUCCESS)
-	Next
+		SetLog("Found " & UBound($avAttackBar, 1) & " Slots", $COlOR_SUCCESS)
+		For $i = 0 To UBound($avAttackBar, 1) - 1
+			SetLog("- Slot " & $avAttackBar[$i][1] & ": " & $avAttackBar[$i][2] & " " & GetTroopName($avAttackBar[$i][0], $avAttackBar[$i][2]) & " (X: " & $avAttackBar[$i][3] & "|Y: " & $avAttackBar[$i][4] & "|OCR X: " & $avAttackBar[$i][5] & "|OCR Y: " & $avAttackBar[$i][6] & ")", $COLOR_SUCCESS)
+		Next
 	EndIf
 	SetLog(_PadStringCenter(" End AttackBar Detection ", 54, "="), $COlOR_INFO)
 
@@ -983,7 +966,7 @@ Func btnRunFunction()
 	EndIf
 
 	$g_bRunState = $currentRunState
-EndFunc
+EndFunc   ;==>btnRunFunction
 
 Func btnTestCleanYard()
 	Local $currentRunState = $g_bRunState
@@ -1110,16 +1093,14 @@ Func btnTestUpgradeWindow()
 EndFunc   ;==>btnTestUpgradeWindow
 
 Func btnTestSmartWait()
-    Local $currentRunState = $g_bRunState
-    Local $bCloseWhileTrainingEnable = $g_bCloseWhileTrainingEnable
+	Local $currentRunState = $g_bRunState
+	Local $bCloseWhileTrainingEnable = $g_bCloseWhileTrainingEnable
 
-    $g_bRunState = True
-    $g_bCloseWhileTrainingEnable = True
+	$g_bRunState = True
+	$g_bCloseWhileTrainingEnable = True
 
-    SmartWait4Train(20)
-
-    $g_bRunState = $currentRunState
-    $g_bCloseWhileTrainingEnable = $bCloseWhileTrainingEnable
+	$g_bRunState = $currentRunState
+	$g_bCloseWhileTrainingEnable = $bCloseWhileTrainingEnable
 EndFunc   ;==>btnTestSmartWait
 
 Func btnConsoleWindow()
@@ -1171,7 +1152,7 @@ Func SaveVillageDebugImage()
 	_GDIPlus_GraphicsDrawLine($hGraphic, $ExternalArea[1][0], $ExternalArea[1][1], $ExternalArea[2][0], $ExternalArea[2][1], $hPenLtGreen)
 	_GDIPlus_GraphicsDrawLine($hGraphic, $ExternalArea[1][0], $ExternalArea[1][1], $ExternalArea[3][0], $ExternalArea[3][1], $hPenLtGreen)
 
-	SetLog($ExternalArea[0][0] &  $ExternalArea[0][1] & $ExternalArea[2][0] & $ExternalArea[2][1])
+	SetLog($ExternalArea[0][0] & $ExternalArea[0][1] & $ExternalArea[2][0] & $ExternalArea[2][1])
 
 	;-- DRAW EXTERNAL PERIMETER LINES
 	_GDIPlus_GraphicsDrawLine($hGraphic, $InternalArea[0][0], $InternalArea[0][1], $InternalArea[2][0], $InternalArea[2][1], $hPenDkGreen)
@@ -1214,7 +1195,7 @@ Func SaveVillageDebugImage()
 	_GDIPlus_PenDispose($hPenWhite)
 	_GDIPlus_PenDispose($hPenMagenta)
 
-   _GDIPlus_BrushDispose($hBrush)
+	_GDIPlus_BrushDispose($hBrush)
 
 	_GDIPlus_GraphicsDispose($hGraphic)
 	_GDIPlus_BitmapDispose($EditedImage)
@@ -1224,4 +1205,4 @@ Func SaveVillageDebugImage()
 		ShellExecute($filename)
 	EndIf
 
-EndFunc
+EndFunc   ;==>SaveVillageDebugImage

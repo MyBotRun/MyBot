@@ -1659,6 +1659,19 @@ Func SkipCraftStart($b_ResType = "Gold", $cost = 0, $iCurrentGold = 0, $iCurrent
 		EndIf
 	EndIf
 
+	;   Is Prince Level updated |          Is Prince not max yet          |  Is Upgrade enabled      |               Is Prince not already upgrading
+	If ($g_iPrinceLevel <> -1) And ($g_iPrinceLevel < $g_iMaxPrinceLevel) And $g_bUpgradePrinceEnable And BitAND($g_iHeroUpgradingBit, $eHeroPrince) <> $eHeroPrince Then
+		Local $PrinceFinalCost = ($g_afPrinceUpgCost[$g_iPrinceLevel] * 1000) - (($g_afPrinceUpgCost[$g_iPrinceLevel] * 1000) * Number($g_iBuilderBoostDiscount) / 100)
+		Local $bMinPrinceDarkElixir = Number($iCurrentDE) > ($cost + $PrinceFinalCost + Number($g_iacmdDarkSaveMin))
+		If Not $bMinPrinceDarkElixir Then
+			If $b_ResType = "Dark Elixir" Then
+				SetLog("Prince needs " & _NumberFormat($PrinceFinalCost, True) & " Dark Elixir for next Level", $COLOR_WARNING)
+				SetLog("Skipping", $COLOR_WARNING)
+				Return True
+			EndIf
+		EndIf
+	EndIf
+
 	;   Is King Level updated |          Is King not max yet         |  Is Upgrade enabled     |               Is King not already upgrading
 	If ($g_iKingLevel <> -1) And ($g_iKingLevel < $g_iMaxKingLevel) And $g_bUpgradeKingEnable And BitAND($g_iHeroUpgradingBit, $eHeroKing) <> $eHeroKing Then
 		Local $KingFinalCost = ($g_afKingUpgCost[$g_iKingLevel] * 1000) - (($g_afKingUpgCost[$g_iKingLevel] * 1000) * Number($g_iBuilderBoostDiscount) / 100)

@@ -52,6 +52,7 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	If IsArray($aGetCCSpellsSize) Then
 		If $aGetCCSpellsSize[0] > 1 Then
 			$g_iTotalCCSpells = Number($aGetCCSpellsSize[2])
+			If $g_iTotalCCSpells >= 10 Then $g_iTotalCCSpells = StringTrimRight($g_iTotalCCSpells, 1)
 			$g_iCurrentCCSpells = Number($aGetCCSpellsSize[1])
 		Else
 			SetLog("CC Spells size read error (invalid row count)", $COLOR_ERROR) ; log if there is read error

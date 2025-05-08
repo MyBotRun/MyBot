@@ -9,7 +9,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......:
 ; ===============================================================================================================================
-Local $sSearchEquipmentDiamond = GetDiamondFromRect2(125, 370 + $g_iMidOffsetY, 430, 520 + $g_iMidOffsetY) ; Until 8 Equipment (4 columns)
+Local $sSearchEquipmentDiamond = GetDiamondFromRect2(125, 365 + $g_iMidOffsetY, 430, 505 + $g_iMidOffsetY) ; Until 8 Equipment (4 columns)
 
 Func Blacksmith($bTest = False)
 
@@ -122,6 +122,11 @@ Func Blacksmith($bTest = False)
 					SetLog("BlackSmith level 2 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
+			Case "Metal Pants"
+				If $BuildingInfo[2] < 3 Then
+					SetLog("BlackSmith level 3 needed, looking next", $COLOR_WARNING)
+					ContinueLoop
+				EndIf
 			Case "Healer Puppet"
 				If $BuildingInfo[2] < 5 Then
 					SetLog("BlackSmith level 5 needed, looking next", $COLOR_WARNING)
@@ -130,6 +135,11 @@ Func Blacksmith($bTest = False)
 			Case "Rage Gem"
 				If $BuildingInfo[2] < 4 Then
 					SetLog("BlackSmith level 4 needed, looking next", $COLOR_WARNING)
+					ContinueLoop
+				EndIf
+			Case "Noble Iron"
+				If $BuildingInfo[2] < 5 Then
+					SetLog("BlackSmith level 5 needed, looking next", $COLOR_WARNING)
 					ContinueLoop
 				EndIf
 			Case "Healing Tome"
@@ -150,7 +160,7 @@ Func Blacksmith($bTest = False)
 		EndSwitch
 
 		Local $aTempArray, $ToClickOnHero = True
-		Local $sSearchDiamond = GetDiamondFromRect2(135, 330 + $g_iMidOffsetY, 290, 365 + $g_iMidOffsetY)
+		Local $sSearchDiamond = GetDiamondFromRect2(135, 320 + $g_iMidOffsetY, 290, 355 + $g_iMidOffsetY)
 		Local $result = findMultiple($g_sImgHeroEquipement, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
 		If $result <> "" And IsArray($result) Then
 			For $t = 0 To UBound($result, 1) - 1
@@ -174,7 +184,7 @@ Func Blacksmith($bTest = False)
 
 		If $ToClickOnHero Then
 			SetDebugLog("Click On " & $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][2] & " [" & $g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][3] & ",375]", $COLOR_DEBUG)
-			Click($g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][3], 350 + $g_iMidOffsetY) ; Click on corresponding Hero
+			Click($g_asEquipmentOrderList[$g_aiCmbCustomEquipmentOrder[$i]][3], 340 + $g_iMidOffsetY) ; Click on corresponding Hero
 		EndIf
 
 		If Not $g_bRunState Then ExitLoop
@@ -183,7 +193,7 @@ Func Blacksmith($bTest = False)
 		Local $bLoopNew = 0
 		While 1
 			If Not $g_bRunState Then ExitLoop
-			Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("NewEquipment", $g_sImgEquipmentNew, 125, 370 + $g_iMidOffsetY, 430, 520 + $g_iMidOffsetY, True)) ; Looking for "New" on Equipment
+			Local $asSearchResult = decodeSingleCoord(FindImageInPlace2("NewEquipment", $g_sImgEquipmentNew, 125, 365 + $g_iMidOffsetY, 430, 470 + $g_iMidOffsetY, True)) ; Looking for "New" on Equipment
 			If IsArray($asSearchResult) And UBound($asSearchResult) = 2 Then
 				Click($asSearchResult[0] + 20, $asSearchResult[1] + 40)
 				If _Sleep(2000) Then ExitLoop

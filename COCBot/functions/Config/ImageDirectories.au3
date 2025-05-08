@@ -41,10 +41,21 @@ Global Const $g_sImgCOCUpdate = @ScriptDir & "\imgxml\CheckObstacles\COCUpdate*"
 Global Const $g_sImgClanCapitalResults = @ScriptDir & "\imgxml\other\CCResults*"
 Global Const $g_sImgLoading = @ScriptDir & "\imgxml\CheckObstacles\Loading*"
 Global Const $g_sImgInfoButton = @ScriptDir & "\imgxml\CheckObstacles\InfoButton*"
+Global Const $g_sImgSurvey = @ScriptDir & "\imgxml\CheckObstacles\Survey*"
 Global Const $g_sImgNoThanks = @ScriptDir & "\imgxml\CheckObstacles\NoThks*"
 Global Const $sImgPersonnalDatas = @ScriptDir & "\imgxml\CheckObstacles\PersonnalDatas*"
 Global Const $sImgDenyBtn = @ScriptDir & "\imgxml\CheckObstacles\DenyBtn*"
 Global Const $g_sImgOkayBlue = @ScriptDir & "\imgxml\other\OkayBlue*"
+Global Const $sImgAnalytics = @ScriptDir & "\imgxml\CheckObstacles\Analytics*"
+Global Const $sImgDenyLightBtn = @ScriptDir & "\imgxml\CheckObstacles\DenyLightBtn*"
+;Voucher
+Global Const $g_sImgGoButton = @ScriptDir & "\imgxml\CheckObstacles\Voucher\Go*"
+Global Const $g_sImgClaimButton = @ScriptDir & "\imgxml\CheckObstacles\Voucher\Claim*"
+;Season Ended/New
+Global Const $g_sImgLockEnd = @ScriptDir & "\imgxml\CheckObstacles\Lock*"
+Global Const $g_sImgWatch = @ScriptDir & "\imgxml\CheckObstacles\Watch*"
+;Okay Button in Daily challenge Window
+Global Const $g_sImgOkayDailyChallenge = @ScriptDir & "\imgxml\DailyChallenge\Okay\Okay*"
 #EndRegion Obstacles
 
 #Region Main Village
@@ -75,7 +86,6 @@ Global $g_sImgHeroEquipement = @ScriptDir & "\imgxml\Research\Blacksmith\"
 Global $g_sImgEquipmentResearch = @ScriptDir & "\imgxml\Research\Blacksmith\Equipment\"
 Global $g_sImgEquipmentNew = @ScriptDir & "\imgxml\Research\Blacksmith\New\New*"
 Global $g_sImgRedZero = @ScriptDir & "\imgxml\Research\Blacksmith\RedZero\RedZero*"
-Global $g_sImgSupercharge = @ScriptDir & "\imgxml\\Main Village\Supercharge\Supercharge*"
 Global $ImgMiniCupButton = @ScriptDir & "\imgxml\DailyChallenge\MiniCup\MiniCup*"
 ;Apprentice Builder
 Global $g_sImgGreenAssignButton = @ScriptDir & "\imgxml\Main Village\AppBuilder\"
@@ -165,6 +175,7 @@ Global $g_sImgAUpgradeEndBoostOKBtn = @ScriptDir & "\imgxml\Resources\Auto Upgra
 Global $g_sImgResourceIcon = @ScriptDir & "\imgxml\Resources\Auto Upgrade\ResourceIcon\"
 Global $g_sImgWallResource = @ScriptDir & "\imgxml\Resources\Auto Upgrade\UpgradeWalls\"
 Global $g_sImgUpgradeBtn2Wall = @ScriptDir & "\imgxml\imglocbuttons\Upgrade*"
+Global $g_sImgAUpgradeHeroes = @ScriptDir & "\imgxml\Resources\Auto Upgrade\Heroes"
 #EndRegion Auto Upgrade Normal Village
 
 #Region Auto Upgrade Builder Base
@@ -183,6 +194,7 @@ Global $ImgHeroMaxLevel = @ScriptDir & "\imgxml\Main Village\Upgrade\HeroMaxLeve
 #Region Train
 Global $g_sImgTrainTroops = @ScriptDir & "\imgxml\Train\Train_Train\"
 Global $g_sImgTrainSpells = @ScriptDir & "\imgxml\Train\Spell_Train\"
+Global $g_sImgTrainSieges = @ScriptDir & "\imgxml\Train\Siege_Train\"
 Global $g_sImgArmyOverviewSpells = @ScriptDir & "\imgxml\ArmyOverview\Spells" ; @ScriptDir & "\imgxml\ArmySpells"
 Global $g_sImgRequestCCButton = @ScriptDir & "\imgxml\ArmyOverview\RequestCC"
 Global $g_sImgSendRequestButton = @ScriptDir & "\imgxml\ArmyOverview\RequestCC\SendRequest\SendButton*"
@@ -222,6 +234,7 @@ Global $g_sImgSearchDrill = @ScriptDir & "\imgxml\Storages\Drills"
 Global $g_sImgSearchDrillLevel = @ScriptDir & "\imgxml\Storages\Drills\Level"
 Global $g_sImgEasyBuildings = @ScriptDir & "\imgxml\easybuildings"
 Global $g_sImgPrepareLegendLeagueSearch = @ScriptDir & "\imgxml\Attack\Search\LegendLeague"
+Global $ImgArmyAttack = @ScriptDir & "\imgxml\Attack\Search\AttackButton*"
 Global $g_sImgRetrySearchButton = @ScriptDir & "\imgxml\Resources\Clouds\RetryButton*"
 #EndRegion Search
 
@@ -238,7 +251,6 @@ Global Const $g_sImgCaravan = @ScriptDir & "\imgxml\Resources\ClanGamesImages\Ma
 Global Const $g_sImgStart = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Start"
 Global Const $g_sImgCoolPurge = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Gem\cooldownGem*"
 Global Const $g_sImgTrashPurge = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Trash"
-Global Const $g_sImgOkayPurge = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Okay"
 Global Const $g_sImgReward = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Reward"
 Global Const $g_sImgWindow = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Window"
 Global Const $g_sImgBorder = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Border"

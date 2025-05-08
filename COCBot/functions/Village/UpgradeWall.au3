@@ -336,7 +336,7 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 EndFunc   ;==>SkipWallUpgrade
 
 Func SwitchToNextWallLevel() ; switches wall level to upgrade to next level
-	If $g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] = 0 And $g_iCmbUpgradeWallsLevel < 12 Then
+	If $g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] = 0 And $g_iCmbUpgradeWallsLevel < Ubound($g_aiWallCost) - 1 Then
 		SetDebugLog("$g_aiWallsCurrentCount = " & $g_aiWallsCurrentCount)
 		SetDebugLog("$g_iCmbUpgradeWallsLevel = " & $g_iCmbUpgradeWallsLevel)
 

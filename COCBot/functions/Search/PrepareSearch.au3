@@ -18,10 +18,11 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 
 	; RestartSearchPickupHero - Check Remaining Heal Time
 	If $g_bSearchRestartPickupHero And $Mode <> $DT Then
-		For $pTroopType = $eKing To $eChampion ; check all 4 hero
+		Local $pTroopType[$eHeroCount] = [$eKing, $eQueen, $ePrince, $eWarden, $eChampion]
+		For $i = 0 To $eHeroSlots - 1 ; check slots
 			For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
-				If IsUnitUsed($pMatchMode, $pTroopType) Then
-					If Not _DateIsValid($g_asHeroHealTime[$pTroopType - $eKing]) Then
+				If IsUnitUsed($pMatchMode, $pTroopType[$g_aiCmbCustomHeroOrder[$i]]) Then
+					If Not _DateIsValid($g_asHeroHealTime[$i]) Then
 						getArmyHeroTime("All", True, True)
 						ExitLoop 2
 					EndIf
@@ -110,24 +111,31 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 				Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 				ClickP($aCoordinates, 1, 140, "#0149")
 				If _Sleep(1500) Then Return
-				Local $aConfirmAttackButton
-				For $i = 0 To 10
-					$aConfirmAttackButton = findButton("ConfirmAttack", Default, 1, True)
-					If IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) = 2 Then
-						If $Mode <> $DT Or ($Mode = $DT And $g_bDropTrophyAtkDead) Then SuperchargeCheck()
-						ClickP($aConfirmAttackButton, 1, 120)
-						ExitLoop
+				If OkayLegend() Then
+					If _Sleep(1500) Then Return
+				EndIf
+				Local $aReadyAttackButton = 0
+				$aReadyAttackButton = decodeSingleCoord(FindImageInPlace2("Attack", $ImgArmyAttack, 685, 490 + $g_iMidOffsetY, 780, 520 + $g_iMidOffsetY, True))
+				If IsArray($aReadyAttackButton) And UBound($aReadyAttackButton, 1) = 2 Then
+					If $Mode <> $DT Or ($Mode = $DT And $g_bDropTrophyAtkDead) Then SuperchargeCheck()
+					ClickP($aReadyAttackButton, 1, 120)
+					If OkayLegend() Then
+						If _Sleep(1500) Then Return
+						$aReadyAttackButton = decodeSingleCoord(FindImageInPlace2("Attack", $ImgArmyAttack, 685, 490 + $g_iMidOffsetY, 780, 520 + $g_iMidOffsetY, True))
+						If IsArray($aReadyAttackButton) And UBound($aReadyAttackButton, 1) = 2 Then
+							ClickP($aReadyAttackButton, 1, 120)
+						EndIf
 					EndIf
+					ExitLoop
+				Else
 					If _Sleep(200) Then Return
-					If $i = 10 Then
-						SetLog("Couldn't find the confirm attack button!", $COLOR_ERROR)
-						If $g_bDebugImageSave Then SaveDebugImage("ConfirmAttackButtonNotFound")
-						CloseWindow2()
-						If _Sleep(1000) Then Return
-						CloseWindow2()
-						Return
-					EndIf
-				Next
+					SetLog("Couldn't find attack button!", $COLOR_ERROR)
+					If $g_bDebugImageSave Then SaveDebugImage("AttackButtonNotFound")
+					CloseWindow2()
+					If _Sleep(1000) Then Return
+					CloseWindow2()
+					Return
+				EndIf
 			ElseIf StringInStr($sButtonState, "FindMatchNormal") > 0 Then
 				Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 				If IsArray($aCoordinates) And UBound($aCoordinates, 1) = 2 Then
@@ -219,3 +227,16 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	EndIf
 
 EndFunc   ;==>PrepareSearch
+
+Func OkayLegend()
+
+	Local $aOkayAttackButton
+	$aOkayAttackButton = findButton("Okay", Default, 1, True)
+	If IsArray($aOkayAttackButton) And UBound($aOkayAttackButton, 1) = 2 Then
+		ClickP($aOkayAttackButton, 1, 120)
+		Return True
+	EndIf
+
+	Return False
+
+EndFunc   ;==>OkayLegend

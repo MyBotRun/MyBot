@@ -118,6 +118,14 @@ Func BotStart($bAutostartDelay = 0)
 	For $i = 0 To 4
 		$g_aiHeroNeededResource[$i] = 0
 	Next
+	For $i = 0 To 7
+		$bCheckHeroOrder[$i] = False
+	Next
+	$g_aiAttackedCountPause = 0
+	$g_aiAttackedCount = 0
+	For $i = 0 To $g_iModeCount - 1
+		$g_aiAttackedVillageCount[$i] = 0
+	Next
 
 	CleanSuperchargeTemplates()
 

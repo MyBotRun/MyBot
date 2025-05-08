@@ -32,6 +32,10 @@ Func IsSearchAttackEnabled()
 		If $bCloseGame Then
 			$iWaitTime = _getTimeRemainTimeToday() ; get seconds left in day till Midnight
 			UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True, $g_bAttackPlannerSuspendComputer) ; Close and Wait for attacking to start
+			If $g_bCloseWhileTrainingEnable Then
+				$MaxConsecutiveAttacks = Random($g_iAttackconsecutiveMin, $g_iAttackconsecutiveMax, 1)
+				$g_aiAttackedCountPause = $g_aiAttackedCount
+			EndIf
 			$g_bRestart = True
 			Return
 		Else
@@ -56,6 +60,10 @@ Func IsSearchAttackEnabled()
 					Return True
 				EndIf
 				UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True, $g_bAttackPlannerSuspendComputer) ; Close and Wait for attacking to start
+				If $g_bCloseWhileTrainingEnable Then
+					$MaxConsecutiveAttacks = Random($g_iAttackconsecutiveMin, $g_iAttackconsecutiveMax, 1)
+					$g_aiAttackedCountPause = $g_aiAttackedCount
+				EndIf
 				$g_bRestart = True
 				Return
 			Else
@@ -91,6 +99,10 @@ Func IsSearchAttackEnabled()
 				SetDebugLog("Stop attack wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
 				; close emulator as directed
 				UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True, $g_bAttackPlannerSuspendComputer) ; Close and Wait for attacking to start
+				If $g_bCloseWhileTrainingEnable Then
+					$MaxConsecutiveAttacks = Random($g_iAttackconsecutiveMin, $g_iAttackconsecutiveMax, 1)
+					$g_aiAttackedCountPause = $g_aiAttackedCount
+				EndIf
 				$g_bRestart = True
 				Return
 			Else

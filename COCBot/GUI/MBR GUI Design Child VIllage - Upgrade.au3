@@ -130,13 +130,15 @@ Func CreateLaboratorySubTab()
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHeadhunter", "Headhunter") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtAppWard", "App. Warden") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtDruid", "Druid") & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtFurnace", "Furnace") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallWrecker", "Wall Wrecker") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleBlimp", "Battle Blimp") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtStoneSlammer", "Stone Slammer") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtSiegeBarrack", "Siege Barrack") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtLogLauncher", "Log Launcher") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtFlameFlinger", "Flame Flinger") & "|" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleDrill", "Battle Drill")
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleDrill", "Battle Drill") & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtTroopLauncher", "Troop Launcher")
 
 	Local $sTxtSLNames = GetTranslatedFileIni("MBR Global GUI Design", "Any", "Any") & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Builderbase Troops", "TxtRagedBarbarian", "Raged Barbarian") & "|" & _
@@ -308,20 +310,20 @@ Func CreateHeroesSubTab()
 	_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlSetState(-1, $GUI_HIDE)
 
-	$y += 90
+	$y += 80
 	$x = 25
 	$g_hLblHeroReservedBuilderTop = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblHeroReservedBuilderTop", "Reserve "), $x, $y + 15, -1, -1)
 	$g_hCmbHeroReservedBuilder = GUICtrlCreateCombo("", $x + 50, $y + 11, 30, 21, $CBS_DROPDOWNLIST, $WS_EX_RIGHT)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "CmbHeroReservedBuilder", "At least this many builders have to upgrade heroes, or wait for it."))
-	GUICtrlSetData(-1, "|0|1|2|3", "0")
+	GUICtrlSetData(-1, "|0|1|2|3|4|5", "0")
 	GUICtrlSetOnEvent(-1, "cmbHeroReservedBuilder")
-	$g_hLblHeroReservedBuilderBottom = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblHeroReservedBuilderBottom", "builder/s for hero upgrade"), $x, $y + 35, -1, -1)
+	$g_hLblHeroReservedBuilderBottom = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblHeroReservedBuilderBottom", "builder/s for hero upgrade"), $x + 95, $y + 15, -1, -1)
 
 	$g_hBtnHeroEquipment = GUICtrlCreateButton("Hero Equipment", $x + 250, $y + 11, -1, -1)
 	GUICtrlSetOnEvent(-1, "BtnHeroEquipment")
 
 	; Pets
-	Local $x = 20, $y = 230
+	Local $x = 15, $y = 200
 	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Pets", "LblAutoUpgrading_02", "Auto upgrading of your Pets"), $x - 5, $y, -1, -1)
 
 	$y += 15
@@ -366,8 +368,8 @@ Func CreateHeroesSubTab()
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetFrosty, $x + 15, $y - 3, 64, 64)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
-	$x = 20
-	$y += 65
+	$x = 15
+	$y += 55
 	$g_hChkUpgradePets[$ePetDiggy] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeDiggy_Info_01", "Enable upgrading of your Pet, Diggy, when you have enough Dark Elixir")
 	_GUICtrlSetTip(-1, $sTxtTip)
@@ -409,6 +411,15 @@ Func CreateHeroesSubTab()
 	GUICtrlSetOnEvent(-1, "chkUpgradePets")
 	GUICtrlSetColor(-1, $COLOR_ERROR)
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnAngryJelly, $x + 18, $y + 6, 55, 55)
+	_GUICtrlSetTip(-1, $sTxtTip)
+
+	$x = 15
+	$y += 55
+	$g_hChkUpgradePets[$ePetSneezy] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+	$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeSneezy_Info_01", "Enable upgrading of your Pet, Sneezy, when you have enough Dark Elixir")
+	_GUICtrlSetTip(-1, $sTxtTip)
+	GUICtrlSetOnEvent(-1, "chkUpgradePets")
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetSneezy, $x + 18, $y + 2, 64, 64)
 	_GUICtrlSetTip(-1, $sTxtTip)
 
 	;--------------------------------------------------

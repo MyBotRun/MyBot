@@ -49,10 +49,21 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 						SetLog("Has to set spell capacity first", $COLOR_ERROR)
 						Return
 					EndIf
+					If $g_iTownHallLevel = 0 Then
+						SetLog("Has to run bot once first to get correct TH Level", $COLOR_ERROR)
+						Return
+					EndIf
+					If $g_aiClanCastleSpellsCap = -1 Then
+						SetLog("Has to run bot once first to get correct CC Level", $COLOR_ERROR)
+						Return
+					EndIf
 					Switch $g_iTotalCampSpace
-						Case $g_iMaxCapTroopTH[14] + 5 To $g_iMaxCapTroopTH[17]    ; TH15/16/17
+						Case $g_iMaxCapTroopTH[16] + 5 To $g_iMaxCapTroopTH[17]    ; TH17
+							$iTHCol = $iTHBeginCol + 10
+							$iTH = 17
+						Case $g_iMaxCapTroopTH[14] + 5 To $g_iMaxCapTroopTH[16]    ; TH15/16
+							$iTH = Number($g_iTownHallLevel)
 							$iTHCol = $iTHBeginCol + 9
-							$iTH = 15
 						Case $g_iMaxCapTroopTH[12] + 5 To $g_iMaxCapTroopTH[14]    ; TH13/14
 							Switch $g_aiClanCastleSpellsCap
 								Case 3 ; TH14
@@ -114,12 +125,12 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 							ContinueLoop ; discard TRAIN commands due to the invalid troop amount/setting ex. int(chars)=0, negative #. "0" won't get alerted
 						EndIf
 						Switch $iTroopIndex
-							Case $eBarb To $eAppWard
+							Case $eBarb To $eFurn
 								$aiCSVTroops[$iTroopIndex] = Int($asCommand[$iTHCol])
 								If Int($asCommand[$iFlexCol]) > 0 Then $iFlexTroopIndex = $iTroopIndex
 							Case $eLSpell To $eOgSpell
 								$aiCSVSpells[$iTroopIndex - $eLSpell] = Int($asCommand[$iTHCol])
-							Case $eWallW To $eBattleD
+							Case $eWallW To $eTroopL
 								$aiCSVSieges[$iTroopIndex - $eWallW] = Int($asCommand[$iTHCol])
 							Case $eKing To $eChampion
 								Local $iHeroRadioItem = Int(StringLeft($asCommand[$iTHCol], 1))
@@ -166,11 +177,14 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 			Next
 			If $g_bDebugAttackCSV Then SetLog("CSV troop total: " & $iCSVTotalCapTroops, $COLOR_DEBUG)
 			If $iCSVTotalCapTroops > 0 Then
-				If $iTH = 8 Then ; TH8 	; check if csv has right troops total within the range of the TH level
-					If $iCSVTotalCapTroops > $g_iMaxCapTroopTH[$iTH - 2] And $iCSVTotalCapTroops <= $g_iMaxCapTroopTH[$iTH] Then $bTotalInRange = True
-				Else
-					If $iCSVTotalCapTroops > $g_iMaxCapTroopTH[$iTH - 1] And $iCSVTotalCapTroops <= $g_iMaxCapTroopTH[$iTH] Then $bTotalInRange = True
-				EndIf
+				Switch $iTH
+					Case 8, 14, 16
+						If $iCSVTotalCapTroops > $g_iMaxCapTroopTH[$iTH - 2] And $iCSVTotalCapTroops <= $g_iMaxCapTroopTH[$iTH] Then $bTotalInRange = True
+					Case 17
+						If $iCSVTotalCapTroops > $g_iMaxCapTroopTH[$iTH - 3] And $iCSVTotalCapTroops <= $g_iMaxCapTroopTH[$iTH] Then $bTotalInRange = True
+					Case Else
+						If $iCSVTotalCapTroops > $g_iMaxCapTroopTH[$iTH - 1] And $iCSVTotalCapTroops <= $g_iMaxCapTroopTH[$iTH] Then $bTotalInRange = True
+				EndSwitch
 				If $bTotalInRange Then     ;if total not equal to user camp space, reduce/add troops amount based on flexible flag if possible
 					If $iCSVTotalCapTroops <> $g_iTotalCampSpace Then
 						Local $iDiff = $iCSVTotalCapTroops - $g_iTotalCampSpace

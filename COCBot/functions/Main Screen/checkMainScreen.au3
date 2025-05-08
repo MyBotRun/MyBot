@@ -134,6 +134,7 @@ Func checkChatTabPixel()
 		SetDebugLog("ChatTabPixel found", $COLOR_SUCCESS)
 		Return True
 	Else
+		If Not $g_bRunState Then Return False
 		SetLog("ChatTabPixel not found", $COLOR_ERROR)
 	EndIf
 	Return False

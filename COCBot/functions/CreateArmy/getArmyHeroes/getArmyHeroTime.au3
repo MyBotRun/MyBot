@@ -46,6 +46,8 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 	Local $sResult
 	Local $aResultHeroes[$eHeroSlots] = ["", "", "", ""] ; array to hold all remaining regen time read via OCR
 
+	Return
+
 	Local $HeroSlotsInfos[5][2] = [["King", $eHeroKing], ["Queen", $eHeroQueen], ["Prince", $eHeroPrince], ["Warden", $eHeroWarden], ["Champion", $eHeroChampion]]
 
 	; Constant Array with OCR find location: [X pos, Y Pos, Text Name, Global enum value]

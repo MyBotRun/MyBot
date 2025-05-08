@@ -55,6 +55,19 @@ Func IsTrainPage($bSetLog = True, $iLoop = 30)
 	Return False
 EndFunc   ;==>IsTrainPage
 
+Func IsTrainPageGrayed($bSetLog = True, $iLoop = 30)
+
+	If IsPageLoop($aIsTrainPgChk2, $iLoop) Then
+		If ($g_bDebugSetLog Or $g_bDebugClick) And $bSetLog Then SetLog("**Army Window OK**", $COLOR_ACTION)
+		Return True
+	EndIf
+
+	If $bSetLog Then SetLog("Cannot find Army Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
+	If $g_bDebugImageSave Then SaveDebugImage("IsTrainPageGrayed")
+	If $iLoop > 1 Then AndroidPageError("IsTrainPageGrayed")
+	Return False
+EndFunc   ;==>IsTrainPageGrayed
+
 Func IsAttackPage($bCapturePixel = $g_bCapturePixel)
 
 	If IsPageLoop($aIsAttackPage, 1, $bCapturePixel) Or IsPageLoop($aDoubRowAttackBar, 1, $bCapturePixel) Then
@@ -218,7 +231,7 @@ Func IsReturnHomeBattlePage($useReturnValue = False, $makeDebugImageScreenshot =
 	EndIf
 
 	If IsPageLoop($aRewardButton, 1) Then
-		If _ColorCheck(_GetPixelColor($aRewardButton[0] + 2, 546 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 10) Then ; White Color From Button (Double Check)
+		If _ColorCheck(_GetPixelColor($aRewardButton[0] + 8, 548 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 10) Then ; White Color From Button (Double Check)
 			If $g_bDebugSetLog Or $g_bDebugClick Then SetLog("**Claim Reward Battle Window OK**", $COLOR_ACTION)
 			Return True
 		EndIf
@@ -286,7 +299,7 @@ Func IsPetHousePage($bSetLog = True, $iLoop = 30)
 EndFunc   ;==>IsPetHousePage
 
 Func IsBlacksmithPage($bSetLog = True, $iLoop = 30)
-	Local $aIsBlacksmithPage[4] = [773, 126 + $g_iMidOffsetY, 0xFF8D95, 20] ; Pink red top of close button
+	Local $aIsBlacksmithPage[4] = [769, 116 + $g_iMidOffsetY, 0xFF8D95, 20] ; Pink red top of close button
 
 	If IsPageLoop($aIsBlacksmithPage, $iLoop) Then
 		If ($g_bDebugSetLog Or $g_bDebugClick) And $bSetLog Then SetLog("**Blacksmith Window OK**", $COLOR_ACTION)

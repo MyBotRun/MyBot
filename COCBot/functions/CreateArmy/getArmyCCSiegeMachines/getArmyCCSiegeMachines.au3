@@ -36,10 +36,13 @@ Func getArmyCCSiegeCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	EndIf
 
 	; Get CC Siege Capacities
-	Local $sSiegeInfo = getCCSiegeCampCap(578, 428 + $g_iMidOffsetY, $bNeedCapture) ; OCR read Siege built and total
+	Local $sSiegeInfo = getCCSiegeCampCap(528, 436 + $g_iMidOffsetY, $bNeedCapture) ; OCR read Siege built and total
 	If $g_bDebugSetLogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
 	Local $aGetSiegeCap = StringSplit($sSiegeInfo, "#", $STR_NOCOUNT) ; split the built Siege number from the total Siege number
-	If $bSetLog And UBound($aGetSiegeCap) = 2 Then SetLog("Clan Castle Siege" & ($aGetSiegeCap[1] > 1 ? "s" : "") & ": " & $aGetSiegeCap[0] & "/" & $aGetSiegeCap[1])
+	If UBound($aGetSiegeCap) = 2 Then
+		If $aGetSiegeCap[1] >= 10 Then $aGetSiegeCap[1] = StringTrimRight($aGetSiegeCap[1], 1)
+		If $bSetLog Then SetLog("Clan Castle Siege" & ($aGetSiegeCap[1] > 1 ? "s" : "") & ": " & $aGetSiegeCap[0] & "/" & $aGetSiegeCap[1])
+	EndIf
 
 	If $bCloseArmyWindow Then CloseWindow()
 
@@ -69,7 +72,7 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	Local $aTempCCSiegeArray
 	Local $sSiegeName = ""
 	Local $iCCSiegeIndex = -1
-	Local $aCurrentCCSiegeEmpty[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Siege Machine Array
+	Local $aCurrentCCSiegeEmpty[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Siege Machine Array
 
 	$g_aiCurrentCCSiegeMachines = $aCurrentCCSiegeEmpty ; Reset Current Siege Machine Array
 

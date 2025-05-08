@@ -16,7 +16,7 @@ Func LocateHeroHall($bCollect = True)
 	; reset position
 	$g_aiHeroHallPos[0] = -1
 	$g_aiHeroHallPos[1] = -1
-	$g_aiHeroHallPos[2] = -2
+	$g_aiHeroHallPos[2] = -1
 
 	If $g_iTownHallLevel < 7 Then
 		SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Hero Hall, so skip locating.", $COLOR_DEBUG)
@@ -26,9 +26,10 @@ Func LocateHeroHall($bCollect = True)
 	; auto locate
 	ImgLocateHeroHall()
 
+	If $g_aiHeroHallPos[1] = -1 Or $g_aiHeroHallPos[2] = -1 Then _LocateHeroHall($bCollect) ; manual locate
+
 	SetLog("Hero Hall: (" & $g_aiHeroHallPos[0] & "," & $g_aiHeroHallPos[1] & "), Level : " & $g_aiHeroHallPos[2], $COLOR_DEBUG)
 
-	If $g_aiHeroHallPos[1] = "" Or $g_aiHeroHallPos[1] = -1 Then _LocateHeroHall($bCollect) ; manual locate
 EndFunc   ;==>LocateHeroHall
 
 Func _LocateHeroHall($bCollect = True)
@@ -122,6 +123,9 @@ EndFunc   ;==>_LocateHeroHall
 
 ; Image Search for Hero Hall
 Func ImgLocateHeroHall()
+
+	ZoomOut()
+
 	Local $sImgDir = @ScriptDir & "\imgxml\Buildings\HeroHall\"
 
 	Local $sSearchArea = "FV"
@@ -152,10 +156,14 @@ Func ImgLocateHeroHall()
 		Local $sHeroHallInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
 		If StringInStr($sHeroHallInfo[1], "Hero") Then
 			$g_aiHeroHallPos[2] = $sHeroHallInfo[2]
+			If _Sleep($DELAYBUILDINGINFO1) Then Return
+			ClearScreen()
+			Return True
+		Else
+			SetLog("Wrong Click Position, Please Manually Locate", $COLOR_WARNING)
+			If _Sleep($DELAYBUILDINGINFO1) Then Return
+			ClearScreen()
 		EndIf
-		If _Sleep($DELAYBUILDINGINFO1) Then Return
-		ClearScreen()
-		Return True
 	EndIf
 
 	Return False

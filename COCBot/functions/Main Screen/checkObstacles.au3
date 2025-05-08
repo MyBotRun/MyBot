@@ -72,9 +72,9 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	EndIf
 
 	Local $aPixelSearchGrey = _PixelSearch(481, 490 + $g_iMidOffsetY, 483, 494 + $g_iMidOffsetY, Hex(0xCBCDD3, 6), 10, True)
-	Local $aPixelSearchFlamme = _PixelSearch(277, 134 + $g_iMidOffsetY, 279, 136 + $g_iMidOffsetY, Hex(0xFFFFDB, 6), 10, True)
+	Local $aPixelSearchFlamme = _PixelSearch(277, 134 + $g_iMidOffsetY, 279, 136 + $g_iMidOffsetY, Hex(0xFFFFDB, 6), 15, True)
 	If IsArray($aPixelSearchGrey) And IsArray($aPixelSearchFlamme) Then
-		Local $aiLockOfChest = decodeSingleCoord(FindImageInPlace2("LockOfBox", $ImgLockOfChest, 400, 305 + $g_iMidOffsetY, 480, 390 + $g_iMidOffsetY, True))
+		Local $aiLockOfChest = decodeSingleCoord(FindImageInPlace2("LockOfBox", $ImgLockOfChest, 400, 305 + $g_iMidOffsetY, 480, 410 + $g_iMidOffsetY, True))
 		If IsArray($aiLockOfChest) And UBound($aiLockOfChest) = 2 Then
 			TreasureHunt()
 			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
@@ -104,6 +104,26 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 			$g_bMinorObstacle = True
 			Return False
+		EndIf
+	EndIf
+
+	If UBound(decodeSingleCoord(FindImageInPlace2("Survey", $g_sImgSurvey, 370, 40, 520, 120, False))) > 1 Then
+		Local $NoThanksButton = decodeSingleCoord(FindImageInPlace2("NoThanksButton", $g_sImgNoThanks, 190, 410 + $g_iMidOffsetY, 340, 465 + $g_iMidOffsetY, False))
+		If IsArray($NoThanksButton) And UBound($NoThanksButton) = 2 Then
+			SetLog("Detected Survey Window!", $COLOR_INFO)
+			ClickP($NoThanksButton)
+			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
+			$g_bMinorObstacle = True
+			Return False
+		Else
+			Local $NoThanksButton = decodeSingleCoord(FindImageInPlace2("NoThanksButton", $g_sImgNoThanks, 230, 530 + $g_iMidOffsetY, 340, 585 + $g_iMidOffsetY, False))
+			If IsArray($NoThanksButton) And UBound($NoThanksButton) = 2 Then
+				SetLog("Detected Survey Window!", $COLOR_INFO)
+				ClickP($NoThanksButton)
+				If _Sleep($DELAYCHECKOBSTACLES1) Then Return
+				$g_bMinorObstacle = True
+				Return False
+			EndIf
 		EndIf
 	EndIf
 
@@ -145,10 +165,18 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	EndIf
 
 	;;;;;;;;;;;;;;;;;;;; Google Play & COC Error & Personnal Datas ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	If CheckAllObstacles($g_bDebugImageSave, 5, 7, $bRecursive) Then Return True
+	If CheckAllObstacles($g_bDebugImageSave, 5, 8, $bRecursive) Then Return True
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	If _ColorCheck(_GetPixelColor(810, 185 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x892B1F, 6), 20) Then
+	If _ColorCheck(_GetPixelColor(618, 150 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xFFFFFF, 6), 10) And _ColorCheck(_GetPixelColor(735, 510 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xE9E8E1, 6), 10) Then
+		SetDebugLog("checkObstacles: Found Window to close")
+		CloseWindow2() ;See if village was attacked with Revenge Option : Click close button x
+		$g_abNotNeedAllTime[0] = True
+		$g_abNotNeedAllTime[1] = True
+		$g_bMinorObstacle = True
+		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
+		Return False
+	ElseIf _ColorCheck(_GetPixelColor(810, 185 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x892B1F, 6), 20) Then
 		SetDebugLog("checkObstacles: Found Window to close")
 		PureClick(440, 510 + $g_iMidOffsetY, 1, 120, "#0132") ;See if village was attacked or upgrades finished : Click Okay
 		$g_abNotNeedAllTime[0] = True
@@ -182,6 +210,24 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			_ColorCheck(_GetPixelColor(600, 9, $g_bCapturePixel), Hex(0x000000, 6), 1)
 	If Not $bHasTopBlackBar And IsMainGrayed() Then
 		SetDebugLog("checkObstacles: Found gray Window to close")
+		; Season End Start
+		If EndStartSeason() Then
+			SetLog("Ended/New Season window closed chief!", $COLOR_INFO) ; Check for Ended or Started Season Window
+			$g_bMinorObstacle = True
+			Return False
+		EndIf
+		; Voucher / Magic Snack Freebie
+		If Freebie() Then
+			SetLog("Freebie window closed chief!", $COLOR_INFO) ; Check for Freebie Event window (2025-03)
+			$g_bMinorObstacle = True
+			Return False
+		EndIf
+		; Streak Event
+		If CheckStreakEvent() Then
+			SetLog("Streak Event window closed chief!", $COLOR_INFO) ; Check for Streak Event window to (2024-06) update
+			$g_bMinorObstacle = True
+			Return False
+		EndIf
 		; Offers Received from SuperCell Store
 		Local $aiSCOffer = decodeSingleCoord(FindImageInPlace2("SCOffers", $g_sImgOkayBlue, 360, 400 + $g_iMidOffsetY, 510, 500 + $g_iMidOffsetY, True))
 		If IsArray($aiSCOffer) And UBound($aiSCOffer) = 2 Then
@@ -209,6 +255,13 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			Return False
 		EndIf
 		;
+		Local $aOkayButton = findButton("Okay", Default, 1, True)
+		If IsArray($aOkayButton) And UBound($aOkayButton) = 2 Then
+			ClickP($aOkayButton)
+			$g_bMinorObstacle = True
+			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
+			Return False
+		EndIf
 		Local $aConfirmButton = findButton("ConfirmButton", Default, 1, True)
 		If IsArray($aConfirmButton) And UBound($aConfirmButton) = 2 Then
 			ClickP($aConfirmButton)
@@ -242,6 +295,18 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	EndIf
 	If Not $bHasTopBlackBar And IsBuilderBaseGrayed() Then
 		SetLog("checkObstacles: Found Builder Base gray Window to close")
+		; Season End Start
+		If EndStartSeason() Then
+			SetLog("Ended/New Season window closed chief!", $COLOR_INFO) ; Check for Ended or Started Season Window
+			$g_bMinorObstacle = True
+			Return False
+		EndIf
+		; Voucher / Magic Snack Freebie
+		If Freebie() Then
+			SetLog("Freebie window closed chief!", $COLOR_INFO) ; Check for Freebie Event window (2025-03)
+			$g_bMinorObstacle = True
+			Return False
+		EndIf
 		; Offers Received from SuperCell Store
 		Local $aiSCOffer = decodeSingleCoord(FindImageInPlace2("SCOffers", $g_sImgOkayBlue, 360, 400 + $g_iMidOffsetY, 510, 500 + $g_iMidOffsetY, True))
 		If IsArray($aiSCOffer) And UBound($aiSCOffer) = 2 Then
@@ -265,6 +330,13 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			Click($g_iQuickMISX, $g_iQuickMISY)
 			If _Sleep(2000) Then Return
 			$g_bMinorObstacle = True
+			Return False
+		EndIf
+		Local $aOkayButton = findButton("Okay", Default, 1, True)
+		If IsArray($aOkayButton) And UBound($aOkayButton) = 2 Then
+			ClickP($aOkayButton)
+			$g_bMinorObstacle = True
+			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 			Return False
 		EndIf
 		CloseWindow2()
@@ -487,7 +559,7 @@ Func ClashOfMagicAdvert($bDebugImageSave = $g_bDebugImageSave)
 	Return False
 EndFunc   ;==>ClashOfMagicAdvert
 
-Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $MaxType = 7, $bRecursive = False)
+Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $MaxType = 8, $bRecursive = False)
 
 	Local $bRet = False, $Ref
 	Local $aiIsAnotherDevice = False
@@ -496,28 +568,31 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 	;; 0 : Connection Lost, Error, Another Device, Inactivity Or Login Failed Then Click "Try Again" Or "Reload" Or "Reload Game"
 	;; 1 : Error! (Out of Sync)/OOS Then Click on "Reload Game"
 	;; 2 : Rate Clash Of Clans Then click On "Never"
-	;; 3 : Important Notice Then Click On "OK"
+	;; 3 : Important Notice Then Click On "OK" Or "Agree"
 	;; 4 : Major Update, Stop bot
 	;; 5 : Google Play Services Has Stopped Then Click on "OK"
 	;; 6 : Clash Of Clan isn't responding Then Reboot Emulator
 	;; 7 : Personnal Data sharing
-	;; 8 : Another Device Connected Then Wait $g_iAnotherDeviceWaitTime Then Click on "Reload"
+	;; 8 : Analytics
+	;; 9 : Another Device Connected Then Wait $g_iAnotherDeviceWaitTime Then Click on "Reload"
 
-	Local $aiObstacleType[9][7] = [["", "Detected Connection Lost!", $sImgConnectionLost, 170, 260, 400, 320], _
+	Local $aiObstacleType[10][7] = [["", "Detected Connection Lost!", $sImgConnectionLost, 170, 260, 400, 320], _
 			["", "Detected Out Of Sync!", $sImgOos, 330, 310, 460, 350], _
 			["", "Detected Rate Game!", $sImgRateGame, 170, 260, 400, 320], _
-			["", "Detected Important Notice!", $sImgNotice, 170, 250, 400, 300], _
+			["", "Detected Important Notice!", $sImgNotice, 170, 250, 400, 320], _
 			["", "Detected Major Update!", $sImgMajorUpdate, 210, 270, 350, 360], _
 			["", "Detected Google Play Services Has Stopped!", $sImgGPServices, 280, 300, 410, 340], _
 			["", "Detected COC isn't Responding!!", $sImgClashNotResponding, 210, 240, 360, 310], _
-			["", "Personnal Datas Sharing!!", $sImgPersonnalDatas, 0, 270, 170, 330], _
+			["", "Personnal Datas Sharing!!", $sImgPersonnalDatas, 0, 230, 170, 330], _
+			["", "Analytics!!", $sImgAnalytics, 110, 320, 235, 380], _
 			["", "Detected Another Device Connected!!", $sImgDevice, 220, 300, 360, 360]]
 
-	Local $aiButtonType[5][6] = [["", $sImgReloadBtn, 170, 365, 330, 420], _
+	Local $aiButtonType[6][6] = [["", $sImgReloadBtn, 170, 365, 330, 420], _
 			["", $sImgNeverBtn, 540, 365, 700, 420], _
 			["", $sImgOKBtn, 170, 370, 270, 430], _
 			["", $sImgOKBtn, 630, 355, 700, 385], _
-			["", $sImgDenyBtn, 340, 510, 540, 590]]
+			["", $sImgDenyBtn, 340, 510, 540, 610], _
+			["", $sImgDenyLightBtn, 170, 605, 295, 655]]
 
 	; Initial Timer
 	Local $hTimer = __TimerInit()
@@ -532,10 +607,10 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 			SetLog($aiObstacleType[$i][1] & " (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 
 			If $i = 0 Then
-				$aiObstacleType[8][0] = decodeSingleCoord(FindImageInPlace2("Device", $aiObstacleType[8][2], $aiObstacleType[8][3], $aiObstacleType[8][4] + _
-						$g_iMidOffsetY, $aiObstacleType[8][5], $aiObstacleType[8][6] + $g_iMidOffsetY, False))
-				If IsArray($aiObstacleType[8][0]) And UBound($aiObstacleType[8][0]) = 2 Then
-					SetLog($aiObstacleType[8][1] & " (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+				$aiObstacleType[9][0] = decodeSingleCoord(FindImageInPlace2("Device", $aiObstacleType[9][2], $aiObstacleType[9][3], $aiObstacleType[9][4] + _
+						$g_iMidOffsetY, $aiObstacleType[9][5], $aiObstacleType[9][6] + $g_iMidOffsetY, False))
+				If IsArray($aiObstacleType[9][0]) And UBound($aiObstacleType[9][0]) = 2 Then
+					SetLog($aiObstacleType[9][1] & " (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 					If $g_iAnotherDeviceWaitTime > 3600 Then
 						SetLog("Another Device has connected, waiting " & Floor(Floor($g_iAnotherDeviceWaitTime / 60) / 60) & " hours " & Floor(Mod(Floor($g_iAnotherDeviceWaitTime / 60), 60)) & " minutes " & Floor(Mod($g_iAnotherDeviceWaitTime, 60)) & " seconds", $COLOR_ERROR)
 						PushMsg("AnotherDevice3600")
@@ -583,6 +658,9 @@ Func CheckAllObstacles($bDebugImageSave = $g_bDebugImageSave, $MinType = 0, $Max
 					;; 7 : Personnal Data sharing
 				Case 7
 					$Ref = 4
+					;; 8 : Analytics
+				Case 8
+					$Ref = 5
 			EndSwitch
 
 			$aiButtonType[$Ref][0] = decodeSingleCoord(FindImageInPlace2("Button", $aiButtonType[$Ref][1], $aiButtonType[$Ref][2], $aiButtonType[$Ref][3] + _
@@ -707,3 +785,66 @@ Func IsBuilderBaseGrayed()
 	Return False
 
 EndFunc   ;==>IsBuilderBaseGrayed
+
+Func Freebie()
+	Local $GoButton = decodeSingleCoord(FindImageInPlace2("GoButton", $g_sImgGoButton, 390, 540 + $g_iMidOffsetY, 460, 580 + $g_iMidOffsetY, True))
+	Local $MainClaimButton = decodeSingleCoord(FindImageInPlace2("ClaimButton", $g_sImgClaimButton, 380, 480 + $g_iMidOffsetY, 480, 530 + $g_iMidOffsetY, True))
+	If IsArray($GoButton) And UBound($GoButton) = 2 Then
+		SetDebugLog("Detected Go! Button", $COLOR_INFO)
+		ClickP($GoButton)
+		If _Sleep(2000) Then Return
+		Local $ClaimButton = decodeSingleCoord(FindImageInPlace2("ClaimButton", $g_sImgClaimButton, 475, 380 + $g_iMidOffsetY, 600, 445 + $g_iMidOffsetY, True))
+		If IsArray($ClaimButton) And UBound($ClaimButton) = 2 Then
+			SetDebugLog("Detected Claim Button", $COLOR_INFO)
+			ClickP($ClaimButton)
+			If _Sleep(1500) Then Return
+			Local $aiOkayButton = findButton("Okay", Default, 1, True)
+			If IsArray($aiOkayButton) And UBound($aiOkayButton, 1) = 2 Then
+				ClickP($aiOkayButton)
+				If _Sleep(1000) Then Return
+				Return True
+			EndIf
+		EndIf
+	ElseIf IsArray($MainClaimButton) And UBound($MainClaimButton) = 2 Then
+		SetDebugLog("Detected Claim Button", $COLOR_INFO)
+		ClickP($MainClaimButton)
+		If _Sleep(2000) Then Return
+		Local $ClaimButton = decodeSingleCoord(FindImageInPlace2("ClaimButton", $g_sImgClaimButton, 475, 380 + $g_iMidOffsetY, 600, 445 + $g_iMidOffsetY, True))
+		If IsArray($ClaimButton) And UBound($ClaimButton) = 2 Then
+			SetDebugLog("Detected Claim Button", $COLOR_INFO)
+			ClickP($ClaimButton)
+			If _Sleep(1500) Then Return
+			Local $aiOkayButton = findButton("Okay", Default, 1, True)
+			If IsArray($aiOkayButton) And UBound($aiOkayButton, 1) = 2 Then
+				ClickP($aiOkayButton)
+				If _Sleep(1000) Then Return
+				Return True
+			EndIf
+		EndIf
+	EndIf
+	Return False
+EndFunc   ;==>Freebie
+
+Func EndStartSeason()
+	;Season Ended
+	Local $LockEnded = decodeSingleCoord(FindImageInPlace2("LockEnded", $g_sImgLockEnd, 530, 110 + $g_iMidOffsetY, 605, 200 + $g_iMidOffsetY, True))
+	If IsArray($LockEnded) And UBound($LockEnded) = 2 Then
+		Local $aiOkayButton = findButton("Okay", Default, 1, True)
+		If IsArray($aiOkayButton) And UBound($aiOkayButton, 1) = 2 Then
+			ClickP($aiOkayButton)
+			If _Sleep(1000) Then Return
+			Return True
+		EndIf
+	EndIf
+
+	;New Season
+	Local $Watch = decodeSingleCoord(FindImageInPlace2("WatchButton", $g_sImgWatch, 330, 520 + $g_iMidOffsetY, 520, 600 + $g_iMidOffsetY, True))
+	If IsArray($Watch) And UBound($Watch) = 2 Then
+		CloseWindow2()
+		If _Sleep(750) Then Return
+		Return True
+	EndIf
+
+	Return False
+
+EndFunc   ;==>EndStartSeason

@@ -51,7 +51,6 @@ Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = Fals
 			$bMatchModeEnabled = False
 	EndSwitch
 
-
 	Local $bcheckSiege = False
 	If $g_abSearchSiegeWaitEnable[$g_iMatchMode] Then
 		If (($g_aiAttackUseSiege[$g_iMatchMode] = 1 And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeWallWrecker] > 0)) Or _
@@ -59,6 +58,9 @@ Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = Fals
 				($g_aiAttackUseSiege[$g_iMatchMode] = 3 And ($g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeStoneSlammer] > 0)) Or _
 				($g_aiAttackUseSiege[$g_iMatchMode] = 4 And ($g_aiCurrentSiegeMachines[$eSiegeBarracks] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBarracks] > 0)) Or _
 				($g_aiAttackUseSiege[$g_iMatchMode] = 5 And ($g_aiCurrentSiegeMachines[$eSiegeLogLauncher] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeLogLauncher] > 0)) Or _
+				($g_aiAttackUseSiege[$g_iMatchMode] = 6 And ($g_aiCurrentSiegeMachines[$eSiegeFlameFlinger] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeFlameFlinger] > 0)) Or _
+				($g_aiAttackUseSiege[$g_iMatchMode] = 7 And ($g_aiCurrentSiegeMachines[$eSiegeBattleDrill] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBattleDrill] > 0)) Or _
+				($g_aiAttackUseSiege[$g_iMatchMode] = 8 And ($g_aiCurrentSiegeMachines[$eSiegeTroopLauncher] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeTroopLauncher] > 0)) Or _
 				$g_aiAttackUseSiege[$g_iMatchMode] = 0) Then
 			$bcheckSiege = True
 		EndIf

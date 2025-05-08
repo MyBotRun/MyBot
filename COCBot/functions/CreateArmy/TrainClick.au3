@@ -19,11 +19,11 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops)
-	If IsTrainPage() Then
+Func TrainClick($iX, $iY, $iTimes, $iSpeed, $sdebugtxt)
+	If IsTrainPageGrayed() Then
 		If $g_bDebugClick Then
 			Local $txt = _DecodeDebug($sdebugtxt)
-			SetLog("TrainClick(" & $iX & "," & $iX & "," & $iTimes & "," & $iSpeed & "," & $sdebugtxt & $txt & "," & $TypeTroops & ")", $COLOR_DEBUG)
+			SetLog("TrainClick(" & $iX & "," & $iY & "," & $iTimes & "," & $iSpeed & "," & $sdebugtxt & $txt & ")", $COLOR_DEBUG)
 		EndIf
 
 		If $iTimes <> 1 Then
@@ -37,11 +37,6 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 				If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 				Local $sLogText = Default
 				If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
-				If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
-					If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is FULL", $COLOR_DEBUG)
-					; Detected the gray [i] and will exit and return
-					ClearClicks()
-				EndIf
 			Else
 				; FastCaptureRegion = True when is set to use WinAPI+ BackgroundMode
 				If FastCaptureRegion() Then
@@ -50,23 +45,16 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 						If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 						Local $sLogText = Default
 						If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
-						If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
-							If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is FULL after " & $i & " clicks", $COLOR_DEBUG)
-							; Detected the gray [i] and will exit and return
-							ExitLoop
-						EndIf
-						PureClick($iX, $iY) ;Click once.
+						PureClick($iX, $iY, 1, $iSpeed) ;Click once.
 						If _Sleep($iSpeed, False) Then ExitLoop
 					Next
 				Else
 					If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 					Local $sLogText = Default
 					If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
-					If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
-						If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is full", $COLOR_DEBUG)
-						Return ; Check to see if barrack full
-					EndIf
-					PureClick($iX, $iY, $iTimes, $iSpeed) ;Click $iTimes.
+					For $i = 0 To ($iTimes - 1)
+						PureClick($iX, $iY, 1, $iSpeed) ;Click $iTimes.
+					Next
 					If _Sleep($iSpeed, False) Then Return
 				EndIf
 			EndIf
@@ -75,13 +63,7 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 			Local $sLogText = Default
 			If $g_bDebugSetLogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes
 			If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
-			If $g_bDebugSetLogTrain Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], False), $COLOR_DEBUG)
-			If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then
-				If $g_bDebugClick Or $g_bDebugSetLogTrain Then SetLog("Camp is FULL", $COLOR_DEBUG)
-				Return ; Check to see if barrack full
-			EndIf
-			PureClick($iX, $iY)
-
+			PureClick($iX, $iY, 1, $iSpeed)
 			If _Sleep($iSpeed, False) Then Return
 		EndIf
 		Return True
@@ -90,6 +72,6 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 	EndIf
 EndFunc   ;==>TrainClick
 
-Func TrainClickP($aPoint, $iHowOften, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops)
-	Return TrainClick($aPoint[0], $aPoint[1], $iHowOften, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops)
+Func TrainClickP($aPoint, $iHowOften, $iSpeed, $sdebugtxt)
+	Return TrainClick($aPoint[0], $aPoint[1], $iHowOften, $iSpeed, $sdebugtxt)
 EndFunc   ;==>TrainClickP

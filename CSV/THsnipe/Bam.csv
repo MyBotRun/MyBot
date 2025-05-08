@@ -1,0 +1,45 @@
+TROOP |S1|S2|Q1|Q2|DEL1 |DEL2 |LOG_TEXT                                    |NOTES
+Text  |  |  |  |  |     |     |Normal Attacking TH Outside with BAM PULSE! |
+Text  |  |  |  |  |     |     |Attacking TH with 1st wave of BARCH         |
+Barb  | 3| 3| 2| 3| 1500| 1900|                                            |deploys 6-9 barbarians
+Arch  | 3| 3| 2| 3|  800| 1200|                                            |deploys 6-9 archers
+Mini  | 3| 3| 2| 3|  800|  100|                                            |deploys 6-9 minions
+WAIT  |  |  |  |  |     |20000|                                            |
+Barb  | 3| 3| 2| 3|  500|  600|                                            |deploys 6-9 barbarians
+Arch  | 3| 3| 2| 3| 1000| 1200|                                            |deploys 6-9 archers
+Mini  | 3| 3| 2| 3| 1000| 1400|                                            |deploys 6-9 minions
+WAIT  |  |  |  |  |     |20000|                                            |
+Barb  | 3| 3| 2| 3| 1000| 1400|                                            |deploys 6-9 barbarians
+Mini  | 3| 3| 2| 3| 1000| 1400|                                            |deploys 6-9 minions
+Arch  | 3| 3| 2| 3| 1000| 1200|                                            |deploys 6-9 archers
+WAIT  |  |  |  |  |     |20000|                                            |
+Text  |  |  |  |  |     |     |Normal Attacking TH Outside in FULL!        |
+Giant | 2| 2| 1| 1| 1000| 1200|                                            |releases 2 giants
+Hspell|  |  |  |  |     |     |                                            |launch healing spell
+Giant | 5| 5| 3| 4|  500|  600|                                            |releases 15-20 giants
+Hogs  | 5| 6| 3| 3|  800| 1000|                                            |releases 15-18 Hogs
+Wall  | 2| 2| 1| 1|  500|  600|                                            |deploys 2 wallbreakers
+Wall  | 2| 2| 1| 1|  500|  600|                                            |deploys 2 wallbreakers
+King  |  |  |  |  |     |     |                                            |deploys king
+Queen |  |  |  |  |     |     |                                            |deploys queen
+Heal  | 2| 2| 1| 1|  500|  600|                                            |deploys 2 healer
+RSpell|  |  |  |  |     |     |                                            |drop rage spell
+Castle|  |  |  |  |     |     |                                            |deploys cc
+Barb  | 5| 5| 5| 6| 1000| 1200|                                            |release 25-30 barb
+Arch  | 5| 5| 5| 6| 1000| 1200|                                            |release 25-30 arch
+Mini  | 5| 5| 2| 2|  800| 1000|                                            |deploys 10 minions
+WAIT  |  |  |  |  |     |20000|                                            |
+Giant | 5| 5| 2| 2|  500|  600|                                            |releases 10 giants
+Hogs  | 5| 5| 2| 2| 1000| 1300|                                            |releases 10 Hogs
+Arch  | 5| 5|10|10|  800| 1000|                                            |releases 50 archers
+Barb  | 5| 5|10|10|  500|  600|                                            |releases 50 barbs
+Mini  | 5| 5| 2| 2|  800| 1000|                                            |releases 10 minions
+Wiza  | 3| 3| 2| 2|  800| 1000|                                            |releases 6 wizards
+WAIT  |  |  |  |  |     |20000|                                            |
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Text  |  |  |  |  |     |     |~Finished Attacking, waiting to finish      |
+WAIT  |  |  |  |  |     |20000|                                            |

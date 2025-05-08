@@ -88,7 +88,7 @@ Func CheckSwitchAcc()
 	If UBound($aActiveAccount) <= 1 Then Return
 
 	Local $aDonateAccount = _ArrayFindAll($g_abDonateOnly, True)
-	Local $bReachAttackLimit = ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - 2)
+		Local $bReachAttackLimit = ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - Number($g_iCmbMaxInARow + 1))
 	Local $bForceSwitch = $g_bForceSwitch
 	Local $nMinRemainTrain, $iWaitTime
 
@@ -116,28 +116,16 @@ Func CheckSwitchAcc()
 		SetSwitchAccLog(" - All Barracks Upgrading, Force switch")
 		$bForceSwitch = True
 	Else
-		getArmyTroopTime(True, False) ; update $g_aiTimeTrain[0]
-
-		$g_aiTimeTrain[1] = 0
-		If IsWaitforSpellsActive() Then getArmySpellTime() ; update $g_aiTimeTrain[1]
-
-		$g_aiTimeTrain[2] = 0
-		If IsWaitforHeroesActive() Then CheckWaitHero() ; update $g_aiTimeTrain[2]
-
-		ClickAway()
-
-		$iWaitTime = _ArrayMax($g_aiTimeTrain, 1, 0, 2) ; Not check Siege Machine time: $g_aiTimeTrain[3]
-		If $bReachAttackLimit And $iWaitTime <= 0 Then
-			SetLog("This account has attacked twice in a row, switching to another account", $COLOR_INFO)
+		If $bReachAttackLimit Then
+			SetLog("This account has attacked " & Number($g_iCmbMaxInARow + 1) & " time" & (Number($g_iCmbMaxInARow + 1) > 1 ? "s in a row" : "") & ", switching to another account", $COLOR_INFO)
 			SetSwitchAccLog(" - Reach attack limit: " & $g_aiAttackedCount - $g_aiAttackedCountSwitch[$g_iCurAccount])
 			$bForceSwitch = True
 		EndIf
 	EndIf
 
 	Local $sLogSkip = ""
-	If Not $g_abDonateOnly[$g_iCurAccount] And $iWaitTime <= $g_iTrainTimeToSkip And Not $bForceSwitch Then
+	If Not $g_abDonateOnly[$g_iCurAccount] And Not $bForceSwitch Then
 		If Not $g_bRunState Then Return
-		If $iWaitTime > 0 Then $sLogSkip = " in " & Round($iWaitTime, 1) & " mins"
 		SetLog("Army is ready" & $sLogSkip & ", skip switching account", $COLOR_INFO)
 		SetSwitchAccLog(" - Army is ready" & $sLogSkip)
 		SetSwitchAccLog("Stay at [" & $g_iCurAccount + 1 & "]", $COLOR_SUCCESS)
@@ -145,32 +133,28 @@ Func CheckSwitchAcc()
 
 	Else
 
-		If $g_bChkSmartSwitch = True Then ; Smart switch
-			SetDebugLog("-Smart Switch-")
-			$nMinRemainTrain = CheckTroopTimeAllAccount($bForceSwitch)
-
-			If $nMinRemainTrain <= 1 And Not $bForceSwitch And Not $g_bDonateLikeCrazy Then ; Active (force switch shall give priority to Donate Account)
-				If $g_bDebugSetLog Then SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
-				$g_iDonateSwitchCounter = 0
-			Else
-				If $g_iDonateSwitchCounter < UBound($aDonateAccount) Then ; Donate
+		If Not $bForceSwitch And Not $g_bDonateLikeCrazy Then ; Active (force switch shall give priority to Donate Account)
+			If $g_bDebugSetLog Then SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
+			$g_iDonateSwitchCounter = 0
+		Else
+			If IsArray($aDonateAccount) Then
+				If $g_iDonateSwitchCounter < UBound($aDonateAccount) Then     ; Donate
 					$g_iNextAccount = $aDonateAccount[$g_iDonateSwitchCounter]
 					$g_iDonateSwitchCounter += 1
 					If $g_bDebugSetLog Then SetDebugLog("Switch to Donate Account " & $g_iNextAccount + 1 & ". $g_iDonateSwitchCounter = " & $g_iDonateSwitchCounter, $COLOR_DEBUG)
 					SetSwitchAccLog(" - Donate Acc [" & $g_iNextAccount + 1 & "]")
-				Else ; Active
+				Else     ; Active
 					$g_iDonateSwitchCounter = 0
 				EndIf
+			Else
+				$g_iNextAccount = $g_iCurAccount + 1 ; Classic Switch in Order
+				If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
+				While $abAccountNo[$g_iNextAccount] = False
+					$g_iNextAccount += 1
+					If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0     ; avoid idle Account
+					SetDebugLog("- While Account: " & $g_asProfileName[$g_iNextAccount] & " number: " & $g_iNextAccount + 1)
+				WEnd
 			EndIf
-		Else ; Normal switch (continuous)
-			SetDebugLog("-Normal Switch-")
-			$g_iNextAccount = $g_iCurAccount + 1
-			If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
-			While $abAccountNo[$g_iNextAccount] = False
-				$g_iNextAccount += 1
-				If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0 ; avoid idle Account
-				SetDebugLog("- While Account: " & $g_asProfileName[$g_iNextAccount] & " number: " & $g_iNextAccount + 1)
-			WEnd
 		EndIf
 
 		If Not $g_bRunState Then Return
@@ -324,6 +308,7 @@ Func SwitchCOCAcc($NextAccount)
 		CreateLogFile() ; Cause use of the right log file after switch
 		If Not $g_bRunState Then Return
 
+
 		If $g_bChkSharedPrefs Then
 			; disconnect account again for saving shared_prefs
 			waitMainScreen()
@@ -449,7 +434,7 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
 Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetLog, $bDebugImageSave = $g_bDebugImageSave)
-	Local $sAccountDiamond = GetDiamondFromRect("540,353,580,725") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sAccountDiamond = GetDiamondFromRect2(540, 323 + $g_iMidOffsetY, 590, 695 + $g_iMidOffsetY)
 	Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
@@ -457,7 +442,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 	If Not $g_bRunState Then Return "Exit"
 
 	For $i = 0 To 30 ; Checking "New SuperCellID UI" continuously in 30sec
-		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("670,80,810,170"), 1, True, Default))
+		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect2(670, 80, 810, 140 + $g_iMidOffsetY), 1, True, Default))
 		If _Sleep(500) Then Return "Exit"
 		If IsArray($aSuperCellIDWindowsUI) And UBound($aSuperCellIDWindowsUI, 1) >= 2 Then
 
@@ -511,7 +496,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 
 				_ArraySort($aCoordinates, 0, 0, 0, 1) ; sort by column 1 [Y]... this is to keep them in order of actual list
 
-				If IsArray($aCoordinates) And UBound($aCoordinates) > 1 And UBound($aCoordinates, $UBOUND_COLUMNS) > 1 Then
+				If IsArray($aCoordinates) And UBound($aCoordinates) > 1 And UBound($aCoordinates, $UBOUND_ROWS) > 1 Then
 
 					; list all account see-able after drag on debug chat
 					Local $iProfiles = UBound($g_asProfileName)
@@ -535,6 +520,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 
 			EndIf
 		EndIf
+
 		If $i = 30 Then
 			$bResult = False
 			Return "Error"
@@ -545,6 +531,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bV
 	Return "" ; should never get here
 EndFunc   ;==>SwitchCOCAcc_ClickAccountSCID
 
+#cs
 Func CheckWaitHero() ; get hero regen time remaining if enabled
 	Local $iActiveHero
 	Local $aHeroResult[$eHeroSlots]
@@ -634,6 +621,7 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum rem
 	Return $iMinRemainTrain
 
 EndFunc   ;==>CheckTroopTimeAllAccount
+#ce
 
 Func DisableGUI_AfterLoadNewProfile()
 	$g_bGUIControlDisabled = True
@@ -871,7 +859,13 @@ Func IsSCIDAccComplete($iAccounts = 3)
 			$bSaveImage = True
 			$bResult = False
 		Else
-			Local $filename = String($g_asProfileName[$i + $j] & "_0_98.png")
+			Local $Oldfilename = String($g_asProfileName[$i + $j] & "_0_98.png")
+			Local $filename = String($g_asProfileName[$i + $j] & "_0_92.png")
+			If FileExists($sProfileFolder & $Oldfilename) Then
+				FileMove($sProfileFolder & $Oldfilename, $sProfileFolder & $filename)
+				If _Sleep($DELAYRESPOND) Then Return
+				FileDelete($sProfileFolder & $Oldfilename)
+			EndIf
 
 			SetLog("Looking for " & $sProfileFolder & $filename)
 
@@ -882,13 +876,13 @@ Func IsSCIDAccComplete($iAccounts = 3)
 				Local $aiVillageNameCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $sProfileFolder & $filename, GetDiamondFromArray($aiSearchArea), 1, True))
 
 				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 2 Then
-					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - missing!")
-					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - missing!")
+					SetSwitchAccLog("image: " & $g_asProfileName[$i + $j] & " - missing!")
+					SetLog("SCID Account image: " & $g_asProfileName[$i + $j] & " - missing!")
 					$bSaveImage = True
 					$bResult = False
 				Else
-					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - OK!")
-					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - OK!")
+					SetSwitchAccLog("image: " & $g_asProfileName[$i + $j] & " - OK!")
+					SetLog("SCID Account image: " & $g_asProfileName[$i + $j] & " - OK!")
 				EndIf
 			Else
 				Local $x = $aiHeadCoord[0] - 10

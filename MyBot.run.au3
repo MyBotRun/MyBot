@@ -871,14 +871,18 @@ Func runBot() ;Bot that runs everything in order
 			Else
 				_RunFunction('DonateCC,Train')
 				HiddenSlotstatus()
+				If SmartPause() Then Return
 				If ProfileSwitchAccountEnabled() Then
 					$g_iCommandStop = 2
-					_RunFunction('DonateCC,Train')
 					checkSwitchAcc()
+				Else
+					Local $bCloseGame = $g_bAttackPlannerCloseCoC Or $g_bAttackPlannerCloseAll Or $g_bAttackPlannerSuspendComputer
+					If Not $bCloseGame Then
+						$iWaitTime = Random($DELAYWAITATTACK1, $DELAYWAITATTACK2)
+						SetLog("Attacking Not Planned and Skipped, Waiting random " & StringFormat("%0.1f", $iWaitTime / 1000) & " Seconds", $COLOR_WARNING)
+						If _SleepStatus($iWaitTime) Then Return False
+					EndIf
 				EndIf
-				$iWaitTime = Random($DELAYWAITATTACK1, $DELAYWAITATTACK2)
-				SetLog("Attacking Not Planned and Skipped, Waiting random " & StringFormat("%0.1f", $iWaitTime / 1000) & " Seconds", $COLOR_WARNING)
-				If _SleepStatus($iWaitTime) Then Return False
 			EndIf
 		Else ;When error occurs directly goes to attack
 			Local $sRestartText = $g_bIsSearchLimit ? " due search limit" : " after Out of Sync Error: Attack Now"
@@ -1004,7 +1008,6 @@ Func _Idle() ;Sequence that runs until Full Army
 			DropTrophy()
 			If Not $g_bRunState Then Return
 			If $g_bRestart Then ExitLoop
-			;If $g_bFullArmy Then ExitLoop		; Never will reach to SmartWait4Train() to close coc while Heroes/Spells not ready 'if' Army is full, so better to be commented
 			If _Sleep($DELAYIDLE1) Then ExitLoop
 			checkMainScreen(False)
 		EndIf
@@ -1016,12 +1019,12 @@ Func _Idle() ;Sequence that runs until Full Army
 
 		If $g_bOutOfGold Or $g_bOutOfElixir Then Return ; Halt mode due low resources, only 1 idle loop
 
-		If ProfileSwitchAccountEnabled() Then checkSwitchAcc() ; Forced to switch when in halt attack mode
+		If SmartPause() Then ExitLoop
+		If ProfileSwitchAccountEnabled() Then checkSwitchAcc()
 
 		If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) And $g_bTrainEnabled = False Then ExitLoop ; If training is not enabled, run only 1 idle loop
 
 		If $g_iCommandStop = -1 Then ; Check if closing bot/emulator while training and not in halt mode
-			SmartWait4Train()
 			If Not $g_bRunState Then Return
 			If $g_bRestart Then ExitLoop ; if smart wait activated, exit to runbot in case user adjusted GUI or left emulator/bot in bad state
 		EndIf
@@ -1034,7 +1037,8 @@ Func AttackMain() ;Main control for attack functions
 	ClearScreen()
 	If IsSearchAttackEnabled() Then
 		If IsSearchModeActive($DB) Or IsSearchModeActive($LB) Then
-			If ProfileSwitchAccountEnabled() And ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - 2) Then checkSwitchAcc()
+			If SmartPause() Then Return
+			If ProfileSwitchAccountEnabled() And ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - Number($g_iCmbMaxInARow + 1)) Then checkSwitchAcc()
 			If $g_bUseCCBalanced Then ;launch profilereport() only if option balance D/R is activated
 				ProfileReport()
 				If Not $g_bRunState Then Return
@@ -1102,7 +1106,8 @@ Func AttackMain() ;Main control for attack functions
 			$g_bIsSearchLimit = False
 			$g_bIsClientSyncError = False
 			If ProfileSwitchAccountEnabled() Then checkSwitchAcc()
-			SmartWait4Train()
+			If SmartPause() Then Return
+			If Not $g_bRunState Then Return
 		EndIf
 	Else
 		SetLog("Attacking Not Planned, Skipped..", $COLOR_WARNING)
@@ -1165,27 +1170,19 @@ Func __RunFunction($action)
 
 		Case "DonateCC"
 			If $g_iActiveDonate And $g_bChkDonate Then
-				; if in "Halt/Donate" don't skip near full army
-				If (Not SkipDonateNearFullTroops(True) Or $g_iCommandStop = 3 Or $g_iCommandStop = 0) And BalanceDonRec(True) Then DonateCC()
+				If BalanceDonRec(True) Then DonateCC()
 				If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)
 			EndIf
 
 		Case "DonateCC,Train"
 			If $g_iActiveDonate And $g_bChkDonate Then
-				If $g_bFirstStart Then
-					getArmyTroopCapacity(True, False)
-					If _Sleep($DELAYRESPOND) Then Return
-					getArmySpellCapacity(False, True)
-					If _Sleep($DELAYRESPOND) Then Return
-				EndIf
-				; if in "Halt/Donate" don't skip near full army
-				If (Not SkipDonateNearFullTroops(True) Or $g_iCommandStop = 3 Or $g_iCommandStop = 0) And BalanceDonRec(True) Then DonateCC()
+				If BalanceDonRec(True) Then DonateCC()
 			EndIf
 			If Not _Sleep($DELAYRUNBOT1) Then checkMainScreen(False)
 			If $g_bTrainEnabled Then ; check for training enabled in halt mode
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
 					TrainSystem()
-					If _Sleep($DELAYRUNBOT1) Then Return
+					_Sleep($DELAYRUNBOT1)
 				Else
 					SetLog("Humanize bot, prevent to delete and recreate troops " & $g_iActualTrainSkip + 1 & "/" & $g_iMaxTrainSkip, $color_blue)
 					$g_iActualTrainSkip = $g_iActualTrainSkip + 1
@@ -1199,7 +1196,7 @@ Func __RunFunction($action)
 					getArmyHeroCount(False, True)
 				EndIf
 			Else
-				If $g_bDebugSetLogTrain Then SetLog("Halt mode - training disabled", $COLOR_DEBUG)
+				If $g_bDebugSetlogTrain Then SetLog("Halt mode - training disabled", $COLOR_DEBUG)
 			EndIf
 
 		Case "BoostBarracks"
@@ -1323,26 +1320,37 @@ Func FirstCheck()
 	$g_bFullArmy = False
 	$g_iCommandStop = -1
 
+	If _Sleep($DELAYRUNBOT5) Then Return
+	checkMainScreen(False)
+	If $g_bRestart Then Return
+
 	;;;;;Check Town Hall level
 	Local $iTownHallLevel = $g_iTownHallLevel
-	SetDebugLog("Detecting Town Hall level", $COLOR_INFO)
-	SetDebugLog("Town Hall level is currently saved as " & $g_iTownHallLevel, $COLOR_INFO)
+	SetLog("Town Hall is currently saved as level " & $g_iTownHallLevel, $COLOR_INFO)
+
 	imglocTHSearch(False, True, True) ;Sets $g_iTownHallLevel
 	SetDebugLog("Detected Town Hall level is " & $g_iTownHallLevel, $COLOR_INFO)
+
+	If $g_iTownHallLevel = 0 And $g_aiTownHallPos[0] > -1 Then
+		BuildingClick($g_aiTownHallPos[0], $g_aiTownHallPos[1])
+		If _Sleep(800) Then Return
+		Local $BuildingInfo = BuildingInfo(245, 550)
+		If $BuildingInfo[1] = "Town Hall" Then
+			$g_iTownHallLevel = $BuildingInfo[2]
+			If _Sleep(500) Then Return
+			ClearScreen()
+		Else
+			SetLog("Please Locate Town Hall Manually!", $COLOR_ERROR)
+		EndIf
+	EndIf
+
 	If $g_iTownHallLevel = $iTownHallLevel Then
 		SetDebugLog("Town Hall level has not changed", $COLOR_INFO)
 	Else
-		If $g_iTownHallLevel < $iTownHallLevel Then
-			SetDebugLog("Bad town hall level read...saving bigger old value", $COLOR_ERROR)
-			$g_iTownHallLevel = $iTownHallLevel
-			saveConfig()
-			applyConfig()
-		Else
-			SetDebugLog("Town Hall level has changed!", $COLOR_INFO)
-			SetDebugLog("New Town hall level detected as " & $g_iTownHallLevel, $COLOR_INFO)
-			saveConfig()
-			applyConfig()
-		EndIf
+		SetLog("Town Hall level has changed!", $COLOR_INFO)
+		SetLog("New Town hall level detected as " & $g_iTownHallLevel, $COLOR_INFO)
+		applyConfig()
+		saveConfig()
 	EndIf
 	;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1351,6 +1359,34 @@ Func FirstCheck()
 	_GUI_Value_STATE("HIDE", $g_aGroupListTHLevels)
 	GUICtrlSetState($g_ahPicTHLevels[$g_iTownHallLevel], $GUI_SHOW)
 	GUICtrlSetData($g_hLblTHLevels, $g_iTownHallLevel)
+
+	;;;;;Check Hero Hall level
+	If $g_iTownHallLevel > 6 Then
+		If $g_aiHeroHallPos[1] <> -1 Then
+			SetLog("Hero Hall is currently saved as level " & $g_aiHeroHallPos[2], $COLOR_INFO)
+			BuildingClick($g_aiHeroHallPos[0], $g_aiHeroHallPos[1])
+			If _Sleep($DELAYBUILDINGINFO1) Then Return
+			Local $sHeroHallInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
+			If StringInStr($sHeroHallInfo[1], "Hero") Then
+				If $g_aiHeroHallPos[2] <> $sHeroHallInfo[2] Then
+					$g_aiHeroHallPos[2] = $sHeroHallInfo[2]
+					SetLog("Hero Hall level has changed!", $COLOR_WARNING)
+					SetLog("New Hero hall level detected as " & $g_aiHeroHallPos[2], $COLOR_INFO)
+					applyConfig()
+					saveConfig()
+				EndIf
+			Else
+				If ImgLocateHeroHall() Then SetLog("Hero Hall: (" & $g_aiHeroHallPos[0] & "," & $g_aiHeroHallPos[1] & "), Level : " & $g_aiHeroHallPos[2], $COLOR_DEBUG)
+			EndIf
+			ClearScreen()
+		Else
+			If Not HeroHallValuesCheck() Then
+				SetLog("Please check Hero Hall Values Now !", $COLOR_ERROR)
+				SetLog("MBR cannot run correctly without Hero Hall Values : LOCATE !", $COLOR_ERROR)
+			EndIf
+		EndIf
+	EndIf
+	;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	VillageReport()
 	If Not $g_bRunState Then Return
@@ -1367,11 +1403,11 @@ Func FirstCheck()
 		Return ; Restart bot loop to reset $g_iCommandStop & $g_bTrainEnabled + $g_bDonationEnabled via BotCommand()
 	EndIf
 
-	If _Sleep($DELAYRUNBOT5) Then Return
-	checkMainScreen(False)
-	If $g_bRestart Then Return
-
 	If BotCommand() Then btnStop()
+
+	If $g_bFirstStart And $g_bCloseWhileTrainingEnable Then
+		$MaxConsecutiveAttacks = Random($g_iAttackconsecutiveMin, $g_iAttackconsecutiveMax, 1)
+	EndIf
 
 	If $g_iCommandStop <> 0 And $g_iCommandStop <> 3 Then
 		; VERIFY THE TROOPS AND ATTACK IF IS FULL

@@ -125,29 +125,22 @@ Func CleanYard()
 	; Timer
 	Local $hObstaclesTimer = __TimerInit()
 
-	; Get Builders available
-	If Not getBuilderCount() Then Return ; update builder data, return if problem
-	If _Sleep($DELAYRESPOND) Then Return
-
-	; Obstacles function to Parallel Search , will run all pictures inside the directory
-
 	; Setup arrays, including default return values for $return
-	Local $bLocate = False
 	Local $sCocDiamond = $CocDiamondECD
-	Local $sRedLines = $CocDiamondECD
+	Local $sRedLines = $sCocDiamond
 	Local $iElixir = 50000
-	Local $bNoBuilders = $g_iFreeBuilderCount < 1
+	Local $iGemElixir = 1200
 	Local $aTempArray, $aTempName, $aTempCoords, $aTempMultiCoords
 	Local $aObstacles[0][3], $bFoundObstacles = False
 
-	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then
+	If $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then
 		Local $aResult = findMultiple($g_sImgCleanYard, $sCocDiamond, $sRedLines, 0, 1000, 0, "objectname,objectpoints", True)
 		If $aResult <> "" And IsArray($aResult) Then
 			SetLog("Yard Cleaning Process", $COLOR_OLIVE)
 			;Add found results into our Arrays
 			For $i = 0 To UBound($aResult, 1) - 1
 				$aTempArray = $aResult[$i]
-				$aTempName = $aTempArray[0] ; Filename
+				$aTempName = $aTempArray[0]     ; Filename
 				$aTempMultiCoords = decodeMultipleCoords($aTempArray[1], 5, 5)
 				For $j = 0 To UBound($aTempMultiCoords, 1) - 1
 					$aTempCoords = $aTempMultiCoords[$j]
@@ -162,24 +155,18 @@ Func CleanYard()
 				Next
 				RemoveDupXYObs($aObstacles)
 				For $i = 0 To UBound($aObstacles, 1) - 1
-					If IsCoordSafe($aObstacles[$i][1], $aObstacles[$i][2]) Then ; secure x because of clan chat tab
+					If IsCoordSafe($aObstacles[$i][1], $aObstacles[$i][2]) Then     ; secure x because of clan chat tab
 						If $g_bDebugSetLog Then SetDebugLog($aObstacles[$i][0] & " found (" & $aObstacles[$i][1] & "," & $aObstacles[$i][2] & ")", $COLOR_SUCCESS)
 						If IsMainPage() Then Click($aObstacles[$i][1], $aObstacles[$i][2], 1, 120, "#0430")
-						$bLocate = True
 						If _Sleep($DELAYCOLLECT3) Then Return
 						If Not ClickRemoveObstacle() Then ContinueLoop
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
 						ClearScreen()
 						If _Sleep($DELAYCHECKTOMBS1) Then Return
-						If Not getBuilderCount() Then Return ; update builder data, return if problem
-						If _Sleep($DELAYRESPOND) Then Return
-						If $g_iFreeBuilderCount = 0 Then
-							SetLog("No More Builders available")
-							If _Sleep(2000) Then Return
-							ExitLoop
-						EndIf
 					EndIf
 				Next
+			Else
+				SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
 			EndIf
 		EndIf
 	EndIf
@@ -189,61 +176,54 @@ Func CleanYard()
 	Local $GemBoxXY[2] = [0, 0]
 
 	; Perform a parallel search with all images inside the directory
-	If ($g_iFreeBuilderCount > 0 And $g_bChkGemsBox And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir) Or TestCapture() Then
-		Local $aResult = multiMatches($g_sImgGemBox, 1, $sCocDiamond, $sCocDiamond)
-		If UBound($aResult) > 1 Then
-			; Now loop through the array to modify values, select the highest entry to return
-			For $i = 1 To UBound($aResult) - 1
-				; Check to see if its a higher level then currently stored
-				If Number($aResult[$i][2]) > Number($return[2]) Then
-					; Store the data because its higher
-					$return[0] = $aResult[$i][0] ; Filename
-					$return[1] = $aResult[$i][1] ; Type
-					$return[4] = $aResult[$i][4] ; Total Objects
-					$return[5] = $aResult[$i][5] ; Coords
-				EndIf
-			Next
-			$GemBoxXY = $return[5]
-
-			If $g_bDebugSetLog Then SetDebugLog("Filename :" & $return[0])
-			If $g_bDebugSetLog Then SetDebugLog("Type :" & $return[1])
-			If $g_bDebugSetLog Then SetDebugLog("Total Objects :" & $return[4])
-
-			If IsArray($GemBoxXY) Then
-				; Loop through all found points for the item and click them to remove it, there should only be one
-				For $j = 0 To UBound($GemBoxXY) - 1
-					If $g_bDebugSetLog Then SetDebugLog("Coords :" & $GemBoxXY[$j][0] & "," & $GemBoxXY[$j][1])
-					If IsCoordSafe($GemBoxXY[$j][0], $GemBoxXY[$j][1]) Then
-						If IsMainPage() Then Click($GemBoxXY[$j][0], $GemBoxXY[$j][1], 1, 120, "#0430")
-						If _Sleep($DELAYCHECKTOMBS2) Then Return
-						$bLocate = True
-						If _Sleep($DELAYCOLLECT3) Then Return
-						If Not ClickRemoveObstacle() Then ContinueLoop
-						If _Sleep($DELAYCHECKTOMBS2) Then Return
-						ClickP($aAway, 2, 300, "#0329") ;Click Away
-						If _Sleep($DELAYCHECKTOMBS1) Then Return
-						If Not getBuilderCount() Then Return ; update builder data, return if problem
-						If _Sleep($DELAYRESPOND) Then Return
-						If $g_iFreeBuilderCount = 0 Then
-							SetLog("No More Builders available")
-							If _Sleep(2000) Then Return
-							ExitLoop
-						EndIf
+	If $g_bChkGemsBox Then
+		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(696, 74)
+		If _Sleep($DELAYRESPOND) Then Return
+		UpdateStats()
+		If _Sleep(300) Then Return
+		If Number($g_aiCurrentLoot[$eLootElixir]) > $iGemElixir Or TestCapture() Then
+			Local $aResult = multiMatches($g_sImgGemBox, 1, $sCocDiamond, $sCocDiamond)
+			If UBound($aResult) > 1 Then
+				; Now loop through the array to modify values, select the highest entry to return
+				For $i = 1 To UBound($aResult) - 1
+					; Check to see if its a higher level then currently stored
+					If Number($aResult[$i][2]) > Number($return[2]) Then
+						; Store the data because its higher
+						$return[0] = $aResult[$i][0] ; Filename
+						$return[1] = $aResult[$i][1] ; Type
+						$return[4] = $aResult[$i][4] ; Total Objects
+						$return[5] = $aResult[$i][5] ; Coords
 					EndIf
 				Next
+				$GemBoxXY = $return[5]
+
+				If $g_bDebugSetLog Then SetDebugLog("Filename :" & $return[0])
+				If $g_bDebugSetLog Then SetDebugLog("Type :" & $return[1])
+				If $g_bDebugSetLog Then SetDebugLog("Total Objects :" & $return[4])
+
+				If IsArray($GemBoxXY) Then
+					; Loop through all found points for the item and click them to remove it, there should only be one
+					For $j = 0 To UBound($GemBoxXY) - 1
+						If $g_bDebugSetLog Then SetDebugLog("Coords :" & $GemBoxXY[$j][0] & "," & $GemBoxXY[$j][1])
+						If IsCoordSafe($GemBoxXY[$j][0], $GemBoxXY[$j][1]) Then
+							If IsMainPage() Then Click($GemBoxXY[$j][0], $GemBoxXY[$j][1], 1, 120, "#0430")
+							If _Sleep($DELAYCHECKTOMBS2) Then Return
+							If _Sleep($DELAYCOLLECT3) Then Return
+							If Not ClickRemoveObstacle() Then ContinueLoop
+							If _Sleep($DELAYCHECKTOMBS2) Then Return
+							SetLog("GemBox removed!", $COLOR_DEBUG1)
+							ClearScreen()
+							If _Sleep($DELAYCHECKTOMBS1) Then Return
+						EndIf
+					Next
+				EndIf
+			Else
+				SetLog("No GemBox Found!", $COLOR_SUCCESS)
 			EndIf
-			SetLog("GemBox removed!", $COLOR_DEBUG1)
-		Else
-			SetLog("No GemBox Found!", $COLOR_SUCCESS)
 		EndIf
 	EndIf
 
-	If $bNoBuilders Then
-		SetLog("No Builders available to remove Obstacles!")
-	Else
-		If Not $bLocate And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
-		If $g_bDebugSetLog Then SetDebugLog("Time: " & Round(__TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
-	EndIf
+	If $g_bDebugSetLog Then SetDebugLog("Time: " & Round(__TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
 	UpdateStats()
 	ClearScreen()
 EndFunc   ;==>CleanYard
@@ -267,13 +247,13 @@ Func ClickRemoveObstacle()
 		$bLoop += 1
 	WEnd
 
+	Local $aiButton = findButton("RemoveObstacle", Default, 1, True)
 	If IsArray($aiButton) And UBound($aiButton) >= 2 Then
 		SetDebugLog("Remove Button found! Clicking it at X: " & $aiButton[0] & ", Y: " & $aiButton[1], $COLOR_DEBUG1)
 		ClickP($aiButton)
-		If _Sleep(3000) Then Return
+		If _Sleep(1000) Then Return
 		Return True
 	Else
-		SetLog("Cannot find Remove Button", $COLOR_ERROR)
 		Return False
 	EndIf
 EndFunc   ;==>ClickRemoveObstacle

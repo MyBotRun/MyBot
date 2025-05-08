@@ -205,6 +205,24 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 					ContinueLoop
 				EndIf
 			Case $bIsMainGrayed
+				; Voucher / Magic Snack Freebie
+				If Freebie() Then
+					SetLog("Freebie window closed chief!", $COLOR_INFO) ; Check for Freebie Event window (2025-03)
+					ContinueLoop
+				EndIf
+				; Season End Start
+				If EndStartSeason() Then
+					SetLog("Ended/New Season window closed chief!", $COLOR_INFO) ; Check for Ended or Started Season Window
+					ContinueLoop
+				EndIf
+				; Clan Capital Result
+				If UBound(decodeSingleCoord(FindImageInPlace2("CCResults", $g_sImgClanCapitalResults, 210, 130 + $g_iMidOffsetY, 320, 240 + $g_iMidOffsetY, True))) > 1 Then
+					If _ColorCheck(_GetPixelColor(247, 311 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xFFFFFF, 6), 10) And _ColorCheck(_GetPixelColor(669, 242 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xFFFFFF, 6), 10) Then
+						CloseWindow()
+						If _Sleep($DELAYCHECKOBSTACLES1) Then Return
+						ContinueLoop
+					EndIf
+				EndIf
 				If StarBonus() Then
 					SetLog("Star Bonus window closed chief!", $COLOR_INFO) ; Check for Star Bonus window to fill treasury (2016-01) update
 					ContinueLoop
@@ -296,7 +314,8 @@ Func CheckStreakEvent()
 		ClickP($aContinueButton, 1, 120, "#0433")
 		If _Sleep(2500) Then Return
 	EndIf
-	If Not _ColorCheck(_GetPixelColor(290, 120 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) And Not _ColorCheck(_GetPixelColor(560, 150 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) Then
+	Local $bCheckStreakEventWindow = _ColorCheck(_GetPixelColor(290, 150 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20) And _ColorCheck(_GetPixelColor(560, 150 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0x9B071A, 6), 20)
+	If Not $bCheckStreakEventWindow Then
 		SetDebugLog("Streak Event window not found?", $COLOR_DEBUG)
 		Return $bRet
 	EndIf
@@ -350,7 +369,7 @@ Func TreasureHunt($counter = 0)
 		If IsArray($aiHammerOnRock) And UBound($aiHammerOnRock) = 2 Then
 			For $i = 0 To 20
 				If Not $g_bRunState Then Return
-				Local $aiLockOfChest = decodeSingleCoord(FindImageInPlace2("LockOfBox", $ImgLockOfChest, 400, 305 + $g_iMidOffsetY, 480, 390 + $g_iMidOffsetY, True))
+				Local $aiLockOfChest = decodeSingleCoord(FindImageInPlace2("LockOfBox", $ImgLockOfChest, 400, 305 + $g_iMidOffsetY, 480, 410 + $g_iMidOffsetY, True))
 				If IsArray($aiLockOfChest) And UBound($aiLockOfChest) = 2 Then
 					Local $iHammers = QuickMIS("CNX", $ImgHammersOnRock, 340, 470 + $g_iMidOffsetY, 510, 520 + $g_iMidOffsetY)
 					If IsArray($iHammers) And UBound($iHammers) > 1 And UBound($iHammers, $UBOUND_COLUMNS) > 1 Then
@@ -383,7 +402,7 @@ Func TreasureHunt($counter = 0)
 		SetLog("Click on Continue...", $COLOR_INFO)
 		For $i = 0 To 30
 			If Not $g_bRunState Then Return
-			Local $offColors[3][3] = [[0x8BD13A, 5, 0], [0x8BD13A, 9, 6], [0x0D0D0D, 12, 11]] ; 2nd pixel Green Color, 3rd pixel Green Color, 4th pixel Black bottom edge of Button
+			Local $offColors[3][3] = [[0x8BD43A, 5, 0], [0x8BD43A, 9, 6], [0x0D0D0D, 12, 11]] ; 2nd pixel Green Color, 3rd pixel Green Color, 4th pixel Black bottom edge of Button
 			Local $ContinueButtonEdge = _MultiPixelSearch(366, 535, 385, 550, 1, 1, Hex(0x0D0D0D, 6), $offColors, 15) ; first black pixel on side of Button
 			SetDebugLog("Pixel Color #1: " & _GetPixelColor(368, 535, True) & ", #2: " & _GetPixelColor(373, 535, True) & ", #3: " & _GetPixelColor(377, 541, True) & ", #4: " & _GetPixelColor(380, 546, True), $COLOR_DEBUG)
 			If IsArray($ContinueButtonEdge) Then

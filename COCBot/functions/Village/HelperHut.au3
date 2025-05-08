@@ -1187,7 +1187,7 @@ Func HelperHutApp($bToOpen = False)
 			Return
 		EndIf
 	Else
-		Click(165, 530 + $g_iMidOffsetY)
+		Click(210, 530 + $g_iMidOffsetY)
 		If _Sleep(1000) Then Return
 	EndIf
 
@@ -1466,7 +1466,7 @@ Func MoveToBottom()
 
 		Local $aiWhitePixelSearchOutline = False, $bSecondLoop = 0
 		While 1
-			If IsArray(_PixelSearch(158, 482 + $g_iMidOffsetY, 162, 492 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
+			If IsArray(_PixelSearch(190, 482 + $g_iMidOffsetY, 194, 492 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
 				$aiWhitePixelSearchOutline = True
 				ExitLoop
 			Else

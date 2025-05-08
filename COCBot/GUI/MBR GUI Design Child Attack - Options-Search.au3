@@ -171,10 +171,6 @@ Func CreateAttackSearchOptionsSearch()
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "search(es).", -1), $x + 47, $y + 17, -1, -1)
 
 	$y += 45
-		$g_hChkRestartSearchPickupHero = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Search", "ChkRestartSearchPickupHero", "Restart to pickup healed hero"), $x - 5, $y, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Search", "ChkRestartSearchPickupHero_Info_01", "Return to base when a hero is healed and ready to join the attack"))
-
-	$y += 25
 		$g_hChkAlertSearch = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Search", "ChkAlertSearch", "Alert me when Village found"), $x - 5, $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Search", "ChkAlertSearch_Info_01", "Check this if you want an Audio alarm & a Balloon Tip when a Base to attack is found."))
 			GUICtrlSetState(-1, $GUI_CHECKED)

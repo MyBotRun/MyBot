@@ -363,6 +363,7 @@ Func chkUpgradeKing()
 	Else
 		GUICtrlSetState($g_hChkUpgradeKing, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 		GUICtrlSetState($g_hChkRepUpgradeKing, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		$g_bUpgradeKingEnable = False
 		_GUI_Value_STATE("HIDE", $groupKingSleeping)
 		For $i In $ahGroupKingWait
 			_GUICtrlSetTip($i, $TxtTip)
@@ -402,6 +403,7 @@ Func chkUpgradeQueen()
 	Else
 		GUICtrlSetState($g_hChkUpgradeQueen, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 		GUICtrlSetState($g_hChkRepUpgradeQueen, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		$g_bUpgradeQueenEnable = False
 		_GUI_Value_STATE("HIDE", $groupQueenSleeping)
 		For $i In $ahGroupQueenWait
 			_GUICtrlSetTip($i, $TxtTip)
@@ -482,6 +484,7 @@ Func chkUpgradeWarden()
 	Else
 		GUICtrlSetState($g_hChkUpgradeWarden, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 		GUICtrlSetState($g_hChkRepUpgradeWarden, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		$g_bUpgradeWardenEnable = False
 		_GUI_Value_STATE("HIDE", $groupWardenSleeping)
 		For $i In $ahGroupWardenWait
 			_GUICtrlSetTip($i, $TxtTip)
@@ -521,6 +524,7 @@ Func chkUpgradeChampion()
 	Else
 		GUICtrlSetState($g_hChkUpgradeChampion, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 		GUICtrlSetState($g_hChkRepUpgradeChampion, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		$g_bUpgradeChampionEnable = False
 		_GUI_Value_STATE("HIDE", $groupChampionSleeping)
 		For $i In $ahGroupChampionWait
 			_GUICtrlSetTip($i, $TxtTip)
@@ -530,7 +534,7 @@ EndFunc   ;==>chkUpgradeChampion
 
 Func chkUpgradePets()
 	If $g_iTownHallLevel = 14 Then ; Must be TH14 to have Pets 1->4
-		For $i = 0 To $ePetCount - 7
+		For $i = 0 To $ePetCount - 8
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
 			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
 				$g_bUpgradePetsEnable[$i] = True
@@ -540,13 +544,13 @@ Func chkUpgradePets()
 				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 			EndIf
 		Next
-		For $i = $ePetCount - 6 To $ePetCount - 1
+		For $i = $ePetCount - 7 To $ePetCount - 1
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_DISABLE + $GUI_UNCHECKED)
 			$g_bUpgradePetsEnable[$i] = False
 			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 		Next
 	ElseIf $g_iTownHallLevel = 15 Then ; TH15 : Pets 1->8
-		For $i = 0 To $ePetCount - 3
+		For $i = 0 To $ePetCount - 4
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
 			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
 				$g_bUpgradePetsEnable[$i] = True
@@ -556,12 +560,26 @@ Func chkUpgradePets()
 				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 			EndIf
 		Next
-		For $i = $ePetCount - 2 To $ePetCount - 1
+		For $i = $ePetCount - 3 To $ePetCount - 1
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_DISABLE + $GUI_UNCHECKED)
 			$g_bUpgradePetsEnable[$i] = False
 			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 		Next
 	ElseIf $g_iTownHallLevel = 16 Then ; TH16 : Pets 1->10
+		For $i = 0 To $ePetCount - 2
+			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
+			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
+				$g_bUpgradePetsEnable[$i] = True
+				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " enabled")
+			Else
+				$g_bUpgradePetsEnable[$i] = False
+				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
+			EndIf
+		Next
+		;Sneezy
+		GUICtrlSetState($g_hChkUpgradePets[$ePetCount - 1], $GUI_DISABLE + $GUI_UNCHECKED)
+		$g_bUpgradePetsEnable[$ePetCount - 1] = False
+	ElseIf $g_iTownHallLevel = 17 Then ; TH17 : Pets 1->11
 		For $i = 0 To $ePetCount - 1
 			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
 			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
@@ -583,12 +601,14 @@ EndFunc   ;==>chkUpgradePets
 Func cmbHeroReservedBuilder()
 	$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
 	If $g_iTownHallLevel > 6 Then ; Must be TH7 or above to have Heroes
-		If $g_iTownHallLevel > 12 Then ; For TH13 enable up to 4 reserved builders
-			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3|4", "0")
-		ElseIf $g_iTownHallLevel > 10 Then ; For TH11 enable up to 3 reserved builders
-			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3", "0")
-		ElseIf $g_iTownHallLevel > 8 Then ; For TH9 enable up to 2 reserved builders
-			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2", "0")
+		If $g_iTownHallLevel > 12 Then ; For TH13 enable up to 5 reserved builders
+			If $g_aiHeroHallPos[2] > 6 Then GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3|4|5", "0")
+		ElseIf $g_iTownHallLevel > 10 Then ; For TH13 enable up to 4 reserved builders
+			If $g_aiHeroHallPos[2] > 4 Then GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3|4", "0")
+		ElseIf $g_iTownHallLevel > 8 Then ; For TH9 enable up to 3 reserved builders
+			If $g_aiHeroHallPos[2] > 2 Then GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3", "0")
+		ElseIf $g_iTownHallLevel > 7 Then ; For TH8 enable up to 2 reserved builders
+			If $g_aiHeroHallPos[2] > 1 Then GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2", "0")
 		Else ; For TH7 enable up to 1 reserved builder
 			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1", "0")
 		EndIf
@@ -605,7 +625,7 @@ EndFunc   ;==>cmbHeroReservedBuilder
 
 Func ReducecmbHeroReservedBuilder()
 	Local $IsToUpNrbHeroes = 0
-	Local $CheckedHeroes[4] = [$g_bUpgradeKingEnable, $g_bUpgradeQueenEnable, $g_bUpgradeWardenEnable, $g_bUpgradeChampionEnable]
+	Local $CheckedHeroes[5] = [$g_bUpgradeKingEnable, $g_bUpgradeQueenEnable, $g_bUpgradePrinceEnable, $g_bUpgradeWardenEnable, $g_bUpgradeChampionEnable]
 	For $i = 0 To UBound($CheckedHeroes) - 1
 		If $CheckedHeroes[$i] Then $IsToUpNrbHeroes += 1
 	Next

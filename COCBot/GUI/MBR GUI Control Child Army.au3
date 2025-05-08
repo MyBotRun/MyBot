@@ -15,28 +15,30 @@
 #include-once
 
 Func radSelectTrainType()
-	If GUICtrlRead($g_hRadCustomTrain) = $GUI_CHECKED Then
-		_GUICtrlTab_ClickTab($g_hGUI_TRAINARMY_ARMY_TAB, 0)
-		For $i = 0 To 2
-			_GUI_Value_STATE("DISABLE", $g_ahChkArmy[$i] & "#" & $g_ahChkUseInGameArmy[$i] & "#" & $g_ahLblEditArmy[$i] & "#" & $g_ahBtnEditArmy[$i])
-		Next
-		_GUI_Value_STATE("ENABLE", $grpTrainTroops & "#" & $grpCookSpell)
-		lblTotalCountTroop1()
-		lblTotalCountSpell()
-	Else
-		_GUICtrlTab_ClickTab($g_hGUI_TRAINARMY_ARMY_TAB, 1)
-		_GUI_Value_STATE("ENABLE", $g_ahChkArmy[0] & "#" & $g_ahChkArmy[1] & "#" & $g_ahChkArmy[2])
-		For $i = 0 To 2
-			_chkQuickTrainArmy($i)
-		Next
-		_GUI_Value_STATE("DISABLE", $grpTrainTroops & "#" & $grpCookSpell)
-		GUICtrlSetData($g_hLblTotalTimeCamp, " 0s")
-		GUICtrlSetData($g_hLblTotalTimeSpell, " 0s")
-		GUICtrlSetData($g_hLblElixirCostCamp, "0")
-		GUICtrlSetData($g_hLblDarkCostCamp, "0")
-		GUICtrlSetData($g_hLblElixirCostSpell, "0")
-		GUICtrlSetData($g_hLblDarkCostSpell, "0")
-	EndIf
+	; If GUICtrlRead($g_hRadCustomTrain) = $GUI_CHECKED Then
+	_GUICtrlTab_ClickTab($g_hGUI_TRAINARMY_ARMY_TAB, 0)
+	For $i = 0 To 2
+		_GUI_Value_STATE("DISABLE", $g_ahChkArmy[$i] & "#" & $g_ahChkUseInGameArmy[$i] & "#" & $g_ahLblEditArmy[$i] & "#" & $g_ahBtnEditArmy[$i])
+	Next
+	_GUI_Value_STATE("ENABLE", $grpTrainTroops & "#" & $grpCookSpell)
+	lblTotalCountTroop1()
+	lblTotalCountSpell()
+	#cs
+		Else
+			_GUICtrlTab_ClickTab($g_hGUI_TRAINARMY_ARMY_TAB, 1)
+			_GUI_Value_STATE("ENABLE", $g_ahChkArmy[0] & "#" & $g_ahChkArmy[1] & "#" & $g_ahChkArmy[2])
+			For $i = 0 To 2
+				_chkQuickTrainArmy($i)
+			Next
+			_GUI_Value_STATE("DISABLE", $grpTrainTroops & "#" & $grpCookSpell)
+			GUICtrlSetData($g_hLblTotalTimeCamp, " 0s")
+			GUICtrlSetData($g_hLblTotalTimeSpell, " 0s")
+			GUICtrlSetData($g_hLblElixirCostCamp, "0")
+			GUICtrlSetData($g_hLblDarkCostCamp, "0")
+			GUICtrlSetData($g_hLblElixirCostSpell, "0")
+			GUICtrlSetData($g_hLblDarkCostSpell, "0")
+		EndIf
+	#ce
 	lblTotalCountSiege()
 EndFunc   ;==>radSelectTrainType
 
@@ -186,7 +188,7 @@ Func lblTotalCountTroop1()
 			GUICtrlSetState($g_hCalTotalTroops, $GUI_HIDE)
 		EndIf
 	EndIf
-	lblTotalCountTroop2()
+	; lblTotalCountTroop2()
 EndFunc   ;==>lblTotalCountTroop1
 
 Func lblTotalCountTroop2()
@@ -248,7 +250,7 @@ Func lblTotalCountSpell()
 	EndIf
 
 	GUICtrlSetData($g_hLblCountTotalSpells, String($g_iTotalTrainSpaceSpell))
-	lblTotalCountSpell2()
+	; lblTotalCountSpell2()
 EndFunc   ;==>lblTotalCountSpell
 
 Func lblTotalCountSpell2()
@@ -289,11 +291,7 @@ Func lblTotalCountSiege()
 		If $g_iTotalTrainSpaceSiege <= 3 Then
 			GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_WHITE)
 		Else
-			If $g_bDoubleTrain Then
-				GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_RED)
-			Else
-				GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], ($g_iTotalTrainSpaceSiege > 6 ? $COLOR_RED : $COLOR_WHITE))
-			EndIf
+			GUICtrlSetBkColor($g_ahTxtTrainArmySiegeCount[$i], $COLOR_RED)
 		EndIf
 	Next
 EndFunc   ;==>lblTotalCountSiege
@@ -320,16 +318,24 @@ Func HideSiegesFctTH()
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeFlameFlinger], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeTroopLauncher], 0)
 	EndIf
 
 	If $g_iTownHallLevel > 13 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupFlameFlinger)
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeTroopLauncher], 0)
 	EndIf
 
 	If $g_iTownHallLevel > 14 Or $g_iTownHallLevel = 0 Then
 		_GUI_Value_STATE("ENABLE", $groupBattleDrill)
+	Else
+		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$eSiegeTroopLauncher], 0)
+	EndIf
+
+	If $g_iTownHallLevel > 15 Or $g_iTownHallLevel = 0 Then
+		_GUI_Value_STATE("ENABLE", $groupTroopLauncher)
 	EndIf
 
 	For $i = 0 To $eSiegeMachineCount - 1
@@ -464,11 +470,11 @@ Func chkCloseWaitEnable()
 	If GUICtrlRead($g_hChkCloseWhileTraining) = $GUI_CHECKED Then
 		$g_bCloseWhileTrainingEnable = True
 		_GUI_Value_STATE("ENABLE", $groupCloseWhileTraining)
-		_GUI_Value_STATE("ENABLE", $g_hLblCloseWaitingTroops & "#" & $g_hCmbMinimumTimeClose & "#" & $g_hLblSymbolWaiting & "#" & $g_hLblWaitingInMinutes)
+		_GUI_Value_STATE("ENABLE", $g_hLblCloseWaitingTroops & "#" & $g_hCmbMinimumTimeCloseMin & "#" & $g_hCmbMinimumTimeCloseMax & "#" & $g_hLblSymbolWaiting & "#" & $g_hLblWaitingInMinutes)
 	Else
 		$g_bCloseWhileTrainingEnable = False
 		_GUI_Value_STATE("DISABLE", $groupCloseWhileTraining)
-		_GUI_Value_STATE("DISABLE", $g_hLblCloseWaitingTroops & "#" & $g_hCmbMinimumTimeClose & "#" & $g_hLblSymbolWaiting & "#" & $g_hLblWaitingInMinutes)
+		_GUI_Value_STATE("DISABLE", $g_hLblCloseWaitingTroops & "#" & $g_hCmbMinimumTimeCloseMin & "#" & $g_hCmbMinimumTimeCloseMax & "#" & $g_hLblSymbolWaiting & "#" & $g_hLblWaitingInMinutes)
 	EndIf
 	If GUICtrlRead($g_hChkRandomClose) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hChkCloseEmulator, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
@@ -480,6 +486,55 @@ Func chkCloseWaitEnable()
 		EndIf
 	EndIf
 EndFunc   ;==>chkCloseWaitEnable
+
+Func cmbAttackconsecutiveMin()
+	If Int(GUICtrlRead($g_hCmbAttackconsecutiveMax)) < Int(GUICtrlRead($g_hCmbAttackconsecutiveMin)) Then
+		GUICtrlSetData($g_hCmbAttackconsecutiveMin, GUICtrlRead($g_hCmbAttackconsecutiveMax))
+	EndIf
+	$g_iAttackconsecutiveMin = Int(GUICtrlRead($g_hCmbAttackconsecutiveMin))
+	_cmbAttackconsecutive()
+EndFunc   ;==>cmbAttackconsecutiveMin
+
+Func cmbAttackconsecutiveMax()
+	If Int(GUICtrlRead($g_hCmbAttackconsecutiveMax)) < Int(GUICtrlRead($g_hCmbAttackconsecutiveMin)) Then
+		GUICtrlSetData($g_hCmbAttackconsecutiveMax, GUICtrlRead($g_hCmbAttackconsecutiveMin))
+	EndIf
+	$g_iAttackconsecutiveMax = Int(GUICtrlRead($g_hCmbAttackconsecutiveMax))
+	_cmbAttackconsecutive()
+EndFunc   ;==>cmbAttackconsecutiveMax
+
+Func _cmbAttackconsecutive()
+	Switch Int(GUICtrlRead($g_hCmbAttackconsecutiveMin))
+		Case 0 To 4
+			GUICtrlSetBkColor($g_hCmbAttackconsecutiveMin, $COLOR_SUCCESS1)
+		Case 5 To 8
+			GUICtrlSetBkColor($g_hCmbAttackconsecutiveMin, $COLOR_YELLOW)
+		Case 9 To 99
+			GUICtrlSetBkColor($g_hCmbAttackconsecutiveMin, $COLOR_RED)
+	EndSwitch
+	Switch Int(GUICtrlRead($g_hCmbAttackconsecutiveMax))
+		Case 0 To 4
+			GUICtrlSetBkColor($g_hCmbAttackconsecutiveMax, $COLOR_SUCCESS1)
+		Case 5 To 8
+			GUICtrlSetBkColor($g_hCmbAttackconsecutiveMax, $COLOR_YELLOW)
+		Case 9 To 99
+			GUICtrlSetBkColor($g_hCmbAttackconsecutiveMax, $COLOR_RED)
+	EndSwitch
+EndFunc   ;==>_cmbAttackconsecutive
+
+Func CmbMinimumTimeCloseMin()
+	If Int(GUICtrlRead($g_hCmbMinimumTimeCloseMax)) < Int(GUICtrlRead($g_hCmbMinimumTimeCloseMin)) Then
+		GUICtrlSetData($g_hCmbMinimumTimeCloseMin, GUICtrlRead($g_hCmbMinimumTimeCloseMax))
+	EndIf
+	$g_iCloseMinimumTimeMin = GUICtrlRead($g_hCmbMinimumTimeCloseMin)
+EndFunc   ;==>CmbMinimumTimeCloseMin
+
+Func CmbMinimumTimeCloseMax()
+	If Int(GUICtrlRead($g_hCmbMinimumTimeCloseMax)) < Int(GUICtrlRead($g_hCmbMinimumTimeCloseMin)) Then
+		GUICtrlSetData($g_hCmbMinimumTimeCloseMax, GUICtrlRead($g_hCmbMinimumTimeCloseMin))
+	EndIf
+	$g_iCloseMinimumTimeMax = GUICtrlRead($g_hCmbMinimumTimeCloseMax)
+EndFunc   ;==>CmbMinimumTimeCloseMax
 
 Func chkCloseWaitTrain()
 	$g_bCloseWithoutShield = (GUICtrlRead($g_hChkCloseWithoutShield) = $GUI_CHECKED)
@@ -1547,10 +1602,10 @@ Func RemoveAllTmpTrain($sWhat = "All")
 EndFunc   ;==>RemoveAllTmpTrain
 
 Func HideAllTroops()
-	For $i = $g_ahPicTrainArmyTroop[$eTroopMinion] To $g_ahPicTrainArmyTroop[$eTroopDruid]
+	For $i = $g_ahPicTrainArmyTroop[$eTroopMinion] To $g_ahPicTrainArmyTroop[$eTroopFurnace]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
-	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopMinion] To $g_ahTxtTrainArmyTroopCount[$eTroopDruid]
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopMinion] To $g_ahTxtTrainArmyTroopCount[$eTroopFurnace]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
 	For $i = $g_ahPicTrainArmyTroop[$eTroopBarbarian] To $g_ahPicTrainArmyTroop[$eTroopThrower]
@@ -1571,10 +1626,10 @@ Func HideAllTroops()
 	For $i = $g_ahTxtTrainArmySpellCount[$eSpellLightning] To $g_ahTxtTrainArmySpellCount[$eSpellOvergrowth]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
-	For $i = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] To $g_ahPicTrainArmySiege[$eSiegeBattleDrill]
+	For $i = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] To $g_ahPicTrainArmySiege[$eSiegeTroopLauncher]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
-	For $i = $g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker] To $g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill]
+	For $i = $g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker] To $g_ahTxtTrainArmySiegeCount[$eSiegeTroopLauncher]
 		GUICtrlSetState($i, $GUI_HIDE)
 	Next
 EndFunc   ;==>HideAllTroops
@@ -1612,10 +1667,10 @@ EndFunc   ;==>BtnElixirTroops
 
 Func BtnDarkElixirTroops()
 	HideAllTroops()
-	For $i = $g_ahPicTrainArmyTroop[$eTroopMinion] To $g_ahPicTrainArmyTroop[$eTroopDruid]
+	For $i = $g_ahPicTrainArmyTroop[$eTroopMinion] To $g_ahPicTrainArmyTroop[$eTroopFurnace]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
-	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopMinion] To $g_ahTxtTrainArmyTroopCount[$eTroopDruid]
+	For $i = $g_ahTxtTrainArmyTroopCount[$eTroopMinion] To $g_ahTxtTrainArmyTroopCount[$eTroopFurnace]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
 	SetBtnSelector("DarkElixirTroops")
@@ -1645,10 +1700,10 @@ EndFunc   ;==>BtnSpells
 
 Func BtnSieges()
 	HideAllTroops()
-	For $i = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] To $g_ahPicTrainArmySiege[$eSiegeBattleDrill]
+	For $i = $g_ahPicTrainArmySiege[$eSiegeWallWrecker] To $g_ahPicTrainArmySiege[$eSiegeTroopLauncher]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
-	For $i = $g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker] To $g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill]
+	For $i = $g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker] To $g_ahTxtTrainArmySiegeCount[$eSiegeTroopLauncher]
 		GUICtrlSetState($i, $GUI_SHOW)
 	Next
 	SetBtnSelector("Sieges")

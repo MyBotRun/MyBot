@@ -30,7 +30,7 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	Local $sSpellDiamond = GetDiamondFromRect2(70, 330 + $g_iMidOffsetY, 510, 400 + $g_iMidOffsetY)
+	Local $sSpellDiamond = GetDiamondFromRect2(380, 342 + $g_iMidOffsetY, 645, 400 + $g_iMidOffsetY)
 
 	Local $aCurrentSpells = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Spells", $sSpellDiamond, $sSpellDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentSpells[index] = $aArray[2] = ["SpellShortName", CordX,CordY]
 
@@ -52,7 +52,7 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 
 			$aSpellCoords = StringSplit($aTempSpellArray[1], ",", $STR_NOCOUNT) ; Split the Coordinates where the Spell got found into X and Y
 			If UBound($aSpellCoords) < 2 Then ContinueLoop
-			$g_aiCurrentSpells[$iSpellIndex] = Number(getBarracksNewTroopQuantity(Slot($aSpellCoords[0], $aSpellCoords[1]), 319 + $g_iMidOffsetY, $bNeedCapture)) ; Get The Quantity of the Spell, Slot() Does return the exact spot to read the Number from
+			$g_aiCurrentSpells[$iSpellIndex] = Number(getBarracksNewSpellQuantity(Slot($aSpellCoords[0], $aSpellCoords[1]), 346 + $g_iMidOffsetY, $bNeedCapture)) ; Get The Quantity of the Spell, Slot() Does return the exact spot to read the Number from
 
 			$sSpellName = $g_aiCurrentSpells[$iSpellIndex] >= 2 ? $g_asSpellNames[$iSpellIndex] & " Spells" : $g_asSpellNames[$iSpellIndex] & " Spell" ; Select the right Spell Name, If more than one then use Spells at the end
 			$aCurrentSpellsLog[$iSpellIndex][0] = $sSpellName

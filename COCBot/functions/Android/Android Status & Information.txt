@@ -10,7 +10,7 @@ The once listed here have been tested and do work.
 BlueStacks
 ==========
 http://www.bluestacks.com/
-Versions 5.13.220.1001 - 5.21.642.1003
+Versions 5.13.220.1001 - 5.22.55.1007
 MyBot Command Line Key: BlueStacks5
 Default Instance Key: Pie64
 Second Instance Key:  Pie64_1

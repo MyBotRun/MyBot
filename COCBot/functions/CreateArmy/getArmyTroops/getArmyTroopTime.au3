@@ -19,6 +19,8 @@ Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChe
 
 	$g_aiTimeTrain[0] = 0 ; reset time
 
+	Return
+
 	If $bCheckWindow Then
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)

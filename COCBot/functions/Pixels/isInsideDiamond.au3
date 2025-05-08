@@ -78,14 +78,17 @@ Func isInsideDiamond($aCoords)
 	Local $DY = Abs($y - $aMiddle[1])
 
 	If ($DX / $aSize[0] + $DY / $aSize[1] <= 1) Then
-		If $x < 68 And $y > 316 Then ; coordinates where the game will click on the CHAT tab (safe margin)
-			If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village, but Exclude CHAT")
+		If $x < 82 And $y > 427 + $g_iBottomOffsetY And $bIsOnMainBase Then ; coordinates where the game will click on the War Button (safe margin)
+			If $g_bDebugSetLog Then SetDebugLog("Too close to War Button")
+			Return False
+		ElseIf $x < 72 And ($y > 270 + $g_iMidOffsetY And $y < 345 + $g_iMidOffsetY) Then ; coordinates where the game will click on the CHAT tab (safe margin)
+			If $g_bDebugSetLog Then SetDebugLog("Too close to CHAT Tab")
 			Return False
 		ElseIf $y < 63 Then ; coordinates where the game will click on the BUILDER button or SHIELD button (safe margin)
-			If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village, but Exclude BUILDER")
+			If $g_bDebugSetLog Then SetDebugLog("Too close to Builder and Shield")
 			Return False
-		ElseIf $x > 692 And $y > 156 And $y < 210 Then ; coordinates where the game will click on the GEMS button (safe margin)
-			If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village, but Exclude GEMS")
+		ElseIf $x > 692 And $y > 126 + $g_iMidOffsetY And $y < 180 + $g_iMidOffsetY And $bIsOnMainBase Then ; coordinates where the game will click on the GEMS button (safe margin)
+			If $g_bDebugSetLog Then SetDebugLog("Too close to GEMS")
 			Return False
 		EndIf
 		;If $g_bDebugSetLog Then SetDebugLog("Coordinate Inside Village", $COLOR_DEBUG)

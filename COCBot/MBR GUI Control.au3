@@ -1808,26 +1808,26 @@ Func tabARMY()
 	Select
 		Case $tabidx = 0 ; Army tab
 			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_ARMY)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
+		;	GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
+		;	GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
 			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
 
-		Case $tabidx = 1 ; Boost tab
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
-			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_BOOST)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
+	;	Case $tabidx = 1 ; Boost tab
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
+	;		GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_BOOST)
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
 
-		Case $tabidx = 2 ; Train Order tab
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
-			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_TRAINORDER)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
+	;	Case $tabidx = 2 ; Train Order tab
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
+	;		GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_TRAINORDER)
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
 
-		Case $tabidx = 3 ; Options tab
+		Case $tabidx = 1 ; Options tab
 			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
-			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
+	;		GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
 			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_OPTIONS)
 
 	EndSelect
@@ -2040,7 +2040,8 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 
 		Case $g_hGUI_TRAINARMY_TAB
 			; the icons for army tab
-			Local $aIconIndex = [$eIcnTrain, $eIcnGem, $eIcnReOrder, $eIcnOptions]
+			Local $aIconIndex = [$eIcnTrain, $eIcnOptions]
+		;	Local $aIconIndex = [$eIcnTrain, $eIcnGem, $eIcnReOrder, $eIcnOptions]
 
 		Case $g_hGUI_MISC_TAB
 			Local $aIconIndex = [$eIcnTH1, $eIcnBuilderHall, $eIcnStrongMan, $eIcnClanCapital]

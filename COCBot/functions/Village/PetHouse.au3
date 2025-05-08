@@ -93,7 +93,7 @@ Func PetHouse($test = False)
 	If CheckPetUpgrade() Then Return False ; cant start if something upgrading
 
 	Local $iPetLevelxCoordStart = 40
-	Local $iPetLevelxCoordStart2 = 455
+	Local $iPetLevelxCoordStart2 = 272
 	Local $iPetSlotWidth = 182
 
 	For $i = 0 To $ePetCount - 1
@@ -104,133 +104,186 @@ Func PetHouse($test = False)
 		DragPetHouse($iPetIndex, $iPage)
 
 		Switch $g_iTownHallLevel
-			Case 14
-				Switch $BuildingInfo[2]
-					Case 1
-						$g_ePetLevels[$i] = 10
-						If $i > 0 Then ContinueLoop
-					Case 2
-						$g_ePetLevels[$i] = 10
-						If $i > 1 Then ContinueLoop
-					Case 3
-						If $i <= 2 Then
+				Case 14
+					Switch $BuildingInfo[2]
+						Case 1
 							$g_ePetLevels[$i] = 10
-						Else
-							ContinueLoop
-						EndIf
-					Case 4
-						If $i <= 2 Then
+							If $i > 0 Then ContinueLoop
+						Case 2
 							$g_ePetLevels[$i] = 10
-						ElseIf $i > 3 Then
-							ContinueLoop
-						EndIf
-					Case Else
-						$g_ePetLevels[$i] = 10
-				EndSwitch
-			Case 15
-				Switch $BuildingInfo[2]
-					Case 1
-						$g_ePetLevels[$i] = 10
-						If $i > 0 Then ContinueLoop
-					Case 2
-						$g_ePetLevels[$i] = 10
-						If $i > 1 Then ContinueLoop
-					Case 3
-						If $i <= 2 Then
+							If $i > 1 Then ContinueLoop
+						Case 3
+							If $i <= 2 Then
+								$g_ePetLevels[$i] = 10
+							Else
+								ContinueLoop
+							EndIf
+						Case 4
+							If $i <= 3 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i > 3 Then
+								ContinueLoop
+							EndIf
+						Case Else
 							$g_ePetLevels[$i] = 10
-						Else
-							ContinueLoop
-						EndIf
-					Case 4
-						If $i <= 2 Then
+					EndSwitch
+				Case 15
+					Switch $BuildingInfo[2]
+						Case 1
 							$g_ePetLevels[$i] = 10
-						ElseIf $i > 3 Then
-							ContinueLoop
-						EndIf
-					Case 5
-						If $i > 0 And $i <= 4 Then
+							If $i > 0 Then ContinueLoop
+						Case 2
 							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 5 Then
-							ContinueLoop
-						EndIf
-					Case 6
-						If $i > 0 And $i <= 5 Then
+							If $i > 1 Then ContinueLoop
+						Case 3
+							If $i <= 2 Then
+								$g_ePetLevels[$i] = 10
+							Else
+								ContinueLoop
+							EndIf
+						Case 4
+							If $i <= 3 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i > 3 Then
+								ContinueLoop
+							EndIf
+						Case 5
+							If $i > 0 And $i <= 4 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 5 Then
+								ContinueLoop
+							EndIf
+						Case 6
+							If $i > 0 And $i <= 5 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 6 Then
+								ContinueLoop
+							EndIf
+						Case 7
+							If $i > 0 And $i <> 2 And $i <= 6 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 7 Then
+								ContinueLoop
+							EndIf
+						Case 8
+							If $i > 0 And $i <> 2 And $i <= 7 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 8 Then
+								ContinueLoop
+							EndIf
+						Case Else
+							If $i = 1 Or $i = 3 Then $g_ePetLevels[$i] = 10
+					EndSwitch
+				Case 16
+					Switch $BuildingInfo[2]
+						Case 1
 							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 6 Then
-							ContinueLoop
-						EndIf
-					Case 7
-						If $i > 0 And $i <> 2 And $i <= 6 Then
+							If $i > 0 Then ContinueLoop
+						Case 2
 							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 7 Then
-							ContinueLoop
-						EndIf
-					Case 8
-						If $i > 0 And $i <> 2 And $i <= 7 Then
+							If $i > 1 Then ContinueLoop
+						Case 3
+							If $i <= 2 Then
+								$g_ePetLevels[$i] = 10
+							Else
+								ContinueLoop
+							EndIf
+						Case 4
+							If $i <= 3 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i > 3 Then
+								ContinueLoop
+							EndIf
+						Case 5
+							If $i > 0 And $i <= 4 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 5 Then
+								ContinueLoop
+							EndIf
+						Case 6
+							If $i > 0 And $i <= 5 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 6 Then
+								ContinueLoop
+							EndIf
+						Case 7
+							If $i > 0 And $i <> 2 And $i <= 6 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 7 Then
+								ContinueLoop
+							EndIf
+						Case 8
+							If $i > 0 And $i <> 2 And $i <= 7 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 8 Then
+								ContinueLoop
+							EndIf
+						Case 9
+							If $i = 3 Then $g_ePetLevels[$i] = 10
+							If $i > 8 Then ContinueLoop
+						Case 10
+							If $i = 3 Then $g_ePetLevels[$i] = 10
+							If $i > 9 Then ContinueLoop
+					EndSwitch
+				Case 17
+					Switch $BuildingInfo[2]
+						Case 1
 							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 8 Then
-							ContinueLoop
-						EndIf
-					Case Else
-						If $i = 1 Then $g_ePetLevels[$i] = 10
-				EndSwitch
-			Case 16
-				Switch $BuildingInfo[2]
-					Case 1
-						$g_ePetLevels[$i] = 10
-						If $i > 0 Then ContinueLoop
-					Case 2
-						$g_ePetLevels[$i] = 10
-						If $i > 1 Then ContinueLoop
-					Case 3
-						If $i <= 2 Then
+							If $i > 0 Then ContinueLoop
+						Case 2
 							$g_ePetLevels[$i] = 10
-						Else
-							ContinueLoop
-						EndIf
-					Case 4
-						If $i <= 2 Then
-							$g_ePetLevels[$i] = 10
-						ElseIf $i > 3 Then
-							ContinueLoop
-						EndIf
-					Case 5
-						If $i > 0 And $i <= 4 Then
-							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 5 Then
-							ContinueLoop
-						EndIf
-					Case 6
-						If $i > 0 And $i <= 5 Then
-							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 6 Then
-							ContinueLoop
-						EndIf
-					Case 7
-						If $i > 0 And $i <> 2 And $i <= 6 Then
-							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 7 Then
-							ContinueLoop
-						EndIf
-					Case 8
-						If $i > 0 And $i <> 2 And $i <= 7 Then
-							$g_ePetLevels[$i] = 10
-						ElseIf $i >= 8 Then
-							ContinueLoop
-						EndIf
-					Case 9
-						If $i > 8 Then ContinueLoop
-					Case Else
-						;Do Nothing
-				EndSwitch
-		EndSwitch
+							If $i > 1 Then ContinueLoop
+						Case 3
+							If $i <= 2 Then
+								$g_ePetLevels[$i] = 10
+							Else
+								ContinueLoop
+							EndIf
+						Case 4
+							If $i <= 3 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i > 3 Then
+								ContinueLoop
+							EndIf
+						Case 5
+							If $i > 0 And $i <= 4 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 5 Then
+								ContinueLoop
+							EndIf
+						Case 6
+							If $i > 0 And $i <= 5 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 6 Then
+								ContinueLoop
+							EndIf
+						Case 7
+							If $i > 0 And $i <> 2 And $i <= 6 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 7 Then
+								ContinueLoop
+							EndIf
+						Case 8
+							If $i > 0 And $i <> 2 And $i <= 7 Then
+								$g_ePetLevels[$i] = 10
+							ElseIf $i >= 8 Then
+								ContinueLoop
+							EndIf
+						Case 9
+							If $i = 3 Then $g_ePetLevels[$i] = 10
+							If $i > 8 Then ContinueLoop
+						Case 10
+							If $i = 3 Then $g_ePetLevels[$i] = 10
+							If $i > 9 Then ContinueLoop
+					EndSwitch
+			EndSwitch
 
 		Switch $i
 			Case 0 To 3
 				Local $aBlackBorder = _MultiPixelSearch2($iPetLevelxCoordStart + ($i * $iPetSlotWidth), 500 + $g_iMidOffsetY, $iPetLevelxCoordStart + ($i * $iPetSlotWidth) + 15, 500 + $g_iMidOffsetY, 1, 1, Hex(0x0D0D0D, 6), 15)
 			Case 4 To 7
 				Local $aBlackBorder = _MultiPixelSearch2($iPetLevelxCoordStart + (($i - 4) * $iPetSlotWidth), 500 + $g_iMidOffsetY, $iPetLevelxCoordStart + (($i - 4) * $iPetSlotWidth) + 15, 500 + $g_iMidOffsetY, 1, 1, Hex(0x0D0D0D, 6), 15)
-			Case Else
+			Case 8 To 10
 				Local $aBlackBorder = _MultiPixelSearch2($iPetLevelxCoordStart2 + (($i - 8) * $iPetSlotWidth), 500 + $g_iMidOffsetY, $iPetLevelxCoordStart2 + (($i - 8) * $iPetSlotWidth) + 15, 500 + $g_iMidOffsetY, 1, 1, Hex(0x0D0D0D, 6), 15)
 		EndSwitch
 		If IsArray($aBlackBorder) Then
@@ -240,7 +293,7 @@ Func PetHouse($test = False)
 		EndIf
 
 		; check if pet upgrade unlocked
-		If _ColorCheck(_GetPixelColor($iPetLevelxCoord, 380 + $g_iMidOffsetY, True), Hex(0xC6BCAA, 6), 15) Then
+		If _ColorCheck(_GetPixelColor($iPetLevelxCoord, 380 + $g_iMidOffsetY, True), Hex(0xC8BEAD, 6), 15) Then
 			; get the Pet Level
 			Local $iPetLevel = getPetsLevel($iPetLevelxCoord, 544 + $g_iMidOffsetY)
 			If Not ($iPetLevel > 0 And $iPetLevel <= $g_ePetLevels[$i]) Then ;If detected level is not between 1 and 10 Or 15, To Prevent Crash
@@ -454,6 +507,11 @@ Func PetGuiDisplay()
 	If _Sleep(1500) Then Return ; Wait for window to open
 	; Find Research Button
 
+	Local $BuildingInfo = BuildingInfo(242, 475 + $g_iBottomOffsetY)
+	If IsArray($BuildingInfo) And UBound($BuildingInfo) > 0 Then
+		SetLog("Pet House is level " & $BuildingInfo[2])
+	EndIf
+
 	Local $aPetsButton = findButton("Pets", Default, 1, True)
 	If IsArray($aPetsButton) And UBound($aPetsButton, 1) = 2 Then
 		If $g_bDebugImageSave Then SaveDebugImage("PetsUpgrade") ; Debug Only
@@ -523,7 +581,7 @@ Func PetGuiDisplay()
 		GUICtrlSetData($g_hLbLPetTime, "")
 		;============================================
 		$g_sPetUpgradeTime = ""
-		$g_iMinDark4PetUpgrade = GetMinDark4PetUpgrade()
+		$g_iMinDark4PetUpgrade = GetMinDark4PetUpgrade($BuildingInfo[2])
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
 		CloseWindow()
 		Return
@@ -542,9 +600,9 @@ Func PetGuiDisplay()
 
 EndFunc   ;==>PetGuiDisplay
 
-Func GetMinDark4PetUpgrade()
+Func GetMinDark4PetUpgrade($PetHouseLevel = 0)
 	Local $iPetLevelxCoordStart = 40
-	Local $iPetLevelxCoordStart2 = 455
+	Local $iPetLevelxCoordStart2 = 272
 	Local $iPetSlotWidth = 182
 	Local $iMinDark4PetUpgrade = 999999
 	Local $iPage = 0
@@ -557,9 +615,175 @@ Func GetMinDark4PetUpgrade()
 
 		Switch $g_iTownHallLevel
 			Case 14
-				If $i <= 2 Then $g_ePetLevels[$i] = 10
+				Switch $PetHouseLevel
+					Case 1
+						$g_ePetLevels[$i] = 10
+						If $i > 0 Then ContinueLoop
+					Case 2
+						$g_ePetLevels[$i] = 10
+						If $i > 1 Then ContinueLoop
+					Case 3
+						If $i <= 2 Then
+							$g_ePetLevels[$i] = 10
+						Else
+							ContinueLoop
+						EndIf
+					Case 4
+						If $i <= 3 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i > 3 Then
+							ContinueLoop
+						EndIf
+				EndSwitch
 			Case 15
-				If $i = 1 Then $g_ePetLevels[$i] = 10
+				Switch $PetHouseLevel
+					Case 1
+						$g_ePetLevels[$i] = 10
+						If $i > 0 Then ContinueLoop
+					Case 2
+						$g_ePetLevels[$i] = 10
+						If $i > 1 Then ContinueLoop
+					Case 3
+						If $i <= 2 Then
+							$g_ePetLevels[$i] = 10
+						Else
+							ContinueLoop
+						EndIf
+					Case 4
+						If $i <= 3 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i > 3 Then
+							ContinueLoop
+						EndIf
+					Case 5
+						If $i > 0 And $i <= 4 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 5 Then
+							ContinueLoop
+						EndIf
+					Case 6
+						If $i > 0 And $i <= 5 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 6 Then
+							ContinueLoop
+						EndIf
+					Case 7
+						If $i > 0 And $i <> 2 And $i <= 6 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 7 Then
+							ContinueLoop
+						EndIf
+					Case 8
+						If $i > 0 And $i <> 2 And $i <= 7 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 8 Then
+							ContinueLoop
+						EndIf
+					Case Else
+						If $i = 1 Or $i = 3 Then $g_ePetLevels[$i] = 10
+				EndSwitch
+			Case 16
+				Switch $PetHouseLevel
+					Case 1
+						$g_ePetLevels[$i] = 10
+						If $i > 0 Then ContinueLoop
+					Case 2
+						$g_ePetLevels[$i] = 10
+						If $i > 1 Then ContinueLoop
+					Case 3
+						If $i <= 2 Then
+							$g_ePetLevels[$i] = 10
+						Else
+							ContinueLoop
+						EndIf
+					Case 4
+						If $i <= 3 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i > 3 Then
+							ContinueLoop
+						EndIf
+					Case 5
+						If $i > 0 And $i <= 4 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 5 Then
+							ContinueLoop
+						EndIf
+					Case 6
+						If $i > 0 And $i <= 5 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 6 Then
+							ContinueLoop
+						EndIf
+					Case 7
+						If $i > 0 And $i <> 2 And $i <= 6 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 7 Then
+							ContinueLoop
+						EndIf
+					Case 8
+						If $i > 0 And $i <> 2 And $i <= 7 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 8 Then
+							ContinueLoop
+						EndIf
+					Case 9
+						If $i = 3 Then $g_ePetLevels[$i] = 10
+						If $i > 8 Then ContinueLoop
+					Case 10
+						If $i = 3 Then $g_ePetLevels[$i] = 10
+						If $i > 9 Then ContinueLoop
+				EndSwitch
+			Case 17
+				Switch $PetHouseLevel
+					Case 1
+						$g_ePetLevels[$i] = 10
+						If $i > 0 Then ContinueLoop
+					Case 2
+						$g_ePetLevels[$i] = 10
+						If $i > 1 Then ContinueLoop
+					Case 3
+						If $i <= 2 Then
+							$g_ePetLevels[$i] = 10
+						Else
+							ContinueLoop
+						EndIf
+					Case 4
+						If $i <= 3 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i > 3 Then
+							ContinueLoop
+						EndIf
+					Case 5
+						If $i > 0 And $i <= 4 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 5 Then
+							ContinueLoop
+						EndIf
+					Case 6
+						If $i > 0 And $i <= 5 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 6 Then
+							ContinueLoop
+						EndIf
+					Case 7
+						If $i > 0 And $i <> 2 And $i <= 6 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 7 Then
+							ContinueLoop
+						EndIf
+					Case 8
+						If $i > 0 And $i <> 2 And $i <= 7 Then
+							$g_ePetLevels[$i] = 10
+						ElseIf $i >= 8 Then
+							ContinueLoop
+						EndIf
+					Case 9
+						If $i = 3 Then $g_ePetLevels[$i] = 10
+						If $i > 8 Then ContinueLoop
+					Case 10
+						If $i = 3 Then $g_ePetLevels[$i] = 10
+						If $i > 9 Then ContinueLoop
+				EndSwitch
 		EndSwitch
 
 		Switch $i
@@ -567,7 +791,7 @@ Func GetMinDark4PetUpgrade()
 				Local $aBlackBorder = _MultiPixelSearch2($iPetLevelxCoordStart + ($i * $iPetSlotWidth), 500 + $g_iMidOffsetY, $iPetLevelxCoordStart + ($i * $iPetSlotWidth) + 15, 500 + $g_iMidOffsetY, 1, 1, Hex(0x0D0D0D, 6), 15)
 			Case 4 To 7
 				Local $aBlackBorder = _MultiPixelSearch2($iPetLevelxCoordStart + (($i - 4) * $iPetSlotWidth), 500 + $g_iMidOffsetY, $iPetLevelxCoordStart + (($i - 4) * $iPetSlotWidth) + 15, 500 + $g_iMidOffsetY, 1, 1, Hex(0x0D0D0D, 6), 15)
-			Case Else
+			Case 8 To 10
 				Local $aBlackBorder = _MultiPixelSearch2($iPetLevelxCoordStart2 + (($i - 8) * $iPetSlotWidth), 500 + $g_iMidOffsetY, $iPetLevelxCoordStart2 + (($i - 8) * $iPetSlotWidth) + 15, 500 + $g_iMidOffsetY, 1, 1, Hex(0x0D0D0D, 6), 15)
 		EndSwitch
 		If IsArray($aBlackBorder) Then
@@ -577,7 +801,7 @@ Func GetMinDark4PetUpgrade()
 		EndIf
 
 		; check if pet upgrade enabled and unlocked
-		If _ColorCheck(_GetPixelColor($iPetLevelxCoord, 380 + $g_iMidOffsetY, True), Hex(0xC6BCAA, 6), 15) Then
+		If _ColorCheck(_GetPixelColor($iPetLevelxCoord, 380 + $g_iMidOffsetY, True), Hex(0xC8BEAD, 6), 15) Then
 
 			; get the Pet Level
 			Local $iPetLevel = getPetsLevel($iPetLevelxCoord, 544 + $g_iMidOffsetY)
@@ -605,7 +829,7 @@ Func GetMinDark4PetUpgrade()
 				$iMinDark4PetUpgrade = $iDarkElixirReq
 				SetLog("New Min Dark: " & _NumberFormat($iMinDark4PetUpgrade, True))
 			EndIf
-		ElseIf _ColorCheck(_GetPixelColor($iPetLevelxCoord, 380 + $g_iMidOffsetY, True), Hex(0xB5B5B5, 6), 15) Then
+		ElseIf _ColorCheck(_GetPixelColor($iPetLevelxCoord, 380 + $g_iMidOffsetY, True), Hex(0xB7B7B7, 6), 15) Then
 			SetLog($g_asPetNames[$i] & " is Locked")
 		EndIf
 	Next
@@ -620,11 +844,11 @@ Func DragPetHouse($iPetIndex, ByRef $iPage)
 	Local $bLoop = 0
 
 	Switch $iPetIndex
-		Case 0, 1, 2, 3
+		Case 0 To 3
 			$iPageTarget = 0
-		Case 4, 5, 6, 7
+		Case 4 To 7
 			$iPageTarget = 1
-		Case 8, 9
+		Case 8 To 10
 			$iPageTarget = 2
 	EndSwitch
 
@@ -639,22 +863,22 @@ Func DragPetHouse($iPetIndex, ByRef $iPage)
 				ClickDrag(770, $iYPoint, 190, $iYPoint, 300)
 				SetDebugLog("Moving from page 0 to 1")
 			Else
-				ClickDrag(585, $iYPoint, 310, $iYPoint, 300)
+				ClickDrag(590, $iYPoint, 190, $iYPoint, 300)
 				SetDebugLog("Moving from page 1 to 2")
 			EndIf
-			If _Sleep(2500) Then Return
+			If _Sleep(Random(1800, 2500, 1)) Then Return
 			$iPage += 1
 		EndIf
 
 		If $iPage > $iPageTarget Then
 			If $iPage = 2 Then
-				ClickDrag(170, $iYPoint, 420, $iYPoint, 300)
+				ClickDrag(170, $iYPoint, 560, $iYPoint, 300)
 				SetDebugLog("Moving from page 2 to 1")
 			Else
 				ClickDrag(60, $iYPoint, 660, $iYPoint, 300)
 				SetDebugLog("Moving from page 1 to 0")
 			EndIf
-			If _Sleep(2500) Then Return
+			If _Sleep(Random(1800, 2500, 1)) Then Return
 			$iPage -= 1
 		EndIf
 

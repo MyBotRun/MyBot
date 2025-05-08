@@ -111,7 +111,7 @@ Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetL
 	If $g_bDebugSetLogTrain Then SetLog("End checkArmyCamp: canRequestCC= " & $g_bCanRequestCC & ", fullArmy= " & $g_bFullArmy, $COLOR_DEBUG)
 
 	If $g_bDebugFuncTime Then StopWatchStopLog()
-	Return $HeroesRegenTime
+	; Return $HeroesRegenTime
 
 EndFunc   ;==>_checkArmyCamp
 

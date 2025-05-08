@@ -21,7 +21,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Local $aiZero84[8][4] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 	Local $aiZero85[8][5] = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
 	Local $asEmpty[8] = ["", "", "", "", "", "", "", ""]
-	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiMinusOneTrue[8][2] = [[-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True]]
 	Local $aiNonAvailable[8] = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
@@ -33,6 +33,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	; Bottom & Multi-Stats
 	Static $aiSkippedVillageCount = $aiZero
 	Static $aiAttackedCount = $aiZero
+
+	; Breaker
+	Static $Sg_aiAttackedCountPause = $aiZero
+	Static $SMaxConsecutiveAttacks = $aiZero
 
 	; Gain Stats
 	Static $aiStatsTotalGain = $aiZero84, $aiStatsStartedWith = $aiZero84, $aiStatsLastAttack = $aiZero84, $aiStatsBonusLast = $aiZero84
@@ -122,6 +126,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Static $aSTimeDiffLabAssistant = $aiZero
 	Static $SbLabAssistantUsedTime = $aiZero
 
+	;Clan Castle Timer
+	Static $SiCCRemainTime = $aiZero
+
 	; First time switch account
 	Switch $sType
 		Case "Reset"
@@ -139,6 +146,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			; Multi-Stats
 			$aiSkippedVillageCount = $aiZero
 			$aiAttackedCount = $aiZero
+
+			; Breaker
+			$Sg_aiAttackedCountPause = $aiZero
+			$SMaxConsecutiveAttacks = $aiZero
 
 			; Gain Stats
 			$aiStatsTotalGain = $aiZero84
@@ -261,6 +272,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aSTimeDiffLabAssistant = $aiZero
 			$SbLabAssistantUsedTime = $aiZero
 
+			;Clan Castle Timer
+			$SiCCRemainTime = $aiZero
+
 		Case "Save"
 			$abFirstStart[$iAccount] = $g_bFirstStart
 			$aiFirstRun[$iAccount] = $g_iFirstRun
@@ -268,6 +282,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			; Multi-Stats
 			$aiSkippedVillageCount[$iAccount] = $g_iSkippedVillageCount
 			$aiAttackedCount[$iAccount] = $g_aiAttackedCount
+
+			; Breaker
+			$Sg_aiAttackedCountPause[$iAccount] = $g_aiAttackedCountPause
+			$SMaxConsecutiveAttacks[$iAccount] = $MaxConsecutiveAttacks
 
 			; Gain Stats
 			For $i = 0 To 3
@@ -421,6 +439,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aSTimeDiffLabAssistant[$iAccount] = $TimeDiffLabAssistant
 			$SbLabAssistantUsedTime[$iAccount] = $bLabAssistantUsedTime
 
+			;Clan Castle Timer
+			$SiCCRemainTime[$iAccount] = $g_iCCRemainTime
+
 		Case "Load"
 			$g_bFirstStart = $abFirstStart[$iAccount]
 			$g_iFirstRun = $aiFirstRun[$iAccount]
@@ -428,6 +449,10 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			; Multi-Stats
 			$g_iSkippedVillageCount = $aiSkippedVillageCount[$iAccount]
 			$g_aiAttackedCount = $aiAttackedCount[$iAccount]
+
+			; Breaker
+			$g_aiAttackedCountPause = $Sg_aiAttackedCountPause[$iAccount]
+			$MaxConsecutiveAttacks = $SMaxConsecutiveAttacks[$iAccount]
 
 			; Gain Stats
 			For $i = 0 To 3
@@ -601,6 +626,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$g_sAvailableLabAssistant = $gaSsAvailableLabAssistant[$iAccount]
 			$TimeDiffLabAssistant = $aSTimeDiffLabAssistant[$iAccount]
 			$bLabAssistantUsedTime = $SbLabAssistantUsedTime[$iAccount]
+
+			;Clan Castle Timer
+			$g_iCCRemainTime = $SiCCRemainTime[$iAccount]
 
 		Case "UpdateStats"
 			For $i = 0 To 3

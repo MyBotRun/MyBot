@@ -771,64 +771,53 @@ Func SearchRedLinesMultipleTimes($sCocDiamond = $CocDiamondECD, $iCount = 5, $iD
 	Return $g_sImglocRedline
 EndFunc   ;==>SearchRedLinesMultipleTimes
 
-Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
-	If $iY < 455 Then
+Func Slot($iX, $iY, $ThirdSiege = False) ; Return Slots for Quantity Reading on Army Window
+	If $iY < 340 Or ($iX < 650 And $iY > 340 And $iY < 450) Then
 		Switch $iX ; Troops & Spells Slots
-			Case 75 To 139 ; Slot 1
-				Return 85
+			Case 380 To 440 ; Slot 1
+				Return 384
 
-			Case 140 To 202 ; Slot 2
-				Return 150
+			Case 444 To 502 ; Slot 2
+				Return 446
 
-			Case 203 To 266 ; Slot 3
-				Return 215
+			Case 506 To 564 ; Slot 3
+				Return 509
 
-			Case 266 To 328 ; Slot 4
-				Return 280
+			Case 568 To 627 ; Slot 4
+				Return 571
 
-			Case 329 To 390 ; Slot 5
-				Return 340
+			Case 630 To 689 ; Slot 5
+				Return 633
 
-			Case 391 To 454 ; Slot 6
-				Return 405
-
-			Case 455 To 517 ; Slot 7
-				Return 465
-
-			Case 575 To 639 ; Slot 8
-				Return 585 ; Siege Machines slot 1
-
-			Case 640 To 703 ; Slot 9
-				Return 655 ; Siege Machines slot 2
-
-			Case 704 To 768 ; Slot 10
-				Return 715 ; Siege Machines slot 2
+			Case 693 To 751 ; Slot 6
+				Return 695
 		EndSwitch
-	Else ;CC Troops & Spells
+	ElseIf $iX > 650 And $iY > 340 And $iY < 450 And Not $ThirdSiege Then
+		Switch $iX ; Machines Slots
+			Case 659 To 718 ; Slot 1
+				Return 662 ; Siege Machines slot 1
+
+			Case 720 To 782 ; Slot 2
+					Return 723 ; Siege Machines slot 2
+		EndSwitch
+	ElseIf $iX > 650 And $iY > 340 And $iY < 450 And $ThirdSiege Then
+		Switch $iX ; Machines Slots
+			Case 742 To 800 ; Slot 3
+					Return 745 ; Siege Machines slot 3
+		EndSwitch
+	ElseIf $iY > 450 Then ;CC Troops & Spells
 		Switch $iX
-			Case 75 To 139 ; Slot 1
-				Return 85
+			Case 380 To 440 ; Slot 1
+				Return 384
 
-			Case 140 To 202 ; Slot 2
-				Return 150
+			Case 444 To 502 ; Slot 2
+				Return 446
 
-			Case 203 To 266 ; Slot 3
-				Return 215
+			Case 506 To 564 ; Slot 3
+				Return 509
 
-			Case 266 To 328 ; Slot 4
-				Return 280
-
-			Case 329 To 390 ; Slot 5
-				Return 340
-
-			Case 450 To 500 ; CC Spell Slot 1
-				Return 455
-			Case 501 To 524 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
-				Return 505
-			Case 525 To 573 ; CC Spell Slot 2
-				Return 520
-			Case 598 To 660 ; CC Siege Machines
-				Return 610
+			Case 568 To 627 ; Slot 4
+				Return 571
 		EndSwitch
 	EndIf
 EndFunc   ;==>Slot

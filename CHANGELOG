@@ -1,3 +1,102 @@
+* v8.2.0 **
+* Excluded TH7- from HiddenSlotstatus().
+* Added support for BB Defensive Layout obstructed window.
+* Improved Helpers recurrence detection.
+* Fixed Upgrade Heroes.
+* Added Fire and Ice Scenery support (Attack Only).
+* Improved Streak Event Support.
+* Fixed Array Bounds Error when $g_bSearchRestartPickupHero.
+* Added Support for the new TOS and Personnal datas sharing Windows.
+* Updated Wall Cost.
+* Added support for new Survey Window.
+* Added missing code in SmartWaitTrain function.
+* Improved Hero Hall level management.
+* Added Analytics Window Support.
+* Increased Ini Table Size.
+* Updated BS5 supported versions.
+* Improved Train Drag and Click.
+* Added Metal Pants Equipment Support.
+* Added Troop Launcher Support.
+* Remove free builder check for cleaning yards.
+* Updated Training Times.
+* Updated Helper Hut coords.
+* Updated Blacksmith coords.
+* Added Snake Bracelet Equipment Template.
+* Added New Buildings Levels To Search Filter.
+* Added Year of the Snake Scenery support (Attack Only).
+* Updated Few GUI Stuff.
+* Added New Level Buildings Templates For Detection.
+* Updated Build2 Lib.
+* Improved Builder Base Defaut Scenery Detection (Thanks to WarMan).
+* Fixed Hero Level OCR 99->100.
+* Fixed Pets Checkboxes disabled when TH17.
+* Fixed Okay Purge button detection.
+* Added Ended and New Season Windows support.
+* Changed SCID Account Image Tolerance (98->92).
+* Improved Drag To The Left Training Bar.
+* Updated Maximum Number of Reserved Builder's for Hero Upgrade.
+* Fixed Ok button detection if item storage full when collect clan games rewards.
+* Improved Clan Games Rewards Collect.
+* Updated Lightning Spell Values.
+* Improved Lightning Level OCR.
+* Added Military Scenery support (Attack Only).
+* Improved Army Button Detection.
+* Improved CC Cap OCR (8).
+* Fixed Event Super Troop Variable Type.
+* Added New Survey Window Support.
+* Added Voucher Window Support.
+* Updated Treasury Chest Function.
+* Updated Supercharge Upgrade Detection.
+* Improved auto upgrade (heroes).
+* Updated Train Function.
+* Updated Hero Status Detection.
+* Added Noble Iron Equipment Support.
+* Added 340 Slots Support (TH17).
+* Improved Army Cap OCR.
+* Improved Few Train Troops Detection.
+* Added Sneezy Support.
+* Updated Walls, Champion and Pets Cost.
+* Added Furnace Full Support.
+* Updated Donate System.
+* Updated Army System.
+* Added Pause Options.
+* Fixed consecutive attacks function.
+* Fixed Supertroops Boost.
+* Added Action Figure Equipment Support.
+* Improved Drag Train.
+* Added ClashMania Scenery Support (Attack Only).
+* Updated Switch Tab.
+* Improved Army Tab management.
+* Improved CheckObstacles.
+* Fixed Spells Train.
+* Updated Legend Preparation.
+* Updated Attack Algorithms.
+* Fixed Missing Furnace in $listInfoDeploy
+* Fixed Legend League Attack.
+* Improved camps and troop count libs.
+* improved hero detection in army window.
+* Improved Dead Eagle Detection.
+* Fixed Few Bugs and OCR Issues.
+* Updated Misc Clan Games Challenges Conditions.
+* Fixed CC Sieges Out of Bound Issue.
+* Disabled QuickTrain Tab.
+* Cleaned Tabs : Hidden Training Order and Boost Tabs.
+* Merged Train Options Tab and Boost super troops settings -> Timings/Boost Tab.
+* Updated BS5 versions.
+* Added purple tombs template.
+* Added Hero Hall Values Check.
+* Updated CG Challenges Difficulties and Conditions.
+* Fixed Clan Castle Detected as Full When it's not.
+* Improved Request System.
+* Clean up.
+* Added missing code in MyBot.run.au3.
+* Fixed Issue with CSV Apply.
+* Updated SwitchToNextWallLevel()
+* Added More Templates For Cancel and Finish Now Buttons.
+* Updated BS5 versions.
+* Improved UTCTimeCG().
+* Improved Siege Level OCR (5 Blue).
+
 * v8.1.9 **
 * Fixed Icon File
 

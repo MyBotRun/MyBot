@@ -197,7 +197,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			If _Sleep($DELAYUPGRADEVALUE4) Then Return
 		EndIf
 		; check for upgrade in process
-		If QuickMIS("BC1", $g_sImgCancelButton, 140, 500 + $g_iBottomOffsetY, 740, 590 + $g_iBottomOffsetY) Then
+		If QuickMIS("BC1", $g_sImgCancelButton, 130, 500 + $g_iBottomOffsetY, 740, 590 + $g_iBottomOffsetY) Then
 			SetLog("Selection #" & $inum + 1 & " Upgrade in process - Skipped!", $COLOR_WARNING)
 			ClearScreen()
 			Return False
@@ -304,8 +304,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					Return False
 				EndIf
 
-				Local $aiSupercharge = decodeSingleCoord(FindImageInPlace2("Supercharge", $g_sImgSupercharge, 400, 445 + $g_iMidOffsetY, 455, 495 + $g_iMidOffsetY, True))
-				If IsArray($aiSupercharge) And UBound($aiSupercharge) = 2 Then
+				Local $aiSupercharge = _PixelSearch(540, 90 + $g_iMidOffsetY, 700, 100 + $g_iMidOffsetY, Hex(0x00FFFF, 6), 20)
+				If IsArray($aiSupercharge) Then
 					$g_avBuildingUpgrades[$inum][5] = $g_avBuildingUpgrades[$inum][5] & "+"
 					GUICtrlSetData($g_hTxtUpgradeLevel[$inum], $g_avBuildingUpgrades[$inum][5])
 				EndIf

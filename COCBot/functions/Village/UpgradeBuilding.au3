@@ -296,7 +296,7 @@ Func UpgradeNormal($iUpgradeNumber)
 		CloseSuperchargeWindow()
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn1")
 		If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; wait up to 2 seconds for upgrade window to open
-			Local $aiSupercharge = decodeSingleCoord(FindImageInPlace2("Supercharge", $g_sImgSupercharge, 400, 445 + $g_iMidOffsetY, 455, 495 + $g_iMidOffsetY, True))
+			Local $aiSupercharge = _PixelSearch(540, 90 + $g_iMidOffsetY, 700, 100 + $g_iMidOffsetY, Hex(0x00FFFF, 6), 20)
 			Local $RedSearch = _PixelSearch(610, 548 + $g_iMidOffsetY, 650, 552 + $g_iMidOffsetY, Hex(0xFF887F, 6), 20)
 			Local $OrangeSearch = _PixelSearch(610, 539 + $g_iMidOffsetY, 650, 543 + $g_iMidOffsetY, Hex(0xFF7A0D, 6), 20)
 			If IsArray($RedSearch) Or IsArray($OrangeSearch) Then ; Check for Red Zero = means not enough loot!
@@ -324,7 +324,7 @@ Func UpgradeNormal($iUpgradeNumber)
 					ClickAway()
 					Return False
 				EndIf
-				If IsArray($aiSupercharge) And UBound($aiSupercharge) = 2 Then $g_avBuildingUpgrades[$iUpgradeNumber][5] = StringReplace($g_avBuildingUpgrades[$iUpgradeNumber][5], "+", "", 0)
+				If IsArray($aiSupercharge) Then $g_avBuildingUpgrades[$iUpgradeNumber][5] = StringReplace($g_avBuildingUpgrades[$iUpgradeNumber][5], "+", "", 0)
 				SetLog("Upgrade #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " started", $COLOR_SUCCESS)
 				_GUICtrlSetImage($g_hPicUpgradeStatus[$iUpgradeNumber], $g_sLibIconPath, $eIcnGreenLight) ; Change GUI upgrade status to done
 				$g_aiPicUpgradeStatus[$iUpgradeNumber] = $eIcnGreenLight ; Change GUI upgrade status to done

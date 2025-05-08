@@ -102,7 +102,7 @@ Func NeededResources($bHero = "")
 		Case "King"
 			Click($bXcoords[0] + 115, 232 + $g_iMidOffsetY)
 			If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
-			$g_iKingLevel = Number(getOcrAndCapture("coc-YellowLevel", 552, 116, 40, 20))
+			$g_iKingLevel = getYellowLevel(452, 116)
 			$g_aiHeroNeededResource[0] = Number(getCostsUpgradeRed(552, 541 + $g_iMidOffsetY)) ;read Red upgrade text
 			If $g_aiHeroNeededResource[0] = "" Then $g_aiHeroNeededResource[0] = Number(getCostsUpgradeRed(552, 532 + $g_iMidOffsetY)) ;read Red upgrade text (Discount).
 			SetLog($bHero & " Upgrade Requires " & _NumberFormat($g_aiHeroNeededResource[0]) & " Dark Elixir", $COLOR_SUCCESS)
@@ -111,7 +111,7 @@ Func NeededResources($bHero = "")
 		Case "Queen"
 			Click($bXcoords[1] + 115, 232 + $g_iMidOffsetY)
 			If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
-			$g_iQueenLevel = Number(getOcrAndCapture("coc-YellowLevel", 545, 116, 40, 20))
+			$g_iQueenLevel = getYellowLevel(445, 116)
 			$g_aiHeroNeededResource[1] = Number(getCostsUpgradeRed(552, 541 + $g_iMidOffsetY)) ;read Red upgrade text
 			If $g_aiHeroNeededResource[1] = "" Then $g_aiHeroNeededResource[1] = Number(getCostsUpgradeRed(552, 532 + $g_iMidOffsetY)) ;read Red upgrade text (Discount).
 			SetLog($bHero & " Upgrade Requires " & _NumberFormat($g_aiHeroNeededResource[1]) & " Dark Elixir", $COLOR_SUCCESS)
@@ -120,7 +120,7 @@ Func NeededResources($bHero = "")
 		Case "Prince"
 			Click($bXcoords[2] + 115, 232 + $g_iMidOffsetY)
 			If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
-			$g_iPrinceLevel = Number(getOcrAndCapture("coc-YellowLevel", 635, 116, 40, 20))
+			$g_iPrinceLevel = getYellowLevel(535, 116)
 			$g_aiHeroNeededResource[2] = Number(getCostsUpgradeRed(552, 541 + $g_iMidOffsetY)) ;read Red upgrade text
 			If $g_aiHeroNeededResource[2] = "" Then $g_aiHeroNeededResource[2] = Number(getCostsUpgradeRed(552, 532 + $g_iMidOffsetY)) ;read Red upgrade text (Discount).
 			SetLog($bHero & " Upgrade Requires " & _NumberFormat($g_aiHeroNeededResource[2]) & " Dark Elixir", $COLOR_SUCCESS)
@@ -129,7 +129,7 @@ Func NeededResources($bHero = "")
 		Case "Warden"
 			Click($bXcoords[3] + 115, 232 + $g_iMidOffsetY)
 			If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
-			$g_iWardenLevel = Number(getOcrAndCapture("coc-YellowLevel", 552, 116, 40, 20))
+			$g_iWardenLevel = getYellowLevel(452, 116)
 			$g_aiHeroNeededResource[3] = Number(getCostsUpgradeRed(552, 541 + $g_iMidOffsetY)) ;read Red upgrade text
 			If $g_aiHeroNeededResource[3] = "" Then $g_aiHeroNeededResource[3] = Number(getCostsUpgradeRed(552, 532 + $g_iMidOffsetY)) ;read Red upgrade text (Discount).
 			SetLog($bHero & " Upgrade Requires " & _NumberFormat($g_aiHeroNeededResource[3]) & " Elixir", $COLOR_SUCCESS)
@@ -138,7 +138,7 @@ Func NeededResources($bHero = "")
 		Case "Champion"
 			Click($bXcoords[4] + 115, 232 + $g_iMidOffsetY)
 			If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
-			$g_iChampionLevel = Number(getOcrAndCapture("coc-YellowLevel", 552, 116, 40, 20))
+			$g_iChampionLevel = getYellowLevel(452, 116)
 			$g_aiHeroNeededResource[4] = Number(getCostsUpgradeRed(552, 541 + $g_iMidOffsetY)) ;read Red upgrade text
 			If $g_aiHeroNeededResource[4] = "" Then $g_aiHeroNeededResource[4] = Number(getCostsUpgradeRed(552, 532 + $g_iMidOffsetY)) ;read Red upgrade text (Discount).
 			SetLog($bHero & " Upgrade Requires " & _NumberFormat($g_aiHeroNeededResource[4]) & " Dark Elixir", $COLOR_SUCCESS)
@@ -298,8 +298,8 @@ Func UpgradeHeroes()
 	If $IsToOpen = 0 Then Return
 
 	If BitOR($g_bUpgradeKingEnable, $g_bUpgradeQueenEnable, $g_bUpgradePrinceEnable, $g_bUpgradeWardenEnable, $g_bUpgradeChampionEnable) Then
-		If Not isInsideDiamond($g_aiHeroHallPos) Then ImgLocateHeroHall()
-		If $g_aiHeroHallPos[0] = -1 Or $g_aiHeroHallPos[1] = -1 Then ImgLocateHeroHall()
+		If Not isInsideDiamondXY($g_aiHeroHallPos[0], $g_aiHeroHallPos[1]) Then ImgLocateHeroHall()
+		If $g_aiHeroHallPos[0] = -1 Or $g_aiHeroHallPos[1] = -1 Or $g_aiHeroHallPos[2] = -1 Then ImgLocateHeroHall()
 		SaveConfig()
 	EndIf
 
@@ -643,7 +643,7 @@ Func KingUpgrade()
 		Local $g_iKingCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 23, 433 + $g_iMidOffsetY, 65, 20, True)
 	EndIf
 	If $g_iKingCostOCR = "" Then
-		SetLog("OCR Read Error", $COLOR_ERROR)
+		SetLog("King Cost OCR Read Error", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -655,7 +655,7 @@ Func KingUpgrade()
 
 	If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 	If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
-		Local $g_iKingLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 627, 116, 50, 20))
+		Local $g_iKingLevelOCR = getYellowLevel(527, 116)
 		$g_iKingLevel = Number($g_iKingLevelOCR - 1)
 		If $g_iKingLevel = -1 Then
 			SetLog("Unable To Read King Level, Skip Upgrade!", $COLOR_ERROR)
@@ -826,12 +826,12 @@ Func QueenUpgrade()
 	EndIf
 
 	If $bOffset Then
-		Local $g_iQueenCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 38, 433 + $g_iMidOffsetY, 65, 20, True)
+		Local $g_iQueenCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[1] + 38, 433 + $g_iMidOffsetY, 65, 20, True)
 	Else
-		Local $g_iQueenCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 23, 433 + $g_iMidOffsetY, 65, 20, True)
+		Local $g_iQueenCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[1] + 23, 433 + $g_iMidOffsetY, 65, 20, True)
 	EndIf
 	If $g_iQueenCostOCR = "" Then
-		SetLog("Insufficient DE for Upg Queen", $COLOR_INFO)
+		SetLog("Queen Cost OCR Read Error", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -843,7 +843,7 @@ Func QueenUpgrade()
 
 	If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 	If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
-		Local $g_iQueenLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 618, 116, 50, 20))
+		Local $g_iQueenLevelOCR = getYellowLevel(518, 116)
 		$g_iQueenLevel = Number($g_iQueenLevelOCR - 1)
 		If $g_iQueenLevel = -1 Then
 			SetLog("Unable To Read Queen Level, Skip Upgrade!", $COLOR_ERROR)
@@ -969,7 +969,7 @@ Func PrinceUpgrade()
 
 	If $g_iTownHallLevel < 9 Then
 		SetLog("TH upgrade needed - Skipped!", $COLOR_ERROR)
-		$g_bUpgradeQueenEnable = False ; turn Off the Queens upgrade
+		$g_bUpgradePrinceEnable = False ; turn Off the Princes upgrade
 		GUICtrlSetState($g_hChkUpgradePrince, $GUI_UNCHECKED)
 		chkUpgradePrince()
 		ReducecmbHeroReservedBuilder()
@@ -981,11 +981,11 @@ Func PrinceUpgrade()
 		Return
 	EndIf
 	Local $bOffset = False
-	If _ColorCheck(_GetPixelColor($bXcoords[1], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
-			IsArray(_PixelSearch($bXcoords[1], 438 + $g_iMidOffsetY, $bXcoords[1] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
+	If _ColorCheck(_GetPixelColor($bXcoords[2], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
+			IsArray(_PixelSearch($bXcoords[2], 438 + $g_iMidOffsetY, $bXcoords[2] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
 		SetDebugLog("Green Pixel Check: OK")
-	ElseIf _ColorCheck(_GetPixelColor($bXcoords[1] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
-			IsArray(_PixelSearch($bXcoords[1] + 42, 438 + $g_iMidOffsetY, $bXcoords[1] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
+	ElseIf _ColorCheck(_GetPixelColor($bXcoords[2] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
+			IsArray(_PixelSearch($bXcoords[2] + 42, 438 + $g_iMidOffsetY, $bXcoords[2] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
 		SetDebugLog("Green Pixel Check: OK")
 		$bOffset = True
 	Else
@@ -1014,12 +1014,12 @@ Func PrinceUpgrade()
 	EndIf
 
 	If $bOffset Then
-		Local $g_iPrinceCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 38, 433 + $g_iMidOffsetY, 65, 20, True)
+		Local $g_iPrinceCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[2] + 38, 433 + $g_iMidOffsetY, 65, 20, True)
 	Else
-		Local $g_iPrinceCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 23, 433 + $g_iMidOffsetY, 65, 20, True)
+		Local $g_iPrinceCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[2] + 23, 433 + $g_iMidOffsetY, 65, 20, True)
 	EndIf
 	If $g_iPrinceCostOCR = "" Then
-		SetLog("Insufficient DE for Upg Queen", $COLOR_INFO)
+		SetLog("Prince Cost OCR Read Error", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -1031,7 +1031,7 @@ Func PrinceUpgrade()
 
 	If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 	If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
-		Local $g_iPrinceLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 618, 116, 50, 20))
+		Local $g_iPrinceLevelOCR = getYellowLevel(518, 116)
 		$g_iPrinceLevel = Number($g_iPrinceLevelOCR - 1)
 		If $g_iPrinceLevel = -1 Then
 			SetLog("Unable To Read Prince Level, Skip Upgrade!", $COLOR_ERROR)
@@ -1210,7 +1210,7 @@ Func WardenUpgrade()
 		Local $g_iWardenCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[3] + 10, 433 + $g_iMidOffsetY, 84, 20, True)
 	EndIf
 	If $g_iWardenCostOCR = "" Then
-		SetLog("Insufficient DE for Upg Warden", $COLOR_INFO)
+		SetLog("Warden Cost OCR Read Error", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -1222,7 +1222,7 @@ Func WardenUpgrade()
 
 	If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 	If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
-		Local $g_iWardenLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 622, 116, 50, 20))
+		Local $g_iWardenLevelOCR = getYellowLevel(522, 116)
 		$g_iWardenLevel = Number($g_iWardenLevelOCR - 1)
 		If $g_iWardenLevel = -1 Then
 			SetLog("Unable To Read Warden Level, Skip Upgrade!", $COLOR_ERROR)
@@ -1369,11 +1369,11 @@ Func ChampionUpgrade()
 		Return
 	EndIf
 	Local $bOffset = False
-	If _ColorCheck(_GetPixelColor($bXcoords[1], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
-			IsArray(_PixelSearch($bXcoords[1], 438 + $g_iMidOffsetY, $bXcoords[1] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
+	If _ColorCheck(_GetPixelColor($bXcoords[4], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
+			IsArray(_PixelSearch($bXcoords[4], 438 + $g_iMidOffsetY, $bXcoords[4] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
 		SetDebugLog("Green Pixel Check: OK")
-	ElseIf _ColorCheck(_GetPixelColor($bXcoords[1] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
-			IsArray(_PixelSearch($bXcoords[1] + 42, 438 + $g_iMidOffsetY, $bXcoords[1] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
+	ElseIf _ColorCheck(_GetPixelColor($bXcoords[4] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) And _
+			IsArray(_PixelSearch($bXcoords[4] + 42, 438 + $g_iMidOffsetY, $bXcoords[4] + 95, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
 		SetDebugLog("Green Pixel Check: OK")
 		$bOffset = True
 	Else
@@ -1402,12 +1402,12 @@ Func ChampionUpgrade()
 	EndIf
 
 	If $bOffset Then
-		Local $g_iChampionCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 38, 433 + $g_iMidOffsetY, 65, 20, True)
+		Local $g_iChampionCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[4] + 38, 433 + $g_iMidOffsetY, 65, 20, True)
 	Else
-		Local $g_iChampionCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 23, 433 + $g_iMidOffsetY, 65, 20, True)
+		Local $g_iChampionCostOCR = getOcrAndCapture("coc-HeroCost", $bXcoords[4] + 23, 433 + $g_iMidOffsetY, 65, 20, True)
 	EndIf
 	If $g_iChampionCostOCR = "" Then
-		SetLog("Insufficient DE for Upg Queen", $COLOR_INFO)
+		SetLog("Champion Cost OCR Read Error", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -1419,7 +1419,7 @@ Func ChampionUpgrade()
 
 	If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 	If _ColorCheck(_GetPixelColor(800, 88 + $g_iMidOffsetY, True), Hex(0xF38E8D, 6), 20) Then ; Check if the Hero Upgrade window is open
-		Local $g_iChampionLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 625, 116, 50, 20))
+		Local $g_iChampionLevelOCR = getYellowLevel(525, 116)
 		$g_iChampionLevel = Number($g_iChampionLevelOCR - 1)
 		If $g_iChampionLevel = -1 Then
 			SetLog("Unable To Read Champion Level, Skip Upgrade!", $COLOR_ERROR)

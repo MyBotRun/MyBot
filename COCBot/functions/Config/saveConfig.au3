@@ -612,7 +612,7 @@ Func SaveConfig_600_12()
 
 	For $i = 0 To $eTroopCount + $g_iCustomDonateConfigs - 1
 		Local $sIniName = ""
-		If $i >= $eTroopBarbarian And $i <= $eTroopDruid Then
+		If $i >= $eTroopBarbarian And $i <= $eTroopFurnace Then
 			$sIniName = StringReplace($g_asTroopNamesPlural[$i], " ", "")
 		ElseIf $i = $eCustomA Then
 			$sIniName = "CustomA"
@@ -668,8 +668,6 @@ Func SaveConfig_600_13()
 	Next
 	_Ini_Add("planned", "DonateHours", $string)
 	_Ini_Add("donate", "cmbFilterDonationsCC", $g_iCmbDonateFilter)
-	_Ini_Add("donate", "SkipDonateNearFulLTroopsEnable", $g_bDonateSkipNearFullEnable ? 1 : 0)
-	_Ini_Add("donate", "SkipDonateNearFulLTroopsPercentual", $g_iDonateSkipNearFullPercent)
 	_Ini_Add("donate", "BalanceCC", $g_bUseCCBalanced ? 1 : 0)
 	_Ini_Add("donate", "BalanceCCDonated", $g_iCCDonated)
 	_Ini_Add("donate", "BalanceCCReceived", $g_iCCReceived)
@@ -1262,10 +1260,9 @@ Func SaveConfig_600_35_2()
 		IniWrite($sSwitchAccFile, "SwitchAccount", "Enable", $g_bChkSwitchAcc ? 1 : 0)
 		IniWrite($sSwitchAccFile, "SwitchAccount", "SuperCellID", $g_bChkSuperCellID ? 1 : 0)
 		IniWrite($sSwitchAccFile, "SwitchAccount", "SharedPrefs", $g_bChkSharedPrefs ? 1 : 0)
-		IniWrite($sSwitchAccFile, "SwitchAccount", "SmartSwitch", $g_bChkSmartSwitch ? 1 : 0)
 		IniWrite($sSwitchAccFile, "SwitchAccount", "DonateLikeCrazy", $g_bDonateLikeCrazy ? 1 : 0)
 		IniWrite($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", $g_iTotalAcc)
-		IniWrite($sSwitchAccFile, "SwitchAccount", "TrainTimeToSkip", $g_iTrainTimeToSkip)
+		IniWrite($sSwitchAccFile, "SwitchAccount", "CmbMaxInARow", $g_iCmbMaxInARow)
 		For $i = 1 To 8
 			IniWrite($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, $g_abAccountNo[$i - 1] ? 1 : 0)
 			IniWrite($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, $g_asProfileName[$i - 1])
@@ -1353,14 +1350,13 @@ Func SaveConfig_641_1()
 	ApplyConfig_641_1(GetApplyConfigSaveAction())
 	; Training idle time
 	_Ini_Add("other", "chkCloseWaitEnable", $g_bCloseWhileTrainingEnable ? 1 : 0)
+	_Ini_Add("other", "AttackconsecutiveMin", $g_iAttackconsecutiveMin)
+	_Ini_Add("other", "AttackconsecutiveMax", $g_iAttackconsecutiveMax)
+	_Ini_Add("other", "MinimumTimeToCloseMin", $g_iCloseMinimumTimeMin)
+	_Ini_Add("other", "MinimumTimeToCloseMax", $g_iCloseMinimumTimeMax)
 	_Ini_Add("other", "chkCloseWaitTrain", $g_bCloseWithoutShield ? 1 : 0)
 	_Ini_Add("other", "btnCloseWaitStop", $g_bCloseEmulator ? 1 : 0)
 	_Ini_Add("other", "btnCloseWaitSuspendComputer", $g_bSuspendComputer ? 1 : 0)
-	_Ini_Add("other", "btnCloseWaitStopRandom", $g_bCloseRandom ? 1 : 0)
-	_Ini_Add("other", "btnCloseWaitExact", $g_bCloseExactTime ? 1 : 0)
-	_Ini_Add("other", "btnCloseWaitRandom", $g_bCloseRandomTime ? 1 : 0)
-	_Ini_Add("other", "CloseWaitRdmPercent", $g_iCloseRandomTimePercent)
-	_Ini_Add("other", "MinimumTimeToClose", $g_iCloseMinimumTime)
 	; Train click timing
 	_Ini_Add("other", "TrainITDelay", $g_iTrainClickDelay)
 	; Training add random delay

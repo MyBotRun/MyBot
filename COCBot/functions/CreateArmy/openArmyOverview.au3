@@ -22,7 +22,7 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 		EndIf
 	EndIf
 
-	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 15, 10) Then
+	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 20, 10) Then
 		If $g_bDebugSetLogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
 		ClickP($aArmyTrainButton, 1, 120, "#0293") ; Button Army Overview
 	EndIf
@@ -43,19 +43,21 @@ Func OpenArmyTab($bSetLog = True, $sWhereFrom = "Undefined")
 EndFunc   ;==>OpenArmyTab
 
 Func OpenTroopsTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Local $bResult = OpenTrainTab("Train Troops Tab", $bSetLog, $sWhereFrom)
-
-	If $bResult Then UpdateNextPageTroop()
-
-	Return $bResult
+	Click(Random(590, 750, 1), Random(250 + $g_iMidOffsetY, 280 + $g_iMidOffsetY, 1), 1, 120)
+	If _Sleep(250) Then Return
+	Return True
 EndFunc   ;==>OpenTroopsTab
 
 Func OpenSpellsTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Return OpenTrainTab("Brew Spells Tab", $bSetLog, $sWhereFrom)
+	Click(Random(450, 610, 1), Random(360 + $g_iMidOffsetY, 380 + $g_iMidOffsetY, 1), 1, 120)
+	If _Sleep(250) Then Return
+	Return True
 EndFunc   ;==>OpenSpellsTab
 
 Func OpenSiegeMachinesTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Return OpenTrainTab("Build Siege Machines Tab", $bSetLog, $sWhereFrom)
+	Click(Random(680, 790, 1), Random(360 + $g_iMidOffsetY, 380 + $g_iMidOffsetY, 1), 1, 120)
+	If _Sleep(250) Then Return
+	Return True
 EndFunc   ;==>OpenSiegeMachinesTab
 
 Func OpenQuickTrainTab($bSetLog = True, $sWhereFrom = "Undefined")

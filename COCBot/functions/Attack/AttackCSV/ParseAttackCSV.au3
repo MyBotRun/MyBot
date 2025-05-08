@@ -297,7 +297,7 @@ Func ParseAttackCSV($debug = False)
 								; Let's get the troops again and quantities
 								If PrepareAttack($g_iMatchMode, True) > 0 Then
 									; a Loop from all troops
-									For $ii = $eBarb To $eDruid ; launch all remaining troops
+									For $ii = $eBarb To $eFurn ; launch all remaining troops
 										; Loop on all detected troops
 										For $x = 0 To UBound($g_avAttackTroops) - 1
 											; If the Name exist and haves more than zero is deploy it
@@ -431,7 +431,7 @@ Func ParseAttackCSV($debug = False)
 										SetDebugLog("WAIT Break on Siege Machine is set but Clan Castle Troop selected.", $COLOR_INFO)
 										ExitLoop
 									ElseIf $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Or $g_avAttackTroops[$i][0] = $eSiegeB Or $g_avAttackTroops[$i][0] = $eLogL Or _
-											$g_avAttackTroops[$i][0] = $eFlameF Or $g_avAttackTroops[$i][0] = $eBattleD Then
+											$g_avAttackTroops[$i][0] = $eFlameF Or $g_avAttackTroops[$i][0] = $eBattleD Or $g_avAttackTroops[$i][0] = $eTroopL Then
 										Local $sSiegeName = GetTroopName($g_avAttackTroops[$i][0])
 										SetDebugLog("	" & $sSiegeName & " found. Let's Check If is Dropped Or Not?", $COLOR_SUCCESS)
 										;Check Siege Slot Quantity If It's 0 Means Siege Is Dropped

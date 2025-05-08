@@ -83,15 +83,15 @@ Func BoostSuperTroop($bTest = False)
 							If $g_bSuperTroopsBoostUsePotionFirst Then
 								SetLog("Using Super Potion...", $COLOR_INFO)
 								If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 500, 530 + $g_iMidOffsetY, 535, 570 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion
-									Click($g_iQuickMISX - 50, $g_iQuickMISY - 10, 1)
+									Click($g_iQuickMISX - 40, $g_iQuickMISY - 10, 1)
 									If _Sleep(1500) Then Return
 									If Not isGemOpen(True) Then
-										If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 430, 440 + $g_iMidOffsetY, 500, 500 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion button again (confirm upgrade)
+										If QuickMIS("BC1", $g_sImgBoostTroopsPotion, 435, 430 + $g_iMidOffsetY, 515, 510 + $g_iMidOffsetY, True, False) Then ;find image of Super Potion button again (confirm upgrade)
 											;Click boost
 											If $bTest Then
 												CancelBoost("Using Potion")
 											Else
-												Click($g_iQuickMISX - 40, $g_iQuickMISY, 1)
+												Click($g_iQuickMISX - 48, $g_iQuickMISY, 1)
 												SetLog("Using Potion, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 												$bRet = True
 											EndIf
@@ -103,16 +103,16 @@ Func BoostSuperTroop($bTest = False)
 								Else ;try to use dark elixir because potion not found
 									If _Sleep(1500) Then Return
 									SetLog("Cannot Find Potion, Using Dark Elixir...", $COLOR_INFO)
-									If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 700, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
+									If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 705, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
 										Click($g_iQuickMISX - 55, $g_iQuickMISY, 1)
 										If _Sleep(1500) Then Return
 										If Not isGemOpen(True) Then
-											If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 470, 450 + $g_iMidOffsetY, 515, 495 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
+											If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 450, 440 + $g_iMidOffsetY, 500, 495 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
 												;Click boost
 												If $bTest Then
 													CancelBoost("Using Dark Elixir")
 												Else
-													Click($g_iQuickMISX - 70, $g_iQuickMISY, 1)
+													Click($g_iQuickMISX - 53, $g_iQuickMISY, 1)
 													SetLog("Using Dark Elixir, Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 													$bRet = True
 												EndIf
@@ -130,16 +130,16 @@ Func BoostSuperTroop($bTest = False)
 								EndIf
 							Else
 								SetLog("Using Dark Elixir...", $COLOR_INFO)
-								If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 700, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
+								If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 670, 530 + $g_iMidOffsetY, 705, 570 + $g_iMidOffsetY) Then ;find image of dark elixir button
 									Click($g_iQuickMISX - 55, $g_iQuickMISY, 1)
 									If _Sleep(1500) Then Return
 									If Not isGemOpen(True) Then
-										If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 470, 450 + $g_iMidOffsetY, 515, 495 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
+										If QuickMIS("BC1", $g_sImgBoostTroopsButtons, 450, 440 + $g_iMidOffsetY, 500, 495 + $g_iMidOffsetY) Then ;find image of dark elixir button again (confirm upgrade)
 											;Click boost
 											If $bTest Then
 												CancelBoost("Using Dark Elixir")
 											Else
-												Click($g_iQuickMISX - 70, $g_iQuickMISY, 1)
+												Click($g_iQuickMISX - 53, $g_iQuickMISY, 1)
 												SetLog("Successfully Boost " & $sTroopName, $COLOR_SUCCESS)
 												$bRet = True
 											EndIf
@@ -308,10 +308,11 @@ Func OpenBarrel($bTest = False)
 						ReDim $g_iCmbSuperTroops[$iMaxSupersTroop + 1]
 						If $g_iCmbSuperTroops[$iMaxSupersTroop] = "" Then $g_iCmbSuperTroops[$iMaxSupersTroop] = 0
 					EndIf
-					FindEventTroop()
-					If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
-					Local $sTroopName = GetSTroopName($g_iCmbSuperTroops[$iMaxSupersTroop] - 1)
-					SetLog("Event Super Troop is: " & $sTroopName, $COLOR_INFO)
+					If FindEventTroop() Then
+						If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
+						Local $sTroopName = GetSTroopName($g_iCmbSuperTroops[$iMaxSupersTroop] - 1)
+						SetLog("Event Super Troop is: " & $sTroopName, $COLOR_INFO)
+					EndIf
 				Else
 					If UBound($g_iCmbSuperTroops) > Number($MaxBoostOCR) Then
 						ReDim $g_iCmbSuperTroops[$iMaxSupersTroop]
@@ -353,7 +354,7 @@ Func FindEventTroop()
 			ExitLoop
 		EndIf
 	Next
-	If $FoundEventTroop Then Return
+	If $FoundEventTroop Then Return True
 	For $i = 0 To $iPicsPerRow - 1 ; Row 2 Page 1
 		If IsArray(_PixelSearch($columnStart + ($picswidth * $i), $iColumnY2, $columnStart + 10 + ($picswidth * $i), $iColumnY2 + 10, Hex(0xEB780D, 6), 20, True)) Then
 			$FoundEventTroop = True
@@ -361,7 +362,7 @@ Func FindEventTroop()
 			ExitLoop
 		EndIf
 	Next
-	If $FoundEventTroop Then Return
+	If $FoundEventTroop Then Return True
 
 	ClickDrag($iXMidPoint, 545 + $g_iMidOffsetY, $iXMidPoint, 187 + $g_iMidOffsetY, 500)
 	If _Sleep(Random(1500, 2000, 1)) Then Return
@@ -376,7 +377,7 @@ Func FindEventTroop()
 		$iXMidPoint = Random(360, 520, 1)
 		ClickDrag($iXMidPoint, 230 + $g_iMidOffsetY, $iXMidPoint, 600 + $g_iMidOffsetY, 500)
 		If _Sleep(Random(800, 1200, 1)) Then Return
-		Return
+		Return True
 	EndIf
 	For $i = 0 To $iPicsPerRow - 1 ; Row 2 Page 2
 		If IsArray(_PixelSearch($columnStart + ($picswidth * $i), $iColumnY2, $columnStart + 10 + ($picswidth * $i), $iColumnY2 + 10, Hex(0xEB780D, 6), 20, True)) Then
@@ -389,8 +390,10 @@ Func FindEventTroop()
 		$iXMidPoint = Random(360, 520, 1)
 		ClickDrag($iXMidPoint, 230 + $g_iMidOffsetY, $iXMidPoint, 600 + $g_iMidOffsetY, 500)
 		If _Sleep(Random(800, 1200, 1)) Then Return
-		Return
+		Return True
 	EndIf
+
+	Return False
 
 EndFunc   ;==>FindEventTroop
 
@@ -423,7 +426,7 @@ Func StroopNextPage($iRowTarget, ByRef $iRow)
 
 EndFunc   ;==>StroopNextPage
 
-Func GetSTroopName(Const $iIndex)
+Func GetSTroopName($iIndex = 0)
 	Return $g_asSuperTroopNames[$iIndex]
 EndFunc   ;==>GetSTroopName
 

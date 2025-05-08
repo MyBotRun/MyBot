@@ -29,6 +29,26 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 		EndIf
 	EndIf
 
+	If _DateIsValid($g_iCCRemainTime) Then
+		Local $TimeDiffCCRemainTime = _DateDiff('s', _NowCalc(), $g_iCCRemainTime)
+		If $TimeDiffCCRemainTime > 0 Then
+			SetLog("Clan Castle Request has already been made", $COLOR_INFO)
+
+			Local $sWaitTime = ""
+			Local $iMin, $iSec
+			$iMin = Floor(Mod(Floor($TimeDiffCCRemainTime / 60), 60))
+			$iSec = Floor(Mod($TimeDiffCCRemainTime, 60))
+			If $iMin = 1 Then $sWaitTime &= $iMin & " minute "
+			If $iMin > 1 Then $sWaitTime &= $iMin & " minutes "
+			If $iSec > 0 Then $sWaitTime &= $iSec & " seconds "
+
+			SetLog("Request will be available in " & $sWaitTime, $COLOR_ACTION)
+			Return
+		Else
+			$g_iCCRemainTime = 0
+		EndIf
+	EndIf
+
 	;open army overview
 	If $sText <> "IsFullClanCastle" And Not OpenArmyOverview(True, "RequestCC()") Then Return
 
@@ -39,7 +59,7 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 	If Not $g_bRunState Then Return
 	If _Sleep(1000) Then Return
 
-	Local $sSearchDiamond = GetDiamondFromRect("673,553,740,583")
+	Local $sSearchDiamond = GetDiamondFromRect2(734, 455 + $g_iMidOffsetY, 773, 485 + $g_iMidOffsetY)
 	Local Static $aRequestButtonPos[2] = [-1, -1]
 
 	Local $aRequestButton = findMultiple($g_sImgRequestCCButton, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
@@ -68,12 +88,13 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 			ElseIf Not $bClickPAtEnd Then
 				$bNeedRequest = True
 			Else
-				For $i = 0 To 2
-					If Not IsFullClanCastleType($i) Then
-						$bNeedRequest = True
-						ExitLoop
-					EndIf
-				Next
+				;	For $i = 0 To 2
+				;		If Not IsFullClanCastleType($i) Then
+				;			$bNeedRequest = True
+				;			ExitLoop
+				;		EndIf
+				;	Next
+				$bNeedRequest = True
 			EndIf
 
 			If $bNeedRequest Then
@@ -83,7 +104,7 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 		ElseIf StringInStr($sButtonState, "Already", 0) > 0 Then
 			SetLog("Clan Castle Request has already been made", $COLOR_INFO)
 		ElseIf StringInStr($sButtonState, "Full", 0) > 0 Then
-			SetLog("Clan Castle is full or not available", $COLOR_INFO)
+			SetLog("Clan Castle is full", $COLOR_INFO)
 		Else
 			SetDebugLog("Error in RequestCC(): Couldn't detect Request Button State", $COLOR_ERROR)
 		EndIf
@@ -134,6 +155,7 @@ Func _makerequest($aRequestButtonPos)
 		Local $ButtonClickX = Random($CoordsX[0], $CoordsX[1], 1)
 		Local $ButtonClickY = Random($CoordsY[0], $CoordsY[1], 1)
 		Click($ButtonClickX, $ButtonClickY, 1, 100, "#0256")
+		$g_iCCRemainTime = _DateAdd('n', 10, _NowCalc())
 		$g_bCanRequestCC = False
 	EndIf
 
@@ -142,7 +164,6 @@ EndFunc   ;==>_makerequest
 Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine = 2
 	Local $aCheckCCNotFull[3] = [79, 446, 563], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
 	Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
-	If $g_abRequestType[2] Then $aiRequestCountCC[2] = 1
 	Local $bIsCCRequestTypeNotUsed = Not ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2])
 	If $bIsCCRequestTypeNotUsed Then ; Continue reading CC status if all 3 items are unchecked
 		If $g_bDebugSetLog Then SetLog($sLog[$CCType] & " not cared about.")
@@ -157,16 +178,20 @@ Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine =
 			EndIf
 
 			; avoid total expected troops / spells is less than expected CC q'ty.
-			Local $iTotalExpectedTroop = 0, $iTotalExpectedSpell = 0
+			Local $iTotalExpectedTroop = 0, $iTotalExpectedSpell = 0, $iTotalExpectedSiege = 0
 			For $i = 0 To $eTroopCount - 1
 				$iTotalExpectedTroop += $g_aiCCTroopsExpected[$i] * $g_aiTroopSpace[$i]
 			Next
 			For $i = 0 To $eSpellCount - 1
 				$iTotalExpectedSpell += $g_aiCCSpellsExpected[$i] * $g_aiSpellSpace[$i]
 			Next
+			For $i = 0 To $eSiegeMachineCount - 1
+				$iTotalExpectedSiege += $g_aiCCSiegeExpected[$i]
+			Next
 
 			If $aiRequestCountCC[0] > $iTotalExpectedTroop And $iTotalExpectedTroop > 0 Then $aiRequestCountCC[0] = $iTotalExpectedTroop
 			If $aiRequestCountCC[1] > $iTotalExpectedSpell And $iTotalExpectedSpell > 0 Then $aiRequestCountCC[1] = $iTotalExpectedSpell
+			If $aiRequestCountCC[2] > $iTotalExpectedSiege And $iTotalExpectedSiege > 0 Then $aiRequestCountCC[2] = $iTotalExpectedSiege
 
 			If ($CCType = 0 And ($aiRequestCountCC[$CCType] = 0 Or $aiRequestCountCC[$CCType] = $g_aiClanCastleTroopsCap)) Or _
 					($CCType = 1 And ($aiRequestCountCC[$CCType] = 0 Or $aiRequestCountCC[$CCType] = $g_aiClanCastleSpellsCap)) Then
@@ -179,12 +204,12 @@ Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine =
 			Else
 				If $CCType < 2 Then
 					If $CCType = 0 Then
-						Local $sCCReceived = getOcrAndCapture("coc-camps", 307, 428 + $g_iMidOffsetY, 60, 16, True, False, True) ; read CC troop
+						Local $sCCReceived = StringRegExpReplace(getOcrAndCapture("coc-camps", 307, 428 + $g_iMidOffsetY, 60, 16, True, False, True), "[a-z]", "") ; read CC troop
 					Else
-						Local $sCCReceived = getOcrAndCapture("coc-camps", 461, 428 + $g_iMidOffsetY, 35, 16, True, False, True) ; read CC spells
+						Local $sCCReceived = StringRegExpReplace(getOcrAndCapture("coc-camps", 461, 428 + $g_iMidOffsetY, 35, 16, True, False, True), "[a-z]", "") ; read CC spells
 					EndIf
 				Else
-					Local $sCCReceived = getOcrAndCapture("coc-camps", 578, 428 + $g_iMidOffsetY, 30, 16, True, False, True) ; read CC (Siege x/1)
+					Local $sCCReceived = StringRegExpReplace(getOcrAndCapture("coc-camps", 578, 428 + $g_iMidOffsetY, 30, 16, True, False, True), "[a-z]", "") ; read CC (Siege x/1)
 				EndIf
 				If $g_bDebugSetLog Then SetLog("Read CC " & $sLog[$CCType] & "s: " & $sCCReceived)
 				Local $aCCReceived = StringSplit($sCCReceived, "#", $STR_NOCOUNT) ; split the trained troop number from the total troop number
@@ -208,6 +233,7 @@ EndFunc   ;==>IsFullClanCastleType
 
 Func IsFullClanCastle()
 	Local $bNeedRequest = False
+	Local $sSearchDiamond = GetDiamondFromRect2(734, 455 + $g_iMidOffsetY, 773, 485 + $g_iMidOffsetY)
 	If Not $g_bRunState Then Return
 
 	If Not $g_abSearchCastleWaitEnable[$DB] And Not $g_abSearchCastleWaitEnable[$LB] Then
@@ -216,23 +242,40 @@ Func IsFullClanCastle()
 
 	If ($g_abAttackTypeEnable[$DB] And $g_abSearchCastleWaitEnable[$DB]) Or ($g_abAttackTypeEnable[$LB] And $g_abSearchCastleWaitEnable[$LB]) Then
 		CheckCCArmy()
-		For $i = 0 To 2
-			If Not IsFullClanCastleType($i) Then
-				$bNeedRequest = True
-				ExitLoop
-			EndIf
-		Next
+
+		Local $sCCAvailable = @ScriptDir & "\imgxml\ArmyOverview\RequestCC\Available*"
+		Local $aiTileCoord = decodeSingleCoord(findImage("IsFullClanCastle", $sCCAvailable, $sSearchDiamond, 1, True))
+		If IsArray($aiTileCoord) And UBound($aiTileCoord, 1) = 2 Then $bNeedRequest = True
+
+		;	For $i = 0 To 2
+		;		If Not IsFullClanCastleType($i) Then
+		;			$bNeedRequest = True
+		;			ExitLoop
+		;		EndIf
+		;	Next
 		If $bNeedRequest Then
 			$g_bCanRequestCC = True
 			RequestCC(False, "IsFullClanCastle")
 			Return False
 		EndIf
 	EndIf
-	Return True
+
+	Local $aRequestButton = findMultiple($g_sImgRequestCCButton, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
+	If UBound($aRequestButton, 1) >= 1 Then
+		Local $sButtonState
+		Local $aRequestButtonSubResult = $aRequestButton[0]
+		$sButtonState = $aRequestButtonSubResult[0]
+		If StringInStr($sButtonState, "FullOrUnavail", 0) > 0 Or (StringInStr($sButtonState, "AlreadyMade", 0) > 0 And _ColorCheck(_GetPixelColor(793, 460 + $g_iMidOffsetY, True), Hex(0xD3D3D3, 6), 10)) Then Return True
+	EndIf
+
+	Return False
+
 EndFunc   ;==>IsFullClanCastle
 
 Func CheckCCArmy()
 	If Not $g_bRunState Then Return
+
+	Return ; Broken So far.
 
 	Local $bSkipTroop = Not $g_abRequestType[0] Or _ArrayMin($g_aiClanCastleTroopWaitType) = 0 ; All 3 troop comboboxes are set = "any"
 	Local $bSkipSpell = Not $g_abRequestType[1] Or _ArrayMin($g_aiClanCastleSpellWaitType) = 0 ; All 3 spell comboboxes are set = "any"

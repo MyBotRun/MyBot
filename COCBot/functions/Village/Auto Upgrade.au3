@@ -26,9 +26,9 @@ Func _AutoUpgrade()
 	SetLog("Starting Auto Upgrade", $COLOR_INFO)
 	Local $iLoopAmount = 0
 	Local $iLoopMax = 8
-	Local $iLoopHero = 0
-	Local $HeroArray[0][3]
-	Local $HeroArrayBackup[0][3]
+	Local $bInitalXcoord = 67
+	Local $bDistanceSlot = 153
+	Local $bXcoords[5] = [$bInitalXcoord, $bInitalXcoord + $bDistanceSlot, $bInitalXcoord + $bDistanceSlot * 2, $bInitalXcoord + $bDistanceSlot * 3, $bInitalXcoord + $bDistanceSlot * 4]
 
 	While 1
 
@@ -57,7 +57,7 @@ Func _AutoUpgrade()
 
 		; search for ressource images in builders menu, if found, a possible upgrade is available
 		Local $aTmpCoord
-		Local $IsElix = False
+		Local $IsElix = False, $IsDark = False
 		$aTmpCoord = QuickMIS("CNX", $g_sImgResourceIcon, 410, $g_iNextLineOffset, 565, 370 + $g_iMidOffsetY)
 		If IsArray($aTmpCoord) And UBound($aTmpCoord) > 0 Then
 			_ArraySort($aTmpCoord, 0, 0, 0, 2) ;sort by Y coord
@@ -65,6 +65,7 @@ Func _AutoUpgrade()
 			If QuickMIS("BC1", $g_sImgAUpgradeZero, $aTmpCoord[0][1], $aTmpCoord[0][2] - 8, $aTmpCoord[0][1] + 100, $aTmpCoord[0][2] + 7) Then
 				SetLog("Possible upgrade found !", $COLOR_SUCCESS)
 				If $aTmpCoord[0][0] = "Elix" Then $IsElix = True
+				If $aTmpCoord[0][0] = "DE" Then $IsDark = True
 			Else
 				SetLog("Not Enough Ressource, looking next...", $COLOR_INFO)
 				ContinueLoop
@@ -80,30 +81,46 @@ Func _AutoUpgrade()
 			ContinueLoop
 		EndIf
 
+		; check in the line if we can see any hero
+		If $IsElix Or $IsDark Then
+			Local $aHeroTempl, $IHeroName = "", $bHeroCoordButton = 0
+			$aHeroTempl = QuickMIS("CNX", $g_sImgAUpgradeHeroes, 180, $aTmpCoord[0][2] - 15, 480, $aTmpCoord[0][2] + 15)
+			If IsArray($aHeroTempl) And UBound($aHeroTempl) > 0 Then
+				Switch $aHeroTempl[0][0]
+					Case "King"
+						$IHeroName = "Barbarian King"
+						$bHeroCoordButton = $bXcoords[0] + 80
+					Case "Queen"
+						$IHeroName = "Archer Queen"
+						$bHeroCoordButton = $bXcoords[1] + 80
+					Case "Prince"
+						$IHeroName = "Minion Prince"
+						$bHeroCoordButton = $bXcoords[2] + 80
+					Case "Warden"
+						$IHeroName = "Grand Warden"
+						$bHeroCoordButton = $bXcoords[3] + 80
+					Case "Champion"
+						$IHeroName = "Royal Champion"
+						$bHeroCoordButton = $bXcoords[4] + 80
+				EndSwitch
+			EndIf
+		EndIf
+
 		; if it's an upgrade, will click on the upgrade, in builders menu
 		Click($aTmpCoord[0][1] + 20, $aTmpCoord[0][2])
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
-		Local $bHeroSystem = False, $bBlackHero = False
+		Local $bHeroSystem = False
 		If QuickMIS("BC1", $g_sImgGeneralCloseButton, 780, 145 + $g_iMidOffsetY, 815, 175 + $g_iMidOffsetY) Then
 			SetLog("Hero Hall Window Opened", $COLOR_DEBUG1)
-			$bHeroSystem = True
-			If $iLoopHero = 0 Then
-				$HeroArray = NewHeroUpgradeSystem($IsElix)
-			Else
-				$HeroArray = $HeroArrayBackup
-				$HeroArray = NewHeroUpgradeSystem($IsElix)
-			EndIf
-			If $HeroArray[0][0] = "" Then
-				SetLog("Something gone wrong, looking next...", $COLOR_WARNING)
-				$HeroArray = $HeroArrayBackup
+			If $IHeroName = "" Then
+				SetLog("Error when trying to get hero name, looking next...", $COLOR_ERROR)
 				CloseWindow2()
 				ContinueLoop
 			EndIf
-			Local $g_aUpgradeNameLevelTemp[3] = [2, $HeroArray[0][0], 0]
-			If Not $IsElix Then $bBlackHero = True
+			$bHeroSystem = True
+			Local $g_aUpgradeNameLevelTemp[3] = [2, $IHeroName, 0]
 			$g_aUpgradeNameLevel = $g_aUpgradeNameLevelTemp
-			$iLoopHero += 1
 		Else
 
 			$g_aUpgradeNameLevel = BuildingInfo(242, 475 + $g_iBottomOffsetY)
@@ -188,32 +205,29 @@ Func _AutoUpgrade()
 		; check if the upgrade name is on the list of upgrades that must be ignored
 		If $bMustIgnoreUpgrade = True Then
 			SetLog("This upgrade must be ignored, looking next...", $COLOR_WARNING)
-			If $bHeroSystem Then
-				CloseWindow2()
-				If $bBlackHero Then _ArrayDelete($HeroArray, 0)
-			EndIf
+			If $bHeroSystem Then CloseWindow2()
 			ContinueLoop
 		EndIf
 
 		; if upgrade don't have to be ignored, click on the Upgrade button to open Upgrade window
 		If $bHeroSystem Then
-			Click($HeroArray[0][2], 433 + $g_iMidOffsetY)
+			Click($bHeroCoordButton, 433 + $g_iMidOffsetY)
 			If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 			Switch $g_aUpgradeNameLevel[1]
 				Case "Barbarian King"
-					Local $g_iKingLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 627, 116, 50, 20))
+					Local $g_iKingLevelOCR = getYellowLevel(527, 116)
 					Local $g_aUpgradeNameLevelTemp2[3] = [$g_aUpgradeNameLevel[0], $g_aUpgradeNameLevel[1], Number($g_iKingLevelOCR - 1)]
 				Case "Archer Queen"
-					Local $g_iQueenLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 618, 116, 50, 20))
+					Local $g_iQueenLevelOCR = getYellowLevel(518, 116)
 					Local $g_aUpgradeNameLevelTemp2[3] = [$g_aUpgradeNameLevel[0], $g_aUpgradeNameLevel[1], Number($g_iQueenLevelOCR - 1)]
 				Case "Minion Prince"
-					Local $g_iPrinceLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 618, 116, 50, 20))
+					Local $g_iPrinceLevelOCR = getYellowLevel(518, 116)
 					Local $g_aUpgradeNameLevelTemp2[3] = [$g_aUpgradeNameLevel[0], $g_aUpgradeNameLevel[1], Number($g_iPrinceLevelOCR - 1)]
 				Case "Grand Warden"
-					Local $g_iWardenLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 622, 116, 50, 20))
+					Local $g_iWardenLevelOCR = getYellowLevel(522, 116)
 					Local $g_aUpgradeNameLevelTemp2[3] = [$g_aUpgradeNameLevel[0], $g_aUpgradeNameLevel[1], Number($g_iWardenLevelOCR - 1)]
 				Case "Royal Champion"
-					Local $g_iChampionLevelOCR = Number(getOcrAndCapture("coc-YellowLevel", 625, 116, 50, 20))
+					Local $g_iChampionLevelOCR = getYellowLevel(525, 116)
 					Local $g_aUpgradeNameLevelTemp2[3] = [$g_aUpgradeNameLevel[0], $g_aUpgradeNameLevel[1], Number($g_iChampionLevelOCR - 1)]
 			EndSwitch
 			$g_aUpgradeNameLevel = $g_aUpgradeNameLevelTemp2
@@ -256,10 +270,7 @@ Func _AutoUpgrade()
 		; check if the resource of the upgrade must be ignored
 		If $bMustIgnoreResource = True Then
 			SetLog("This resource must be ignored, looking next...", $COLOR_WARNING)
-			If $bHeroSystem Then
-				CloseWindow2()
-				If $bBlackHero Then _ArrayDelete($HeroArray, 0)
-			EndIf
+			If $bHeroSystem Then CloseWindow2()
 			CloseWindow2()
 			ContinueLoop
 		EndIf
@@ -278,19 +289,13 @@ Func _AutoUpgrade()
 		; if boolean still False, we can't launch upgrade, exiting...
 		If Not $bSufficentResourceToUpgrade Then
 			SetLog("Insufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
-			If $bHeroSystem Then
-				CloseWindow2()
-				If $bBlackHero Then _ArrayDelete($HeroArray, 0)
-			EndIf
+			If $bHeroSystem Then CloseWindow2()
 			CloseWindow2()
 			ContinueLoop
 		EndIf
 
 		; final click on upgrade button, click coord is get looking at upgrade type (heroes have a diferent place for Upgrade button)
 		Click(630, 540 + $g_iMidOffsetY)
-		If $bHeroSystem Then
-			If $bBlackHero Then _ArrayDelete($HeroArray, 0)
-		EndIf
 
 		;Check for 'End Boost?' pop-up
 		If _Sleep(1000) Then Return
@@ -516,210 +521,3 @@ Func IsBuilderMenuOpen()
 	Return $bRet
 EndFunc   ;==>IsBuilderMenuOpen
 
-Func NewHeroUpgradeSystem($IsElix = False)
-
-	Local $bInitalXcoord = 67
-	Local $bDistanceSlot = 153
-	Local $bXcoords[5] = [$bInitalXcoord, $bInitalXcoord + $bDistanceSlot, $bInitalXcoord + $bDistanceSlot * 2, $bInitalXcoord + $bDistanceSlot * 3, $bInitalXcoord + $bDistanceSlot * 4]
-	Local $HeroArrayTemp[0][3]
-
-	;Check Hidden Hero Upgrade To be sure
-	Switch $g_aiCmbCustomHeroOrder[4]
-		Case 0
-			If IsArray(_PixelSearch($bXcoords[0] - 6, 438 + $g_iMidOffsetY, $bXcoords[0] + 10, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
-				GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
-				GUICtrlSetState($g_hPicKingRed, $GUI_SHOW)
-				GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
-				GUICtrlSetState($g_hPicKingGreen, $GUI_HIDE)
-				SetLog($g_asHeroNames[0] & " is being upgraded", $COLOR_DEBUG)
-				;Set Status Variable
-				$g_iHeroUpgrading[0] = 1
-				$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroKing)
-			Else
-				If Not _ColorCheck(_GetPixelColor($bXcoords[0], 438 + $g_iMidOffsetY, True), Hex(0x6D6D6D, 6), 15) Then
-					GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
-					GUICtrlSetState($g_hPicKingRed, $GUI_HIDE)
-					GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
-					GUICtrlSetState($g_hPicKingGreen, $GUI_SHOW)
-					SetLog($g_asHeroNames[0] & " is ready to fight", $COLOR_SUCCESS1)
-					$g_iHeroUpgrading[0] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOR($eHeroQueen, $eHeroPrince, $eHeroWarden, $eHeroChampion))
-				EndIf
-			EndIf
-		Case 1
-			If IsArray(_PixelSearch($bXcoords[1] - 6, 438 + $g_iMidOffsetY, $bXcoords[1] + 10, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
-				GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
-				GUICtrlSetState($g_hPicQueenRed, $GUI_SHOW)
-				GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
-				GUICtrlSetState($g_hPicQueenGreen, $GUI_HIDE)
-				SetLog($g_asHeroNames[1] & " is being upgraded", $COLOR_DEBUG)
-				;Set Status Variable
-				$g_iHeroUpgrading[1] = 1
-				$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroQueen)
-			Else
-				If Not _ColorCheck(_GetPixelColor($bXcoords[1], 438 + $g_iMidOffsetY, True), Hex(0x6D6D6D, 6), 15) Then
-					GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
-					GUICtrlSetState($g_hPicQueenRed, $GUI_HIDE)
-					GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
-					GUICtrlSetState($g_hPicQueenGreen, $GUI_SHOW)
-					SetLog($g_asHeroNames[1] & " is ready to fight", $COLOR_SUCCESS1)
-					$g_iHeroUpgrading[1] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOR($eHeroKing, $eHeroPrince, $eHeroWarden, $eHeroChampion))
-				EndIf
-			EndIf
-		Case 2
-			If IsArray(_PixelSearch($bXcoords[2] - 6, 438 + $g_iMidOffsetY, $bXcoords[2] + 10, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
-				GUICtrlSetState($g_hPicPrinceGray, $GUI_HIDE)
-				GUICtrlSetState($g_hPicPrinceRed, $GUI_SHOW)
-				GUICtrlSetState($g_hPicPrinceBlue, $GUI_HIDE)
-				GUICtrlSetState($g_hPicPrinceGreen, $GUI_HIDE)
-				SetLog($g_asHeroNames[2] & " is being upgraded", $COLOR_DEBUG)
-				;Set Status Variable
-				$g_iHeroUpgrading[2] = 1
-				$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroPrince)
-			Else
-				If Not _ColorCheck(_GetPixelColor($bXcoords[2], 438 + $g_iMidOffsetY, True), Hex(0x6D6D6D, 6), 15) Then
-					GUICtrlSetState($g_hPicPrinceGray, $GUI_HIDE)
-					GUICtrlSetState($g_hPicPrinceRed, $GUI_HIDE)
-					GUICtrlSetState($g_hPicPrinceBlue, $GUI_HIDE)
-					GUICtrlSetState($g_hPicPrinceGreen, $GUI_SHOW)
-					SetLog($g_asHeroNames[2] & " is ready to fight", $COLOR_SUCCESS1)
-					$g_iHeroUpgrading[2] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOR($eHeroKing, $eHeroQueen, $eHeroWarden, $eHeroChampion))
-				EndIf
-			EndIf
-		Case 3
-			If IsArray(_PixelSearch($bXcoords[3] - 6, 438 + $g_iMidOffsetY, $bXcoords[3] + 10, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
-				GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
-				GUICtrlSetState($g_hPicWardenRed, $GUI_SHOW)
-				GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
-				GUICtrlSetState($g_hPicWardenGreen, $GUI_HIDE)
-				SetLog($g_asHeroNames[3] & " is being upgraded", $COLOR_DEBUG)
-				;Set Status Variable
-				$g_iHeroUpgrading[3] = 1
-				$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroWarden)
-			Else
-				If Not _ColorCheck(_GetPixelColor($bXcoords[3], 438 + $g_iMidOffsetY, True), Hex(0x6D6D6D, 6), 15) Then
-					GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
-					GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
-					GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
-					GUICtrlSetState($g_hPicWardenGreen, $GUI_SHOW)
-					SetLog($g_asHeroNames[3] & " is ready to fight", $COLOR_SUCCESS1)
-					$g_iHeroUpgrading[3] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOR($eHeroKing, $eHeroQueen, $eHeroPrince, $eHeroChampion))
-				EndIf
-			EndIf
-		Case 4
-			If IsArray(_PixelSearch($bXcoords[4] - 6, 438 + $g_iMidOffsetY, $bXcoords[4] + 10, 444 + $g_iMidOffsetY, Hex(0xFFFFFF, 6), 20, True)) Then
-				GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
-				GUICtrlSetState($g_hPicChampionRed, $GUI_SHOW)
-				GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
-				GUICtrlSetState($g_hPicChampionGreen, $GUI_HIDE)
-				SetLog($g_asHeroNames[4] & " is being upgraded", $COLOR_DEBUG)
-				;Set Status Variable
-				$g_iHeroUpgrading[4] = 1
-				$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroChampion)
-			Else
-				If Not _ColorCheck(_GetPixelColor($bXcoords[4], 438 + $g_iMidOffsetY, True), Hex(0x6D6D6D, 6), 15) Then
-					GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
-					GUICtrlSetState($g_hPicChampionRed, $GUI_HIDE)
-					GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
-					GUICtrlSetState($g_hPicChampionGreen, $GUI_SHOW)
-					SetLog($g_asHeroNames[4] & " is ready to fight", $COLOR_SUCCESS1)
-					$g_iHeroUpgrading[4] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOR($eHeroKing, $eHeroQueen, $eHeroPrince, $eHeroWarden))
-				EndIf
-			EndIf
-	EndSwitch
-
-	If $IsElix Then
-
-		; Warden
-		Local $g_iWardenCostOCR = "", $bWarden = "Grand Warden"
-		If _ColorCheck(_GetPixelColor($bXcoords[3], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-			Local $g_iWardenCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[3] + 10, 433 + $g_iMidOffsetY, 84, 20, True))
-			If $g_iWardenCostOCR = "" Then $g_iWardenCostOCR = 0
-			_ArrayAdd($HeroArrayTemp, $bWarden & "|" & $g_iWardenCostOCR & "|" & $bXcoords[3] + 55)
-		Else
-			If _ColorCheck(_GetPixelColor($bXcoords[3] + 42, 425 + $g_iMidOffsetY, True), Hex(0xBEEA8C, 6), 20) Then
-				Local $g_iWardenCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[3] + 32, 433 + $g_iMidOffsetY, 75, 20, True))
-				If $g_iWardenCostOCR = "" Then $g_iWardenCostOCR = 0
-				_ArrayAdd($HeroArrayTemp, $bWarden & "|" & $g_iWardenCostOCR & "|" & $bXcoords[3] + 80)
-			EndIf
-		EndIf
-		If _Sleep(100) Then Return
-		Return $HeroArrayTemp
-
-	Else
-
-		; King
-		Local $g_iKingCostOCR = "", $bKing = "Barbarian King"
-		If _ColorCheck(_GetPixelColor($bXcoords[0], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-			Local $g_iKingCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 23, 433 + $g_iMidOffsetY, 65, 20, True))
-			If $g_iKingCostOCR = "" Then $g_iKingCostOCR = 0
-			_ArrayAdd($HeroArrayTemp, $bKing & "|" & $g_iKingCostOCR & "|" & $bXcoords[0] + 55)
-		Else
-			If _ColorCheck(_GetPixelColor($bXcoords[0] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-				Local $g_iKingCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[0] + 38, 433 + $g_iMidOffsetY, 65, 20, True))
-				If $g_iKingCostOCR = "" Then $g_iKingCostOCR = 0
-				_ArrayAdd($HeroArrayTemp, $bKing & "|" & $g_iKingCostOCR & "|" & $bXcoords[0] + 80)
-			EndIf
-		EndIf
-
-		If _Sleep(100) Then Return
-
-		; Queen
-		Local $g_iQueenCostOCR = "", $bQueen = "Archer Queen"
-		If _ColorCheck(_GetPixelColor($bXcoords[1], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-			Local $g_iQueenCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[1] + 23, 433 + $g_iMidOffsetY, 65, 20, True))
-			If $g_iQueenCostOCR = "" Then $g_iQueenCostOCR = 0
-			_ArrayAdd($HeroArrayTemp, $bQueen & "|" & $g_iQueenCostOCR & "|" & $bXcoords[1] + 55)
-		Else
-			If _ColorCheck(_GetPixelColor($bXcoords[1] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-				Local $g_iQueenCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[1] + 38, 433 + $g_iMidOffsetY, 65, 20, True))
-				If $g_iQueenCostOCR = "" Then $g_iQueenCostOCR = 0
-				_ArrayAdd($HeroArrayTemp, $bQueen & "|" & $g_iQueenCostOCR & "|" & $bXcoords[1] + 80)
-			EndIf
-		EndIf
-
-		If _Sleep(100) Then Return
-
-		; Prince
-		Local $g_iPrinceCostOCR = "", $bPrince = "Minion Prince"
-		If _ColorCheck(_GetPixelColor($bXcoords[2], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-			Local $g_iPrinceCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[2] + 23, 433 + $g_iMidOffsetY, 65, 20, True))
-			If $g_iPrinceCostOCR = "" Then $g_iPrinceCostOCR = 0
-			_ArrayAdd($HeroArrayTemp, $bPrince & "|" & $g_iPrinceCostOCR & "|" & $bXcoords[2] + 55)
-		Else
-			If _ColorCheck(_GetPixelColor($bXcoords[2] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-				Local $g_iPrinceCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[2] + 38, 433 + $g_iMidOffsetY, 65, 20, True))
-				If $g_iPrinceCostOCR = "" Then $g_iPrinceCostOCR = 0
-				_ArrayAdd($HeroArrayTemp, $bPrince & "|" & $g_iPrinceCostOCR & "|" & $bXcoords[2] + 80)
-			EndIf
-		EndIf
-
-		If _Sleep(100) Then Return
-
-		; Champion
-		Local $g_iChampionCostOCR = "", $bChampion = "Royal Champion"
-		If _ColorCheck(_GetPixelColor($bXcoords[4], 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-			Local $g_iChampionCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[4] + 23, 433 + $g_iMidOffsetY, 65, 20, True))
-			If $g_iChampionCostOCR = "" Then $g_iChampionCostOCR = 0
-			_ArrayAdd($HeroArrayTemp, $bChampion & "|" & $g_iChampionCostOCR & "|" & $bXcoords[4] + 55)
-		Else
-			If _ColorCheck(_GetPixelColor($bXcoords[4] + 42, 438 + $g_iMidOffsetY, True), Hex(0x8BD43A, 6), 20) Then
-				Local $g_iChampionCostOCR = Number(getOcrAndCapture("coc-HeroCost", $bXcoords[4] + 38, 433 + $g_iMidOffsetY, 65, 20, True))
-				If $g_iChampionCostOCR = "" Then $g_iChampionCostOCR = 0
-				_ArrayAdd($HeroArrayTemp, $bChampion & "|" & $g_iChampionCostOCR & "|" & $bXcoords[4] + 80)
-			EndIf
-		EndIf
-
-		If _Sleep(100) Then Return
-
-		_ArraySort($HeroArrayTemp, 1, 0, 0, 1)
-
-		Return $HeroArrayTemp
-
-	EndIf
-
-EndFunc   ;==>NewHeroUpgradeSystem
